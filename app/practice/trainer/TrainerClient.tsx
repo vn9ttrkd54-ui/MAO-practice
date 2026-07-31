@@ -23,9 +23,7 @@ import type {
 
 import {
   calculateTrainerStats,
-  getEligibleTrainerQuestions,
   getNextTrainerQuestion,
-  getTrainerQuestions,
 } from "@/lib/trainer";
 
 import {
@@ -82,15 +80,6 @@ export default function TrainerClient() {
 
   const [startError, setStartError] =
     useState<string | null>(null);
-  const [
-    totalEligibleQuestions,
-    setTotalEligibleQuestions,
-  ] = useState(0);
-
-  const [
-    eligibleQuestionsLoaded,
-    setEligibleQuestionsLoaded,
-  ] = useState(false);
 
   const [
     showEndDialog,
@@ -125,27 +114,6 @@ export default function TrainerClient() {
     setLevelProgress(savedLevel);
     setStartingLevelProgress(savedLevel);
   }, []);
-
-  useEffect(() => {
-    const eligibleQuestions =
-        getEligibleTrainerQuestions(
-            division
-        );
-
-    const allDivisionQuestions =
-        getTrainerQuestions(
-            division
-        );
-
-    setTotalEligibleQuestions(
-        eligibleQuestions.length > 0
-            ? eligibleQuestions.length
-            : allDivisionQuestions.length
-    );
-
-    setEligibleQuestionsLoaded(true);
-  }, [division, sessionStarted, showSummary]);
-
 
   const sessionStats =
     calculateTrainerStats(
@@ -374,8 +342,9 @@ export default function TrainerClient() {
         onDivisionChange={(newDivision) => {
           setDivision(newDivision);
           setStartError(null);
-        } }
-        onStart={handleStartSession} totalQuestions={0} loading={false}      />
+        }}
+        onStart={handleStartSession}
+      />
     );
   }
 

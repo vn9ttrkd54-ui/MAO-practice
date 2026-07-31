@@ -33,6 +33,10 @@ export function isQuestionEligibleForTrainer(
   const progress =
     getQuestionProgress(question.id);
 
+  if (progress.lastResult !== "correct") {
+    return true;
+  }
+
   if (progress.lastCorrectAt === null) {
     return true;
   }

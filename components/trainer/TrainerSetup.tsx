@@ -2,8 +2,6 @@ import type { Division } from "@/types/question";
 
 type TrainerSetupProps = {
   division: Division;
-  totalQuestions: number;
-  loading: boolean;
   error: string | null;
   onDivisionChange: (division: Division) => void;
   onStart: () => void;
@@ -11,8 +9,6 @@ type TrainerSetupProps = {
 
 export default function TrainerSetup({
   division,
-  totalQuestions,
-  loading,
   error,
   onDivisionChange,
   onStart,
