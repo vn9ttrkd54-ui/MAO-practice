@@ -1,13 +1,5 @@
-export default function DashboardPage() {
-  return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold">
-        Dashboard
-      </h1>
+import DashboardClient from "@/components/dashboard/DashboardClient";
 
-      <p className="mt-4 text-gray-600">
-        Coming Soon 🚧
-      </p>
-    </main>
-  );
+export default function DashboardPage() {
+  return <DashboardClient />;
 }

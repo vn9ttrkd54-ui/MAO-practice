@@ -36,6 +36,10 @@ import {
   getLevelProgress,
 } from "@/lib/levels";
 
+import {
+  saveTrainerSession,
+} from "@/lib/trainerHistory";
+
 import TrainerSetup from "@/components/trainer/TrainerSetup";
 import TrainerHeader from "@/components/trainer/TrainerHeader";
 import TrainerQuestion from "@/components/trainer/TrainerQuestion";
@@ -74,6 +78,11 @@ export default function TrainerClient() {
 
   const [startTime, setStartTime] =
     useState(Date.now());
+
+  const [
+    sessionStartedAt,
+    setSessionStartedAt,
+  ] = useState<number | null>(null);
 
   const [results, setResults] =
     useState<TrainerQuestionResult[]>([]);
@@ -145,7 +154,10 @@ export default function TrainerClient() {
     setSelectedAnswer(null);
     setSubmitted(false);
     setResults([]);
-    setStartTime(Date.now());
+    const startedAt = Date.now();
+
+    setStartTime(startedAt);
+    setSessionStartedAt(startedAt);
 
     setLevelProgress(
       currentLevel
@@ -309,11 +321,26 @@ export default function TrainerClient() {
     setShowEndDialog(true);
   };
 
-  const handleConfirmEndSession =
-    () => {
-      setShowEndDialog(false);
-      setShowSummary(true);
-    };
+  const handleConfirmEndSession = () => {
+    const endedAt = Date.now();
+
+    if (sessionStartedAt !== null) {
+      saveTrainerSession({
+        id: crypto.randomUUID(),
+        division,
+        startedAt: sessionStartedAt,
+        endedAt,
+        startingLevel:
+          startingLevelProgress,
+        endingLevel:
+          levelProgress,
+        results,
+      });
+    }
+
+    setShowEndDialog(false);
+    setShowSummary(true);
+  };
 
   const handleStartNewSession =
     () => {
@@ -321,6 +348,7 @@ export default function TrainerClient() {
       setShowEndDialog(false);
       setSessionStarted(false);
       setCurrentQuestion(null);
+      setSessionStartedAt(null);
       setSelectedAnswer(null);
       setSubmitted(false);
       setResults([]);
