@@ -13,9 +13,11 @@ import {
   Trophy,
 } from "lucide-react";
 
+import StatCard from "@/components/dashboard/StatCard";
+import SessionMetric from "@/components/dashboard/SessionMetric";
 import { getDashboardData } from "@/lib/dashboardService";
 import { calculateTrainerStats } from "@/lib/trainer";
-
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import type { DashboardData } from "@/lib/dashboardService";
 
 const LEVEL_PROGRESS_GOAL = 30;
@@ -25,7 +27,10 @@ function getPercentage(value: number, total: number) {
     return 0;
   }
 
-  return Math.min(100, Math.round((value / total) * 100));
+  return Math.min(
+    100,
+    Math.round((value / total) * 100)
+  );
 }
 
 export default function DashboardClient() {
@@ -41,7 +46,9 @@ export default function DashboardClient() {
       <main className="mx-auto min-h-[60vh] max-w-6xl px-6 py-10 sm:px-8">
         <div className="animate-pulse">
           <div className="h-10 w-52 rounded-lg bg-gray-200" />
+
           <div className="mt-4 h-5 w-full max-w-xl rounded bg-gray-100" />
+
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[0, 1, 2, 3].map((item) => (
               <div
@@ -68,55 +75,22 @@ export default function DashboardClient() {
     LEVEL_PROGRESS_GOAL
   );
 
-  const questionCompletionPercentage = getPercentage(
-    questionBank.solved,
-    questionBank.totalQuestions
-  );
+  const questionCompletionPercentage =
+    getPercentage(
+      questionBank.solved,
+      questionBank.totalQuestions
+    );
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8 lg:py-14">
-      <section className="overflow-hidden rounded-3xl border bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-6 py-8 text-white shadow-sm sm:px-8 sm:py-10">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">
-              Your MAO Progress
-            </p>
-
-            <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-              Dashboard
-            </h1>
-
-            <p className="mt-4 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
-              Continue training, review your question-bank progress,
-              and prepare for future competitive play.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/practice/trainer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-slate-950 transition hover:bg-slate-100"
-            >
-              Start Training
-              <ArrowRight size={18} />
-            </Link>
-
-            <Link
-              href="/practice/question-bank"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 px-5 py-3 font-semibold text-white transition hover:bg-white/10"
-            >
-              Open Question Bank
-              <BookOpen size={18} />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <DashboardHeader />
 
       <section className="mt-10">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
             Overview
           </p>
+
           <h2 className="mt-1 text-2xl font-bold tracking-tight">
             Overall Progress
           </h2>
@@ -129,6 +103,7 @@ export default function DashboardClient() {
                 <p className="text-sm font-medium text-gray-500">
                   Trainer Level
                 </p>
+
                 <p className="mt-2 text-3xl font-bold">
                   Level {level.level}
                 </p>
@@ -141,18 +116,28 @@ export default function DashboardClient() {
 
             <div className="mt-5">
               <div className="flex justify-between text-xs font-medium text-gray-500">
-                <span>{level.progress} progress</span>
-                <span>{LEVEL_PROGRESS_GOAL}</span>
+                <span>
+                  {level.progress} progress
+                </span>
+
+                <span>
+                  {LEVEL_PROGRESS_GOAL}
+                </span>
               </div>
+
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
                 <div
                   className="h-full rounded-full bg-indigo-600"
-                  style={{ width: `${levelPercentage}%` }}
+                  style={{
+                    width: `${levelPercentage}%`,
+                  }}
                 />
               </div>
+
               <p className="mt-3 text-sm text-gray-500">
-                {LEVEL_PROGRESS_GOAL - level.progress} more to Level{" "}
-                {level.level + 1}
+                {LEVEL_PROGRESS_GOAL -
+                  level.progress}{" "}
+                more to Level {level.level + 1}
               </p>
             </div>
           </article>
@@ -163,6 +148,7 @@ export default function DashboardClient() {
                 <p className="text-sm font-medium text-gray-500">
                   Questions Solved
                 </p>
+
                 <p className="mt-2 text-3xl font-bold">
                   {questionBank.solved}
                 </p>
@@ -175,9 +161,16 @@ export default function DashboardClient() {
 
             <div className="mt-5">
               <div className="flex justify-between text-xs font-medium text-gray-500">
-                <span>{questionCompletionPercentage}% complete</span>
-                <span>{questionBank.totalQuestions} total</span>
+                <span>
+                  {questionCompletionPercentage}%
+                  complete
+                </span>
+
+                <span>
+                  {questionBank.totalQuestions} total
+                </span>
               </div>
+
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
                 <div
                   className="h-full rounded-full bg-emerald-600"
@@ -186,6 +179,7 @@ export default function DashboardClient() {
                   }}
                 />
               </div>
+
               <p className="mt-3 text-sm text-gray-500">
                 Across Mu, Alpha, and Theta
               </p>
@@ -198,6 +192,7 @@ export default function DashboardClient() {
                 <p className="text-sm font-medium text-gray-500">
                   Bookmarked
                 </p>
+
                 <p className="mt-2 text-3xl font-bold">
                   {questionBank.bookmarked}
                 </p>
@@ -209,7 +204,8 @@ export default function DashboardClient() {
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              Questions saved for review and focused practice.
+              Questions saved for review and focused
+              practice.
             </p>
 
             <Link
@@ -227,6 +223,7 @@ export default function DashboardClient() {
                 <p className="text-sm font-medium text-gray-500">
                   Multiplayer Rank
                 </p>
+
                 <p className="mt-2 text-3xl font-bold">
                   {multiplayer.rank}
                 </p>
@@ -238,7 +235,8 @@ export default function DashboardClient() {
             </div>
 
             <p className="mt-5 text-sm leading-6 text-gray-500">
-              Ranking unlocks after competitive multiplayer launches.
+              Ranking unlocks after competitive
+              multiplayer launches.
             </p>
 
             <span className="mt-4 inline-flex rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-600">
@@ -255,10 +253,13 @@ export default function DashboardClient() {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold">Trainer</h2>
+            <h2 className="text-2xl font-bold">
+              Trainer
+            </h2>
+
             <p className="mt-1 text-gray-600">
-              Practice continuously, improve accuracy, and increase
-              your level.
+              Practice continuously, improve accuracy,
+              and increase your level.
             </p>
           </div>
         </div>
@@ -269,14 +270,17 @@ export default function DashboardClient() {
             value={`Level ${level.level}`}
             detail={`${level.progress} / ${LEVEL_PROGRESS_GOAL} progress`}
           />
+
           <StatCard
             label="Sessions Completed"
             value={trainer.sessionsCompleted}
           />
+
           <StatCard
             label="Questions Answered"
             value={trainer.questionsAnswered}
           />
+
           <StatCard
             label="Overall Accuracy"
             value={`${trainer.accuracy}%`}
@@ -290,6 +294,7 @@ export default function DashboardClient() {
             <h2 className="text-2xl font-bold">
               Recent Trainer Sessions
             </h2>
+
             <p className="mt-1 text-gray-600">
               Your five most recent completed sessions.
             </p>
@@ -302,13 +307,20 @@ export default function DashboardClient() {
 
         {recentTrainerSessions.length === 0 ? (
           <div className="mt-6 rounded-xl border border-dashed bg-gray-50 px-6 py-10 text-center">
-            <Target className="mx-auto text-gray-400" size={30} />
+            <Target
+              className="mx-auto text-gray-400"
+              size={30}
+            />
+
             <p className="mt-3 font-semibold">
               No Trainer sessions yet
             </p>
+
             <p className="mt-1 text-sm text-gray-500">
-              Complete a session to begin building your history.
+              Complete a session to begin building
+              your history.
             </p>
+
             <Link
               href="/practice/trainer"
               className="mt-5 inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white"
@@ -319,57 +331,85 @@ export default function DashboardClient() {
           </div>
         ) : (
           <div className="mt-6 space-y-3">
-            {recentTrainerSessions.map((session) => {
-              const stats = calculateTrainerStats(session.results);
-              const sessionScore =
-                stats.correct - stats.incorrect - stats.giveUps;
+            {recentTrainerSessions.map(
+              (session) => {
+                const stats =
+                  calculateTrainerStats(
+                    session.results
+                  );
 
-              return (
-                <article
-                  key={session.id}
-                  className="rounded-xl border p-4 transition hover:bg-gray-50"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="font-bold">
-                        {session.division} Division
-                      </p>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {new Date(session.endedAt).toLocaleString()}
-                      </p>
+                const sessionScore =
+                  stats.correct -
+                  stats.incorrect -
+                  stats.giveUps;
+
+                return (
+                  <article
+                    key={session.id}
+                    className="rounded-xl border p-4 transition hover:bg-gray-50"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <p className="font-bold">
+                          {session.division} Division
+                        </p>
+
+                        <p className="mt-1 text-sm text-gray-500">
+                          {new Date(
+                            session.endedAt
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+
+                      <div className="text-right">
+                        <p className="font-semibold">
+                          {stats.accuracy}% Accuracy
+                        </p>
+
+                        <p className="mt-1 text-sm text-gray-500">
+                          Score:{" "}
+                          {sessionScore > 0
+                            ? `+${sessionScore}`
+                            : sessionScore}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        {stats.accuracy}% Accuracy
-                      </p>
-                      <p className="mt-1 text-sm text-gray-500">
-                        Score: {sessionScore > 0 ? `+${sessionScore}` : sessionScore}
-                      </p>
+                    <div className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                      <SessionMetric
+                        label="Questions"
+                        value={
+                          stats.questionsAnswered
+                        }
+                      />
+
+                      <SessionMetric
+                        label="Correct"
+                        value={stats.correct}
+                      />
+
+                      <SessionMetric
+                        label="Incorrect"
+                        value={stats.incorrect}
+                      />
+
+                      <SessionMetric
+                        label="Gave Up"
+                        value={stats.giveUps}
+                      />
                     </div>
-                  </div>
 
-                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-                    <SessionMetric
-                      label="Questions"
-                      value={stats.questionsAnswered}
-                    />
-                    <SessionMetric label="Correct" value={stats.correct} />
-                    <SessionMetric
-                      label="Incorrect"
-                      value={stats.incorrect}
-                    />
-                    <SessionMetric label="Gave Up" value={stats.giveUps} />
-                  </div>
-
-                  <div className="mt-4 border-t pt-4 text-sm text-gray-500">
-                    Level {session.startingLevel.level}
-                    {" → "}
-                    Level {session.endingLevel.level}
-                  </div>
-                </article>
-              );
-            })}
+                    <div className="mt-4 border-t pt-4 text-sm text-gray-500">
+                      Level{" "}
+                      {session.startingLevel.level}
+                      {" → "}
+                      Level{" "}
+                      {session.endingLevel.level}
+                    </div>
+                  </article>
+                );
+              }
+            )}
           </div>
         )}
       </section>
@@ -382,9 +422,13 @@ export default function DashboardClient() {
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold">Question Bank</h2>
+              <h2 className="text-2xl font-bold">
+                Question Bank
+              </h2>
+
               <p className="mt-1 text-gray-600">
-                Track solved, attempted, new, and bookmarked questions.
+                Track solved, attempted, new, and
+                bookmarked questions.
               </p>
             </div>
           </div>
@@ -399,10 +443,25 @@ export default function DashboardClient() {
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Solved" value={questionBank.solved} />
-          <StatCard label="Attempted" value={questionBank.attempted} />
-          <StatCard label="New" value={questionBank.newQuestions} />
-          <StatCard label="Bookmarked" value={questionBank.bookmarked} />
+          <StatCard
+            label="Solved"
+            value={questionBank.solved}
+          />
+
+          <StatCard
+            label="Attempted"
+            value={questionBank.attempted}
+          />
+
+          <StatCard
+            label="New"
+            value={questionBank.newQuestions}
+          />
+
+          <StatCard
+            label="Bookmarked"
+            value={questionBank.bookmarked}
+          />
         </div>
       </section>
 
@@ -415,36 +474,56 @@ export default function DashboardClient() {
 
             <div>
               <div className="flex flex-wrap items-center gap-3">
-                <h2 className="text-2xl font-bold">Multiplayer</h2>
+                <h2 className="text-2xl font-bold">
+                  Multiplayer
+                </h2>
+
                 <span className="rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-600">
                   Coming Soon
                 </span>
               </div>
+
               <p className="mt-1 text-gray-600">
-                Compete against multiple players and earn a rank.
+                Compete against multiple players and
+                earn a rank.
               </p>
             </div>
           </div>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <StatCard label="Rank" value={multiplayer.rank} muted />
+          <StatCard
+            label="Rank"
+            value={multiplayer.rank}
+            muted
+          />
+
           <StatCard
             label="Rating"
             value={multiplayer.rating ?? "—"}
             muted
           />
+
           <StatCard
             label="Matches Played"
             value={multiplayer.matchesPlayed}
             muted
           />
-          <StatCard label="Wins" value={multiplayer.wins} muted />
+
           <StatCard
-            label="Average Placement"
-            value={multiplayer.averagePlacement ?? "—"}
+            label="Wins"
+            value={multiplayer.wins}
             muted
           />
+
+          <StatCard
+            label="Average Placement"
+            value={
+              multiplayer.averagePlacement ?? "—"
+            }
+            muted
+          />
+
           <StatCard
             label="Current Streak"
             value={multiplayer.currentStreak}
@@ -453,47 +532,5 @@ export default function DashboardClient() {
         </div>
       </section>
     </main>
-  );
-}
-
-interface StatCardProps {
-  label: string;
-  value: string | number;
-  detail?: string;
-  muted?: boolean;
-}
-
-function StatCard({
-  label,
-  value,
-  detail,
-  muted = false,
-}: StatCardProps) {
-  return (
-    <div
-      className={`rounded-xl border p-5 ${
-        muted ? "bg-white/70" : "bg-white shadow-sm"
-      }`}
-    >
-      <p className="text-sm font-medium text-gray-500">{label}</p>
-      <p className="mt-2 text-2xl font-bold">{value}</p>
-      {detail ? (
-        <p className="mt-2 text-sm text-gray-500">{detail}</p>
-      ) : null}
-    </div>
-  );
-}
-
-interface SessionMetricProps {
-  label: string;
-  value: number;
-}
-
-function SessionMetric({ label, value }: SessionMetricProps) {
-  return (
-    <div className="rounded-lg bg-gray-50 px-3 py-2">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 font-bold">{value}</p>
-    </div>
   );
 }
