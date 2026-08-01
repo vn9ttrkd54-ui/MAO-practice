@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
-  Brain,
   Target,
   Trophy,
 } from "lucide-react";
@@ -14,6 +13,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import OverviewSection from "@/components/dashboard/OverviewSection";
 import SessionMetric from "@/components/dashboard/SessionMetric";
 import StatCard from "@/components/dashboard/StatCard";
+import TrainerSection from "@/components/dashboard/TrainerSection";
 import { getDashboardData } from "@/lib/dashboardService";
 import { calculateTrainerStats } from "@/lib/trainer";
 
@@ -66,47 +66,10 @@ export default function DashboardClient() {
         multiplayer={multiplayer}
       />
 
-      <section className="mt-12">
-        <div className="flex items-start gap-3">
-          <div className="rounded-xl bg-indigo-50 p-3 text-indigo-700">
-            <Brain size={24} />
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold">
-              Trainer
-            </h2>
-
-            <p className="mt-1 text-gray-600">
-              Practice continuously, improve accuracy,
-              and increase your level.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard
-            label="Current Level"
-            value={`Level ${level.level}`}
-            detail={`${level.progress} / 30 progress`}
-          />
-
-          <StatCard
-            label="Sessions Completed"
-            value={trainer.sessionsCompleted}
-          />
-
-          <StatCard
-            label="Questions Answered"
-            value={trainer.questionsAnswered}
-          />
-
-          <StatCard
-            label="Overall Accuracy"
-            value={`${trainer.accuracy}%`}
-          />
-        </div>
-      </section>
+      <TrainerSection
+        level={level}
+        trainer={trainer}
+      />
 
       <section className="mt-10 rounded-2xl border bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">
