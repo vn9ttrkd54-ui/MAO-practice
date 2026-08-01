@@ -1,50 +1,56 @@
 "use client";
 
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
-  useEffect,
-  useState,
-} from "react";
-
-import {
-  Trophy,
-  Brain,
+  ArrowRight,
+  Bookmark,
   BookOpen,
+  Brain,
+  CheckCircle2,
+  Lock,
+  Target,
+  Trophy,
 } from "lucide-react";
 
-import {
-  getDashboardData,
-} from "@/lib/dashboardService";
+import { getDashboardData } from "@/lib/dashboardService";
+import { calculateTrainerStats } from "@/lib/trainer";
 
-import {
-  calculateTrainerStats,
-} from "@/lib/trainer";
+import type { DashboardData } from "@/lib/dashboardService";
 
-import type {
-  DashboardData,
-} from "@/lib/dashboardService";
+const LEVEL_PROGRESS_GOAL = 30;
+
+function getPercentage(value: number, total: number) {
+  if (total <= 0) {
+    return 0;
+  }
+
+  return Math.min(100, Math.round((value / total) * 100));
+}
 
 export default function DashboardClient() {
-  const [
-    dashboardData,
-    setDashboardData,
-  ] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] =
+    useState<DashboardData | null>(null);
 
   useEffect(() => {
-    setDashboardData(
-      getDashboardData()
-    );
+    setDashboardData(getDashboardData());
   }, []);
 
   if (!dashboardData) {
     return (
-      <main className="max-w-5xl mx-auto p-8">
-        <h1 className="text-4xl font-bold">
-          Dashboard
-        </h1>
-
-        <p className="mt-6 text-gray-500">
-          Loading your progress...
-        </p>
+      <main className="mx-auto min-h-[60vh] max-w-6xl px-6 py-10 sm:px-8">
+        <div className="animate-pulse">
+          <div className="h-10 w-52 rounded-lg bg-gray-200" />
+          <div className="mt-4 h-5 w-full max-w-xl rounded bg-gray-100" />
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[0, 1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="h-40 rounded-2xl border bg-gray-50"
+              />
+            ))}
+          </div>
+        </div>
       </main>
     );
   }
@@ -57,416 +63,437 @@ export default function DashboardClient() {
     recentTrainerSessions,
   } = dashboardData;
 
+  const levelPercentage = getPercentage(
+    level.progress,
+    LEVEL_PROGRESS_GOAL
+  );
+
+  const questionCompletionPercentage = getPercentage(
+    questionBank.solved,
+    questionBank.totalQuestions
+  );
+
   return (
-    <main className="max-w-5xl mx-auto p-8">
-      <h1 className="text-4xl font-bold">
-        Dashboard
-      </h1>
-
-      <p className="mt-3 text-gray-600">
-        Review your progress, practice activity,
-        and competitive status.
-      </p>
-
-      <section className="mt-8">
-        <h2 className="text-2xl font-bold">
-          Overall Progress
-        </h2>
-
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Trainer Level
+    <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8 lg:py-14">
+      <section className="overflow-hidden rounded-3xl border bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-6 py-8 text-white shadow-sm sm:px-8 sm:py-10">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">
+              Your MAO Progress
             </p>
 
-            <p className="mt-1 text-3xl font-bold">
-              Level {level.level}
-            </p>
+            <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
+              Dashboard
+            </h1>
 
-            <p className="mt-2 text-sm text-gray-500">
-              {level.progress} / 30 to Level{" "}
-              {level.level + 1}
+            <p className="mt-4 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
+              Continue training, review your question-bank progress,
+              and prepare for future competitive play.
             </p>
           </div>
 
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Multiplayer Rank
-            </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/practice/trainer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-slate-950 transition hover:bg-slate-100"
+            >
+              Start Training
+              <ArrowRight size={18} />
+            </Link>
 
-            <p className="mt-1 text-3xl font-bold">
-              {multiplayer.rank}
-            </p>
-
-            <p className="mt-2 text-sm text-gray-500">
-              Competitive mode coming soon
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Questions Solved
-            </p>
-
-            <p className="mt-1 text-3xl font-bold">
-              {questionBank.solved}
-            </p>
-
-            <p className="mt-2 text-sm text-gray-500">
-              {questionBank.totalQuestions} total
-              questions
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Bookmarked
-            </p>
-
-            <p className="mt-1 text-3xl font-bold">
-              {questionBank.bookmarked}
-            </p>
-
-            <p className="mt-2 text-sm text-gray-500">
-              Saved Question Bank questions
-            </p>
+            <Link
+              href="/practice/question-bank"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 px-5 py-3 font-semibold text-white transition hover:bg-white/10"
+            >
+              Open Question Bank
+              <BookOpen size={18} />
+            </Link>
           </div>
         </div>
-      </section>
-
-      <section className="mt-10 border rounded-xl p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="rounded-lg border p-3">
-              <Trophy size={24} />
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold">
-                Multiplayer
-              </h2>
-
-              <p className="mt-1 text-gray-600">
-                Compete against multiple players
-                and earn a competitive rank.
-              </p>
-            </div>
-          </div>
-
-          <span className="rounded-full border px-4 py-2 text-sm font-semibold">
-            Coming Soon
-          </span>
-        </div>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Rank
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {multiplayer.rank}
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Rating
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {multiplayer.rating ?? "—"}
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Matches Played
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {multiplayer.matchesPlayed}
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Wins
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {multiplayer.wins}
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Average Placement
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {multiplayer.averagePlacement ??
-                "—"}
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Current Streak
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {multiplayer.currentStreak}
-            </p>
-          </div>
-        </div>
-
-        <p className="mt-6 text-sm text-gray-500">
-          Ranking and rating calculations will be
-          added after the multiplayer match system
-          is designed.
-        </p>
       </section>
 
       <section className="mt-10">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+            Overview
+          </p>
+          <h2 className="mt-1 text-2xl font-bold tracking-tight">
+            Overall Progress
+          </h2>
+        </div>
+
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <article className="rounded-2xl border bg-white p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Trainer Level
+                </p>
+                <p className="mt-2 text-3xl font-bold">
+                  Level {level.level}
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-indigo-50 p-3 text-indigo-700">
+                <Brain size={22} />
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <div className="flex justify-between text-xs font-medium text-gray-500">
+                <span>{level.progress} progress</span>
+                <span>{LEVEL_PROGRESS_GOAL}</span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
+                <div
+                  className="h-full rounded-full bg-indigo-600"
+                  style={{ width: `${levelPercentage}%` }}
+                />
+              </div>
+              <p className="mt-3 text-sm text-gray-500">
+                {LEVEL_PROGRESS_GOAL - level.progress} more to Level{" "}
+                {level.level + 1}
+              </p>
+            </div>
+          </article>
+
+          <article className="rounded-2xl border bg-white p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Questions Solved
+                </p>
+                <p className="mt-2 text-3xl font-bold">
+                  {questionBank.solved}
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700">
+                <CheckCircle2 size={22} />
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <div className="flex justify-between text-xs font-medium text-gray-500">
+                <span>{questionCompletionPercentage}% complete</span>
+                <span>{questionBank.totalQuestions} total</span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100">
+                <div
+                  className="h-full rounded-full bg-emerald-600"
+                  style={{
+                    width: `${questionCompletionPercentage}%`,
+                  }}
+                />
+              </div>
+              <p className="mt-3 text-sm text-gray-500">
+                Across Mu, Alpha, and Theta
+              </p>
+            </div>
+          </article>
+
+          <article className="rounded-2xl border bg-white p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Bookmarked
+                </p>
+                <p className="mt-2 text-3xl font-bold">
+                  {questionBank.bookmarked}
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-amber-50 p-3 text-amber-700">
+                <Bookmark size={22} />
+              </div>
+            </div>
+
+            <p className="mt-5 text-sm leading-6 text-gray-500">
+              Questions saved for review and focused practice.
+            </p>
+
+            <Link
+              href="/practice/question-bank"
+              className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gray-900 hover:underline"
+            >
+              Review questions
+              <ArrowRight size={15} />
+            </Link>
+          </article>
+
+          <article className="rounded-2xl border bg-gray-50 p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Multiplayer Rank
+                </p>
+                <p className="mt-2 text-3xl font-bold">
+                  {multiplayer.rank}
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-gray-200 p-3 text-gray-600">
+                <Lock size={22} />
+              </div>
+            </div>
+
+            <p className="mt-5 text-sm leading-6 text-gray-500">
+              Ranking unlocks after competitive multiplayer launches.
+            </p>
+
+            <span className="mt-4 inline-flex rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-600">
+              Coming Soon
+            </span>
+          </article>
+        </div>
+      </section>
+
+      <section className="mt-12">
         <div className="flex items-start gap-3">
-          <div className="rounded-lg border p-3">
+          <div className="rounded-xl bg-indigo-50 p-3 text-indigo-700">
             <Brain size={24} />
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold">
-              Trainer
-            </h2>
-
+            <h2 className="text-2xl font-bold">Trainer</h2>
             <p className="mt-1 text-gray-600">
-              Practice continuously, improve your
-              accuracy, and increase your level.
+              Practice continuously, improve accuracy, and increase
+              your level.
             </p>
           </div>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Current Level
-            </p>
-
-            <p className="mt-1 text-3xl font-bold">
-              Level {level.level}
-            </p>
-
-            <p className="mt-2 text-sm text-gray-500">
-              {level.progress} / 30 progress
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Sessions Completed
-            </p>
-
-            <p className="mt-1 text-3xl font-bold">
-              {trainer.sessionsCompleted}
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Questions Answered
-            </p>
-
-            <p className="mt-1 text-3xl font-bold">
-              {trainer.questionsAnswered}
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-5">
-            <p className="text-sm text-gray-500">
-              Overall Accuracy
-            </p>
-
-            <p className="mt-1 text-3xl font-bold">
-              {trainer.accuracy}%
-            </p>
-          </div>
+          <StatCard
+            label="Current Level"
+            value={`Level ${level.level}`}
+            detail={`${level.progress} / ${LEVEL_PROGRESS_GOAL} progress`}
+          />
+          <StatCard
+            label="Sessions Completed"
+            value={trainer.sessionsCompleted}
+          />
+          <StatCard
+            label="Questions Answered"
+            value={trainer.questionsAnswered}
+          />
+          <StatCard
+            label="Overall Accuracy"
+            value={`${trainer.accuracy}%`}
+          />
         </div>
       </section>
 
-      <section className="mt-10 border rounded-xl p-6">
+      <section className="mt-10 rounded-2xl border bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold">
               Recent Trainer Sessions
             </h2>
-
             <p className="mt-1 text-gray-600">
-              Your five most recent MAO Trainer
-              sessions.
+              Your five most recent completed sessions.
             </p>
           </div>
 
-          <p className="font-semibold">
+          <p className="rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold">
             {trainer.sessionsCompleted} Total
           </p>
         </div>
 
         {recentTrainerSessions.length === 0 ? (
-          <p className="mt-6 text-gray-500">
-            No Trainer sessions have been
-            completed yet.
-          </p>
+          <div className="mt-6 rounded-xl border border-dashed bg-gray-50 px-6 py-10 text-center">
+            <Target className="mx-auto text-gray-400" size={30} />
+            <p className="mt-3 font-semibold">
+              No Trainer sessions yet
+            </p>
+            <p className="mt-1 text-sm text-gray-500">
+              Complete a session to begin building your history.
+            </p>
+            <Link
+              href="/practice/trainer"
+              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white"
+            >
+              Start Training
+              <ArrowRight size={16} />
+            </Link>
+          </div>
         ) : (
-          <div className="mt-6 space-y-4">
-            {recentTrainerSessions.map(
-              (session) => {
-                const stats =
-                  calculateTrainerStats(
-                    session.results
-                  );
+          <div className="mt-6 space-y-3">
+            {recentTrainerSessions.map((session) => {
+              const stats = calculateTrainerStats(session.results);
+              const sessionScore =
+                stats.correct - stats.incorrect - stats.giveUps;
 
-                const sessionScore =
-                  stats.correct -
-                  stats.incorrect -
-                  stats.giveUps;
-
-                return (
-                  <article
-                    key={session.id}
-                    className="border rounded-lg p-4"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-4">
-                      <div>
-                        <p className="font-bold">
-                          {session.division} Division
-                        </p>
-
-                        <p className="mt-1 text-sm text-gray-500">
-                          {new Date(
-                            session.endedAt
-                          ).toLocaleString()}
-                        </p>
-                      </div>
-
-                      <div className="text-right">
-                        <p className="font-semibold">
-                          {stats.accuracy}% Accuracy
-                        </p>
-
-                        <p className="mt-1 text-sm text-gray-500">
-                          Score:{" "}
-                          {sessionScore > 0
-                            ? `+${sessionScore}`
-                            : sessionScore}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-6 text-sm">
-                      <p>
-                        Questions:{" "}
-                        <strong>
-                          {stats.questionsAnswered}
-                        </strong>
+              return (
+                <article
+                  key={session.id}
+                  className="rounded-xl border p-4 transition hover:bg-gray-50"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <p className="font-bold">
+                        {session.division} Division
                       </p>
-
-                      <p>
-                        Correct:{" "}
-                        <strong>
-                          {stats.correct}
-                        </strong>
-                      </p>
-
-                      <p>
-                        Incorrect:{" "}
-                        <strong>
-                          {stats.incorrect}
-                        </strong>
-                      </p>
-
-                      <p>
-                        Gave Up:{" "}
-                        <strong>
-                          {stats.giveUps}
-                        </strong>
+                      <p className="mt-1 text-sm text-gray-500">
+                        {new Date(session.endedAt).toLocaleString()}
                       </p>
                     </div>
 
-                    <div className="mt-4 border-t pt-4 text-sm text-gray-500">
-                      Level{" "}
-                      {session.startingLevel.level}
-                      {" → "}
-                      Level{" "}
-                      {session.endingLevel.level}
+                    <div className="text-right">
+                      <p className="font-semibold">
+                        {stats.accuracy}% Accuracy
+                      </p>
+                      <p className="mt-1 text-sm text-gray-500">
+                        Score: {sessionScore > 0 ? `+${sessionScore}` : sessionScore}
+                      </p>
                     </div>
-                  </article>
-                );
-              }
-            )}
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+                    <SessionMetric
+                      label="Questions"
+                      value={stats.questionsAnswered}
+                    />
+                    <SessionMetric label="Correct" value={stats.correct} />
+                    <SessionMetric
+                      label="Incorrect"
+                      value={stats.incorrect}
+                    />
+                    <SessionMetric label="Gave Up" value={stats.giveUps} />
+                  </div>
+
+                  <div className="mt-4 border-t pt-4 text-sm text-gray-500">
+                    Level {session.startingLevel.level}
+                    {" → "}
+                    Level {session.endingLevel.level}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
 
-      <section className="mt-10 border rounded-xl p-6">
-        <div className="flex items-start gap-3">
-          <div className="rounded-lg border p-3">
-            <BookOpen size={24} />
+      <section className="mt-10 rounded-2xl border bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-5">
+          <div className="flex items-start gap-3">
+            <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700">
+              <BookOpen size={24} />
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold">Question Bank</h2>
+              <p className="mt-1 text-gray-600">
+                Track solved, attempted, new, and bookmarked questions.
+              </p>
+            </div>
           </div>
 
-          <div>
-            <h2 className="text-2xl font-bold">
-              Question Bank
-            </h2>
-
-            <p className="mt-1 text-gray-600">
-              Track your solved, attempted, new,
-              and bookmarked questions.
-            </p>
-          </div>
+          <Link
+            href="/practice/question-bank"
+            className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition hover:bg-gray-50"
+          >
+            Open Question Bank
+            <ArrowRight size={16} />
+          </Link>
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Solved
-            </p>
+          <StatCard label="Solved" value={questionBank.solved} />
+          <StatCard label="Attempted" value={questionBank.attempted} />
+          <StatCard label="New" value={questionBank.newQuestions} />
+          <StatCard label="Bookmarked" value={questionBank.bookmarked} />
+        </div>
+      </section>
 
-            <p className="mt-1 text-2xl font-bold">
-              {questionBank.solved}
-            </p>
+      <section className="mt-10 rounded-2xl border bg-gray-50 p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="rounded-xl bg-white p-3 text-gray-600 shadow-sm">
+              <Trophy size={24} />
+            </div>
+
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <h2 className="text-2xl font-bold">Multiplayer</h2>
+                <span className="rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-600">
+                  Coming Soon
+                </span>
+              </div>
+              <p className="mt-1 text-gray-600">
+                Compete against multiple players and earn a rank.
+              </p>
+            </div>
           </div>
+        </div>
 
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Attempted
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {questionBank.attempted}
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              New
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {questionBank.newQuestions}
-            </p>
-          </div>
-
-          <div className="border rounded-lg p-5">
-            <p className="text-sm text-gray-500">
-              Bookmarked
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {questionBank.bookmarked}
-            </p>
-          </div>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <StatCard label="Rank" value={multiplayer.rank} muted />
+          <StatCard
+            label="Rating"
+            value={multiplayer.rating ?? "—"}
+            muted
+          />
+          <StatCard
+            label="Matches Played"
+            value={multiplayer.matchesPlayed}
+            muted
+          />
+          <StatCard label="Wins" value={multiplayer.wins} muted />
+          <StatCard
+            label="Average Placement"
+            value={multiplayer.averagePlacement ?? "—"}
+            muted
+          />
+          <StatCard
+            label="Current Streak"
+            value={multiplayer.currentStreak}
+            muted
+          />
         </div>
       </section>
     </main>
+  );
+}
+
+interface StatCardProps {
+  label: string;
+  value: string | number;
+  detail?: string;
+  muted?: boolean;
+}
+
+function StatCard({
+  label,
+  value,
+  detail,
+  muted = false,
+}: StatCardProps) {
+  return (
+    <div
+      className={`rounded-xl border p-5 ${
+        muted ? "bg-white/70" : "bg-white shadow-sm"
+      }`}
+    >
+      <p className="text-sm font-medium text-gray-500">{label}</p>
+      <p className="mt-2 text-2xl font-bold">{value}</p>
+      {detail ? (
+        <p className="mt-2 text-sm text-gray-500">{detail}</p>
+      ) : null}
+    </div>
+  );
+}
+
+interface SessionMetricProps {
+  label: string;
+  value: number;
+}
+
+function SessionMetric({ label, value }: SessionMetricProps) {
+  return (
+    <div className="rounded-lg bg-gray-50 px-3 py-2">
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className="mt-1 font-bold">{value}</p>
+    </div>
   );
 }
