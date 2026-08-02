@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createClient } from "@/lib/supabase/client";
+import { signUp } from "@/lib/auth/authService";
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
 const MIN_PASSWORD_LENGTH = 8;
@@ -52,66 +52,14 @@ export default function SignupForm() {
     setIsSubmitting(true);
 
     try {
-      const supabase = createClient();
-
-      const {
-        data: isUsernameAvailable,
-        error: usernameCheckError,
-      } = await supabase.rpc("is_username_available", {
-        candidate_username: normalizedUsername,
-      });
-
-      if (usernameCheckError) {
-        setErrorMessage(
-          "We could not check that username right now. Please try again."
-        );
-        return;
-      }
-
-      if (!isUsernameAvailable) {
-        setErrorMessage(
-          "That username is already taken. Try a different username."
-        );
-        return;
-      }
-
-      const { data, error } = await supabase.auth.signUp({
+      const result = await signUp({
+        username: normalizedUsername,
         email: normalizedEmail,
         password,
-        options: {
-          data: {
-            username: normalizedUsername,
-          },
-        },
       });
 
-      if (error) {
-        const message = error.message.toLowerCase();
-
-        if (
-          message.includes("database error") ||
-          message === "{}" ||
-          message.includes("username")
-        ) {
-          setErrorMessage(
-            "That username is already taken. Try a different username."
-          );
-        } else if (
-          message.includes("already registered") ||
-          message.includes("already exists")
-        ) {
-          setErrorMessage("An account already exists with that email.");
-        } else {
-          setErrorMessage(error.message || "Unable to create account.");
-        }
-
-        return;
-      }
-
-      if (!data.session) {
-        setErrorMessage(
-          "Account created, but immediate sign-in is disabled. Check the Supabase email confirmation setting."
-        );
+      if (!result.success) {
+        setErrorMessage(result.error ?? "Unable to create the account.");
         return;
       }
 
