@@ -29,12 +29,12 @@ import {
 import {
   saveQuestionAttempt,
   saveQuestionGiveUp,
-} from "@/lib/progress";
+} from "@/lib/services/progressService";
 
 import {
   applyTrainerResult,
   getLevelProgress,
-} from "@/lib/levels";
+} from "@/lib/services/levelService";
 
 import {
   saveTrainerSession,
@@ -46,6 +46,11 @@ import TrainerQuestion from "@/components/trainer/TrainerQuestion";
 import EndSessionDialog from "@/components/trainer/EndSessionDialog";
 import TrainerSummary from "@/components/trainer/TrainerSummary";
 import LevelUpBanner from "@/components/trainer/LevelUpBanner";
+
+const DEFAULT_LEVEL: LevelProgress = {
+  level: 1,
+  progress: 0,
+};
 
 export default function TrainerClient() {
   const router = useRouter();
@@ -62,7 +67,7 @@ export default function TrainerClient() {
     sessionStarted,
     setSessionStarted,
   ] = useState(false);
-  
+
   const [
     levelUpLevel,
     setLevelUpLevel,
@@ -74,6 +79,9 @@ export default function TrainerClient() {
   ] = useState<AnswerChoice | null>(null);
 
   const [submitted, setSubmitted] =
+    useState(false);
+
+  const [isSaving, setIsSaving] =
     useState(false);
 
   const [startTime, setStartTime] =
@@ -103,33 +111,48 @@ export default function TrainerClient() {
   const [
     levelProgress,
     setLevelProgress,
-  ] = useState<LevelProgress>({
-    level: 1,
-    progress: 0,
-  });
+  ] = useState<LevelProgress>(DEFAULT_LEVEL);
 
   const [
     startingLevelProgress,
     setStartingLevelProgress,
-  ] = useState<LevelProgress>({
-    level: 1,
-    progress: 0,
-  });
+  ] = useState<LevelProgress>(DEFAULT_LEVEL);
 
   useEffect(() => {
-    const savedLevel =
-        getLevelProgress();
+    let cancelled = false;
 
-    setLevelProgress(savedLevel);
-    setStartingLevelProgress(savedLevel);
+    async function loadLevel() {
+      try {
+        const savedLevel =
+          await getLevelProgress();
+
+        if (!cancelled) {
+          setLevelProgress(savedLevel);
+          setStartingLevelProgress(savedLevel);
+        }
+      } catch {
+        if (!cancelled) {
+          setLevelProgress(DEFAULT_LEVEL);
+          setStartingLevelProgress(DEFAULT_LEVEL);
+        }
+      }
+    }
+
+    void loadLevel();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const sessionStats =
-    calculateTrainerStats(
-      results
-    );
+    calculateTrainerStats(results);
 
-  const handleStartSession = () => {
+  const handleStartSession = async () => {
+    if (isSaving) {
+      return;
+    }
+
     const firstQuestion =
       getNextTrainerQuestion({
         division,
@@ -144,181 +167,176 @@ export default function TrainerClient() {
       return;
     }
 
-    const currentLevel =
-      getLevelProgress();
+    setIsSaving(true);
 
-    setCurrentQuestion(
-      firstQuestion
-    );
+    try {
+      const currentLevel =
+        await getLevelProgress();
 
-    setSelectedAnswer(null);
-    setSubmitted(false);
-    setResults([]);
-    const startedAt = Date.now();
+      setCurrentQuestion(firstQuestion);
+      setSelectedAnswer(null);
+      setSubmitted(false);
+      setResults([]);
 
-    setStartTime(startedAt);
-    setSessionStartedAt(startedAt);
+      const startedAt = Date.now();
 
-    setLevelProgress(
-      currentLevel
-    );
-
-    setStartingLevelProgress(
-      currentLevel
-    );
-
-    setSessionStarted(true);
-    setShowSummary(false);
-    setShowEndDialog(false);
-    setStartError(null);
+      setStartTime(startedAt);
+      setSessionStartedAt(startedAt);
+      setLevelProgress(currentLevel);
+      setStartingLevelProgress(currentLevel);
+      setSessionStarted(true);
+      setShowSummary(false);
+      setShowEndDialog(false);
+      setStartError(null);
+    } catch {
+      setStartError(
+        "Unable to load your level right now. Please try again."
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       !currentQuestion ||
       !selectedAnswer ||
-      submitted
+      submitted ||
+      isSaving
     ) {
       return;
     }
 
     const timeSpent = Math.floor(
-      (Date.now() - startTime) /
-        1000
+      (Date.now() - startTime) / 1000
     );
 
     const isCorrect =
-      selectedAnswer ===
-      currentQuestion.answer;
+      selectedAnswer === currentQuestion.answer;
 
-    saveQuestionAttempt(
-      currentQuestion.id,
-      isCorrect,
-      timeSpent
-    );
+    setIsSaving(true);
 
-    const levelChange =
-      applyTrainerResult(
-        isCorrect
+    try {
+      await saveQuestionAttempt(
+        currentQuestion.id,
+        isCorrect,
+        timeSpent
       );
 
-    setLevelProgress({
-      level:
-        levelChange.level,
+      const levelChange =
+        await applyTrainerResult(isCorrect);
 
-      progress:
-        levelChange.progress,
-    });
-    if (levelChange.leveledUp) {
-      setLevelUpLevel(
-          levelChange.level
-      );
-    }
+      setLevelProgress({
+        level: levelChange.level,
+        progress: levelChange.progress,
+      });
 
-    const newResult:
-      TrainerQuestionResult = {
-        questionId:
-          currentQuestion.id,
+      if (levelChange.leveledUp) {
+        setLevelUpLevel(levelChange.level);
+      }
 
-        questionNumber:
-          currentQuestion.number,
-
+      const newResult: TrainerQuestionResult = {
+        questionId: currentQuestion.id,
+        questionNumber: currentQuestion.number,
         selectedAnswer,
-
-        correctAnswer:
-          currentQuestion.answer,
-
+        correctAnswer: currentQuestion.answer,
         result: isCorrect
           ? "correct"
           : "incorrect",
       };
 
-    setResults(
-      (currentResults) => [
+      setResults((currentResults) => [
         ...currentResults,
         newResult,
-      ]
-    );
+      ]);
 
-    setSubmitted(true);
+      setSubmitted(true);
+    } catch {
+      setStartError(
+        "Unable to save this result. Please try again."
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleGiveUp = () => {
+  const handleGiveUp = async () => {
     if (
       !currentQuestion ||
-      submitted
+      submitted ||
+      isSaving
     ) {
       return;
     }
 
-    saveQuestionGiveUp(
-      currentQuestion.id
-    );
+    setIsSaving(true);
 
-    const levelChange =
-      applyTrainerResult(false);
+    try {
+      await saveQuestionGiveUp(
+        currentQuestion.id
+      );
 
-    setLevelProgress({
-      level:
-        levelChange.level,
+      const levelChange =
+        await applyTrainerResult(false);
 
-      progress:
-        levelChange.progress,
-    });
+      setLevelProgress({
+        level: levelChange.level,
+        progress: levelChange.progress,
+      });
 
-    const newResult:
-      TrainerQuestionResult = {
-        questionId:
-          currentQuestion.id,
-
-        questionNumber:
-          currentQuestion.number,
-
+      const newResult: TrainerQuestionResult = {
+        questionId: currentQuestion.id,
+        questionNumber: currentQuestion.number,
         selectedAnswer: null,
-
-        correctAnswer:
-          currentQuestion.answer,
-
+        correctAnswer: currentQuestion.answer,
         result: "give-up",
       };
 
-    setResults(
-      (currentResults) => [
+      setResults((currentResults) => [
         ...currentResults,
         newResult,
-      ]
-    );
+      ]);
 
-    setSelectedAnswer(null);
-    setSubmitted(true);
+      setSelectedAnswer(null);
+      setSubmitted(true);
+    } catch {
+      setStartError(
+        "Unable to save this result. Please try again."
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleNextQuestion = () => {
-    if (!currentQuestion) {
-        return;
+    if (!currentQuestion || isSaving) {
+      return;
     }
 
     const nextQuestion =
-        getNextTrainerQuestion({
+      getNextTrainerQuestion({
         division,
         previousQuestionId:
-            currentQuestion.id,
-        });
+          currentQuestion.id,
+      });
 
     if (!nextQuestion) {
-        setCurrentQuestion(null);
-        setShowSummary(true);
-        return;
+      setCurrentQuestion(null);
+      setShowSummary(true);
+      return;
     }
 
     setCurrentQuestion(nextQuestion);
     setSelectedAnswer(null);
     setSubmitted(false);
     setStartTime(Date.now());
+    setStartError(null);
   };
 
   const handleEndSession = () => {
-    setShowEndDialog(true);
+    if (!isSaving) {
+      setShowEndDialog(true);
+    }
   };
 
   const handleConfirmEndSession = () => {
@@ -332,8 +350,7 @@ export default function TrainerClient() {
         endedAt,
         startingLevel:
           startingLevelProgress,
-        endingLevel:
-          levelProgress,
+        endingLevel: levelProgress,
         results,
       });
     }
@@ -342,25 +359,21 @@ export default function TrainerClient() {
     setShowSummary(true);
   };
 
-  const handleStartNewSession =
-    () => {
-      setShowSummary(false);
-      setShowEndDialog(false);
-      setSessionStarted(false);
-      setCurrentQuestion(null);
-      setSessionStartedAt(null);
-      setSelectedAnswer(null);
-      setSubmitted(false);
-      setResults([]);
-      setStartError(null);
-    };
+  const handleStartNewSession = () => {
+    setShowSummary(false);
+    setShowEndDialog(false);
+    setSessionStarted(false);
+    setCurrentQuestion(null);
+    setSessionStartedAt(null);
+    setSelectedAnswer(null);
+    setSubmitted(false);
+    setResults([]);
+    setStartError(null);
+  };
 
-  const handleReturnToPractice =
-    () => {
-      router.push(
-        "/practice"
-      );
-    };
+  const handleReturnToPractice = () => {
+    router.push("/practice");
+  };
 
   if (!sessionStarted) {
     return (
@@ -371,7 +384,9 @@ export default function TrainerClient() {
           setDivision(newDivision);
           setStartError(null);
         }}
-        onStart={handleStartSession}
+        onStart={() => {
+          void handleStartSession();
+        }}
       />
     );
   }
@@ -379,27 +394,13 @@ export default function TrainerClient() {
   if (showSummary) {
     return (
       <TrainerSummary
-        division={
-          division
-        }
-        stats={
-          sessionStats
-        }
-        results={
-          results
-        }
-        startingLevel={
-          startingLevelProgress
-        }
-        endingLevel={
-          levelProgress
-        }
-        onStartNewSession={
-          handleStartNewSession
-        }
-        onReturnToPractice={
-          handleReturnToPractice
-        }
+        division={division}
+        stats={sessionStats}
+        results={results}
+        startingLevel={startingLevelProgress}
+        endingLevel={levelProgress}
+        onStartNewSession={handleStartNewSession}
+        onReturnToPractice={handleReturnToPractice}
       />
     );
   }
@@ -413,25 +414,14 @@ export default function TrainerClient() {
           </h1>
 
           <p className="mt-3 text-gray-600">
-            Every available question
-            in this division is
-            currently inside its
-            30-day cooldown.
+            Every available question in this division
+            is currently inside its 30-day cooldown.
           </p>
 
           <button
             type="button"
-            onClick={
-              handleStartNewSession
-            }
-            className="
-              mt-6
-              border
-              rounded-lg
-              px-5
-              py-3
-              hover:bg-gray-100
-            "
+            onClick={handleStartNewSession}
+            className="mt-6 border rounded-lg px-5 py-3 hover:bg-gray-100"
           >
             Choose Another Division
           </button>
@@ -442,88 +432,57 @@ export default function TrainerClient() {
 
   return (
     <main className="max-w-5xl mx-auto p-8">
+      {startError ? (
+        <div
+          role="alert"
+          className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          {startError}
+        </div>
+      ) : null}
+
       <TrainerHeader
-        division={
-          division
-        }
-        difficulty={
-          currentQuestion.difficulty
-        }
-        level={
-          levelProgress.level
-        }
-        levelProgress={
-          levelProgress.progress
-        }
-        correct={
-          sessionStats.correct
-        }
-        incorrect={
-          sessionStats.incorrect
-        }
-        giveUps={
-          sessionStats.giveUps
-        }
-        onEndSession={
-          handleEndSession
-        }
+        division={division}
+        difficulty={currentQuestion.difficulty}
+        level={levelProgress.level}
+        levelProgress={levelProgress.progress}
+        correct={sessionStats.correct}
+        incorrect={sessionStats.incorrect}
+        giveUps={sessionStats.giveUps}
+        onEndSession={handleEndSession}
       />
 
       <TrainerQuestion
-        question={
-          currentQuestion
-        }
-        selectedAnswer={
-          selectedAnswer
-        }
-        submitted={
-          submitted
-        }
-        onSelectAnswer={
-          setSelectedAnswer
-        }
-        onSubmit={
-          handleSubmit
-        }
-        onGiveUp={
-          handleGiveUp
-        }
-        onNextQuestion={
-          handleNextQuestion
-        }
+        question={currentQuestion}
+        selectedAnswer={selectedAnswer}
+        submitted={submitted || isSaving}
+        onSelectAnswer={setSelectedAnswer}
+        onSubmit={() => {
+          void handleSubmit();
+        }}
+        onGiveUp={() => {
+          void handleGiveUp();
+        }}
+        onNextQuestion={handleNextQuestion}
       />
 
       <EndSessionDialog
-        open={
-          showEndDialog
-        }
-        questionsAnswered={
-          sessionStats.questionsAnswered
-        }
-        correct={
-          sessionStats.correct
-        }
-        incorrect={
-          sessionStats.incorrect
-        }
-        giveUps={
-          sessionStats.giveUps
-        }
+        open={showEndDialog}
+        questionsAnswered={sessionStats.questionsAnswered}
+        correct={sessionStats.correct}
+        incorrect={sessionStats.incorrect}
+        giveUps={sessionStats.giveUps}
         onContinue={() =>
-          setShowEndDialog(
-            false
-          )
+          setShowEndDialog(false)
         }
-        onConfirmEnd={
-          handleConfirmEndSession
-        }
+        onConfirmEnd={handleConfirmEndSession}
       />
 
       <LevelUpBanner
         level={levelUpLevel ?? 1}
         open={levelUpLevel !== null}
         onClose={() =>
-            setLevelUpLevel(null)
+          setLevelUpLevel(null)
         }
       />
     </main>
