@@ -1,25 +1,23 @@
-import Link from "next/link";
+import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <main className="mx-auto max-w-xl p-8">
-      <h1 className="text-3xl font-bold">
-        Login
-      </h1>
+    <main className="mx-auto max-w-xl px-6 py-12 sm:px-8">
+      <section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-gray-500">
+          Welcome Back
+        </p>
 
-      <p className="mt-4 text-gray-600">
-        Login is coming in the next authentication pack.
-      </p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+          Log in to MAO
+        </h1>
 
-      <p className="mt-6 text-sm text-gray-600">
-        Need an account?{" "}
-        <Link
-          href="/signup"
-          className="font-semibold text-gray-950 hover:underline"
-        >
-          Create one now
-        </Link>
-      </p>
+        <p className="mt-3 text-gray-600">
+          Use your username and password to continue your saved progress.
+        </p>
+
+        <LoginForm />
+      </section>
     </main>
   );
 }
