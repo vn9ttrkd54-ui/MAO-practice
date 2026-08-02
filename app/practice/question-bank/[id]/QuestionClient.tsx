@@ -13,14 +13,14 @@ import {
 } from "@/lib/services/progressService";
 
 import {
+  isQuestionBookmarked,
+  toggleQuestionBookmark,
+} from "@/lib/services/bookmarkService";
+
+import {
   getNextQuestion,
   getPreviousQuestion,
 } from "@/lib/questions";
-
-import {
-  isQuestionBookmarked,
-  toggleQuestionBookmark,
-} from "@/lib/bookmarks";
 
 import QuestionHeader from "@/components/practice/QuestionHeader";
 import QuestionStats from "@/components/practice/QuestionStats";
@@ -54,6 +54,9 @@ export default function QuestionClient({
   const [isSaving, setIsSaving] =
     useState(false);
 
+  const [isBookmarkSaving, setIsBookmarkSaving] =
+    useState(false);
+
   const [startTime, setStartTime] =
     useState(Date.now());
 
@@ -69,30 +72,32 @@ export default function QuestionClient({
   useEffect(() => {
     let cancelled = false;
 
-    async function loadProgress() {
+    async function loadQuestionState() {
       try {
-        const savedProgress =
-          await getQuestionProgress(question.id);
+        const [savedProgress, savedBookmark] =
+          await Promise.all([
+            getQuestionProgress(question.id),
+            isQuestionBookmarked(question.id),
+          ]);
 
         if (!cancelled) {
           setProgress(savedProgress);
+          setBookmarked(savedBookmark);
         }
       } catch {
         if (!cancelled) {
           setProgress(EMPTY_PROGRESS);
+          setBookmarked(false);
         }
       }
     }
 
-    void loadProgress();
-
-    setBookmarked(
-      isQuestionBookmarked(question.id)
-    );
+    void loadQuestionState();
 
     setSelectedAnswer(null);
     setSubmitted(false);
     setIsSaving(false);
+    setIsBookmarkSaving(false);
     setStartTime(Date.now());
     setTimerReset((current) => current + 1);
 
@@ -172,13 +177,21 @@ export default function QuestionClient({
     );
   };
 
-  const handleBookmarkToggle = () => {
-    const updatedBookmark =
-      toggleQuestionBookmark(
-        question.id
-      );
+  const handleBookmarkToggle = async () => {
+    if (isBookmarkSaving) {
+      return;
+    }
 
-    setBookmarked(updatedBookmark);
+    setIsBookmarkSaving(true);
+
+    try {
+      const updatedBookmark =
+        await toggleQuestionBookmark(question.id);
+
+      setBookmarked(updatedBookmark);
+    } finally {
+      setIsBookmarkSaving(false);
+    }
   };
 
   return (
@@ -201,7 +214,9 @@ export default function QuestionClient({
 
         <BookmarkButton
           bookmarked={bookmarked}
-          onToggle={handleBookmarkToggle}
+          onToggle={() => {
+            void handleBookmarkToggle();
+          }}
         />
       </div>
 
