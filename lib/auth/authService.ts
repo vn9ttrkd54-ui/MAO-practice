@@ -119,3 +119,17 @@ export async function signInWithUsername({
 
   return { success: true };
 }
+
+export async function signOut(): Promise<AuthResult> {
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return {
+      success: false,
+      error: "Unable to log out. Please try again.",
+    };
+  }
+
+  return { success: true };
+}
