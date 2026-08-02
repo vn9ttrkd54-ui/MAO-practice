@@ -53,6 +53,28 @@ export default function SignupForm() {
 
     try {
       const supabase = createClient();
+
+      const {
+        data: isUsernameAvailable,
+        error: usernameCheckError,
+      } = await supabase.rpc("is_username_available", {
+        candidate_username: normalizedUsername,
+      });
+
+      if (usernameCheckError) {
+        setErrorMessage(
+          "We could not check that username right now. Please try again."
+        );
+        return;
+      }
+
+      if (!isUsernameAvailable) {
+        setErrorMessage(
+          "That username is already taken. Try a different username."
+        );
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email: normalizedEmail,
         password,
@@ -66,14 +88,21 @@ export default function SignupForm() {
       if (error) {
         const message = error.message.toLowerCase();
 
-        if (message.includes("database error")) {
+        if (
+          message.includes("database error") ||
+          message === "{}" ||
+          message.includes("username")
+        ) {
           setErrorMessage(
-            "That username may already be taken. Try a different username."
+            "That username is already taken. Try a different username."
           );
-        } else if (message.includes("already registered")) {
+        } else if (
+          message.includes("already registered") ||
+          message.includes("already exists")
+        ) {
           setErrorMessage("An account already exists with that email.");
         } else {
-          setErrorMessage(error.message);
+          setErrorMessage(error.message || "Unable to create account.");
         }
 
         return;
