@@ -10,15 +10,19 @@ import type { LevelProgress } from "@/types/level";
 async function getAuthenticatedUserId(): Promise<string> {
   const supabase = createClient();
   const {
-    data: { user },
+    data: { session },
     error,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getSession();
 
-  if (error || !user) {
+  if (error) {
+    throw new Error(`Unable to read authentication session: ${error.message}`);
+  }
+
+  if (!session?.user) {
     throw new Error("A signed-in user is required.");
   }
 
-  return user.id;
+  return session.user.id;
 }
 
 export const supabaseLevelStorage: LevelStorage = {
@@ -33,7 +37,7 @@ export const supabaseLevelStorage: LevelStorage = {
       .maybeSingle();
 
     if (error) {
-      throw error;
+      throw new Error(error.message);
     }
 
     if (!data) {
@@ -47,7 +51,7 @@ export const supabaseLevelStorage: LevelStorage = {
         });
 
       if (insertError) {
-        throw insertError;
+        throw new Error(insertError.message);
       }
 
       return initial;
@@ -74,7 +78,7 @@ export const supabaseLevelStorage: LevelStorage = {
       .eq("user_id", userId);
 
     if (error) {
-      throw error;
+      throw new Error(error.message);
     }
 
     return change;
