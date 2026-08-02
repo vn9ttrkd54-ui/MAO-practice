@@ -38,7 +38,7 @@ import {
 
 import {
   saveTrainerSession,
-} from "@/lib/trainerHistory";
+} from "@/lib/services/trainerHistoryService";
 
 import TrainerSetup from "@/components/trainer/TrainerSetup";
 import TrainerHeader from "@/components/trainer/TrainerHeader";
@@ -339,11 +339,24 @@ export default function TrainerClient() {
     }
   };
 
-  const handleConfirmEndSession = () => {
+  const handleConfirmEndSession = async () => {
+    if (isSaving) {
+      return;
+    }
+
     const endedAt = Date.now();
 
-    if (sessionStartedAt !== null) {
-      saveTrainerSession({
+    if (sessionStartedAt === null) {
+      setShowEndDialog(false);
+      setShowSummary(true);
+      return;
+    }
+
+    setIsSaving(true);
+    setStartError(null);
+
+    try {
+      await saveTrainerSession({
         id: crypto.randomUUID(),
         division,
         startedAt: sessionStartedAt,
@@ -353,10 +366,17 @@ export default function TrainerClient() {
         endingLevel: levelProgress,
         results,
       });
-    }
 
-    setShowEndDialog(false);
-    setShowSummary(true);
+      setShowEndDialog(false);
+      setShowSummary(true);
+    } catch {
+      setStartError(
+        "Unable to save this Trainer session. Please try again."
+      );
+      setShowEndDialog(false);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleStartNewSession = () => {
@@ -475,7 +495,9 @@ export default function TrainerClient() {
         onContinue={() =>
           setShowEndDialog(false)
         }
-        onConfirmEnd={handleConfirmEndSession}
+        onConfirmEnd={() => {
+          void handleConfirmEndSession();
+        }}
       />
 
       <LevelUpBanner
