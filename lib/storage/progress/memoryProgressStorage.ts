@@ -11,6 +11,14 @@ function cloneProgress(progress: QuestionProgress): QuestionProgress {
   };
 }
 
+export function getMemoryProgressSnapshot(): Map<number, QuestionProgress> {
+  return new Map(
+    Array.from(progressByQuestion.entries()).map(
+      ([questionId, progress]) => [questionId, cloneProgress(progress)]
+    )
+  );
+}
+
 export const memoryProgressStorage: ProgressStorage = {
   async getQuestionProgress(questionId) {
     const progress = progressByQuestion.get(questionId);
