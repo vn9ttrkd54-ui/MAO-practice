@@ -1,5 +1,17 @@
-import DashboardClient from "@/components/dashboard/DashboardClient";
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
+import DashboardClient from "@/components/dashboard/DashboardClient";
+import { createClient } from "@/lib/supabase/server";
+
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return <DashboardClient />;
 }
