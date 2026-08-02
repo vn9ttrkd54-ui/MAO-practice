@@ -15,10 +15,48 @@ import type { DashboardData } from "@/lib/dashboardService";
 export default function DashboardClient() {
   const [dashboardData, setDashboardData] =
     useState<DashboardData | null>(null);
+  const [errorMessage, setErrorMessage] =
+    useState<string | null>(null);
 
   useEffect(() => {
-    setDashboardData(getDashboardData());
+    let cancelled = false;
+
+    async function loadDashboard() {
+      try {
+        const data = await getDashboardData();
+
+        if (!cancelled) {
+          setDashboardData(data);
+          setErrorMessage(null);
+        }
+      } catch {
+        if (!cancelled) {
+          setErrorMessage(
+            "Unable to load your dashboard right now. Please refresh and try again."
+          );
+        }
+      }
+    }
+
+    void loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  if (errorMessage) {
+    return (
+      <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8">
+        <div
+          role="alert"
+          className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700"
+        >
+          {errorMessage}
+        </div>
+      </main>
+    );
+  }
 
   if (!dashboardData) {
     return (
@@ -69,13 +107,9 @@ export default function DashboardClient() {
         sessions={recentTrainerSessions}
       />
 
-      <QuestionBankSection
-        questionBank={questionBank}
-      />
+      <QuestionBankSection questionBank={questionBank} />
 
-      <MultiplayerSection
-        multiplayer={multiplayer}
-      />
+      <MultiplayerSection multiplayer={multiplayer} />
     </main>
   );
 }
