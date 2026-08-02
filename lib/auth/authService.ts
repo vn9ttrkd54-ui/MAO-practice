@@ -25,7 +25,7 @@ export async function signUp({
 
   const { data: isAvailable, error: availabilityError } =
     await supabase.rpc("is_username_available", {
-      requested_username: username,
+      candidate_username: username,
     });
 
   if (availabilityError) {
@@ -55,14 +55,21 @@ export async function signUp({
   if (error) {
     const message = error.message.toLowerCase();
 
-    if (message.includes("already registered")) {
+    if (
+      message.includes("already registered") ||
+      message.includes("already exists")
+    ) {
       return {
         success: false,
         error: "An account already exists with that email.",
       };
     }
 
-    if (message.includes("database error")) {
+    if (
+      message.includes("database error") ||
+      message === "{}" ||
+      message.includes("username")
+    ) {
       return {
         success: false,
         error: "That username may already be taken. Try a different username.",
