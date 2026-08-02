@@ -1,0 +1,354 @@
+-- MAO Practice: Authentication and user-owned data schema
+-- Questions remain in TypeScript. The database stores only accounts and user progress.
+
+begin;
+
+-- -----------------------------------------------------------------------------
+-- Shared timestamp helper
+-- -----------------------------------------------------------------------------
+
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = timezone('utc', now());
+  return new;
+end;
+$$;
+
+-- -----------------------------------------------------------------------------
+-- Profiles
+-- -----------------------------------------------------------------------------
+
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  username text not null,
+  display_name text,
+  preferred_division text check (
+    preferred_division is null
+    or preferred_division in ('Mu', 'Alpha', 'Theta')
+  ),
+  role text not null default 'user' check (role in ('user', 'admin')),
+  email_verified boolean not null default false,
+  avatar_url text,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+
+  constraint profiles_username_format check (
+    username = lower(username)
+    and username ~ '^[a-z0-9_]{3,20}$'
+  )
+);
+
+create unique index profiles_username_unique
+  on public.profiles (lower(username));
+
+create trigger profiles_set_updated_at
+before update on public.profiles
+for each row execute function public.set_updated_at();
+
+-- -----------------------------------------------------------------------------
+-- Question progress
+-- -----------------------------------------------------------------------------
+
+create table public.question_progress (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  question_id integer not null,
+  attempts integer not null default 0 check (attempts >= 0),
+  correct integer not null default 0 check (correct >= 0 and correct <= attempts),
+  correct_times_ms bigint[] not null default '{}',
+  last_result text check (
+    last_result is null
+    or last_result in ('correct', 'incorrect', 'give-up')
+  ),
+  last_attempted_at timestamptz,
+  last_correct_at timestamptz,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+
+  primary key (user_id, question_id)
+);
+
+create index question_progress_user_id_idx
+  on public.question_progress (user_id);
+
+create trigger question_progress_set_updated_at
+before update on public.question_progress
+for each row execute function public.set_updated_at();
+
+-- -----------------------------------------------------------------------------
+-- Bookmarks
+-- -----------------------------------------------------------------------------
+
+create table public.bookmarks (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  question_id integer not null,
+  created_at timestamptz not null default timezone('utc', now()),
+
+  primary key (user_id, question_id)
+);
+
+create index bookmarks_user_id_idx
+  on public.bookmarks (user_id);
+
+-- -----------------------------------------------------------------------------
+-- User level
+-- -----------------------------------------------------------------------------
+
+create table public.user_levels (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  level integer not null default 1 check (level >= 1),
+  progress integer not null default 0 check (progress >= 0 and progress < 30),
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
+create trigger user_levels_set_updated_at
+before update on public.user_levels
+for each row execute function public.set_updated_at();
+
+-- -----------------------------------------------------------------------------
+-- Trainer history
+-- -----------------------------------------------------------------------------
+
+create table public.trainer_sessions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  division text not null check (division in ('Mu', 'Alpha', 'Theta')),
+  started_at timestamptz not null,
+  ended_at timestamptz not null,
+  starting_level integer not null check (starting_level >= 1),
+  starting_progress integer not null check (
+    starting_progress >= 0 and starting_progress < 30
+  ),
+  ending_level integer not null check (ending_level >= 1),
+  ending_progress integer not null check (
+    ending_progress >= 0 and ending_progress < 30
+  ),
+  created_at timestamptz not null default timezone('utc', now()),
+
+  constraint trainer_sessions_time_order check (ended_at >= started_at)
+);
+
+create index trainer_sessions_user_id_idx
+  on public.trainer_sessions (user_id);
+
+create index trainer_sessions_user_ended_at_idx
+  on public.trainer_sessions (user_id, ended_at desc);
+
+create table public.trainer_results (
+  id bigint generated by default as identity primary key,
+  session_id uuid not null references public.trainer_sessions(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  question_id integer not null,
+  question_number integer not null check (question_number >= 1),
+  selected_answer text,
+  correct_answer text not null,
+  result text not null check (result in ('correct', 'incorrect', 'give-up')),
+  created_at timestamptz not null default timezone('utc', now())
+);
+
+create index trainer_results_user_id_idx
+  on public.trainer_results (user_id);
+
+create index trainer_results_session_id_idx
+  on public.trainer_results (session_id);
+
+-- Prevent a result row from claiming a different owner than its session.
+create or replace function public.validate_trainer_result_owner()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if not exists (
+    select 1
+    from public.trainer_sessions
+    where id = new.session_id
+      and user_id = new.user_id
+  ) then
+    raise exception 'Trainer result owner must match trainer session owner';
+  end if;
+
+  return new;
+end;
+$$;
+
+create trigger trainer_results_validate_owner
+before insert or update on public.trainer_results
+for each row execute function public.validate_trainer_result_owner();
+
+-- -----------------------------------------------------------------------------
+-- Automatic profile and level creation after Auth signup
+-- -----------------------------------------------------------------------------
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  normalized_username text;
+begin
+  normalized_username := lower(trim(new.raw_user_meta_data ->> 'username'));
+
+  if normalized_username is null or normalized_username = '' then
+    raise exception 'Username is required';
+  end if;
+
+  insert into public.profiles (
+    id,
+    username,
+    display_name
+  )
+  values (
+    new.id,
+    normalized_username,
+    nullif(trim(new.raw_user_meta_data ->> 'display_name'), '')
+  );
+
+  insert into public.user_levels (user_id)
+  values (new.id);
+
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+after insert on auth.users
+for each row execute function public.handle_new_user();
+
+-- -----------------------------------------------------------------------------
+-- Row Level Security
+-- -----------------------------------------------------------------------------
+
+alter table public.profiles enable row level security;
+alter table public.question_progress enable row level security;
+alter table public.bookmarks enable row level security;
+alter table public.user_levels enable row level security;
+alter table public.trainer_sessions enable row level security;
+alter table public.trainer_results enable row level security;
+
+-- Profiles: users can read and update only their own profile.
+create policy "Users can read their own profile"
+on public.profiles
+for select
+to authenticated
+using ((select auth.uid()) = id);
+
+create policy "Users can update their own profile"
+on public.profiles
+for update
+to authenticated
+using ((select auth.uid()) = id)
+with check ((select auth.uid()) = id);
+
+-- Question progress
+create policy "Users can read their own question progress"
+on public.question_progress
+for select
+to authenticated
+using ((select auth.uid()) = user_id);
+
+create policy "Users can insert their own question progress"
+on public.question_progress
+for insert
+to authenticated
+with check ((select auth.uid()) = user_id);
+
+create policy "Users can update their own question progress"
+on public.question_progress
+for update
+to authenticated
+using ((select auth.uid()) = user_id)
+with check ((select auth.uid()) = user_id);
+
+create policy "Users can delete their own question progress"
+on public.question_progress
+for delete
+to authenticated
+using ((select auth.uid()) = user_id);
+
+-- Bookmarks
+create policy "Users can read their own bookmarks"
+on public.bookmarks
+for select
+to authenticated
+using ((select auth.uid()) = user_id);
+
+create policy "Users can insert their own bookmarks"
+on public.bookmarks
+for insert
+to authenticated
+with check ((select auth.uid()) = user_id);
+
+create policy "Users can delete their own bookmarks"
+on public.bookmarks
+for delete
+to authenticated
+using ((select auth.uid()) = user_id);
+
+-- Levels
+create policy "Users can read their own level"
+on public.user_levels
+for select
+to authenticated
+using ((select auth.uid()) = user_id);
+
+create policy "Users can update their own level"
+on public.user_levels
+for update
+to authenticated
+using ((select auth.uid()) = user_id)
+with check ((select auth.uid()) = user_id);
+
+-- Trainer sessions
+create policy "Users can read their own trainer sessions"
+on public.trainer_sessions
+for select
+to authenticated
+using ((select auth.uid()) = user_id);
+
+create policy "Users can insert their own trainer sessions"
+on public.trainer_sessions
+for insert
+to authenticated
+with check ((select auth.uid()) = user_id);
+
+create policy "Users can delete their own trainer sessions"
+on public.trainer_sessions
+for delete
+to authenticated
+using ((select auth.uid()) = user_id);
+
+-- Trainer results
+create policy "Users can read their own trainer results"
+on public.trainer_results
+for select
+to authenticated
+using ((select auth.uid()) = user_id);
+
+create policy "Users can insert their own trainer results"
+on public.trainer_results
+for insert
+to authenticated
+with check ((select auth.uid()) = user_id);
+
+create policy "Users can delete their own trainer results"
+on public.trainer_results
+for delete
+to authenticated
+using ((select auth.uid()) = user_id);
+
+-- Explicit grants for API roles. RLS still controls which rows are accessible.
+grant select, insert, update, delete on public.profiles to authenticated;
+grant select, insert, update, delete on public.question_progress to authenticated;
+grant select, insert, update, delete on public.bookmarks to authenticated;
+grant select, insert, update, delete on public.user_levels to authenticated;
+grant select, insert, update, delete on public.trainer_sessions to authenticated;
+grant select, insert, update, delete on public.trainer_results to authenticated;
+grant usage, select on sequence public.trainer_results_id_seq to authenticated;
+
+commit;
