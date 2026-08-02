@@ -1,14 +1,6 @@
-import {
-  getQuestionStatus,
-} from "@/lib/progress";
-
-import type {
-  Question,
-} from "@/types/question";
-
-import type {
-  TrainerSessionRecord,
-} from "@/types/trainer";
+import type { AttemptResult } from "@/types/progress";
+import type { Question } from "@/types/question";
+import type { TrainerSessionRecord } from "@/types/trainer";
 
 export interface TrainerHistorySummary {
   sessionsCompleted: number;
@@ -37,15 +29,12 @@ export function calculateTrainerHistorySummary(
   let giveUps = 0;
 
   for (const session of sessions) {
-    questionsAnswered +=
-      session.results.length;
+    questionsAnswered += session.results.length;
 
     for (const result of session.results) {
       if (result.result === "correct") {
         correct += 1;
-      } else if (
-        result.result === "incorrect"
-      ) {
+      } else if (result.result === "incorrect") {
         incorrect += 1;
       } else {
         giveUps += 1;
@@ -55,10 +44,7 @@ export function calculateTrainerHistorySummary(
 
   const accuracy =
     questionsAnswered > 0
-      ? Math.round(
-          (correct / questionsAnswered) *
-            100
-        )
+      ? Math.round((correct / questionsAnswered) * 100)
       : 0;
 
   return {
@@ -68,15 +54,16 @@ export function calculateTrainerHistorySummary(
     incorrect,
     giveUps,
     accuracy,
-    score:
-      correct -
-      incorrect -
-      giveUps,
+    score: correct - incorrect - giveUps,
   };
 }
 
 export function calculateQuestionBankSummary(
   questions: Question[],
+  progressByQuestionId: ReadonlyMap<
+    number,
+    AttemptResult | null
+  >,
   bookmarkedQuestionIds: number[]
 ): QuestionBankSummary {
   let solved = 0;
@@ -84,12 +71,15 @@ export function calculateQuestionBankSummary(
   let newQuestions = 0;
 
   for (const question of questions) {
-    const status =
-      getQuestionStatus(question.id);
+    const lastResult =
+      progressByQuestionId.get(question.id) ?? null;
 
-    if (status === "solved") {
+    if (lastResult === "correct") {
       solved += 1;
-    } else if (status === "attempted") {
+    } else if (
+      lastResult === "incorrect" ||
+      lastResult === "give-up"
+    ) {
       attempted += 1;
     } else {
       newQuestions += 1;
@@ -97,16 +87,12 @@ export function calculateQuestionBankSummary(
   }
 
   const validQuestionIds = new Set(
-    questions.map(
-      (question) => question.id
-    )
+    questions.map((question) => question.id)
   );
 
-  const bookmarked =
-    bookmarkedQuestionIds.filter(
-      (questionId) =>
-        validQuestionIds.has(questionId)
-    ).length;
+  const bookmarked = bookmarkedQuestionIds.filter(
+    (questionId) => validQuestionIds.has(questionId)
+  ).length;
 
   return {
     totalQuestions: questions.length,
