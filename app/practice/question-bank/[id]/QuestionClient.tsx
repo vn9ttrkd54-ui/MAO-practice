@@ -10,7 +10,7 @@ import {
   getQuestionProgress,
   saveQuestionAttempt,
   saveQuestionGiveUp,
-} from "@/lib/progress";
+} from "@/lib/services/progressService";
 
 import {
   getNextQuestion,
@@ -30,6 +30,14 @@ import SolutionPanel from "@/components/practice/SolutionPanel";
 import QuestionNavigation from "@/components/practice/QuestionNavigation";
 import BookmarkButton from "@/components/practice/BookmarkButton";
 
+const EMPTY_PROGRESS: QuestionProgress = {
+  attempts: 0,
+  correct: 0,
+  times: [],
+  lastResult: null,
+  lastCorrectAt: null,
+};
+
 export default function QuestionClient({
   question,
 }: {
@@ -43,6 +51,9 @@ export default function QuestionClient({
   const [submitted, setSubmitted] =
     useState(false);
 
+  const [isSaving, setIsSaving] =
+    useState(false);
+
   const [startTime, setStartTime] =
     useState(Date.now());
 
@@ -53,19 +64,27 @@ export default function QuestionClient({
     useState(false);
 
   const [progress, setProgress] =
-    useState<QuestionProgress>({
-      attempts: 0,
-      correct: 0,
-      times: [],
-      lastResult: null,
-      lastCorrectAt: null,
-    });
+    useState<QuestionProgress>(EMPTY_PROGRESS);
 
   useEffect(() => {
-    const savedProgress =
-      getQuestionProgress(question.id);
+    let cancelled = false;
 
-    setProgress(savedProgress);
+    async function loadProgress() {
+      try {
+        const savedProgress =
+          await getQuestionProgress(question.id);
+
+        if (!cancelled) {
+          setProgress(savedProgress);
+        }
+      } catch {
+        if (!cancelled) {
+          setProgress(EMPTY_PROGRESS);
+        }
+      }
+    }
+
+    void loadProgress();
 
     setBookmarked(
       isQuestionBookmarked(question.id)
@@ -73,8 +92,13 @@ export default function QuestionClient({
 
     setSelectedAnswer(null);
     setSubmitted(false);
+    setIsSaving(false);
     setStartTime(Date.now());
     setTimerReset((current) => current + 1);
+
+    return () => {
+      cancelled = true;
+    };
   }, [question.id]);
 
   const nextQuestion =
@@ -91,8 +115,8 @@ export default function QuestionClient({
     );
   };
 
-  const handleSubmit = () => {
-    if (!selectedAnswer) {
+  const handleSubmit = async () => {
+    if (!selectedAnswer || isSaving) {
       return;
     }
 
@@ -103,24 +127,40 @@ export default function QuestionClient({
     const isCorrect =
       selectedAnswer === question.answer;
 
-    const updatedProgress =
-      saveQuestionAttempt(
-        question.id,
-        isCorrect,
-        timeSpent
-      );
+    setIsSaving(true);
 
-    setProgress(updatedProgress);
-    setSubmitted(true);
+    try {
+      const updatedProgress =
+        await saveQuestionAttempt(
+          question.id,
+          isCorrect,
+          timeSpent
+        );
+
+      setProgress(updatedProgress);
+      setSubmitted(true);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleGiveUp = () => {
-    const updatedProgress =
-      saveQuestionGiveUp(question.id);
+  const handleGiveUp = async () => {
+    if (isSaving) {
+      return;
+    }
 
-    setProgress(updatedProgress);
-    setSubmitted(true);
-    setSelectedAnswer(null);
+    setIsSaving(true);
+
+    try {
+      const updatedProgress =
+        await saveQuestionGiveUp(question.id);
+
+      setProgress(updatedProgress);
+      setSubmitted(true);
+      setSelectedAnswer(null);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleReattempt = () => {
@@ -155,7 +195,7 @@ export default function QuestionClient({
 
       <div className="flex justify-between items-center mt-6 mb-6">
         <Timer
-          running={!submitted}
+          running={!submitted && !isSaving}
           resetKey={timerReset}
         />
 
@@ -179,16 +219,20 @@ export default function QuestionClient({
             <MultipleChoice
               choices={question.choices}
               selectedAnswer={selectedAnswer}
-              submitted={submitted}
+              submitted={submitted || isSaving}
               onSelect={setSelectedAnswer}
             />
 
             <div className="flex gap-4 mt-8">
               <button
                 disabled={
-                  !selectedAnswer || submitted
+                  !selectedAnswer ||
+                  submitted ||
+                  isSaving
                 }
-                onClick={handleSubmit}
+                onClick={() => {
+                  void handleSubmit();
+                }}
                 className="
                   bg-black
                   text-white
@@ -199,12 +243,14 @@ export default function QuestionClient({
                   disabled:cursor-not-allowed
                 "
               >
-                Submit
+                {isSaving ? "Saving..." : "Submit"}
               </button>
 
               <button
-                disabled={submitted}
-                onClick={handleGiveUp}
+                disabled={submitted || isSaving}
+                onClick={() => {
+                  void handleGiveUp();
+                }}
                 className="
                   border
                   border-gray-400
