@@ -7,17 +7,21 @@ import type { QuestionProgress } from "@/types/progress";
 async function getProgressStorage(): Promise<ProgressStorage> {
   const supabase = createClient();
   const {
-    data: { user },
+    data: { session },
     error,
-  } = await supabase.auth.getUser();
+  } = await supabase.auth.getSession();
 
-  if (error || !user) {
+  if (error) {
+    throw new Error(`Unable to read authentication session: ${error.message}`);
+  }
+
+  if (!session?.user) {
     return memoryProgressStorage;
   }
 
   return createSupabaseProgressStorage(
     supabase,
-    user.id
+    session.user.id
   );
 }
 
