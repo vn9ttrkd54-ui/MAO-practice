@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { RankPill } from "@/components/multiplayer/RankTheme";
 import type { MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
 
@@ -10,7 +11,7 @@ const labels: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
 function SpectatorList({ round }: { round: MultiplayerRoundState }) {
   if (round.spectators.length === 0) return null;
-  return <aside className="rounded-2xl border bg-gray-50 p-4"><h2 className="text-sm font-bold">Spectators · {round.spectators.length}</h2><div className="mt-3 space-y-2">{round.spectators.map((person) => <div key={person.playerId} className="rounded-xl bg-white px-3 py-2 shadow-sm"><p className="truncate text-sm font-semibold">{person.displayName}</p><p className="mt-0.5 text-xs text-gray-500">{person.rankTier} · {person.rp} RP</p></div>)}</div></aside>;
+  return <aside className="rounded-2xl border bg-gray-50 p-4"><h2 className="text-sm font-bold">Spectators · {round.spectators.length}</h2><div className="mt-3 space-y-2">{round.spectators.map((person) => <div key={person.playerId} className="rounded-xl bg-white px-3 py-2 shadow-sm"><p className="truncate text-sm font-semibold">{person.displayName}</p><div className="mt-1 flex items-center gap-2"><RankPill rank={person.rankTier} /><span className="text-xs text-gray-500">{person.rp} RP</span></div></div>)}</div></aside>;
 }
 
 export default function MatchQuestion({ round: initialRound }: { round: MultiplayerRoundState }) {
@@ -72,7 +73,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const inIntermission = round.intermissionEndsAt !== null;
   if (inIntermission || submitted || showLeaderboard) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 10}s` : "Waiting for the other players…"}</p></header><div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between px-5 py-4"><span className="font-semibold">{index + 1}. {player.displayName}</span><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 10}s` : "Waiting for the other players…"}</p></header><div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between gap-4 px-5 py-4"><div><span className="font-semibold">{index + 1}. {player.displayName}</span>{!player.isGuest ? <div className="mt-1"><RankPill rank={player.rankTier} /></div> : null}</div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
   return (
