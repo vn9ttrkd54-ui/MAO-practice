@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { joinPrivateRoomAction, joinPublicRoomAction, spectatePublicRoomAction } from "@/app/multiplayer/actions";
 import { RankIcon, rankChipClass, rankIconClass, rankPageClass, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
-import { getMultiplayerProfile, getMultiplayerRatingLeaderboard, listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms } from "@/lib/services/multiplayerService";
+import { getMultiplayerProfile, getMultiplayerRatingLeaderboard, listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms, listRecentMultiplayerMatches } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
 
 interface MultiplayerPageProps { searchParams: Promise<{ error?: string }>; }
@@ -21,8 +21,8 @@ async function retryFutureJwt<T>(operation: () => Promise<T>): Promise<T> {
 }
 
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
-  const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms, profile, ratingLeaderboard] = await Promise.all([
-    searchParams, createClient(), retryFutureJwt(listPublicRooms), retryFutureJwt(listOngoingPublicMatches), retryFutureJwt(listMyActiveMultiplayerRooms), retryFutureJwt(getMultiplayerProfile), retryFutureJwt(getMultiplayerRatingLeaderboard),
+  const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms, profile, ratingLeaderboard, recentMatches] = await Promise.all([
+    searchParams, createClient(), retryFutureJwt(listPublicRooms), retryFutureJwt(listOngoingPublicMatches), retryFutureJwt(listMyActiveMultiplayerRooms), retryFutureJwt(getMultiplayerProfile), retryFutureJwt(getMultiplayerRatingLeaderboard), retryFutureJwt(listRecentMultiplayerMatches),
   ]);
   const { data: { user } } = await supabase.auth.getUser();
   const activeInProgress = activeRooms.filter((room) => room.status === "in-progress");
@@ -49,5 +49,6 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
     </div>
 
     {combinedOngoingMatches.length ? <section className="mt-8"><div><h2 className="text-xl font-bold">Ongoing games</h2><p className="mt-1 text-sm text-gray-600">Matches currently in progress</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{combinedOngoingMatches.map((room) => { const canRejoin = activeRoomIds.has(room.id); return <article key={room.id} className="rounded-2xl border bg-gray-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount}</p><p className="mt-1 text-sm text-gray-600">{room.visibility === "private" ? `Private · ${room.code}` : "Public"} · {room.playerCount} players</p></div><span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">Live</span></div>{canRejoin ? <Link href={`/multiplayer/room/${room.id}/play`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white">Rejoin Game</Link> : user ? <form action={spectatePublicRoomAction} className="mt-3"><input type="hidden" name="roomId" value={room.id} /><button className="w-full rounded-lg border border-blue-600 px-3 py-2 text-sm font-semibold text-blue-700">Spectate</button></form> : <Link href="/login" className="mt-3 flex w-full items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold">Sign in to spectate</Link>}</article>; })}</div></section> : null}
+    {recentMatches.length ? <section className="mt-8 pb-8"><div><h2 className="text-xl font-bold">Recent matches</h2><p className="mt-1 text-sm text-gray-600">Your latest completed multiplayer games</p></div><div className="mt-4 space-y-3">{recentMatches.map((match) => <Link key={match.roomId} href={`/multiplayer/room/${match.roomId}/results`} className="grid grid-cols-[4rem_1fr_auto] items-center gap-4 rounded-2xl border bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"><div className="text-center"><p className="text-2xl font-bold">#{match.placement}</p><p className="text-xs text-gray-500">Place</p></div><div><p className="font-bold">{match.division} · {match.questionCount} questions</p><p className="mt-1 text-sm text-gray-600">{match.score} points · {match.ranked ? "Ranked" : "Unranked"} · {new Date(match.completedAt).toLocaleDateString()}</p></div><span className={`rounded-full px-3 py-1 text-sm font-bold ${match.rpChange === null ? "bg-gray-100 text-gray-600" : match.rpChange >= 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{match.rpChange === null ? "No RP" : `${match.rpChange >= 0 ? "+" : ""}${match.rpChange} RP`}</span></Link>)}</div></section> : null}
   </main></div>;
 }
