@@ -430,12 +430,17 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
       started_at: new Date(now).toISOString(),
       ends_at: new Date(now + room.seconds_per_question * 1000).toISOString(),
     }).eq("room_id", roomId).eq("question_number", nextQuestionNumber).is("started_at", null).select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").single<MatchQuestionRow>();
-    if (nextResponse.error) return null;
-    await Promise.all([
-      admin.from("multiplayer_rooms").update({ current_question_number: nextQuestionNumber }).eq("id", roomId),
-      admin.from("multiplayer_players").update({ has_submitted_current_question: false }).eq("room_id", roomId).is("left_at", null),
-    ]);
-    data = nextResponse.data;
+    if (nextResponse.error) {
+      const existingNext = await admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId).eq("question_number", nextQuestionNumber).not("started_at", "is", null).maybeSingle<MatchQuestionRow>();
+      if (existingNext.error || !existingNext.data?.ends_at) return null;
+      data = existingNext.data;
+    } else {
+      await Promise.all([
+        admin.from("multiplayer_rooms").update({ current_question_number: nextQuestionNumber }).eq("id", roomId),
+        admin.from("multiplayer_players").update({ has_submitted_current_question: false }).eq("room_id", roomId).is("left_at", null),
+      ]);
+      data = nextResponse.data;
+    }
   }
 
   const question = questions.find((entry) => entry.id === data.question_id);
