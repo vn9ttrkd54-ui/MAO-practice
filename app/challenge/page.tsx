@@ -1,13 +1,7 @@
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
 import ChallengeLeaderboard from "@/components/challenge/ChallengeLeaderboard";
 import ChallengePersonalStats from "@/components/challenge/ChallengePersonalStats";
-import {
-  getChallengeLeaderboard,
-  getChallengeStatistics,
-  getTodayChallenge,
-  getUserChallengeAttempt,
-  getUserLeaderboardPosition,
-} from "@/lib/challenge";
+import { getChallengeOverview } from "@/lib/challenge";
 import type { ChallengeSubmissionResult } from "@/types/challenge";
 
 export const dynamic = "force-dynamic";
@@ -22,19 +16,13 @@ function formatChallengeDate(date: string): string {
 }
 
 export default async function ChallengePage() {
-  const [
+  const {
     dailyChallenge,
-    existingAttempt,
+    attempt: existingAttempt,
     leaderboard,
     statistics,
-    userPosition,
-  ] = await Promise.all([
-    getTodayChallenge(),
-    getUserChallengeAttempt(),
-    getChallengeLeaderboard(),
-    getChallengeStatistics(),
-    getUserLeaderboardPosition(),
-  ]);
+    userLeaderboardEntry: userPosition,
+  } = await getChallengeOverview();
 
   const initialResult: ChallengeSubmissionResult | null =
     dailyChallenge && existingAttempt
