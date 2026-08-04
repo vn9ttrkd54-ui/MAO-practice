@@ -10,9 +10,19 @@ interface MultiplayerPageProps { searchParams: Promise<{ error?: string }>; }
 const fieldClass = "mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm";
 const rankSteps = [{ name: "Novice", rp: 0 }, { name: "Bronze", rp: 100 }, { name: "Silver", rp: 250 }, { name: "Gold", rp: 450 }, { name: "Platinum", rp: 700 }, { name: "Diamond", rp: 1000 }, { name: "Master", rp: 1350 }, { name: "Grandmaster", rp: 1750 }, { name: "Legend", rp: 2200 }];
 
+async function retryFutureJwt<T>(operation: () => Promise<T>): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (!(error instanceof Error) || !error.message.toLowerCase().includes("jwt issued at future")) throw error;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return operation();
+  }
+}
+
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
   const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms, profile, ratingLeaderboard] = await Promise.all([
-    searchParams, createClient(), listPublicRooms(), listOngoingPublicMatches(), listMyActiveMultiplayerRooms(), getMultiplayerProfile(), getMultiplayerRatingLeaderboard(),
+    searchParams, createClient(), retryFutureJwt(listPublicRooms), retryFutureJwt(listOngoingPublicMatches), retryFutureJwt(listMyActiveMultiplayerRooms), retryFutureJwt(getMultiplayerProfile), retryFutureJwt(getMultiplayerRatingLeaderboard),
   ]);
   const { data: { user } } = await supabase.auth.getUser();
   const activeInProgress = activeRooms.filter((room) => room.status === "in-progress");
