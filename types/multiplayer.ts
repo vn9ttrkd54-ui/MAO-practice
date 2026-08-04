@@ -1,4 +1,3 @@
-sed: --: No such file or directory
 import type { AnswerChoice, Division } from "@/types/question";
 
 export type MultiplayerRoomVisibility = "public" | "private";
@@ -157,3 +156,10 @@ export interface MultiplayerRoomAccess {
   room: MultiplayerRoom;
   currentPlayer: MultiplayerPlayer;
 }
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LC_ALL = "C.UTF-8",
+	LC_CTYPE = "C.UTF-8",
+	LANG = "C.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
