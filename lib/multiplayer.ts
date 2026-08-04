@@ -19,7 +19,6 @@ export {
   listOngoingPublicMatches,
   listPublicRooms,
   spectatePublicMatch,
-  startPrivateMatch,
   submitMultiplayerAnswer,
 } from "@/lib/services/multiplayerService";
 
