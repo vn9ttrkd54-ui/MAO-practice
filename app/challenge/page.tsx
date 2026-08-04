@@ -52,17 +52,7 @@ export default async function ChallengePage() {
   return (
     <main className="mx-auto max-w-5xl px-6 py-12 sm:px-8">
       <header className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-          One question. One attempt. Every day.
-        </p>
-
-        <h1 className="mt-2 text-4xl font-bold tracking-tight">Challenge</h1>
-
-        <p className="mt-3 max-w-2xl text-gray-600">
-          Solve the same official problem as the MAO community. You can
-          participate without an account; saved attempts and streaks are coming
-          in the next packs.
-        </p>
+        <h1 className="text-4xl font-bold tracking-tight">Challenge</h1>
       </header>
 
       <ChallengeLeaderboard entries={leaderboard} />
