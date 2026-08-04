@@ -1,5 +1,6 @@
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
 import { getTodayChallenge, getUserChallengeAttempt } from "@/lib/challenge";
+import type { ChallengeSubmissionResult } from "@/types/challenge";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,19 @@ export default async function ChallengePage() {
     getTodayChallenge(),
     getUserChallengeAttempt(),
   ]);
+
+  const initialResult: ChallengeSubmissionResult | null =
+    dailyChallenge && existingAttempt
+      ? {
+          challengeDate: existingAttempt.challengeDate,
+          questionId: existingAttempt.questionId,
+          selectedAnswer: existingAttempt.selectedAnswer,
+          correct: existingAttempt.correct,
+          correctAnswer: dailyChallenge.question.answer,
+          solution: dailyChallenge.question.solution,
+          saved: true,
+        }
+      : null;
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12 sm:px-8">
@@ -92,7 +106,7 @@ export default async function ChallengePage() {
               challengeDate={dailyChallenge.date}
               questionId={dailyChallenge.questionId}
               choices={dailyChallenge.question.choices}
-              existingAnswer={existingAttempt?.selectedAnswer ?? null}
+              initialResult={initialResult}
             />
           </>
         )}
