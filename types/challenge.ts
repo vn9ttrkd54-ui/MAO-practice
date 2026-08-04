@@ -64,5 +64,7 @@ export interface ChallengeSubmissionResult {
   questionId: ChallengeQuestionId;
   selectedAnswer: AnswerChoice;
   correct: boolean;
+  correctAnswer: AnswerChoice;
+  solution: string;
   saved: boolean;
 }
