@@ -177,7 +177,7 @@ async function addPlayer(room: RoomRow, guestNickname?: string, isHost = false) 
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      path: `/multiplayer/room/${room.id}`,
+      path: "/",
       maxAge: 60 * 60 * 24,
     });
   }
@@ -267,15 +267,41 @@ function tierForRp(rp: number): MultiplayerPlayer["rankTier"] {
   return "Novice";
 }
 
+export async function updatePrivateRoomPresence(roomId: string, connected: boolean): Promise<boolean> {
+  const admin = createAdminClient();
+  const user = await currentUser();
+  let query = admin.from("multiplayer_players").update({ connected }).eq("room_id", roomId).is("left_at", null);
+
+  if (user) {
+    query = query.eq("user_id", user.id);
+  } else {
+    const token = (await cookies()).get(cookieName(roomId))?.value;
+    if (!token) return false;
+    query = query.eq("reconnect_token_hash", hashToken(token));
+  }
+
+  const { data, error } = await query.select("id");
+  return !error && (data?.length ?? 0) === 1;
+}
+
 export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyState | null> {
   const access = await getMultiplayerRoom(roomId);
   if (!access || access.room.visibility !== "private") return null;
 
   const admin = createAdminClient();
+  await updatePrivateRoomPresence(roomId, true);
+  await admin
+    .from("multiplayer_players")
+    .update({ connected: false })
+    .eq("room_id", roomId)
+    .eq("connected", true)
+    .lt("updated_at", new Date(Date.now() - 10_000).toISOString());
+
   const { data, error } = await admin
     .from("multiplayer_players")
     .select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question")
     .eq("room_id", roomId)
+    .eq("connected", true)
     .is("left_at", null)
     .order("joined_at", { ascending: true });
   if (error) throw new Error(`Unable to load the lobby: ${error.message}`);
