@@ -8,6 +8,11 @@ import type { AnswerChoice } from "@/types/question";
 
 const labels: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
+function SpectatorList({ round }: { round: MultiplayerRoundState }) {
+  if (round.spectators.length === 0) return null;
+  return <aside className="mt-4 rounded-2xl border bg-gray-50 p-4"><h2 className="text-sm font-bold">Spectators · {round.spectators.length}</h2><div className="mt-2 flex flex-wrap gap-2">{round.spectators.map((person) => <span key={person.playerId} className="rounded-full bg-white px-3 py-1 text-xs shadow-sm">{person.displayName} · {person.rankTier} · {person.rp} RP</span>)}</div></aside>;
+}
+
 export default function MatchQuestion({ round: initialRound }: { round: MultiplayerRoundState }) {
   const router = useRouter();
   const [round, setRound] = useState(initialRound);
@@ -67,7 +72,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const inIntermission = round.intermissionEndsAt !== null;
   if (inIntermission || submitted || showLeaderboard) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-3xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 10}s` : "Waiting for the other players…"}</p></header><ol className="mt-6 divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between px-5 py-4"><span className="font-semibold">{index + 1}. {player.displayName}</span><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol></main>;
+    return <main className="mx-auto max-w-3xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 10}s` : "Waiting for the other players…"}</p></header><ol className="mt-6 divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between px-5 py-4"><span className="font-semibold">{index + 1}. {player.displayName}</span><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></main>;
   }
 
   return (
@@ -79,6 +84,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
         <button onClick={submitAnswer} disabled={!selected || submitted || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{submitted ? "Answer submitted" : "Submit Answer"}</button>
       </section>
+      <SpectatorList round={round} />
     </main>
   );
 }
