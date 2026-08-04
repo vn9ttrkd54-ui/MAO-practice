@@ -13,6 +13,7 @@ import type {
   MultiplayerAnswerSubmission,
   MultiplayerMatchResult,
   MultiplayerLobbyState,
+  MultiplayerMatchHistoryEntry,
   MultiplayerPlayer,
   MultiplayerProfile,
   MultiplayerRatingLeaderboardEntry,
@@ -756,6 +757,25 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
     },
     rounds, finalLeaderboard,
   };
+}
+
+export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHistoryEntry[]> {
+  const user = await currentUser();
+  if (!user) return [];
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("multiplayer_match_results").select("room_id, placement, final_score, ranked, rp_change, finalized_at").eq("user_id", user.id).order("finalized_at", { ascending: false }).limit(10);
+  if (error) throw new Error(`Unable to load recent matches: ${error.message}`);
+  const results = data ?? [];
+  if (results.length === 0) return [];
+  const roomIds = results.map((result) => result.room_id);
+  const { data: rooms, error: roomsError } = await admin.from("multiplayer_rooms").select("id, division, question_count").in("id", roomIds);
+  if (roomsError) throw new Error(`Unable to load recent match details: ${roomsError.message}`);
+  const roomById = new Map((rooms ?? []).map((room) => [room.id, room]));
+  return results.flatMap((result) => {
+    const room = roomById.get(result.room_id);
+    if (!room) return [];
+    return [{ roomId: result.room_id, division: room.division, questionCount: room.question_count, placement: result.placement, score: result.final_score, ranked: result.ranked, rpChange: result.rp_change, completedAt: new Date(result.finalized_at).getTime() } as MultiplayerMatchHistoryEntry];
+  });
 }
 
 export async function listPublicRooms(): Promise<MultiplayerRoom[]> {
