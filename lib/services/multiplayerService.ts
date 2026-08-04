@@ -20,6 +20,8 @@ import type {
   MultiplayerRoomAccess,
   MultiplayerRoomSettings,
   MultiplayerRoundState,
+  MultiplayerSpectator,
+  MultiplayerSpectatorState,
 } from "@/types/multiplayer";
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -62,6 +64,11 @@ interface MatchQuestionRow {
   started_at: string | null;
   ends_at: string | null;
   intermission_ends_at: string | null;
+}
+
+interface SpectatorRow {
+  user_id: string;
+  joined_at: string;
 }
 
 function notImplemented(): never {
@@ -276,6 +283,26 @@ function tierForRp(rp: number): MultiplayerPlayer["rankTier"] {
   if (rp >= 250) return "Silver";
   if (rp >= 100) return "Bronze";
   return "Novice";
+}
+
+async function listActiveSpectators(roomId: string): Promise<MultiplayerSpectator[]> {
+  const admin = createAdminClient();
+  await admin.from("multiplayer_spectators").delete().eq("room_id", roomId).lt("last_seen_at", new Date(Date.now() - 10_000).toISOString());
+  const { data, error } = await admin.from("multiplayer_spectators").select("user_id, joined_at").eq("room_id", roomId).order("joined_at");
+  if (error) throw new Error(`Unable to load spectators: ${error.message}`);
+  const rows = (data ?? []) as SpectatorRow[];
+  if (rows.length === 0) return [];
+  const userIds = rows.map((row) => row.user_id);
+  const [namesResponse, ratingsResponse] = await Promise.all([
+    admin.from("profiles").select("id, username").in("id", userIds),
+    admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", userIds),
+  ]);
+  const names = new Map((namesResponse.data ?? []).map((profile) => [profile.id, profile.username]));
+  const ratings = new Map((ratingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
+  return rows.map((row) => {
+    const rp = ratings.get(row.user_id) ?? 0;
+    return { playerId: row.user_id, userId: row.user_id, displayName: names.get(row.user_id) ?? "Spectator", isGuest: false, rankTier: tierForRp(rp), rp, globalRank: null, joinedAt: new Date(row.joined_at).getTime() };
+  });
 }
 
 export async function updatePrivateRoomPresence(roomId: string, connected: boolean): Promise<boolean> {
@@ -496,6 +523,7 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
     questionEndsAt: new Date(data.ends_at).getTime(),
     intermissionEndsAt: data.intermission_ends_at ? new Date(data.intermission_ends_at).getTime() : null,
     players: lobby.players,
+    spectators: await listActiveSpectators(roomId),
   };
 }
 
@@ -572,6 +600,7 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
     questionEndsAt: endsAt,
     intermissionEndsAt: intermissionEndsAt ? new Date(intermissionEndsAt).getTime() : null,
     players: updatedPlayers,
+    spectators: await listActiveSpectators(input.roomId),
   };
 }
 
@@ -803,6 +832,41 @@ export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
 }
 export async function startPrivateMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
 export async function leaveMultiplayerRoom(_roomId: string): Promise<void> { void _roomId; return notImplemented(); }
-export async function spectatePublicMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
+export async function spectatePublicMatch(roomId: string): Promise<MultiplayerSpectatorState> {
+  const user = await currentUser();
+  if (!user) throw new Error("Sign in to spectate public games.");
+  const admin = createAdminClient();
+  const { data: room } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).eq("visibility", "public").eq("status", "in-progress").maybeSingle<RoomRow>();
+  if (!room) throw new Error("That public match is no longer in progress.");
+  const { data: player } = await admin.from("multiplayer_players").select("id").eq("room_id", roomId).eq("user_id", user.id).is("left_at", null).maybeSingle();
+  if (player) throw new Error("You are playing in this match. Use Rejoin Game instead.");
+  await admin.from("multiplayer_profiles").upsert({ user_id: user.id }, { onConflict: "user_id", ignoreDuplicates: true });
+  const { error: spectatorError } = await admin.from("multiplayer_spectators").upsert({ room_id: roomId, user_id: user.id, last_seen_at: new Date().toISOString() }, { onConflict: "room_id,user_id" });
+  if (spectatorError) throw new Error(`Unable to spectate this match: ${spectatorError.message}`);
+  const [questionResponse, players, spectators] = await Promise.all([
+    admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId).eq("question_number", room.current_question_number).maybeSingle<MatchQuestionRow>(),
+    getPublicMatchPlayers(roomId), listActiveSpectators(roomId),
+  ]);
+  const matchQuestion = questionResponse.data;
+  const question = matchQuestion ? questions.find((entry) => entry.id === matchQuestion.question_id) : null;
+  if (!matchQuestion?.ends_at || !question) throw new Error("The current question is unavailable.");
+  return { roomId, questionNumber: matchQuestion.question_number, totalQuestions: room.question_count, question: { questionId: question.id, number: matchQuestion.question_number, division: question.division, topic: question.topic, difficulty: matchQuestion.difficulty, question: question.question, choices: question.choices }, questionEndsAt: new Date(matchQuestion.ends_at).getTime(), intermissionEndsAt: matchQuestion.intermission_ends_at ? new Date(matchQuestion.intermission_ends_at).getTime() : null, players, spectators };
+}
+
+async function getPublicMatchPlayers(roomId: string): Promise<MultiplayerPlayer[]> {
+  const admin = createAdminClient();
+  const { data } = await admin.from("multiplayer_players").select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question").eq("room_id", roomId).is("left_at", null).order("score", { ascending: false });
+  const rows = (data ?? []) as PlayerRow[];
+  const userIds = rows.flatMap((row) => row.user_id ? [row.user_id] : []);
+  const [namesResponse, ratingsResponse] = userIds.length ? await Promise.all([admin.from("profiles").select("id, username").in("id", userIds), admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", userIds)]) : [{ data: [] }, { data: [] }];
+  const names = new Map((namesResponse.data ?? []).map((profile) => [profile.id, profile.username]));
+  const ratings = new Map((ratingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
+  return rows.map((row) => { const mapped = mapPlayer(row, row.user_id ? names.get(row.user_id) ?? "Player" : row.guest_nickname ?? "Guest"); if (row.user_id) { const rp = ratings.get(row.user_id) ?? 0; mapped.rp = rp; mapped.rankTier = tierForRp(rp); } return mapped; });
+}
+
+export async function leavePublicSpectator(roomId: string): Promise<void> {
+  const user = await currentUser();
+  if (user) await createAdminClient().from("multiplayer_spectators").delete().eq("room_id", roomId).eq("user_id", user.id);
+}
 export async function getMultiplayerProfile(): Promise<MultiplayerProfile | null> { return notImplemented(); }
 export async function getMultiplayerRatingLeaderboard(): Promise<MultiplayerRatingLeaderboardEntry[]> { return notImplemented(); }
