@@ -49,10 +49,6 @@ interface ChallengeStatisticsRow {
 const CHALLENGE_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const ANSWER_CHOICES: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
-function notImplemented(): never {
-  throw new Error("Challenge service is not implemented yet.");
-}
-
 function validateChallengeDate(date: string): string {
   if (!CHALLENGE_DATE_PATTERN.test(date)) {
     throw new Error(`Invalid challenge date "${date}". Expected YYYY-MM-DD.`);
@@ -306,5 +302,25 @@ export async function hasCompletedToday(): Promise<boolean> {
 }
 
 export async function getChallengeOverview(): Promise<ChallengeOverview> {
-  return notImplemented();
+  const [
+    dailyChallenge,
+    attempt,
+    statistics,
+    leaderboard,
+    userLeaderboardEntry,
+  ] = await Promise.all([
+    getTodayChallenge(),
+    getUserChallengeAttempt(),
+    getChallengeStatistics(),
+    getChallengeLeaderboard(),
+    getUserLeaderboardPosition(),
+  ]);
+
+  return {
+    dailyChallenge,
+    attempt,
+    statistics,
+    leaderboard,
+    userLeaderboardEntry,
+  };
 }
