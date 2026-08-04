@@ -88,7 +88,7 @@ export async function getChallengeByDate(
   date: string
 ): Promise<DailyChallenge | null> {
   const challengeDate = validateChallengeDate(date);
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("daily_challenges")
     .select("challenge_date, question_id")
@@ -258,8 +258,8 @@ export async function getChallengeStatistics(): Promise<ChallengeUserStatistics>
 export async function getChallengeLeaderboard(): Promise<
   ChallengeLeaderboardEntry[]
 > {
-  const admin = createAdminClient();
-  const { data, error } = await admin.rpc("get_challenge_leaderboard");
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_challenge_leaderboard");
 
   if (error) {
     throw new Error(`Unable to load the Challenge leaderboard: ${error.message}`);
@@ -281,10 +281,8 @@ export async function getUserLeaderboardPosition(): Promise<
   const { data: authData } = await supabase.auth.getUser();
   if (!authData.user) return null;
 
-  const admin = createAdminClient();
-  const { data, error } = await admin.rpc(
-    "get_challenge_leaderboard_position",
-    { p_user_id: authData.user.id }
+  const { data, error } = await supabase.rpc(
+    "get_my_challenge_leaderboard_position"
   );
 
   if (error) {
