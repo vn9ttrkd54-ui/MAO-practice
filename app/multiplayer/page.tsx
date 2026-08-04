@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { joinPrivateRoomAction, joinPublicRoomAction, spectatePublicRoomAction } from "@/app/multiplayer/actions";
-import { listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms } from "@/lib/services/multiplayerService";
+import { getMultiplayerProfile, getMultiplayerRatingLeaderboard, listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
 
 interface MultiplayerPageProps {
@@ -9,20 +9,24 @@ interface MultiplayerPageProps {
 }
 
 const fieldClass = "mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm";
+const rankSteps = [{ name: "Novice", rp: 0 }, { name: "Bronze", rp: 100 }, { name: "Silver", rp: 250 }, { name: "Gold", rp: 450 }, { name: "Platinum", rp: 700 }, { name: "Diamond", rp: 1000 }, { name: "Master", rp: 1350 }, { name: "Grandmaster", rp: 1750 }, { name: "Legend", rp: 2200 }];
 
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
-  const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms] = await Promise.all([searchParams, createClient(), listPublicRooms(), listOngoingPublicMatches(), listMyActiveMultiplayerRooms()]);
+  const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms, profile, ratingLeaderboard] = await Promise.all([searchParams, createClient(), listPublicRooms(), listOngoingPublicMatches(), listMyActiveMultiplayerRooms(), getMultiplayerProfile(), getMultiplayerRatingLeaderboard()]);
   const { data: { user } } = await supabase.auth.getUser();
   const activeInProgress = activeRooms.filter((room) => room.status === "in-progress");
   const activeRoomIds = new Set(activeInProgress.map((room) => room.id));
   const combinedOngoingMatches = [...new Map([...ongoingMatches, ...activeInProgress].map((room) => [room.id, room])).values()];
+  const currentRankIndex = profile ? rankSteps.findIndex((rank) => rank.name === profile.rankTier) : -1;
+  const nextRank = currentRankIndex >= 0 ? rankSteps[currentRankIndex + 1] : undefined;
+  const currentRankRp = currentRankIndex >= 0 ? rankSteps[currentRankIndex].rp : 0;
+  const rankProgress = profile ? nextRank ? Math.min(100, Math.round((profile.rp - currentRankRp) / (nextRank.rp - currentRankRp) * 100)) : 100 : 0;
 
   return (
-    <main className="mx-auto max-w-4xl px-5 py-8 sm:px-8">
-      <header>
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Multiplayer</p>
-        <h1 className="mt-1.5 text-3xl font-bold tracking-tight">Create or join a private room</h1>
-        <p className="mt-2 max-w-2xl text-sm text-gray-600">Enter a code to join, or create a room with your own settings.</p>
+    <main className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
+      <header className="flex items-start justify-between gap-5">
+        <div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Multiplayer</p><h1 className="mt-1.5 text-3xl font-bold tracking-tight">Create or join a private room</h1><p className="mt-2 max-w-2xl text-sm text-gray-600">Enter a code to join, or create a room with your own settings.</p></div>
+        {profile ? <section className="hidden w-52 shrink-0 rounded-2xl border bg-white p-4 shadow-sm sm:block"><div className="flex items-start justify-between gap-2"><div><p className="truncate text-sm font-bold">{profile.username}</p><p className="text-xs text-gray-500">#{profile.globalRank} globally</p></div><span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-bold text-blue-800">{profile.rankTier}</span></div><p className="mt-3 text-xl font-bold tabular-nums">{profile.rp} RP</p><div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100"><div className="h-full rounded-full bg-blue-600" style={{ width: `${rankProgress}%` }} /></div><p className="mt-1 text-xs text-gray-500">{nextRank ? `${nextRank.rp - profile.rp} RP to ${nextRank.name}` : "Highest rank reached"}</p></section> : null}
       </header>
 
       {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
@@ -48,12 +52,12 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
         </section>
       </div>
 
-      <section className="mt-8">
+      <div className="mt-8 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_15rem]"><section>
         <div><h2 className="text-xl font-bold">Public rooms</h2><p className="mt-1 text-sm text-gray-600">Ranked · 60 seconds per question · up to 20 players</p></div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {publicRooms.map((room) => <article key={room.id} className="rounded-2xl border bg-white p-4 shadow-sm"><div className="flex items-start justify-between gap-3"><div><p className="text-lg font-bold">{room.settings.division}</p><p className="text-sm text-gray-600">{room.settings.questionCount} questions</p></div><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold">{room.playerCount}/20</span></div><p className="mt-3 text-xs text-gray-500">{room.status === "countdown" ? "Starting soon" : "Waiting for players"}</p>{user ? <form action={joinPublicRoomAction} className="mt-3"><input type="hidden" name="roomId" value={room.id} /><button className="w-full rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-700">Join</button></form> : <Link href="/login" className="mt-3 flex w-full items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-gray-50">Sign in to join</Link>}</article>)}
         </div>
-      </section>
+      </section><aside className="rounded-2xl border bg-white p-4 shadow-sm"><div className="flex items-center justify-between"><h2 className="font-bold">RP leaderboard</h2><span className="text-xs text-gray-500">Top 10</span></div>{ratingLeaderboard.length > 0 ? <ol className="mt-3 divide-y">{ratingLeaderboard.map((entry) => <li key={entry.userId} className="flex items-center justify-between gap-2 py-2.5 text-sm"><div className="min-w-0"><p className="truncate font-semibold">#{entry.globalRank} {entry.username}</p><p className="text-xs text-gray-500">{entry.rankTier}</p></div><span className="shrink-0 font-bold tabular-nums">{entry.rp}</span></li>)}</ol> : <p className="mt-3 text-sm text-gray-500">No ranked players yet.</p>}</aside></div>
 
       {combinedOngoingMatches.length > 0 ? <section className="mt-8"><div><h2 className="text-xl font-bold">Ongoing games</h2><p className="mt-1 text-sm text-gray-600">Matches currently in progress</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{combinedOngoingMatches.map((room) => { const canRejoin = activeRoomIds.has(room.id); return <article key={room.id} className="rounded-2xl border bg-gray-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount}</p><p className="mt-1 text-sm text-gray-600">{room.visibility === "private" ? `Private · ${room.code}` : "Public"} · {room.playerCount} players</p></div><span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">Live</span></div>{canRejoin ? <Link href={`/multiplayer/room/${room.id}/play`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">Rejoin Game</Link> : user ? <form action={spectatePublicRoomAction} className="mt-3"><input type="hidden" name="roomId" value={room.id} /><button className="w-full rounded-lg border border-blue-600 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">Spectate</button></form> : <Link href="/login" className="mt-3 flex w-full items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-white">Sign in to spectate</Link>}</article>; })}</div></section> : null}
     </main>
