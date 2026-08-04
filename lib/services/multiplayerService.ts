@@ -72,10 +72,6 @@ interface SpectatorRow {
   joined_at: string;
 }
 
-function notImplemented(): never {
-  throw new Error("This multiplayer feature is not implemented yet.");
-}
-
 function validateSettings(settings: MultiplayerRoomSettings) {
   if (!["Mu", "Alpha", "Theta"].includes(settings.division)) {
     throw new Error("Choose a valid division.");
@@ -850,7 +846,6 @@ export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   }
   return mapRoom(updatedRoom, playerCount);
 }
-export async function startPrivateMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
 export async function leaveMultiplayerRoom(roomId: string): Promise<void> {
   const access = await getMultiplayerRoom(roomId);
   if (!access) throw new Error("Room not found.");
