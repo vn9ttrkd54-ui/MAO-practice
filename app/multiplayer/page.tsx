@@ -1,4 +1,10 @@
-sed: --: No such file or directory
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+	LC_ALL = "C.UTF-8",
+	LC_CTYPE = "C.UTF-8",
+	LANG = "C.UTF-8"
+    are supported and installed on your system.
+perl: warning: Falling back to the standard locale ("C").
 import { createPrivateRoomAction, joinPrivateRoomAction } from "@/app/multiplayer/actions";
 import { createClient } from "@/lib/supabase/server";
 
