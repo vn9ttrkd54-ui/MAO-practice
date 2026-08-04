@@ -470,18 +470,23 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
       admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null),
     ]);
     if (now >= new Date(data.ends_at).getTime() || ((activePlayerCount ?? 0) > 0 && (submissionCount ?? 0) >= (activePlayerCount ?? 0))) {
+      if (data.question_number >= room.question_count) {
+        await admin.from("multiplayer_rooms").update({ status: "completed", completed_at: new Date(now).toISOString() }).eq("id", roomId).eq("status", "in-progress");
+        await finalizeCompletedMatch(roomId);
+        return null;
+      }
       const response = await admin.from("multiplayer_match_questions").update({ intermission_ends_at: new Date(now + 10_000).toISOString() }).eq("room_id", roomId).eq("question_number", data.question_number).select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").single<MatchQuestionRow>();
       if (!response.error) data = response.data;
     }
   }
 
-  if (data.intermission_ends_at && now >= new Date(data.intermission_ends_at).getTime()) {
-    if (data.question_number >= room.question_count) {
-      await admin.from("multiplayer_rooms").update({ status: "completed", completed_at: new Date(now).toISOString() }).eq("id", roomId).eq("status", "in-progress");
-      await finalizeCompletedMatch(roomId);
-      return null;
-    }
+  if (data.intermission_ends_at && data.question_number >= room.question_count) {
+    await admin.from("multiplayer_rooms").update({ status: "completed", completed_at: new Date(now).toISOString() }).eq("id", roomId).eq("status", "in-progress");
+    await finalizeCompletedMatch(roomId);
+    return null;
+  }
 
+  if (data.intermission_ends_at && now >= new Date(data.intermission_ends_at).getTime()) {
     const nextQuestionNumber = data.question_number + 1;
     const nextResponse = await admin.from("multiplayer_match_questions").update({
       started_at: new Date(now).toISOString(),
@@ -524,7 +529,7 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
   };
 }
 
-export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission): Promise<MultiplayerRoundState> {
+export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission): Promise<MultiplayerRoundState | null> {
   if (!["A", "B", "C", "D", "E"].includes(input.selectedAnswer)) throw new Error("Choose a valid answer.");
   const lobby = await getPrivateLobby(input.roomId);
   if (!lobby || lobby.room.status !== "in-progress") throw new Error("This match is not accepting answers.");
@@ -570,6 +575,11 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
   ]);
   let intermissionEndsAt: string | null = null;
   if ((activePlayerCount ?? 0) > 0 && (submissionCount ?? 0) >= (activePlayerCount ?? 0)) {
+    if (matchQuestion.question_number >= room.question_count) {
+      await admin.from("multiplayer_rooms").update({ status: "completed", completed_at: new Date().toISOString() }).eq("id", input.roomId).eq("status", "in-progress");
+      await finalizeCompletedMatch(input.roomId);
+      return null;
+    }
     intermissionEndsAt = new Date(Date.now() + 10_000).toISOString();
     await admin.from("multiplayer_match_questions").update({ intermission_ends_at: intermissionEndsAt }).eq("room_id", input.roomId).eq("question_number", matchQuestion.question_number).is("intermission_ends_at", null);
   }
