@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import AchievementsPreviewSection from "@/components/dashboard/AchievementsPreviewSection";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import MultiplayerSection from "@/components/dashboard/MultiplayerSection";
 import OverviewSection from "@/components/dashboard/OverviewSection";
@@ -113,12 +112,6 @@ export default function DashboardClient() {
       />
 
       <TrainerChartsSection trainer={trainer} />
-
-      <AchievementsPreviewSection
-        level={level}
-        trainer={trainer}
-        questionBank={questionBank}
-      />
 
       <RecentActivitySection
         activities={recentActivity}
