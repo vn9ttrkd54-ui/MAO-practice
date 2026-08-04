@@ -31,6 +31,14 @@ interface ChallengeAttemptRow {
   submitted_at: string;
 }
 
+interface ChallengeLeaderboardRow {
+  user_id: string;
+  username: string;
+  current_streak: number;
+  longest_streak: number;
+  rank: number | string;
+}
+
 const CHALLENGE_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const ANSWER_CHOICES: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
@@ -189,7 +197,20 @@ export async function getChallengeStatistics(): Promise<ChallengeUserStatistics>
 export async function getChallengeLeaderboard(): Promise<
   ChallengeLeaderboardEntry[]
 > {
-  return notImplemented();
+  const admin = createAdminClient();
+  const { data, error } = await admin.rpc("get_challenge_leaderboard");
+
+  if (error) {
+    throw new Error(`Unable to load the Challenge leaderboard: ${error.message}`);
+  }
+
+  return ((data ?? []) as ChallengeLeaderboardRow[]).map((entry) => ({
+    userId: entry.user_id,
+    username: entry.username,
+    currentStreak: entry.current_streak,
+    longestStreak: entry.longest_streak,
+    rank: Number(entry.rank),
+  }));
 }
 
 export async function getUserLeaderboardPosition(): Promise<
