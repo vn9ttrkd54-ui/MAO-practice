@@ -3,7 +3,7 @@ import type {
   ChallengeQuestionId,
 } from "@/types/challenge";
 
-export const challengeQuestions: readonly ChallengeQuestion[] = [
+export const challengeQuestions = [
   {
     id: "CH-0001",
     division: "Mu",
@@ -94,10 +94,47 @@ export const challengeQuestions: readonly ChallengeQuestion[] = [
     solution:
       "There are 36 equally likely ordered outcomes. The four outcomes with sum 9 are (3, 6), (4, 5), (5, 4), and (6, 3), so the probability is 4/36 = 1/9.",
   },
-];
+] as const satisfies readonly ChallengeQuestion[];
+
+function buildChallengeQuestionMap(
+  questions: readonly ChallengeQuestion[]
+) {
+  const questionMap = new Map<
+    ChallengeQuestionId,
+    ChallengeQuestion
+  >();
+
+  for (const question of questions) {
+    if (questionMap.has(question.id)) {
+      throw new Error(
+        `Duplicate Challenge question ID: ${question.id}`
+      );
+    }
+
+    questionMap.set(question.id, question);
+  }
+
+  return questionMap;
+}
+
+const challengeQuestionById = buildChallengeQuestionMap(
+  challengeQuestions
+);
 
 export function getChallengeQuestionById(
   id: ChallengeQuestionId
 ): ChallengeQuestion | null {
-  return challengeQuestions.find((question) => question.id === id) ?? null;
+  return challengeQuestionById.get(id) ?? null;
+}
+
+export function requireChallengeQuestionById(
+  id: ChallengeQuestionId
+): ChallengeQuestion {
+  const question = getChallengeQuestionById(id);
+
+  if (!question) {
+    throw new Error(`Challenge question not found: ${id}`);
+  }
+
+  return question;
 }
