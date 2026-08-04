@@ -14,6 +14,7 @@ export type {
   ChallengeLeaderboardEntry,
   ChallengeOverview,
   ChallengeQuestion,
+  ChallengeQuestionId,
   ChallengeUserStatistics,
   DailyChallenge,
   SubmitChallengeInput,

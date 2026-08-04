@@ -1,8 +1,12 @@
 import type { AnswerChoice, Division } from "@/types/question";
 
+export type ChallengeQuestionId = `CH-${string}`;
+
 export interface ChallengeQuestion {
-  id: number;
+  id: ChallengeQuestionId;
   division: Division;
+  topic: string;
+  difficulty: number;
   question: string;
   choices: Record<AnswerChoice, string>;
   answer: AnswerChoice;
@@ -11,7 +15,7 @@ export interface ChallengeQuestion {
 
 export interface DailyChallenge {
   date: string;
-  questionId: number;
+  questionId: ChallengeQuestionId;
   question: ChallengeQuestion;
 }
 
@@ -19,7 +23,7 @@ export interface ChallengeAttempt {
   id: string;
   userId: string;
   challengeDate: string;
-  questionId: number;
+  questionId: ChallengeQuestionId;
   selectedAnswer: AnswerChoice;
   correct: boolean;
   submittedAt: number;
@@ -51,6 +55,6 @@ export interface ChallengeOverview {
 
 export interface SubmitChallengeInput {
   challengeDate: string;
-  questionId: number;
+  questionId: ChallengeQuestionId;
   selectedAnswer: AnswerChoice;
 }
