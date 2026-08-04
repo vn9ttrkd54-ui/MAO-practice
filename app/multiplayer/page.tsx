@@ -1,4 +1,6 @@
-import { createPrivateRoomAction, joinPrivateRoomAction } from "@/app/multiplayer/actions";
+import Link from "next/link";
+
+import { joinPrivateRoomAction } from "@/app/multiplayer/actions";
 import { createClient } from "@/lib/supabase/server";
 
 interface MultiplayerPageProps {
@@ -21,7 +23,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
 
       {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <section className="rounded-3xl border bg-white p-6 shadow-sm">
           <h2 className="text-xl font-bold">Join with a code</h2>
           <form action={joinPrivateRoomAction} className="mt-5 space-y-4">
@@ -37,24 +39,8 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
 
         <section className="rounded-3xl border bg-white p-6 shadow-sm">
           <h2 className="text-xl font-bold">Create a private room</h2>
-          <form action={createPrivateRoomAction} className="mt-5 grid gap-4 sm:grid-cols-2">
-            {!user ? <label className="block text-sm font-semibold sm:col-span-2">Your guest nickname
-              <input name="guestNickname" required minLength={3} maxLength={20} pattern="[A-Za-z0-9_ ]{3,20}" placeholder="MathPlayer" className={fieldClass} />
-            </label> : null}
-            <label className="block text-sm font-semibold">Division
-              <select name="division" className={fieldClass}><option>Mu</option><option>Alpha</option><option>Theta</option></select>
-            </label>
-            <label className="block text-sm font-semibold">Questions
-              <input name="questionCount" type="number" min={1} max={30} defaultValue={5} required className={fieldClass} />
-            </label>
-            <label className="block text-sm font-semibold">Time per question
-              <select name="secondsPerQuestion" defaultValue="60" className={fieldClass}><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="90">90 seconds</option><option value="120">120 seconds</option></select>
-            </label>
-            <label className="block text-sm font-semibold">Rating mode
-              <select name="mode" defaultValue="unranked" className={fieldClass}><option value="unranked">Unranked</option><option value="ranked">Ranked (5+ questions)</option></select>
-            </label>
-            <button className="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 sm:col-span-2">Create private room</button>
-          </form>
+          <p className="mt-3 text-sm text-gray-600">Choose the division, question count, timer, and rating mode on the next page.</p>
+          <Link href="/multiplayer/create" className="mt-8 flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700">Create Room</Link>
         </section>
       </div>
 
