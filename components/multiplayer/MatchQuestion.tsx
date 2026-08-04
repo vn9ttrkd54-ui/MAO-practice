@@ -10,7 +10,7 @@ const labels: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
 function SpectatorList({ round }: { round: MultiplayerRoundState }) {
   if (round.spectators.length === 0) return null;
-  return <aside className="mt-4 rounded-2xl border bg-gray-50 p-4"><h2 className="text-sm font-bold">Spectators · {round.spectators.length}</h2><div className="mt-2 flex flex-wrap gap-2">{round.spectators.map((person) => <span key={person.playerId} className="rounded-full bg-white px-3 py-1 text-xs shadow-sm">{person.displayName} · {person.rankTier} · {person.rp} RP</span>)}</div></aside>;
+  return <aside className="rounded-2xl border bg-gray-50 p-4"><h2 className="text-sm font-bold">Spectators · {round.spectators.length}</h2><div className="mt-3 space-y-2">{round.spectators.map((person) => <div key={person.playerId} className="rounded-xl bg-white px-3 py-2 shadow-sm"><p className="truncate text-sm font-semibold">{person.displayName}</p><p className="mt-0.5 text-xs text-gray-500">{person.rankTier} · {person.rp} RP</p></div>)}</div></aside>;
 }
 
 export default function MatchQuestion({ round: initialRound }: { round: MultiplayerRoundState }) {
@@ -72,19 +72,20 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const inIntermission = round.intermissionEndsAt !== null;
   if (inIntermission || submitted || showLeaderboard) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-3xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 10}s` : "Waiting for the other players…"}</p></header><ol className="mt-6 divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between px-5 py-4"><span className="font-semibold">{index + 1}. {player.displayName}</span><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></main>;
+    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 10}s` : "Waiting for the other players…"}</p></header><div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between px-5 py-4"><span className="font-semibold">{index + 1}. {player.displayName}</span><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-8 sm:px-8">
+    <main className="mx-auto max-w-6xl px-6 py-8 sm:px-8">
       <header className="flex items-center justify-between gap-4"><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
-      <section className="mt-6 rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
+      <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
         <p className="text-lg font-semibold leading-8">{round.question.question}</p>
         <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><span>{choice}</span></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
         <button onClick={submitAnswer} disabled={!selected || submitted || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{submitted ? "Answer submitted" : "Submit Answer"}</button>
       </section>
       <SpectatorList round={round} />
+      </div>
     </main>
   );
 }
