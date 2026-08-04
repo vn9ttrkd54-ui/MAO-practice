@@ -1,3 +1,4 @@
+sed: --: No such file or directory
 import { questions } from "@/data/questions";
 import {
   calculateQuestionBankSummary,
@@ -5,7 +6,7 @@ import {
 } from "@/lib/dashboard";
 import { getLevelProgress } from "@/lib/services/levelService";
 import { getTrainerHistory } from "@/lib/services/trainerHistoryService";
-import { getMultiplayerSummary } from "@/lib/multiplayer";
+import { getMultiplayerSummary } from "@/lib/multiplayerSummary";
 import { createClient } from "@/lib/supabase/client";
 
 import type { AttemptResult } from "@/types/progress";
