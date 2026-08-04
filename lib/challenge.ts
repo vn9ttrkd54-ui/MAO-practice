@@ -5,10 +5,13 @@ export {
 } from "@/data/challengeQuestions";
 
 export {
+  getChallengeByDate,
   getChallengeLeaderboard,
   getChallengeOverview,
   getChallengeStatistics,
+  getCurrentChallengeDate,
   getTodayChallenge,
+  getTodayChallengeQuestion,
   getUserChallengeAttempt,
   getUserLeaderboardPosition,
   hasCompletedToday,
