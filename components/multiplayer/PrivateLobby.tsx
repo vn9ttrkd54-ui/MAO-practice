@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { startPrivateRoomAction } from "@/app/multiplayer/actions";
 import type { MultiplayerLobbyState } from "@/types/multiplayer";
@@ -12,13 +13,20 @@ interface PrivateLobbyProps {
 
 export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps) {
   const [lobby, setLobby] = useState(initialLobby);
+  const router = useRouter();
 
   useEffect(() => {
     if (lobby.room.status !== "waiting") return;
     const endpoint = `/api/multiplayer/rooms/${lobby.room.id}/lobby`;
     const timer = window.setInterval(async () => {
       const response = await fetch(endpoint, { cache: "no-store" });
-      if (response.ok) setLobby(await response.json() as MultiplayerLobbyState);
+      if (response.ok) {
+        const nextLobby = await response.json() as MultiplayerLobbyState;
+        setLobby(nextLobby);
+        if (nextLobby.room.status === "in-progress") {
+          router.replace(`/multiplayer/room/${nextLobby.room.id}/play`);
+        }
+      }
     }, 2000);
 
     function disconnect() {
@@ -30,7 +38,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
       window.clearInterval(timer);
       window.removeEventListener("pagehide", disconnect);
     };
-  }, [lobby.room.id, lobby.room.status]);
+  }, [lobby.room.id, lobby.room.status, router]);
 
   const isHost = lobby.currentPlayer.isHost;
   const started = lobby.room.status !== "waiting";
