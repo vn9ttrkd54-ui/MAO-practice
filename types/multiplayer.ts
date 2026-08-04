@@ -138,6 +138,17 @@ export interface MultiplayerMatchResult {
   finalLeaderboard: MultiplayerPlayer[];
 }
 
+export interface MultiplayerMatchHistoryEntry {
+  roomId: string;
+  division: Division;
+  questionCount: number;
+  placement: number;
+  score: number;
+  ranked: boolean;
+  rpChange: number | null;
+  completedAt: number;
+}
+
 export interface MultiplayerProfile {
   userId: string;
   username: string;
