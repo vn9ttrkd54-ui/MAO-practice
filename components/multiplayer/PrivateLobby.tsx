@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { leaveMultiplayerRoomAction, startPrivateRoomAction } from "@/app/multiplayer/actions";
+import { RankPill } from "@/components/multiplayer/RankTheme";
 import type { MultiplayerLobbyState } from "@/types/multiplayer";
 
 interface PrivateLobbyProps {
@@ -68,7 +69,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
               <li key={player.playerId} className="flex items-center justify-between gap-4 px-4 py-3">
                 <div>
                   <p className="font-semibold">{player.displayName}{player.isHost ? <span className="ml-2 text-xs text-blue-600">HOST</span> : null}</p>
-                  <p className="text-xs text-gray-500">{player.isGuest ? "Guest · Unranked" : `${player.rankTier} · ${player.rp} RP`}</p>
+                  <div className="mt-1 flex items-center gap-2">{player.isGuest ? <RankPill rank={null} /> : <RankPill rank={player.rankTier} />}<span className="text-xs text-gray-500">{player.isGuest ? "Guest" : `${player.rp} RP`}</span></div>
                 </div>
                 <span className="h-2.5 w-2.5 rounded-full bg-green-500" aria-label="Connected" />
               </li>
