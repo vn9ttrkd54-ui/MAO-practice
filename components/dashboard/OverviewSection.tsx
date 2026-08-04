@@ -233,8 +233,8 @@ export default function OverviewSection({
             </div>
           </div>
 
-          <p className={`${rankSecondaryClass} mt-5 text-sm leading-6`}>
-            {multiplayer.rating ?? 0} RP earned in ranked multiplayer.
+          <p className="mt-5 text-3xl font-bold tabular-nums">
+            {multiplayer.rating ?? 0}
           </p>
 
           <Link href="/multiplayer" className={`${rankChipClass} mt-4 inline-flex rounded-full border px-3 py-1 text-xs font-semibold shadow-sm`}>Play Multiplayer</Link>
