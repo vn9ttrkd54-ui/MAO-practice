@@ -10,9 +10,9 @@ function value(formData: FormData, key: string) {
   return String(formData.get(key) ?? "");
 }
 
-function errorRedirect(error: unknown): never {
+function errorRedirect(error: unknown, path = "/multiplayer"): never {
   const message = error instanceof Error ? error.message : "Something went wrong. Please try again.";
-  redirect(`/multiplayer?error=${encodeURIComponent(message)}`);
+  redirect(`${path}?error=${encodeURIComponent(message)}`);
 }
 
 export async function createPrivateRoomAction(formData: FormData) {
@@ -29,7 +29,7 @@ export async function createPrivateRoomAction(formData: FormData) {
     });
     roomId = room.id;
   } catch (error) {
-    errorRedirect(error);
+    errorRedirect(error, "/multiplayer/create");
   }
   redirect(`/multiplayer/room/${roomId}`);
 }
