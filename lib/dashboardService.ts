@@ -41,6 +41,10 @@ export interface DashboardData {
   multiplayer: ReturnType<typeof getMultiplayerSummary>;
   trainer: ReturnType<typeof calculateTrainerHistorySummary>;
   questionBank: ReturnType<typeof calculateQuestionBankSummary>;
+  challenge: {
+    currentStreak: number;
+    longestStreak: number;
+  };
   level: Awaited<ReturnType<typeof getLevelProgress>>;
   recentTrainerSessions: Awaited<
     ReturnType<typeof getTrainerHistory>
@@ -61,6 +65,15 @@ interface BookmarkRow {
 
 interface ProfileRow {
   username: string;
+}
+
+interface ChallengeStatisticsRow {
+  current_streak: number;
+  longest_streak: number;
+}
+
+interface ChallengeAttemptDateRow {
+  challenge_date: string;
 }
 
 export async function getDashboardData():
@@ -87,6 +100,8 @@ export async function getDashboardData():
     progressResponse,
     bookmarksResponse,
     profileResponse,
+    challengeStatisticsResponse,
+    latestChallengeAttemptResponse,
   ] = await Promise.all([
     getLevelProgress(),
     getTrainerHistory(),
@@ -105,6 +120,18 @@ export async function getDashboardData():
       .select("username")
       .eq("id", userId)
       .single<ProfileRow>(),
+    supabase
+      .from("challenge_user_statistics")
+      .select("current_streak, longest_streak")
+      .eq("user_id", userId)
+      .maybeSingle<ChallengeStatisticsRow>(),
+    supabase
+      .from("challenge_attempts")
+      .select("challenge_date")
+      .eq("user_id", userId)
+      .order("challenge_date", { ascending: false })
+      .limit(1)
+      .maybeSingle<ChallengeAttemptDateRow>(),
   ]);
 
   if (progressResponse.error) {
@@ -118,6 +145,26 @@ export async function getDashboardData():
   if (profileResponse.error) {
     throw new Error(profileResponse.error.message);
   }
+
+  if (challengeStatisticsResponse.error) {
+    throw new Error(challengeStatisticsResponse.error.message);
+  }
+
+  if (latestChallengeAttemptResponse.error) {
+    throw new Error(latestChallengeAttemptResponse.error.message);
+  }
+
+  const challengeStatistics = challengeStatisticsResponse.data;
+  const latestChallengeAttempt = latestChallengeAttemptResponse.data;
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
+  const activeCurrentStreak =
+    challengeStatistics &&
+    latestChallengeAttempt &&
+    latestChallengeAttempt.challenge_date >= yesterday
+      ? challengeStatistics.current_streak
+      : 0;
 
   const progressRows =
     (progressResponse.data ?? []) as ProgressRow[];
@@ -236,6 +283,10 @@ export async function getDashboardData():
       progressByQuestionId,
       bookmarkedQuestionIds
     ),
+    challenge: {
+      currentStreak: activeCurrentStreak,
+      longestStreak: challengeStatistics?.longest_streak ?? 0,
+    },
     level,
     recentTrainerSessions: trainerHistory.slice(0, 5),
     recentActivity,
