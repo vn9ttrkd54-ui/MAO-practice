@@ -1,4 +1,5 @@
 import { Crown, Flame, Gem, Hexagon, Medal, Shield, Sparkles, Sprout, Trophy, type LucideIcon } from "lucide-react";
+import styles from "@/components/multiplayer/rankTheme.module.css";
 
 const rankIcons: Record<string, LucideIcon> = {
   Novice: Sprout, Bronze: Shield, Silver: Medal, Gold: Trophy,
@@ -7,8 +8,13 @@ const rankIcons: Record<string, LucideIcon> = {
 };
 
 export function rankThemeClass(rank: string) {
-  return `rank-surface rank-${rank.toLowerCase().replaceAll(" ", "-")}`;
+  const key = rank.toLowerCase().replaceAll(" ", "-") as keyof typeof styles;
+  return `${styles.surface} ${styles[key] ?? ""}`;
 }
+
+export const rankSecondaryClass = styles.secondary;
+export const rankIconClass = styles.icon;
+export const rankChipClass = styles.chip;
 
 export function RankIcon({ rank, size = 24 }: { rank: string; size?: number }) {
   const Icon = rankIcons[rank] ?? Sprout;
