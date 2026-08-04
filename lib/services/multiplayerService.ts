@@ -297,7 +297,7 @@ export async function updatePrivateRoomPresence(roomId: string, connected: boole
 
 export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyState | null> {
   const access = await getMultiplayerRoom(roomId);
-  if (!access || access.room.visibility !== "private") return null;
+  if (!access) return null;
 
   const admin = createAdminClient();
   await updatePrivateRoomPresence(roomId, true);
@@ -347,6 +347,7 @@ export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyS
 export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom> {
   const lobby = await getPrivateLobby(roomId);
   if (!lobby) throw new Error("Private room not found.");
+  if (lobby.room.visibility !== "private") throw new Error("This is not a private room.");
   if (!lobby.currentPlayer.isHost) throw new Error("Only the host can start this room.");
   if (lobby.room.status !== "waiting") throw new Error("This room has already started.");
 
@@ -697,9 +698,38 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
   };
 }
 
-export async function listPublicRooms(): Promise<MultiplayerRoom[]> { return notImplemented(); }
+export async function listPublicRooms(): Promise<MultiplayerRoom[]> {
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").in("status", ["waiting", "countdown"]).order("division").order("question_count");
+  if (error) throw new Error(`Unable to load public rooms: ${error.message}`);
+  return Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
+    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).eq("connected", true).is("left_at", null);
+    return mapRoom(room, count ?? 0);
+  }));
+}
 export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> { return notImplemented(); }
-export async function joinPublicRoom(_roomId: string): Promise<MultiplayerRoom> { void _roomId; return notImplemented(); }
+export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
+  const user = await currentUser();
+  if (!user) throw new Error("Sign in or create an account to join public rooms.");
+  const admin = createAdminClient();
+  const { data: room, error } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).eq("visibility", "public").maybeSingle<RoomRow>();
+  if (error || !room) throw new Error("Public room not found.");
+  if (!["waiting", "countdown"].includes(room.status)) throw new Error("That public room has already started.");
+
+  const { data: existing } = await admin.from("multiplayer_players").select("id").eq("room_id", roomId).eq("user_id", user.id).is("left_at", null).maybeSingle();
+  const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null);
+  if (!existing && (count ?? 0) >= room.capacity) throw new Error("That public room is full.");
+  if (!existing) await addPlayer(room);
+  const playerCount = (count ?? 0) + (existing ? 0 : 1);
+
+  let updatedRoom = room;
+  if (playerCount >= 2 && room.status === "waiting") {
+    const countdownEndsAt = new Date(Date.now() + (playerCount >= room.capacity ? 0 : 60_000)).toISOString();
+    const response = await admin.from("multiplayer_rooms").update({ status: "countdown", countdown_ends_at: countdownEndsAt }).eq("id", roomId).eq("status", "waiting").select("*").single<RoomRow>();
+    if (!response.error) updatedRoom = response.data;
+  }
+  return mapRoom(updatedRoom, playerCount);
+}
 export async function startPrivateMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
 export async function leaveMultiplayerRoom(_roomId: string): Promise<void> { void _roomId; return notImplemented(); }
 export async function spectatePublicMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
