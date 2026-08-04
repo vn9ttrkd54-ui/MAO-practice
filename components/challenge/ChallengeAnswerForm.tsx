@@ -15,22 +15,24 @@ interface ChallengeAnswerFormProps {
   challengeDate: string;
   questionId: ChallengeQuestionId;
   choices: Record<AnswerChoice, string>;
-  existingAnswer: AnswerChoice | null;
+  initialResult: ChallengeSubmissionResult | null;
 }
 
 export default function ChallengeAnswerForm({
   challengeDate,
   questionId,
   choices,
-  existingAnswer,
+  initialResult,
 }: ChallengeAnswerFormProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<AnswerChoice | null>(
-    existingAnswer
+    initialResult?.selectedAnswer ?? null
   );
-  const [result, setResult] = useState<ChallengeSubmissionResult | null>(null);
+  const [result, setResult] = useState<ChallengeSubmissionResult | null>(
+    initialResult
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const completed = existingAnswer !== null || result !== null;
+  const completed = result !== null;
 
   async function handleSubmit() {
     if (!selectedAnswer || completed || isSubmitting) return;
@@ -90,9 +92,49 @@ export default function ChallengeAnswerForm({
       </button>
 
       {result && (
-        <p className="mt-4 text-sm font-medium text-gray-600">
-          Answer received. {result.saved ? "Your attempt was saved." : "Sign in to save future attempts and streaks."}
-        </p>
+        <section
+          className={`mt-8 rounded-2xl border p-6 ${
+            result.correct
+              ? "border-green-200 bg-green-50"
+              : "border-red-200 bg-red-50"
+          }`}
+        >
+          <h3 className="text-2xl font-bold">
+            {result.correct ? "Correct!" : "Incorrect"}
+          </h3>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+                Your Answer
+              </p>
+              <p className="mt-1 font-semibold">
+                {result.selectedAnswer}. {choices[result.selectedAnswer]}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+                Correct Answer
+              </p>
+              <p className="mt-1 font-semibold">
+                {result.correctAnswer}. {choices[result.correctAnswer]}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 border-t pt-6">
+            <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+              Official Solution
+            </p>
+            <p className="mt-2 leading-7 text-gray-700">{result.solution}</p>
+          </div>
+
+          <p className="mt-6 text-sm font-medium text-gray-600">
+            {result.saved
+              ? "Your attempt and streak were saved. Come back tomorrow!"
+              : "This guest attempt was not saved. Sign in to build a streak."}
+          </p>
+        </section>
       )}
       {error && <p className="mt-4 text-sm font-medium text-red-600">{error}</p>}
     </>
