@@ -94,11 +94,15 @@ export interface MultiplayerAnswerSubmission {
 
 export interface MultiplayerRoundResult {
   questionId: number;
+  questionNumber: number;
+  question: string;
+  choices: string[];
   selectedAnswer: AnswerChoice | null;
   correctAnswer: AnswerChoice;
   correct: boolean;
   answerTimeMs: number | null;
   pointsEarned: number;
+  solution: string;
 }
 
 export interface MultiplayerRatingChange {
