@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import type { MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
@@ -8,6 +9,7 @@ import type { AnswerChoice } from "@/types/question";
 const labels: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
 export default function MatchQuestion({ round: initialRound }: { round: MultiplayerRoundState }) {
+  const router = useRouter();
   const [round, setRound] = useState(initialRound);
   const [now, setNow] = useState<number | null>(null);
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
@@ -25,6 +27,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, { cache: "no-store" });
       if (response.status === 204) {
         setFinished(true);
+        router.replace(`/multiplayer/room/${round.roomId}/results`);
       } else if (response.ok) {
         const nextRound = await response.json() as MultiplayerRoundState;
         setRound((current) => {
@@ -37,7 +40,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       }
     }, 1000);
     return () => { window.clearInterval(clock); window.clearInterval(poll); };
-  }, [round.roomId]);
+  }, [round.roomId, router]);
 
   async function submitAnswer() {
     if (!selected) return;
