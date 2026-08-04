@@ -84,6 +84,18 @@ export interface MultiplayerRoundState {
   questionEndsAt: number;
   intermissionEndsAt: number | null;
   players: MultiplayerPlayer[];
+  spectators: MultiplayerSpectator[];
+}
+
+export interface MultiplayerSpectatorState {
+  roomId: string;
+  questionNumber: number;
+  totalQuestions: number;
+  question: MultiplayerQuestion;
+  questionEndsAt: number;
+  intermissionEndsAt: number | null;
+  players: MultiplayerPlayer[];
+  spectators: MultiplayerSpectator[];
 }
 
 export interface MultiplayerAnswerSubmission {
