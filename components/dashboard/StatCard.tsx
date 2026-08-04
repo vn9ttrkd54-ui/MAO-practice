@@ -13,7 +13,7 @@ export default function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={`rounded-xl border p-5 ${
+      className={`rounded-xl border p-5 text-gray-950 ${
         muted
           ? "bg-white/70"
           : "bg-white shadow-sm"
@@ -23,7 +23,7 @@ export default function StatCard({
         {label}
       </p>
 
-      <p className="mt-2 text-2xl font-bold">
+      <p className="mt-2 text-2xl font-bold text-gray-950">
         {value}
       </p>
 
