@@ -153,25 +153,24 @@ export default function TrainerClient() {
       return;
     }
 
-    const firstQuestion =
-      getNextTrainerQuestion({
-        division,
-        previousQuestionId: null,
-      });
-
-    if (!firstQuestion) {
-      setStartError(
-        `There are currently no eligible ${division} questions.`
-      );
-
-      return;
-    }
-
     setIsSaving(true);
 
     try {
-      const currentLevel =
-        await getLevelProgress();
+      const [firstQuestion, currentLevel] =
+        await Promise.all([
+          getNextTrainerQuestion({
+            division,
+            previousQuestionId: null,
+          }),
+          getLevelProgress(),
+        ]);
+
+      if (!firstQuestion) {
+        setStartError(
+          `There are currently no eligible ${division} questions.`
+        );
+        return;
+      }
 
       setCurrentQuestion(firstQuestion);
       setSelectedAnswer(null);
@@ -190,7 +189,7 @@ export default function TrainerClient() {
       setStartError(null);
     } catch {
       setStartError(
-        "Unable to load your level right now. Please try again."
+        "Unable to start Trainer right now. Please try again."
       );
     } finally {
       setIsSaving(false);
@@ -308,29 +307,39 @@ export default function TrainerClient() {
     }
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = async () => {
     if (!currentQuestion || isSaving) {
       return;
     }
 
-    const nextQuestion =
-      getNextTrainerQuestion({
-        division,
-        previousQuestionId:
-          currentQuestion.id,
-      });
+    setIsSaving(true);
 
-    if (!nextQuestion) {
-      setCurrentQuestion(null);
-      setShowSummary(true);
-      return;
+    try {
+      const nextQuestion =
+        await getNextTrainerQuestion({
+          division,
+          previousQuestionId:
+            currentQuestion.id,
+        });
+
+      if (!nextQuestion) {
+        setCurrentQuestion(null);
+        setShowSummary(true);
+        return;
+      }
+
+      setCurrentQuestion(nextQuestion);
+      setSelectedAnswer(null);
+      setSubmitted(false);
+      setStartTime(Date.now());
+      setStartError(null);
+    } catch {
+      setStartError(
+        "Unable to load the next question. Please try again."
+      );
+    } finally {
+      setIsSaving(false);
     }
-
-    setCurrentQuestion(nextQuestion);
-    setSelectedAnswer(null);
-    setSubmitted(false);
-    setStartTime(Date.now());
-    setStartError(null);
   };
 
   const handleEndSession = () => {
@@ -483,7 +492,9 @@ export default function TrainerClient() {
         onGiveUp={() => {
           void handleGiveUp();
         }}
-        onNextQuestion={handleNextQuestion}
+        onNextQuestion={() => {
+          void handleNextQuestion();
+        }}
       />
 
       <EndSessionDialog
