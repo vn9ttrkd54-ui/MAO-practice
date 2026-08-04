@@ -7,6 +7,7 @@ import MultiplayerSection from "@/components/dashboard/MultiplayerSection";
 import OverviewSection from "@/components/dashboard/OverviewSection";
 import QuestionBankSection from "@/components/dashboard/QuestionBankSection";
 import RecentSessionsSection from "@/components/dashboard/RecentSessionsSection";
+import TrainerChartsSection from "@/components/dashboard/TrainerChartsSection";
 import TrainerSection from "@/components/dashboard/TrainerSection";
 import { getDashboardData } from "@/lib/dashboardService";
 
@@ -105,6 +106,8 @@ export default function DashboardClient() {
         level={level}
         trainer={trainer}
       />
+
+      <TrainerChartsSection trainer={trainer} />
 
       <RecentSessionsSection
         sessionsCompleted={trainer.sessionsCompleted}
