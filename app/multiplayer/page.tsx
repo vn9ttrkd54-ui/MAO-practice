@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { joinPrivateRoomAction, joinPublicRoomAction } from "@/app/multiplayer/actions";
-import { listPublicRooms } from "@/lib/services/multiplayerService";
+import { listOngoingPublicMatches, listPublicRooms } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
 
 interface MultiplayerPageProps {
@@ -11,7 +11,7 @@ interface MultiplayerPageProps {
 const fieldClass = "mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm";
 
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
-  const [{ error }, supabase, publicRooms] = await Promise.all([searchParams, createClient(), listPublicRooms()]);
+  const [{ error }, supabase, publicRooms, ongoingMatches] = await Promise.all([searchParams, createClient(), listPublicRooms(), listOngoingPublicMatches()]);
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
@@ -51,6 +51,8 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
           {publicRooms.map((room) => <article key={room.id} className="rounded-2xl border bg-white p-4 shadow-sm"><div className="flex items-start justify-between gap-3"><div><p className="text-lg font-bold">{room.settings.division}</p><p className="text-sm text-gray-600">{room.settings.questionCount} questions</p></div><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold">{room.playerCount}/20</span></div><p className="mt-3 text-xs text-gray-500">{room.status === "countdown" ? "Starting soon" : "Waiting for players"}</p>{user ? <form action={joinPublicRoomAction} className="mt-3"><input type="hidden" name="roomId" value={room.id} /><button className="w-full rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-700">Join</button></form> : <Link href="/login" className="mt-3 flex w-full items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-gray-50">Sign in to join</Link>}</article>)}
         </div>
       </section>
+
+      {ongoingMatches.length > 0 ? <section className="mt-8"><div><h2 className="text-xl font-bold">Ongoing games</h2><p className="mt-1 text-sm text-gray-600">Public matches currently in progress</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{ongoingMatches.map((room) => <article key={room.id} className="rounded-2xl border bg-gray-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount}</p><p className="mt-1 text-sm text-gray-600">{room.playerCount} players</p></div><span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">Live</span></div><p className="mt-3 text-xs text-gray-500">Spectating arrives in the next pack.</p></article>)}</div></section> : null}
     </main>
   );
 }
