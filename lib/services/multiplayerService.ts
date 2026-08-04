@@ -738,14 +738,28 @@ export async function listPublicRooms(): Promise<MultiplayerRoom[]> {
     return mapRoom(room, count ?? 0);
   }));
 }
+
+function multiplayerRoomHasNotExpired(room: RoomRow): boolean {
+  if (!room.started_at) return true;
+  const expectedDurationMs = room.question_count * (room.seconds_per_question + 10) * 1000;
+  const reconnectWindowMs = 2 * 60 * 1000;
+  return Date.now() <= new Date(room.started_at).getTime() + expectedDurationMs + reconnectWindowMs;
+}
+
 export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> {
   const admin = createAdminClient();
+  await admin.from("multiplayer_players").update({ connected: false }).eq("connected", true).lt("updated_at", new Date(Date.now() - 10_000).toISOString());
   const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").eq("status", "in-progress").order("started_at", { ascending: false }).limit(20);
   if (error) throw new Error(`Unable to load ongoing public matches: ${error.message}`);
-  return Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
-    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
-    return mapRoom(room, count ?? 0);
+  const rooms = await Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
+    if (!multiplayerRoomHasNotExpired(room)) {
+      await admin.from("multiplayer_rooms").update({ status: "cancelled" }).eq("id", room.id).eq("status", "in-progress");
+      return null;
+    }
+    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).eq("connected", true).is("left_at", null);
+    return (count ?? 0) > 0 ? mapRoom(room, count ?? 0) : null;
   }));
+  return rooms.filter((room): room is MultiplayerRoom => room !== null);
 }
 export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]> {
   const user = await currentUser();
@@ -758,10 +772,12 @@ export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]>
 
   const { data, error } = await admin.from("multiplayer_rooms").select("*").in("id", roomIds).in("status", ["waiting", "countdown", "in-progress"]).order("created_at", { ascending: false });
   if (error) throw new Error(`Unable to load active games: ${error.message}`);
-  return Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
+  const rooms = await Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
+    if (room.status === "in-progress" && !multiplayerRoomHasNotExpired(room)) return null;
     const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
     return mapRoom(room, count ?? 0);
   }));
+  return rooms.filter((room): room is MultiplayerRoom => room !== null);
 }
 export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   const user = await currentUser();
