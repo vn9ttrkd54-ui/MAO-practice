@@ -72,19 +72,13 @@ export default async function ChallengePage() {
           </div>
         ) : (
           <>
-            <div className="flex flex-col gap-5 border-b pb-6 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
-                  Today&apos;s Challenge
-                </p>
-                <h2 className="mt-1 text-2xl font-bold">
-                  {formatChallengeDate(dailyChallenge.date)}
-                </h2>
-              </div>
-
-              <span className="w-fit rounded-full border bg-gray-50 px-3 py-1 text-sm font-semibold text-gray-600">
-                {dailyChallenge.question.id}
-              </span>
+            <div className="border-b pb-6">
+              <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
+                Today&apos;s Challenge
+              </p>
+              <h2 className="mt-1 text-2xl font-bold">
+                {formatChallengeDate(dailyChallenge.date)}
+              </h2>
             </div>
 
             <div className="mt-6 flex flex-wrap gap-2">
