@@ -23,7 +23,6 @@ import type {
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
-const GUEST_NICKNAME_PATTERN = /^[A-Za-z0-9_ ]{3,20}$/;
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
 const ALLOWED_TIMES = new Set([30, 60, 90, 120]);
 
@@ -78,8 +77,8 @@ function validateSettings(settings: MultiplayerRoomSettings) {
 
 function normalizeNickname(value?: string) {
   const nickname = value?.trim() ?? "";
-  if (!GUEST_NICKNAME_PATTERN.test(nickname)) {
-    throw new Error("Guest nicknames must be 3–20 letters, numbers, spaces, or underscores.");
+  if (Array.from(nickname).length < 1 || Array.from(nickname).length > 20) {
+    throw new Error("Guest nicknames must be between 1 and 20 characters.");
   }
   return nickname;
 }
