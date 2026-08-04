@@ -1,6 +1,19 @@
 import type { AttemptResult } from "@/types/progress";
 import type { Question } from "@/types/question";
+import type { Division } from "@/types/question";
 import type { TrainerSessionRecord } from "@/types/trainer";
+
+export interface TrainerSessionAccuracyPoint {
+  id: string;
+  endedAt: number;
+  accuracy: number;
+  questionsAnswered: number;
+}
+
+export interface TrainerDivisionCount {
+  division: Division;
+  sessions: number;
+}
 
 export interface TrainerHistorySummary {
   sessionsCompleted: number;
@@ -14,6 +27,8 @@ export interface TrainerHistorySummary {
   averageSessionDurationSeconds: number;
   bestSessionAccuracy: number;
   bestSessionCorrect: number;
+  recentSessionAccuracy: TrainerSessionAccuracyPoint[];
+  sessionsByDivision: TrainerDivisionCount[];
 }
 
 export interface QuestionBankSummary {
@@ -35,6 +50,14 @@ export function calculateTrainerHistorySummary(
   let bestSessionAccuracy = 0;
   let bestSessionCorrect = 0;
 
+  const divisionCounts: Record<Division, number> = {
+    Mu: 0,
+    Alpha: 0,
+    Theta: 0,
+  };
+
+  const sessionAccuracyPoints: TrainerSessionAccuracyPoint[] = [];
+
   for (const session of sessions) {
     const sessionQuestionsAnswered =
       session.results.length;
@@ -45,6 +68,7 @@ export function calculateTrainerHistorySummary(
       0,
       session.endedAt - session.startedAt
     );
+    divisionCounts[session.division] += 1;
 
     for (const result of session.results) {
       if (result.result === "correct") {
@@ -65,6 +89,13 @@ export function calculateTrainerHistorySummary(
               100
           )
         : 0;
+
+    sessionAccuracyPoints.push({
+      id: session.id,
+      endedAt: session.endedAt,
+      accuracy: sessionAccuracy,
+      questionsAnswered: sessionQuestionsAnswered,
+    });
 
     if (
       sessionAccuracy > bestSessionAccuracy ||
@@ -107,6 +138,18 @@ export function calculateTrainerHistorySummary(
         : 0,
     bestSessionAccuracy,
     bestSessionCorrect,
+    recentSessionAccuracy: sessionAccuracyPoints
+      .sort(
+        (firstSession, secondSession) =>
+          firstSession.endedAt - secondSession.endedAt
+      )
+      .slice(-8),
+    sessionsByDivision: (
+      ["Mu", "Alpha", "Theta"] as Division[]
+    ).map((division) => ({
+      division,
+      sessions: divisionCounts[division],
+    })),
   };
 }
 
