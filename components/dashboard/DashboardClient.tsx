@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import ChallengeSection from "@/components/dashboard/ChallengeSection";
 import MultiplayerSection from "@/components/dashboard/MultiplayerSection";
 import OverviewSection from "@/components/dashboard/OverviewSection";
 import QuestionBankSection from "@/components/dashboard/QuestionBankSection";
@@ -86,6 +87,7 @@ export default function DashboardClient() {
     multiplayer,
     trainer,
     questionBank,
+    challenge,
     level,
     recentTrainerSessions,
     recentActivity,
@@ -102,6 +104,11 @@ export default function DashboardClient() {
         level={level}
         questionBank={questionBank}
         multiplayer={multiplayer}
+      />
+
+      <ChallengeSection
+        currentStreak={challenge.currentStreak}
+        longestStreak={challenge.longestStreak}
       />
 
       <MultiplayerSection multiplayer={multiplayer} />
