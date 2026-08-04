@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { createPrivateRoom, joinPrivateRoom } from "@/lib/services/multiplayerService";
+import { beginPrivateRoom, createPrivateRoom, joinPrivateRoom } from "@/lib/services/multiplayerService";
 import type { Division } from "@/types/question";
 import type { MultiplayerQuestionTime, MultiplayerRoomMode } from "@/types/multiplayer";
 
@@ -44,6 +44,16 @@ export async function joinPrivateRoomAction(formData: FormData) {
     roomId = room.id;
   } catch (error) {
     errorRedirect(error);
+  }
+  redirect(`/multiplayer/room/${roomId}`);
+}
+
+export async function startPrivateRoomAction(formData: FormData) {
+  const roomId = value(formData, "roomId");
+  try {
+    await beginPrivateRoom(roomId);
+  } catch (error) {
+    errorRedirect(error, `/multiplayer/room/${roomId}`);
   }
   redirect(`/multiplayer/room/${roomId}`);
 }
