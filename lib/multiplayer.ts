@@ -20,3 +20,44 @@ export function getMultiplayerSummary():
     currentStreak: 0,
   };
 }
+
+export {
+  createPrivateRoom,
+  getMultiplayerMatchResult,
+  getMultiplayerProfile,
+  getMultiplayerRatingLeaderboard,
+  getMultiplayerRoom,
+  getMultiplayerRoundState,
+  joinPrivateRoom,
+  joinPublicRoom,
+  leaveMultiplayerRoom,
+  listOngoingPublicMatches,
+  listPublicRooms,
+  spectatePublicMatch,
+  startPrivateMatch,
+  submitMultiplayerAnswer,
+} from "@/lib/services/multiplayerService";
+
+export type {
+  CreatePrivateRoomInput,
+  JoinPrivateRoomInput,
+  MultiplayerAnswerSubmission,
+  MultiplayerMatchResult,
+  MultiplayerPlayer,
+  MultiplayerPlayerIdentity,
+  MultiplayerProfile,
+  MultiplayerQuestion,
+  MultiplayerRankTier,
+  MultiplayerRatingChange,
+  MultiplayerRatingLeaderboardEntry,
+  MultiplayerRoom,
+  MultiplayerRoomMode,
+  MultiplayerRoomSettings,
+  MultiplayerRoomStatus,
+  MultiplayerRoomVisibility,
+  MultiplayerRoundResult,
+  MultiplayerRoundState,
+  MultiplayerSpectator,
+  MultiplayerQuestionTime,
+  PublicMatchQuestionCount,
+} from "@/types/multiplayer";
