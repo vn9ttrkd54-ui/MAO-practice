@@ -55,5 +55,5 @@ export async function startPrivateRoomAction(formData: FormData) {
   } catch (error) {
     errorRedirect(error, `/multiplayer/room/${roomId}`);
   }
-  redirect(`/multiplayer/room/${roomId}`);
+  redirect(`/multiplayer/room/${roomId}/play`);
 }
