@@ -13,6 +13,9 @@ const fieldClass = "mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
   const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms] = await Promise.all([searchParams, createClient(), listPublicRooms(), listOngoingPublicMatches(), listMyActiveMultiplayerRooms()]);
   const { data: { user } } = await supabase.auth.getUser();
+  const activeInProgress = activeRooms.filter((room) => room.status === "in-progress");
+  const activeRoomIds = new Set(activeInProgress.map((room) => room.id));
+  const combinedOngoingMatches = [...new Map([...ongoingMatches, ...activeInProgress].map((room) => [room.id, room])).values()];
 
   return (
     <main className="mx-auto max-w-4xl px-5 py-8 sm:px-8">
@@ -23,8 +26,6 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
       </header>
 
       {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
-
-      {activeRooms.length > 0 ? <section className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5"><h2 className="text-lg font-bold text-blue-950">Your active games</h2><div className="mt-3 grid gap-3 sm:grid-cols-2">{activeRooms.map((room) => { const playing = room.status === "in-progress"; return <article key={room.id} className="rounded-xl bg-white p-4 shadow-sm"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount} questions</p><p className="mt-1 text-xs text-gray-500">{room.visibility === "public" ? "Public" : `Private · ${room.code}`} · {room.playerCount} players</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${playing ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-700"}`}>{playing ? "In progress" : room.status === "countdown" ? "Starting soon" : "Lobby"}</span></div><Link href={playing ? `/multiplayer/room/${room.id}/play` : `/multiplayer/room/${room.id}`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">{playing ? "Rejoin Game" : "Rejoin Lobby"}</Link></article>; })}</div></section> : null}
 
       <div className="mt-6 grid items-start gap-4 md:grid-cols-2">
         <section className="rounded-2xl border bg-white p-5 shadow-sm">
@@ -54,7 +55,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
         </div>
       </section>
 
-      {ongoingMatches.length > 0 ? <section className="mt-8"><div><h2 className="text-xl font-bold">Ongoing games</h2><p className="mt-1 text-sm text-gray-600">Public matches currently in progress</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{ongoingMatches.map((room) => <article key={room.id} className="rounded-2xl border bg-gray-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount}</p><p className="mt-1 text-sm text-gray-600">{room.playerCount} players</p></div><span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">Live</span></div><p className="mt-3 text-xs text-gray-500">Spectating arrives in the next pack.</p></article>)}</div></section> : null}
+      {combinedOngoingMatches.length > 0 ? <section className="mt-8"><div><h2 className="text-xl font-bold">Ongoing games</h2><p className="mt-1 text-sm text-gray-600">Matches currently in progress</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{combinedOngoingMatches.map((room) => { const canRejoin = activeRoomIds.has(room.id); return <article key={room.id} className="rounded-2xl border bg-gray-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount}</p><p className="mt-1 text-sm text-gray-600">{room.visibility === "private" ? `Private · ${room.code}` : "Public"} · {room.playerCount} players</p></div><span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">Live</span></div>{canRejoin ? <Link href={`/multiplayer/room/${room.id}/play`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">Rejoin Game</Link> : <p className="mt-3 text-xs text-gray-500">Spectating arrives in the next pack.</p>}</article>; })}</div></section> : null}
     </main>
   );
 }
