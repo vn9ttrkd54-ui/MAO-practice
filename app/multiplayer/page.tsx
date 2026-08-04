@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { joinPrivateRoomAction, joinPublicRoomAction } from "@/app/multiplayer/actions";
-import { listOngoingPublicMatches, listPublicRooms } from "@/lib/services/multiplayerService";
+import { listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
 
 interface MultiplayerPageProps {
@@ -11,7 +11,7 @@ interface MultiplayerPageProps {
 const fieldClass = "mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm";
 
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
-  const [{ error }, supabase, publicRooms, ongoingMatches] = await Promise.all([searchParams, createClient(), listPublicRooms(), listOngoingPublicMatches()]);
+  const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms] = await Promise.all([searchParams, createClient(), listPublicRooms(), listOngoingPublicMatches(), listMyActiveMultiplayerRooms()]);
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
@@ -23,6 +23,8 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
       </header>
 
       {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
+
+      {activeRooms.length > 0 ? <section className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5"><h2 className="text-lg font-bold text-blue-950">Your active games</h2><div className="mt-3 grid gap-3 sm:grid-cols-2">{activeRooms.map((room) => { const playing = room.status === "in-progress"; return <article key={room.id} className="rounded-xl bg-white p-4 shadow-sm"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount} questions</p><p className="mt-1 text-xs text-gray-500">{room.visibility === "public" ? "Public" : `Private · ${room.code}`} · {room.playerCount} players</p></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${playing ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-700"}`}>{playing ? "In progress" : room.status === "countdown" ? "Starting soon" : "Lobby"}</span></div><Link href={playing ? `/multiplayer/room/${room.id}/play` : `/multiplayer/room/${room.id}`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">{playing ? "Rejoin Game" : "Rejoin Lobby"}</Link></article>; })}</div></section> : null}
 
       <div className="mt-6 grid items-start gap-4 md:grid-cols-2">
         <section className="rounded-2xl border bg-white p-5 shadow-sm">
