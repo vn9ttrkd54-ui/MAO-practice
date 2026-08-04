@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Trophy } from "lucide-react";
 
 import StatCard from "@/components/dashboard/StatCard";
@@ -30,54 +31,48 @@ export default function MultiplayerSection({
                 Multiplayer
               </h2>
 
-              <span className="rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-600">
-                Coming Soon
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                Live
               </span>
             </div>
 
             <p className="mt-1 text-gray-600">
-              Compete against multiple players and
-              earn a rank.
+              Your ranked multiplayer performance.
             </p>
           </div>
         </div>
+        <Link href="/multiplayer" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">Play Multiplayer</Link>
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard
           label="Rank"
           value={multiplayer.rank}
-          muted
         />
 
         <StatCard
           label="Rating"
           value={multiplayer.rating ?? "—"}
-          muted
         />
 
         <StatCard
           label="Matches Played"
           value={multiplayer.matchesPlayed}
-          muted
         />
 
         <StatCard
           label="Wins"
           value={multiplayer.wins}
-          muted
         />
 
         <StatCard
           label="Average Placement"
           value={multiplayer.averagePlacement ?? "—"}
-          muted
         />
 
         <StatCard
           label="Current Streak"
           value={multiplayer.currentStreak}
-          muted
         />
       </div>
     </section>
