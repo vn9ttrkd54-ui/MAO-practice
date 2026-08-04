@@ -57,6 +57,11 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ questionId: round.question.questionId, selectedAnswer: selected }),
     });
+    if (response.status === 204) {
+      setFinished(true);
+      router.replace(`/multiplayer/room/${round.roomId}/results`);
+      return;
+    }
     const body = await response.json() as MultiplayerRoundState | { error: string };
     if (!response.ok) {
       setError("error" in body ? body.error : "Unable to submit answer.");
