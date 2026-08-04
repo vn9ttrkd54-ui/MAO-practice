@@ -12,6 +12,7 @@ export {
   getMultiplayerRoundState,
   joinPrivateRoom,
   joinPublicRoom,
+  leavePublicSpectator,
   leaveMultiplayerRoom,
   listMyActiveMultiplayerRooms,
   listOngoingPublicMatches,
@@ -41,6 +42,7 @@ export type {
   MultiplayerRoundResult,
   MultiplayerRoundState,
   MultiplayerSpectator,
+  MultiplayerSpectatorState,
   MultiplayerQuestionTime,
   PublicMatchQuestionCount,
 } from "@/types/multiplayer";
