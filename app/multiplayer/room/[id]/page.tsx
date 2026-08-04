@@ -21,11 +21,11 @@ export default async function PrivateRoomPage({ params, searchParams }: PrivateR
       <section className="mt-4 rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
         <div className="flex flex-wrap items-start justify-between gap-5">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">Private room</p>
-            <h1 className="mt-1 text-3xl font-bold tracking-[0.12em]">{room.code}</h1>
-            <p className="mt-2 text-sm text-gray-600">Share this code with other players.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">{room.visibility === "private" ? "Private room" : "Public room"}</p>
+            <h1 className={`mt-1 text-3xl font-bold ${room.code ? "tracking-[0.12em]" : ""}`}>{room.code ?? `${room.settings.division} · ${room.settings.questionCount} Questions`}</h1>
+            <p className="mt-2 text-sm text-gray-600">{room.visibility === "private" ? "Share this code with other players." : "The match countdown begins when two players join."}</p>
           </div>
-          <span className={`rounded-full px-3 py-1 text-sm font-semibold ${room.status === "waiting" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>{room.status === "waiting" ? "Waiting" : "In progress"}</span>
+          <span className={`rounded-full px-3 py-1 text-sm font-semibold ${room.status === "waiting" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>{room.status === "waiting" ? "Waiting" : room.status === "countdown" ? "Starting soon" : "In progress"}</span>
         </div>
 
         <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
