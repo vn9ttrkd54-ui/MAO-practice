@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { joinPrivateRoomAction, joinPublicRoomAction } from "@/app/multiplayer/actions";
+import { joinPrivateRoomAction, joinPublicRoomAction, spectatePublicRoomAction } from "@/app/multiplayer/actions";
 import { listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
 
@@ -55,7 +55,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
         </div>
       </section>
 
-      {combinedOngoingMatches.length > 0 ? <section className="mt-8"><div><h2 className="text-xl font-bold">Ongoing games</h2><p className="mt-1 text-sm text-gray-600">Matches currently in progress</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{combinedOngoingMatches.map((room) => { const canRejoin = activeRoomIds.has(room.id); return <article key={room.id} className="rounded-2xl border bg-gray-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount}</p><p className="mt-1 text-sm text-gray-600">{room.visibility === "private" ? `Private · ${room.code}` : "Public"} · {room.playerCount} players</p></div><span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">Live</span></div>{canRejoin ? <Link href={`/multiplayer/room/${room.id}/play`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">Rejoin Game</Link> : <p className="mt-3 text-xs text-gray-500">Spectating arrives in the next pack.</p>}</article>; })}</div></section> : null}
+      {combinedOngoingMatches.length > 0 ? <section className="mt-8"><div><h2 className="text-xl font-bold">Ongoing games</h2><p className="mt-1 text-sm text-gray-600">Matches currently in progress</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{combinedOngoingMatches.map((room) => { const canRejoin = activeRoomIds.has(room.id); return <article key={room.id} className="rounded-2xl border bg-gray-50 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-bold">{room.settings.division} · {room.settings.questionCount}</p><p className="mt-1 text-sm text-gray-600">{room.visibility === "private" ? `Private · ${room.code}` : "Public"} · {room.playerCount} players</p></div><span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800">Live</span></div>{canRejoin ? <Link href={`/multiplayer/room/${room.id}/play`} className="mt-3 flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">Rejoin Game</Link> : user ? <form action={spectatePublicRoomAction} className="mt-3"><input type="hidden" name="roomId" value={room.id} /><button className="w-full rounded-lg border border-blue-600 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">Spectate</button></form> : <Link href="/login" className="mt-3 flex w-full items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-white">Sign in to spectate</Link>}</article>; })}</div></section> : null}
     </main>
   );
 }
