@@ -1,9 +1,7 @@
-import { getTodayChallenge } from "@/lib/challenge";
-import type { AnswerChoice } from "@/types/question";
+import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
+import { getTodayChallenge, getUserChallengeAttempt } from "@/lib/challenge";
 
 export const dynamic = "force-dynamic";
-
-const answerChoices: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
 function formatChallengeDate(date: string): string {
   return new Intl.DateTimeFormat("en-US", {
@@ -15,7 +13,10 @@ function formatChallengeDate(date: string): string {
 }
 
 export default async function ChallengePage() {
-  const dailyChallenge = await getTodayChallenge();
+  const [dailyChallenge, existingAttempt] = await Promise.all([
+    getTodayChallenge(),
+    getUserChallengeAttempt(),
+  ]);
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12 sm:px-8">
@@ -87,27 +88,12 @@ export default async function ChallengePage() {
               </p>
             </div>
 
-            <div className="mt-8 space-y-3">
-              {answerChoices.map((choice) => (
-                <div
-                  key={choice}
-                  className="flex items-start gap-4 rounded-xl border p-4"
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 font-bold">
-                    {choice}
-                  </span>
-                  <span className="pt-1">{dailyChallenge.question.choices[choice]}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              disabled
-              className="mt-8 rounded-lg bg-black px-6 py-3 font-semibold text-white opacity-50"
-            >
-              Submission Coming Next
-            </button>
+            <ChallengeAnswerForm
+              challengeDate={dailyChallenge.date}
+              questionId={dailyChallenge.questionId}
+              choices={dailyChallenge.question.choices}
+              existingAnswer={existingAttempt?.selectedAnswer ?? null}
+            />
           </>
         )}
       </section>
