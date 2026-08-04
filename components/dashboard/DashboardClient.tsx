@@ -80,6 +80,7 @@ export default function DashboardClient() {
   }
 
   const {
+    username,
     multiplayer,
     trainer,
     questionBank,
@@ -89,7 +90,10 @@ export default function DashboardClient() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8 lg:py-14">
-      <DashboardHeader />
+      <DashboardHeader
+        username={username}
+        level={level}
+      />
 
       <OverviewSection
         level={level}
