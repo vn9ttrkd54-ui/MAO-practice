@@ -76,6 +76,9 @@ interface ChallengeAttemptDateRow {
   challenge_date: string;
 }
 
+interface MultiplayerProfileRow { rp: number; ranked_matches_played: number; ranked_wins: number; }
+interface MultiplayerResultRow { placement: number; }
+
 export async function getDashboardData():
   Promise<DashboardData> {
   const supabase = createClient();
@@ -102,6 +105,8 @@ export async function getDashboardData():
     profileResponse,
     challengeStatisticsResponse,
     latestChallengeAttemptResponse,
+    multiplayerProfileResponse,
+    multiplayerResultsResponse,
   ] = await Promise.all([
     getLevelProgress(),
     getTrainerHistory(),
@@ -132,6 +137,8 @@ export async function getDashboardData():
       .order("challenge_date", { ascending: false })
       .limit(1)
       .maybeSingle<ChallengeAttemptDateRow>(),
+    supabase.from("multiplayer_profiles").select("rp, ranked_matches_played, ranked_wins").eq("user_id", userId).maybeSingle<MultiplayerProfileRow>(),
+    supabase.from("multiplayer_match_results").select("placement").eq("user_id", userId).eq("ranked", true).order("finalized_at", { ascending: false }),
   ]);
 
   if (progressResponse.error) {
@@ -152,6 +159,9 @@ export async function getDashboardData():
 
   if (latestChallengeAttemptResponse.error) {
     throw new Error(latestChallengeAttemptResponse.error.message);
+  }
+  if (multiplayerProfileResponse.error || multiplayerResultsResponse.error) {
+    throw new Error("Unable to load multiplayer dashboard statistics.");
   }
 
   const challengeStatistics = challengeStatisticsResponse.data;
@@ -275,7 +285,12 @@ export async function getDashboardData():
 
   return {
     username: profileResponse.data.username,
-    multiplayer: getMultiplayerSummary(),
+    multiplayer: getMultiplayerSummary({
+      rp: multiplayerProfileResponse.data?.rp ?? 0,
+      rankedMatchesPlayed: multiplayerProfileResponse.data?.ranked_matches_played ?? 0,
+      rankedWins: multiplayerProfileResponse.data?.ranked_wins ?? 0,
+      placements: ((multiplayerResultsResponse.data ?? []) as MultiplayerResultRow[]).map((result) => result.placement),
+    }),
     trainer:
       calculateTrainerHistorySummary(trainerHistory),
     questionBank: calculateQuestionBankSummary(
