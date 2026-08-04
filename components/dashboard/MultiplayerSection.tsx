@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { RankIcon, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import { RankIcon, rankChipClass, rankIconClass, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 
 import StatCard from "@/components/dashboard/StatCard";
 
@@ -21,7 +21,7 @@ export default function MultiplayerSection({
     <section className={`mt-10 overflow-hidden rounded-2xl border p-6 ${rankThemeClass(multiplayer.rank)}`}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="rank-icon rounded-xl p-3 shadow-sm">
+          <div className={`${rankIconClass} rounded-xl p-3 shadow-sm`}>
             <RankIcon rank={multiplayer.rank} size={24} />
           </div>
 
@@ -36,12 +36,12 @@ export default function MultiplayerSection({
               </span>
             </div>
 
-            <p className="rank-secondary mt-1">
+            <p className={`${rankSecondaryClass} mt-1`}>
               Your ranked multiplayer performance.
             </p>
           </div>
         </div>
-        <Link href="/multiplayer" className="rank-chip rounded-lg border px-4 py-2 text-sm font-semibold shadow-sm">Play Multiplayer</Link>
+        <Link href="/multiplayer" className={`${rankChipClass} rounded-lg border px-4 py-2 text-sm font-semibold shadow-sm`}>Play Multiplayer</Link>
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
