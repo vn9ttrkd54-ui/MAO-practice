@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { AttemptResult } from "@/types/progress";
 
 export interface DashboardData {
+  username: string;
   multiplayer: ReturnType<typeof getMultiplayerSummary>;
   trainer: ReturnType<typeof calculateTrainerHistorySummary>;
   questionBank: ReturnType<typeof calculateQuestionBankSummary>;
@@ -27,6 +28,10 @@ interface ProgressRow {
 
 interface BookmarkRow {
   question_id: number;
+}
+
+interface ProfileRow {
+  username: string;
 }
 
 export async function getDashboardData():
@@ -52,6 +57,7 @@ export async function getDashboardData():
     trainerHistory,
     progressResponse,
     bookmarksResponse,
+    profileResponse,
   ] = await Promise.all([
     getLevelProgress(),
     getTrainerHistory(),
@@ -63,6 +69,11 @@ export async function getDashboardData():
       .from("bookmarks")
       .select("question_id")
       .eq("user_id", userId),
+    supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", userId)
+      .single<ProfileRow>(),
   ]);
 
   if (progressResponse.error) {
@@ -71,6 +82,10 @@ export async function getDashboardData():
 
   if (bookmarksResponse.error) {
     throw new Error(bookmarksResponse.error.message);
+  }
+
+  if (profileResponse.error) {
+    throw new Error(profileResponse.error.message);
   }
 
   const progressByQuestionId = new Map<
@@ -87,6 +102,7 @@ export async function getDashboardData():
   ).map((row) => row.question_id);
 
   return {
+    username: profileResponse.data.username,
     multiplayer: getMultiplayerSummary(),
     trainer:
       calculateTrainerHistorySummary(trainerHistory),
