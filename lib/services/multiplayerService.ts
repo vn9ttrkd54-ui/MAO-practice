@@ -868,5 +868,38 @@ export async function leavePublicSpectator(roomId: string): Promise<void> {
   const user = await currentUser();
   if (user) await createAdminClient().from("multiplayer_spectators").delete().eq("room_id", roomId).eq("user_id", user.id);
 }
-export async function getMultiplayerProfile(): Promise<MultiplayerProfile | null> { return notImplemented(); }
-export async function getMultiplayerRatingLeaderboard(): Promise<MultiplayerRatingLeaderboardEntry[]> { return notImplemented(); }
+export async function getMultiplayerProfile(): Promise<MultiplayerProfile | null> {
+  const user = await currentUser();
+  if (!user) return null;
+  const admin = createAdminClient();
+  await admin.from("multiplayer_profiles").upsert({ user_id: user.id }, { onConflict: "user_id", ignoreDuplicates: true });
+  const [profileResponse, nameResponse] = await Promise.all([
+    admin.from("multiplayer_profiles").select("user_id, rp, ranked_matches_played, ranked_wins").eq("user_id", user.id).single(),
+    admin.from("profiles").select("username").eq("id", user.id).single<{ username: string }>(),
+  ]);
+  if (profileResponse.error || nameResponse.error) throw new Error("Unable to load your multiplayer rating.");
+  const profile = profileResponse.data;
+  const { count } = await admin.from("multiplayer_profiles").select("user_id", { count: "exact", head: true }).gt("rp", profile.rp);
+  return {
+    userId: user.id, username: nameResponse.data.username, rp: profile.rp,
+    rankTier: tierForRp(profile.rp)!, globalRank: (count ?? 0) + 1,
+    rankedMatchesPlayed: profile.ranked_matches_played, rankedWins: profile.ranked_wins,
+    provisionalMatchesPlayed: Math.min(profile.ranked_matches_played, 5),
+  };
+}
+
+export async function getMultiplayerRatingLeaderboard(): Promise<MultiplayerRatingLeaderboardEntry[]> {
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("multiplayer_profiles").select("user_id, rp, ranked_matches_played, ranked_wins").order("rp", { ascending: false }).order("ranked_wins", { ascending: false }).limit(10);
+  if (error) throw new Error(`Unable to load the RP leaderboard: ${error.message}`);
+  const profiles = data ?? [];
+  if (profiles.length === 0) return [];
+  const { data: names } = await admin.from("profiles").select("id, username").in("id", profiles.map((profile) => profile.user_id));
+  const nameById = new Map((names ?? []).map((profile) => [profile.id, profile.username]));
+  return profiles.map((profile, index) => ({
+    userId: profile.user_id, username: nameById.get(profile.user_id) ?? "Player",
+    rp: profile.rp, rankTier: tierForRp(profile.rp)!, globalRank: index + 1,
+    rankedWins: profile.ranked_wins,
+    winRate: profile.ranked_matches_played > 0 ? Math.round(profile.ranked_wins / profile.ranked_matches_played * 100) : 0,
+  }));
+}
