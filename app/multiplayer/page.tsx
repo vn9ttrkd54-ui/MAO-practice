@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { joinPrivateRoomAction } from "@/app/multiplayer/actions";
+import { joinPrivateRoomAction, joinPublicRoomAction } from "@/app/multiplayer/actions";
+import { listPublicRooms } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
 
 interface MultiplayerPageProps {
@@ -10,7 +11,7 @@ interface MultiplayerPageProps {
 const fieldClass = "mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm";
 
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
-  const [{ error }, supabase] = await Promise.all([searchParams, createClient()]);
+  const [{ error }, supabase, publicRooms] = await Promise.all([searchParams, createClient(), listPublicRooms()]);
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
@@ -44,9 +45,11 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
         </section>
       </div>
 
-      <section className="mt-5 rounded-2xl border border-dashed bg-gray-50 px-5 py-4 text-gray-600">
-        <h2 className="text-sm font-bold text-gray-900">Public rooms</h2>
-        <p className="mt-1 text-sm">Public queues and ongoing matches are coming in a later pack.</p>
+      <section className="mt-8">
+        <div><h2 className="text-xl font-bold">Public rooms</h2><p className="mt-1 text-sm text-gray-600">Ranked · 60 seconds per question · up to 20 players</p></div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {publicRooms.map((room) => <article key={room.id} className="rounded-2xl border bg-white p-4 shadow-sm"><div className="flex items-start justify-between gap-3"><div><p className="text-lg font-bold">{room.settings.division}</p><p className="text-sm text-gray-600">{room.settings.questionCount} questions</p></div><span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold">{room.playerCount}/20</span></div><p className="mt-3 text-xs text-gray-500">{room.status === "countdown" ? "Starting soon" : "Waiting for players"}</p>{user ? <form action={joinPublicRoomAction} className="mt-3"><input type="hidden" name="roomId" value={room.id} /><button className="w-full rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-700">Join</button></form> : <Link href="/login" className="mt-3 flex w-full items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-gray-50">Sign in to join</Link>}</article>)}
+        </div>
       </section>
     </main>
   );
