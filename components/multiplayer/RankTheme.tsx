@@ -12,6 +12,16 @@ export function rankThemeClass(rank: string) {
   return `${styles.surface} ${styles[key] ?? ""}`;
 }
 
+const pageThemes: Record<string, string> = {
+  Novice: styles.pageNovice, Bronze: styles.pageBronze, Silver: styles.pageSilver,
+  Gold: styles.pageGold, Platinum: styles.pagePlatinum, Diamond: styles.pageDiamond,
+  Master: styles.pageMaster, Grandmaster: styles.pageGrandmaster, Legend: styles.pageLegend,
+};
+
+export function rankPageClass(rank: string) {
+  return `${styles.page} ${pageThemes[rank] ?? styles.pageNovice}`;
+}
+
 export const rankSecondaryClass = styles.secondary;
 export const rankIconClass = styles.icon;
 export const rankChipClass = styles.chip;
