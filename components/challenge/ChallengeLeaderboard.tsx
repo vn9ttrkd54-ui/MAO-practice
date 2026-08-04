@@ -32,12 +32,9 @@ export default function ChallengeLeaderboard({
             >
               <span className="font-bold text-gray-500">#{entry.rank}</span>
               <span className="truncate font-semibold">{entry.username}</span>
-              <div className="text-right">
-                <span className="font-bold">{entry.currentStreak} 🔥</span>
-                <p className="text-xs text-gray-500">
-                  Best: {entry.longestStreak}
-                </p>
-              </div>
+              <span className="text-right font-bold">
+                {entry.currentStreak} 🔥
+              </span>
             </li>
           ))}
         </ol>
