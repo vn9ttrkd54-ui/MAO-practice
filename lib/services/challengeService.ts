@@ -39,6 +39,13 @@ interface ChallengeLeaderboardRow {
   rank: number | string;
 }
 
+interface ChallengeStatisticsRow {
+  current_streak: number;
+  longest_streak: number;
+  total_completed: number;
+  total_correct: number;
+}
+
 const CHALLENGE_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const ANSWER_CHOICES: AnswerChoice[] = ["A", "B", "C", "D", "E"];
 
@@ -191,7 +198,61 @@ export async function submitChallenge(
 }
 
 export async function getChallengeStatistics(): Promise<ChallengeUserStatistics> {
-  return notImplemented();
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+  const emptyStatistics: ChallengeUserStatistics = {
+    currentStreak: 0,
+    longestStreak: 0,
+    totalChallenges: 0,
+    correctChallenges: 0,
+    accuracy: 0,
+  };
+
+  if (!authData.user) return emptyStatistics;
+
+  const [{ data: statistics, error: statisticsError }, { data: latestAttempt, error: attemptError }] =
+    await Promise.all([
+      supabase
+        .from("challenge_user_statistics")
+        .select("current_streak, longest_streak, total_completed, total_correct")
+        .eq("user_id", authData.user.id)
+        .maybeSingle<ChallengeStatisticsRow>(),
+      supabase
+        .from("challenge_attempts")
+        .select("challenge_date")
+        .eq("user_id", authData.user.id)
+        .order("challenge_date", { ascending: false })
+        .limit(1)
+        .maybeSingle<{ challenge_date: string }>(),
+    ]);
+
+  if (statisticsError || attemptError) {
+    throw new Error(
+      `Unable to load Challenge statistics: ${
+        statisticsError?.message ?? attemptError?.message
+      }`
+    );
+  }
+  if (!statistics) return emptyStatistics;
+
+  const yesterday = getCurrentChallengeDate(
+    new Date(Date.now() - 24 * 60 * 60 * 1000)
+  );
+  const currentStreak =
+    latestAttempt && latestAttempt.challenge_date >= yesterday
+      ? statistics.current_streak
+      : 0;
+
+  return {
+    currentStreak,
+    longestStreak: statistics.longest_streak,
+    totalChallenges: statistics.total_completed,
+    correctChallenges: statistics.total_correct,
+    accuracy:
+      statistics.total_completed === 0
+        ? 0
+        : (statistics.total_correct / statistics.total_completed) * 100,
+  };
 }
 
 export async function getChallengeLeaderboard(): Promise<
@@ -216,7 +277,30 @@ export async function getChallengeLeaderboard(): Promise<
 export async function getUserLeaderboardPosition(): Promise<
   ChallengeLeaderboardEntry | null
 > {
-  return notImplemented();
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData.user) return null;
+
+  const admin = createAdminClient();
+  const { data, error } = await admin.rpc(
+    "get_challenge_leaderboard_position",
+    { p_user_id: authData.user.id }
+  );
+
+  if (error) {
+    throw new Error(`Unable to load your Challenge rank: ${error.message}`);
+  }
+
+  const entry = (data?.[0] ?? null) as ChallengeLeaderboardRow | null;
+  return entry
+    ? {
+        userId: entry.user_id,
+        username: entry.username,
+        currentStreak: entry.current_streak,
+        longestStreak: entry.longest_streak,
+        rank: Number(entry.rank),
+      }
+    : null;
 }
 
 export async function hasCompletedToday(): Promise<boolean> {
