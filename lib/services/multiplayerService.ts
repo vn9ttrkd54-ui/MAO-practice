@@ -831,7 +831,26 @@ export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   return mapRoom(updatedRoom, playerCount);
 }
 export async function startPrivateMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
-export async function leaveMultiplayerRoom(_roomId: string): Promise<void> { void _roomId; return notImplemented(); }
+export async function leaveMultiplayerRoom(roomId: string): Promise<void> {
+  const access = await getMultiplayerRoom(roomId);
+  if (!access) throw new Error("Room not found.");
+  if (!['waiting', 'countdown'].includes(access.room.status)) throw new Error("You cannot leave after the match has started.");
+  const admin = createAdminClient();
+
+  if (access.room.visibility === "private" && access.currentPlayer.isHost) {
+    const { error } = await admin.from("multiplayer_rooms").delete().eq("id", roomId).in("status", ["waiting", "countdown"]);
+    if (error) throw new Error(`Unable to close the room: ${error.message}`);
+  } else {
+    const { error } = await admin.from("multiplayer_players").delete().eq("room_id", roomId).eq("id", access.currentPlayer.playerId);
+    if (error) throw new Error(`Unable to leave the room: ${error.message}`);
+    if (access.room.visibility === "public" && access.room.status === "countdown") {
+      const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null);
+      if ((count ?? 0) < 2) await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown");
+    }
+  }
+
+  if (access.currentPlayer.isGuest) (await cookies()).delete(cookieName(roomId));
+}
 export async function spectatePublicMatch(roomId: string): Promise<MultiplayerSpectatorState> {
   const user = await currentUser();
   if (!user) throw new Error("Sign in to spectate public games.");
