@@ -9,6 +9,32 @@ import { getMultiplayerSummary } from "@/lib/multiplayer";
 import { createClient } from "@/lib/supabase/client";
 
 import type { AttemptResult } from "@/types/progress";
+import type { Division } from "@/types/question";
+
+export type DashboardActivity =
+  | {
+      id: string;
+      type: "question";
+      occurredAt: number;
+      questionId: number;
+      questionNumber: number;
+      result: AttemptResult;
+    }
+  | {
+      id: string;
+      type: "bookmark";
+      occurredAt: number;
+      questionId: number;
+      questionNumber: number;
+    }
+  | {
+      id: string;
+      type: "trainer-session";
+      occurredAt: number;
+      division: Division;
+      questionsAnswered: number;
+      accuracy: number;
+    };
 
 export interface DashboardData {
   username: string;
@@ -19,15 +45,18 @@ export interface DashboardData {
   recentTrainerSessions: Awaited<
     ReturnType<typeof getTrainerHistory>
   >;
+  recentActivity: DashboardActivity[];
 }
 
 interface ProgressRow {
   question_id: number;
   last_result: AttemptResult | null;
+  last_attempted_at: string | null;
 }
 
 interface BookmarkRow {
   question_id: number;
+  created_at: string;
 }
 
 interface ProfileRow {
@@ -63,11 +92,13 @@ export async function getDashboardData():
     getTrainerHistory(),
     supabase
       .from("question_progress")
-      .select("question_id, last_result")
+      .select(
+        "question_id, last_result, last_attempted_at"
+      )
       .eq("user_id", userId),
     supabase
       .from("bookmarks")
-      .select("question_id")
+      .select("question_id, created_at")
       .eq("user_id", userId),
     supabase
       .from("profiles")
@@ -88,18 +119,112 @@ export async function getDashboardData():
     throw new Error(profileResponse.error.message);
   }
 
+  const progressRows =
+    (progressResponse.data ?? []) as ProgressRow[];
+  const bookmarkRows =
+    (bookmarksResponse.data ?? []) as BookmarkRow[];
+
   const progressByQuestionId = new Map<
     number,
     AttemptResult | null
   >(
-    ((progressResponse.data ?? []) as ProgressRow[]).map(
-      (row) => [row.question_id, row.last_result]
-    )
+    progressRows.map((row) => [
+      row.question_id,
+      row.last_result,
+    ])
   );
 
-  const bookmarkedQuestionIds = (
-    (bookmarksResponse.data ?? []) as BookmarkRow[]
-  ).map((row) => row.question_id);
+  const bookmarkedQuestionIds = bookmarkRows.map(
+    (row) => row.question_id
+  );
+
+  const questionNumberById = new Map(
+    questions.map((question) => [
+      question.id,
+      question.number,
+    ])
+  );
+
+  const questionActivity: DashboardActivity[] =
+    progressRows.flatMap((row) => {
+      const questionNumber =
+        questionNumberById.get(row.question_id);
+
+      if (
+        !row.last_result ||
+        !row.last_attempted_at ||
+        questionNumber === undefined
+      ) {
+        return [];
+      }
+
+      return [
+        {
+          id: `question-${row.question_id}-${row.last_attempted_at}`,
+          type: "question" as const,
+          occurredAt: new Date(
+            row.last_attempted_at
+          ).getTime(),
+          questionId: row.question_id,
+          questionNumber,
+          result: row.last_result,
+        },
+      ];
+    });
+
+  const bookmarkActivity: DashboardActivity[] =
+    bookmarkRows.flatMap((row) => {
+      const questionNumber =
+        questionNumberById.get(row.question_id);
+
+      if (questionNumber === undefined) {
+        return [];
+      }
+
+      return [
+        {
+          id: `bookmark-${row.question_id}-${row.created_at}`,
+          type: "bookmark" as const,
+          occurredAt: new Date(row.created_at).getTime(),
+          questionId: row.question_id,
+          questionNumber,
+        },
+      ];
+    });
+
+  const trainerActivity: DashboardActivity[] =
+    trainerHistory.map((trainerSession) => {
+      const questionsAnswered =
+        trainerSession.results.length;
+      const correct = trainerSession.results.filter(
+        (result) => result.result === "correct"
+      ).length;
+
+      return {
+        id: `trainer-${trainerSession.id}`,
+        type: "trainer-session" as const,
+        occurredAt: trainerSession.endedAt,
+        division: trainerSession.division,
+        questionsAnswered,
+        accuracy:
+          questionsAnswered > 0
+            ? Math.round(
+                (correct / questionsAnswered) * 100
+              )
+            : 0,
+      };
+    });
+
+  const recentActivity = [
+    ...questionActivity,
+    ...bookmarkActivity,
+    ...trainerActivity,
+  ]
+    .sort(
+      (first, second) =>
+        second.occurredAt - first.occurredAt
+    )
+    .slice(0, 10);
 
   return {
     username: profileResponse.data.username,
@@ -113,5 +238,6 @@ export async function getDashboardData():
     ),
     level,
     recentTrainerSessions: trainerHistory.slice(0, 5),
+    recentActivity,
   };
 }
