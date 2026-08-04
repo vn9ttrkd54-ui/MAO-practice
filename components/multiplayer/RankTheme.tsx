@@ -30,3 +30,8 @@ export function RankIcon({ rank, size = 24 }: { rank: string; size?: number }) {
   const Icon = rankIcons[rank] ?? Sprout;
   return <Icon size={size} aria-hidden="true" />;
 }
+
+export function RankPill({ rank }: { rank: string | null }) {
+  if (!rank) return <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-600">Unranked</span>;
+  return <span className={`${rankThemeClass(rank)} inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-xs font-semibold`}><RankIcon rank={rank} size={12} />{rank}</span>;
+}
