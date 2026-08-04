@@ -156,3 +156,7 @@ export interface MultiplayerRoomAccess {
   room: MultiplayerRoom;
   currentPlayer: MultiplayerPlayer;
 }
+
+export interface MultiplayerLobbyState extends MultiplayerRoomAccess {
+  players: MultiplayerPlayer[];
+}
