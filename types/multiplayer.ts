@@ -1,3 +1,4 @@
+sed: --: No such file or directory
 import type { AnswerChoice, Division } from "@/types/question";
 
 export type MultiplayerRoomVisibility = "public" | "private";
@@ -150,4 +151,9 @@ export interface CreatePrivateRoomInput {
 export interface JoinPrivateRoomInput {
   code: string;
   guestNickname?: string;
+}
+
+export interface MultiplayerRoomAccess {
+  room: MultiplayerRoom;
+  currentPlayer: MultiplayerPlayer;
 }
