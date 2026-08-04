@@ -15,11 +15,21 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
 
   useEffect(() => {
     if (lobby.room.status !== "waiting") return;
+    const endpoint = `/api/multiplayer/rooms/${lobby.room.id}/lobby`;
     const timer = window.setInterval(async () => {
-      const response = await fetch(`/api/multiplayer/rooms/${lobby.room.id}/lobby`, { cache: "no-store" });
+      const response = await fetch(endpoint, { cache: "no-store" });
       if (response.ok) setLobby(await response.json() as MultiplayerLobbyState);
     }, 2000);
-    return () => window.clearInterval(timer);
+
+    function disconnect() {
+      void fetch(endpoint, { method: "DELETE", keepalive: true });
+    }
+
+    window.addEventListener("pagehide", disconnect);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("pagehide", disconnect);
+    };
   }, [lobby.room.id, lobby.room.status]);
 
   const isHost = lobby.currentPlayer.isHost;
