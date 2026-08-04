@@ -4,8 +4,8 @@ import {
   Bookmark,
   Brain,
   CheckCircle2,
-  Lock,
 } from "lucide-react";
+import { RankIcon, rankThemeClass } from "@/components/multiplayer/RankTheme";
 
 interface OverviewSectionProps {
   level: {
@@ -21,6 +21,7 @@ interface OverviewSectionProps {
 
   multiplayer: {
     rank: string;
+    rating: number | null;
   };
 }
 
@@ -214,33 +215,29 @@ export default function OverviewSection({
           </Link>
         </article>
 
-        <article className="group relative overflow-hidden rounded-2xl border bg-gray-50 p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
-          <div className="absolute inset-x-0 top-0 h-1 bg-gray-400" />
+        <article className={`group relative overflow-hidden rounded-2xl border p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md ${rankThemeClass(multiplayer.rank)}`}>
 
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-gray-500">
+              <p className="rank-secondary text-sm font-medium">
                 Multiplayer Rank
               </p>
 
-              <p className="mt-2 text-3xl font-bold tracking-tight text-gray-950">
+              <p className="mt-2 text-3xl font-bold tracking-tight">
                 {multiplayer.rank}
               </p>
             </div>
 
-            <div className="rounded-xl bg-gray-200 p-3 text-gray-600 transition group-hover:scale-105">
-              <Lock size={22} />
+            <div className="rank-icon rounded-xl p-3 transition group-hover:scale-105">
+              <RankIcon rank={multiplayer.rank} size={22} />
             </div>
           </div>
 
-          <p className="mt-5 text-sm leading-6 text-gray-500">
-            Competitive rating and rank will appear
-            here after multiplayer launches.
+          <p className="rank-secondary mt-5 text-sm leading-6">
+            {multiplayer.rating ?? 0} RP earned in ranked multiplayer.
           </p>
 
-          <span className="mt-4 inline-flex rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-600 shadow-sm">
-            Coming Soon
-          </span>
+          <Link href="/multiplayer" className="rank-chip mt-4 inline-flex rounded-full border px-3 py-1 text-xs font-semibold shadow-sm">Play Multiplayer</Link>
         </article>
       </div>
     </section>
