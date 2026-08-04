@@ -26,7 +26,7 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
 
         <form action={createPrivateRoomAction} className="mt-7 grid gap-5 sm:grid-cols-2">
           {!user ? <label className="block text-sm font-semibold sm:col-span-2">Your guest nickname
-            <input name="guestNickname" required minLength={3} maxLength={20} pattern="[A-Za-z0-9_ ]{3,20}" placeholder="MathPlayer" className={fieldClass} />
+            <input name="guestNickname" required minLength={1} maxLength={20} placeholder="MathPlayer" className={fieldClass} />
           </label> : null}
           <label className="block text-sm font-semibold">Division
             <select name="division" className={fieldClass}><option>Mu</option><option>Alpha</option><option>Theta</option></select>
