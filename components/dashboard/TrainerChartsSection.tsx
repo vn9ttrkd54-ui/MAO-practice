@@ -13,6 +13,10 @@ function formatSessionDate(timestamp: number) {
   }).format(new Date(timestamp));
 }
 
+function formatSessionCount(count: number) {
+  return `${count} ${count === 1 ? "session" : "sessions"}`;
+}
+
 export default function TrainerChartsSection({
   trainer,
 }: TrainerChartsSectionProps) {
@@ -54,7 +58,9 @@ export default function TrainerChartsSection({
               </p>
 
               <h3 className="mt-1 text-xl font-bold">
-                Last {trainer.recentSessionAccuracy.length || 0} sessions
+                Last {formatSessionCount(
+                  trainer.recentSessionAccuracy.length
+                )}
               </h3>
             </div>
 
@@ -67,37 +73,42 @@ export default function TrainerChartsSection({
             <div className="mt-8">
               <div className="flex h-56 items-end gap-3 border-b border-gray-200 pb-1">
                 {trainer.recentSessionAccuracy.map(
-                  (session, index) => (
-                    <div
-                      key={session.id}
-                      className="flex min-w-0 flex-1 flex-col items-center justify-end"
-                    >
-                      <span className="mb-2 text-xs font-semibold text-gray-700">
-                        {session.accuracy}%
-                      </span>
+                  (session, index) => {
+                    const visibleHeight = Math.max(
+                      session.accuracy > 0 ? 6 : 0,
+                      Math.min(100, session.accuracy)
+                    );
 
-                      <div className="flex h-40 w-full items-end rounded-t-xl bg-gray-50 px-1">
-                        <div
-                          className="w-full rounded-t-lg bg-emerald-500 transition-all"
-                          style={{
-                            height: `${Math.max(
-                              4,
-                              session.accuracy
-                            )}%`,
-                          }}
-                          title={`${session.accuracy}% accuracy across ${session.questionsAnswered} questions`}
-                        />
+                    return (
+                      <div
+                        key={session.id}
+                        className="flex min-w-0 flex-1 flex-col items-center justify-end"
+                      >
+                        <span className="mb-2 text-xs font-semibold text-gray-700">
+                          {session.accuracy}%
+                        </span>
+
+                        <div className="flex h-40 w-full items-end overflow-hidden rounded-t-xl bg-gray-50 px-1 pt-1">
+                          <div
+                            className="w-full rounded-t-lg transition-all"
+                            style={{
+                              height: `${visibleHeight}%`,
+                              backgroundColor: "#10b981",
+                            }}
+                            title={`${session.accuracy}% accuracy across ${session.questionsAnswered} questions`}
+                          />
+                        </div>
+
+                        <span className="mt-3 truncate text-xs text-gray-500">
+                          {formatSessionDate(session.endedAt)}
+                        </span>
+
+                        <span className="mt-1 text-[11px] text-gray-400">
+                          S{index + 1}
+                        </span>
                       </div>
-
-                      <span className="mt-3 truncate text-xs text-gray-500">
-                        {formatSessionDate(session.endedAt)}
-                      </span>
-
-                      <span className="mt-1 text-[11px] text-gray-400">
-                        S{index + 1}
-                      </span>
-                    </div>
-                  )
+                    );
+                  }
                 )}
               </div>
             </div>
@@ -129,6 +140,11 @@ export default function TrainerChartsSection({
                     )
                   : 0;
 
+              const visibleWidth = Math.max(
+                item.sessions > 0 ? 3 : 0,
+                Math.min(100, width)
+              );
+
               const share =
                 trainer.sessionsCompleted > 0
                   ? Math.round(
@@ -146,14 +162,17 @@ export default function TrainerChartsSection({
                     </span>
 
                     <span className="text-sm text-gray-500">
-                      {item.sessions} sessions · {share}%
+                      {formatSessionCount(item.sessions)} · {share}%
                     </span>
                   </div>
 
                   <div className="mt-2 h-3 overflow-hidden rounded-full bg-gray-100">
                     <div
-                      className="h-full rounded-full bg-violet-500 transition-all"
-                      style={{ width: `${width}%` }}
+                      className="h-full rounded-full transition-all"
+                      style={{
+                        width: `${visibleWidth}%`,
+                        backgroundColor: "#8b5cf6",
+                      }}
                     />
                   </div>
                 </div>
