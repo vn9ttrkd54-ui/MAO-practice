@@ -6,6 +6,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import MultiplayerSection from "@/components/dashboard/MultiplayerSection";
 import OverviewSection from "@/components/dashboard/OverviewSection";
 import QuestionBankSection from "@/components/dashboard/QuestionBankSection";
+import RecentActivitySection from "@/components/dashboard/RecentActivitySection";
 import RecentSessionsSection from "@/components/dashboard/RecentSessionsSection";
 import TrainerChartsSection from "@/components/dashboard/TrainerChartsSection";
 import TrainerSection from "@/components/dashboard/TrainerSection";
@@ -87,6 +88,7 @@ export default function DashboardClient() {
     questionBank,
     level,
     recentTrainerSessions,
+    recentActivity,
   } = dashboardData;
 
   return (
@@ -102,6 +104,8 @@ export default function DashboardClient() {
         multiplayer={multiplayer}
       />
 
+      <MultiplayerSection multiplayer={multiplayer} />
+
       <TrainerSection
         level={level}
         trainer={trainer}
@@ -109,14 +113,16 @@ export default function DashboardClient() {
 
       <TrainerChartsSection trainer={trainer} />
 
+      <RecentActivitySection
+        activities={recentActivity}
+      />
+
       <RecentSessionsSection
         sessionsCompleted={trainer.sessionsCompleted}
         sessions={recentTrainerSessions}
       />
 
       <QuestionBankSection questionBank={questionBank} />
-
-      <MultiplayerSection multiplayer={multiplayer} />
     </main>
   );
 }
