@@ -5,7 +5,7 @@ import {
   Brain,
   CheckCircle2,
 } from "lucide-react";
-import { RankIcon, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import { RankIcon, rankChipClass, rankIconClass, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 
 interface OverviewSectionProps {
   level: {
@@ -219,7 +219,7 @@ export default function OverviewSection({
 
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="rank-secondary text-sm font-medium">
+              <p className={`${rankSecondaryClass} text-sm font-medium`}>
                 Multiplayer Rank
               </p>
 
@@ -228,16 +228,16 @@ export default function OverviewSection({
               </p>
             </div>
 
-            <div className="rank-icon rounded-xl p-3 transition group-hover:scale-105">
+            <div className={`${rankIconClass} rounded-xl p-3 transition group-hover:scale-105`}>
               <RankIcon rank={multiplayer.rank} size={22} />
             </div>
           </div>
 
-          <p className="rank-secondary mt-5 text-sm leading-6">
+          <p className={`${rankSecondaryClass} mt-5 text-sm leading-6`}>
             {multiplayer.rating ?? 0} RP earned in ranked multiplayer.
           </p>
 
-          <Link href="/multiplayer" className="rank-chip mt-4 inline-flex rounded-full border px-3 py-1 text-xs font-semibold shadow-sm">Play Multiplayer</Link>
+          <Link href="/multiplayer" className={`${rankChipClass} mt-4 inline-flex rounded-full border px-3 py-1 text-xs font-semibold shadow-sm`}>Play Multiplayer</Link>
         </article>
       </div>
     </section>
