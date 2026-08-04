@@ -11,6 +11,7 @@ import type {
   JoinPrivateRoomInput,
   MultiplayerAnswerSubmission,
   MultiplayerMatchResult,
+  MultiplayerLobbyState,
   MultiplayerPlayer,
   MultiplayerProfile,
   MultiplayerRatingLeaderboardEntry,
@@ -253,6 +254,74 @@ export async function getMultiplayerRoom(roomId: string): Promise<MultiplayerRoo
     displayName = profile?.username ?? displayName;
   }
   return { room: mapRoom(room, count ?? 0), currentPlayer: mapPlayer(player, displayName) };
+}
+
+function tierForRp(rp: number): MultiplayerPlayer["rankTier"] {
+  if (rp >= 2200) return "Legend";
+  if (rp >= 1750) return "Grandmaster";
+  if (rp >= 1350) return "Master";
+  if (rp >= 1000) return "Diamond";
+  if (rp >= 700) return "Platinum";
+  if (rp >= 450) return "Gold";
+  if (rp >= 250) return "Silver";
+  if (rp >= 100) return "Bronze";
+  return "Novice";
+}
+
+export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyState | null> {
+  const access = await getMultiplayerRoom(roomId);
+  if (!access || access.room.visibility !== "private") return null;
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("multiplayer_players")
+    .select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question")
+    .eq("room_id", roomId)
+    .is("left_at", null)
+    .order("joined_at", { ascending: true });
+  if (error) throw new Error(`Unable to load the lobby: ${error.message}`);
+
+  const rows = (data ?? []) as PlayerRow[];
+  const userIds = rows.flatMap((row) => row.user_id ? [row.user_id] : []);
+  const [namesResponse, ratingsResponse] = userIds.length > 0
+    ? await Promise.all([
+        admin.from("profiles").select("id, username").in("id", userIds),
+        admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", userIds),
+      ])
+    : [{ data: [], error: null }, { data: [], error: null }];
+  if (namesResponse.error || ratingsResponse.error) {
+    throw new Error("Unable to load player profiles.");
+  }
+
+  const names = new Map((namesResponse.data ?? []).map((profile) => [profile.id, profile.username]));
+  const ratings = new Map((ratingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
+  const players = rows.map((row) => {
+    const player = mapPlayer(row, row.user_id ? names.get(row.user_id) ?? "Player" : row.guest_nickname ?? "Guest");
+    if (row.user_id) {
+      const rp = ratings.get(row.user_id) ?? 0;
+      player.rp = rp;
+      player.rankTier = tierForRp(rp);
+    }
+    return player;
+  });
+
+  return { ...access, room: { ...access.room, playerCount: players.length }, players };
+}
+
+export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom> {
+  const lobby = await getPrivateLobby(roomId);
+  if (!lobby) throw new Error("Private room not found.");
+  if (!lobby.currentPlayer.isHost) throw new Error("Only the host can start this room.");
+  if (lobby.room.status !== "waiting") throw new Error("This room has already started.");
+
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("multiplayer_rooms").update({
+    status: "in-progress",
+    started_at: new Date().toISOString(),
+    mode: lobby.players.length === 1 ? "unranked" : lobby.room.settings.mode,
+  }).eq("id", roomId).eq("status", "waiting").select("*").single<RoomRow>();
+  if (error) throw new Error(`Unable to start the room: ${error.message}`);
+  return mapRoom(data, lobby.players.length);
 }
 
 export async function listPublicRooms(): Promise<MultiplayerRoom[]> { return notImplemented(); }
