@@ -506,9 +506,41 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
 
   const { error: playerError } = await admin.from("multiplayer_players").update({ score: lobby.currentPlayer.score + pointsEarned, has_submitted_current_question: true }).eq("room_id", input.roomId).eq("id", lobby.currentPlayer.playerId);
   if (playerError) throw new Error(`Unable to update the score: ${playerError.message}`);
-  const state = await getMultiplayerRoundState(input.roomId);
-  if (!state) throw new Error("The match has ended.");
-  return state;
+
+  const [{ count: submissionCount }, { count: activePlayerCount }] = await Promise.all([
+    admin.from("multiplayer_submissions").select("id", { count: "exact", head: true }).eq("room_id", input.roomId).eq("question_number", matchQuestion.question_number),
+    admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", input.roomId).eq("connected", true).is("left_at", null),
+  ]);
+  let intermissionEndsAt: string | null = null;
+  if ((activePlayerCount ?? 0) > 0 && (submissionCount ?? 0) >= (activePlayerCount ?? 0)) {
+    intermissionEndsAt = new Date(Date.now() + 10_000).toISOString();
+    await admin.from("multiplayer_match_questions").update({ intermission_ends_at: intermissionEndsAt }).eq("room_id", input.roomId).eq("question_number", matchQuestion.question_number).is("intermission_ends_at", null);
+  }
+
+  const updatedPlayers = lobby.players.map((player) => player.playerId === lobby.currentPlayer.playerId ? {
+    ...player,
+    score: player.score + pointsEarned,
+    hasSubmittedCurrentQuestion: true,
+  } : player);
+
+  return {
+    roomId: input.roomId,
+    currentPlayerId: lobby.currentPlayer.playerId,
+    questionNumber: matchQuestion.question_number,
+    totalQuestions: room.question_count,
+    question: {
+      questionId: question.id,
+      number: matchQuestion.question_number,
+      division: question.division,
+      topic: question.topic,
+      difficulty: matchQuestion.difficulty,
+      question: question.question,
+      choices: question.choices,
+    },
+    questionEndsAt: endsAt,
+    intermissionEndsAt: intermissionEndsAt ? new Date(intermissionEndsAt).getTime() : null,
+    players: updatedPlayers,
+  };
 }
 
 interface FinalPlayerRow extends PlayerRow {
