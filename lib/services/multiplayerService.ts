@@ -1,8 +1,9 @@
 import "server-only";
 
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomInt } from "node:crypto";
 import { cookies } from "next/headers";
 
+import { questions } from "@/data/questions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -51,6 +52,14 @@ interface PlayerRow {
   score: number;
   placement: number | null;
   has_submitted_current_question: boolean;
+}
+
+interface MatchQuestionRow {
+  question_number: number;
+  question_id: number;
+  difficulty: number;
+  ends_at: string | null;
+  intermission_ends_at: string | null;
 }
 
 function notImplemented(): never {
@@ -340,20 +349,83 @@ export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom>
   if (lobby.room.status !== "waiting") throw new Error("This room has already started.");
 
   const admin = createAdminClient();
+  const availableQuestions = questions.filter((question) => question.division === lobby.room.settings.division);
+  if (availableQuestions.length < lobby.room.settings.questionCount) {
+    throw new Error(`There are not enough ${lobby.room.settings.division} questions for this room.`);
+  }
+
+  const randomizedQuestions = [...availableQuestions];
+  for (let index = randomizedQuestions.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomInt(index + 1);
+    [randomizedQuestions[index], randomizedQuestions[swapIndex]] = [randomizedQuestions[swapIndex], randomizedQuestions[index]];
+  }
+  const selectedQuestions = randomizedQuestions.slice(0, lobby.room.settings.questionCount);
+  const startedAt = new Date();
+  const firstQuestionEndsAt = new Date(startedAt.getTime() + lobby.room.settings.secondsPerQuestion * 1000);
+  const { error: questionsError } = await admin.from("multiplayer_match_questions").insert(
+    selectedQuestions.map((question, index) => ({
+      room_id: roomId,
+      question_number: index + 1,
+      question_id: question.id,
+      difficulty: question.difficulty,
+      started_at: index === 0 ? startedAt.toISOString() : null,
+      ends_at: index === 0 ? firstQuestionEndsAt.toISOString() : null,
+    }))
+  );
+  if (questionsError) throw new Error(`Unable to prepare match questions: ${questionsError.message}`);
+
   const { data, error } = await admin.from("multiplayer_rooms").update({
     status: "in-progress",
-    started_at: new Date().toISOString(),
+    started_at: startedAt.toISOString(),
+    current_question_number: 1,
     mode: lobby.players.length === 1 ? "unranked" : lobby.room.settings.mode,
   }).eq("id", roomId).eq("status", "waiting").select("*").single<RoomRow>();
-  if (error) throw new Error(`Unable to start the room: ${error.message}`);
+  if (error) {
+    await admin.from("multiplayer_match_questions").delete().eq("room_id", roomId);
+    throw new Error(`Unable to start the room: ${error.message}`);
+  }
   return mapRoom(data, lobby.players.length);
+}
+
+export async function getMultiplayerRoundState(roomId: string): Promise<MultiplayerRoundState | null> {
+  const lobby = await getPrivateLobby(roomId);
+  if (!lobby || lobby.room.status !== "in-progress") return null;
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("multiplayer_match_questions")
+    .select("question_number, question_id, difficulty, ends_at, intermission_ends_at")
+    .eq("room_id", roomId)
+    .eq("question_number", 1)
+    .maybeSingle<MatchQuestionRow>();
+  if (error || !data?.ends_at) return null;
+
+  const question = questions.find((entry) => entry.id === data.question_id);
+  if (!question) return null;
+
+  return {
+    roomId,
+    questionNumber: data.question_number,
+    totalQuestions: lobby.room.settings.questionCount,
+    question: {
+      questionId: question.id,
+      number: data.question_number,
+      division: question.division,
+      topic: question.topic,
+      difficulty: data.difficulty,
+      question: question.question,
+      choices: question.choices,
+    },
+    questionEndsAt: new Date(data.ends_at).getTime(),
+    intermissionEndsAt: data.intermission_ends_at ? new Date(data.intermission_ends_at).getTime() : null,
+    players: lobby.players,
+  };
 }
 
 export async function listPublicRooms(): Promise<MultiplayerRoom[]> { return notImplemented(); }
 export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> { return notImplemented(); }
 export async function joinPublicRoom(_roomId: string): Promise<MultiplayerRoom> { void _roomId; return notImplemented(); }
 export async function startPrivateMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
-export async function getMultiplayerRoundState(_roomId: string): Promise<MultiplayerRoundState | null> { void _roomId; return notImplemented(); }
 export async function submitMultiplayerAnswer(_input: MultiplayerAnswerSubmission): Promise<MultiplayerRoundState> { void _input; return notImplemented(); }
 export async function leaveMultiplayerRoom(_roomId: string): Promise<void> { void _roomId; return notImplemented(); }
 export async function spectatePublicMatch(_roomId: string): Promise<MultiplayerRoundState> { void _roomId; return notImplemented(); }
