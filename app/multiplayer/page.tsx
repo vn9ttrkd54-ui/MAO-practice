@@ -31,7 +31,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
               <input name="code" required minLength={8} maxLength={8} autoCapitalize="characters" placeholder="ABCD2345" className={`${fieldClass} uppercase tracking-widest`} />
             </label>
             {!user ? <label className="block text-sm font-semibold">Guest nickname
-              <input name="guestNickname" required minLength={3} maxLength={20} pattern="[A-Za-z0-9_ ]{3,20}" placeholder="MathPlayer" className={fieldClass} />
+              <input name="guestNickname" required minLength={1} maxLength={20} placeholder="MathPlayer" className={fieldClass} />
             </label> : null}
             <button className="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-700">Join Room</button>
           </form>
