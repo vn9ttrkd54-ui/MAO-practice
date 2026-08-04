@@ -148,7 +148,13 @@ export async function submitChallenge(
   const { data: authData } = await supabase.auth.getUser();
 
   if (!authData.user) {
-    return { ...input, correct, saved: false };
+    return {
+      ...input,
+      correct,
+      correctAnswer: dailyChallenge.question.answer,
+      solution: dailyChallenge.question.solution,
+      saved: false,
+    };
   }
 
   const admin = createAdminClient();
@@ -167,7 +173,13 @@ export async function submitChallenge(
     throw new Error(`Unable to submit the Challenge: ${error.message}`);
   }
 
-  return { ...input, correct, saved: true };
+  return {
+    ...input,
+    correct,
+    correctAnswer: dailyChallenge.question.answer,
+    solution: dailyChallenge.question.solution,
+    saved: true,
+  };
 }
 
 export async function getChallengeStatistics(): Promise<ChallengeUserStatistics> {
