@@ -77,6 +77,7 @@ export interface MultiplayerQuestion {
 
 export interface MultiplayerRoundState {
   roomId: string;
+  currentPlayerId: string;
   questionNumber: number;
   totalQuestions: number;
   question: MultiplayerQuestion;
