@@ -13,6 +13,7 @@ export {
   joinPrivateRoom,
   joinPublicRoom,
   leaveMultiplayerRoom,
+  listMyActiveMultiplayerRooms,
   listOngoingPublicMatches,
   listPublicRooms,
   spectatePublicMatch,
