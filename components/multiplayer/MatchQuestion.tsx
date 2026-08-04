@@ -13,6 +13,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
   const submitted = currentPlayer?.hasSubmittedCurrentQuestion ?? false;
   const secondsLeft = now === null ? null : Math.max(0, Math.ceil((round.questionEndsAt - now) / 1000));
@@ -27,7 +28,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       } else if (response.ok) {
         const nextRound = await response.json() as MultiplayerRoundState;
         setRound((current) => {
-          if (current.questionNumber !== nextRound.questionNumber) setSelected(null);
+          if (current.questionNumber !== nextRound.questionNumber) {
+            setSelected(null);
+            setShowLeaderboard(false);
+          }
           return nextRound;
         });
       }
@@ -38,6 +42,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   async function submitAnswer() {
     if (!selected) return;
     setError(null);
+    setShowLeaderboard(true);
     const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -46,6 +51,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     const body = await response.json() as MultiplayerRoundState | { error: string };
     if (!response.ok) {
       setError("error" in body ? body.error : "Unable to submit answer.");
+      setShowLeaderboard(false);
       return;
     }
     setRound(body as MultiplayerRoundState);
@@ -56,9 +62,9 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }
 
   const inIntermission = round.intermissionEndsAt !== null;
-  if (inIntermission) {
+  if (inIntermission || submitted || showLeaderboard) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-3xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Question {round.questionNumber} complete</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">Next question in {intermissionLeft ?? 10}s</p></header><ol className="mt-6 divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between px-5 py-4"><span className="font-semibold">{index + 1}. {player.displayName}</span><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol></main>;
+    return <main className="mx-auto max-w-3xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 10}s` : "Waiting for the other players…"}</p></header><ol className="mt-6 divide-y rounded-2xl border bg-white shadow-sm">{leaderboard.map((player, index) => <li key={player.playerId} className="flex items-center justify-between px-5 py-4"><span className="font-semibold">{index + 1}. {player.displayName}</span><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol></main>;
   }
 
   return (
