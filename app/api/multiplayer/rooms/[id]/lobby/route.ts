@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getPrivateLobby, updatePrivateRoomPresence } from "@/lib/services/multiplayerService";
+import { beginPublicRoomIfReady, getPrivateLobby, updatePrivateRoomPresence } from "@/lib/services/multiplayerService";
 
 interface LobbyRouteContext {
   params: Promise<{ id: string }>;
@@ -8,8 +8,13 @@ interface LobbyRouteContext {
 
 export async function GET(_request: Request, { params }: LobbyRouteContext) {
   const { id } = await params;
-  const lobby = await getPrivateLobby(id);
+  let lobby = await getPrivateLobby(id);
   if (!lobby) return NextResponse.json({ error: "Room not found." }, { status: 404 });
+  if (lobby.room.visibility === "public") {
+    await beginPublicRoomIfReady(id);
+    lobby = await getPrivateLobby(id);
+    if (!lobby) return NextResponse.json({ error: "Room not found." }, { status: 404 });
+  }
   return NextResponse.json(lobby, { headers: { "Cache-Control": "no-store" } });
 }
 
