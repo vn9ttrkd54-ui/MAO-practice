@@ -10,6 +10,10 @@ export interface TrainerHistorySummary {
   giveUps: number;
   accuracy: number;
   score: number;
+  averageQuestionsPerSession: number;
+  averageSessionDurationSeconds: number;
+  bestSessionAccuracy: number;
+  bestSessionCorrect: number;
 }
 
 export interface QuestionBankSummary {
@@ -27,20 +31,52 @@ export function calculateTrainerHistorySummary(
   let correct = 0;
   let incorrect = 0;
   let giveUps = 0;
+  let totalSessionDurationMs = 0;
+  let bestSessionAccuracy = 0;
+  let bestSessionCorrect = 0;
 
   for (const session of sessions) {
-    questionsAnswered += session.results.length;
+    const sessionQuestionsAnswered =
+      session.results.length;
+    let sessionCorrect = 0;
+
+    questionsAnswered += sessionQuestionsAnswered;
+    totalSessionDurationMs += Math.max(
+      0,
+      session.endedAt - session.startedAt
+    );
 
     for (const result of session.results) {
       if (result.result === "correct") {
         correct += 1;
+        sessionCorrect += 1;
       } else if (result.result === "incorrect") {
         incorrect += 1;
       } else {
         giveUps += 1;
       }
     }
+
+    const sessionAccuracy =
+      sessionQuestionsAnswered > 0
+        ? Math.round(
+            (sessionCorrect /
+              sessionQuestionsAnswered) *
+              100
+          )
+        : 0;
+
+    if (
+      sessionAccuracy > bestSessionAccuracy ||
+      (sessionAccuracy === bestSessionAccuracy &&
+        sessionCorrect > bestSessionCorrect)
+    ) {
+      bestSessionAccuracy = sessionAccuracy;
+      bestSessionCorrect = sessionCorrect;
+    }
   }
+
+  const sessionsCompleted = sessions.length;
 
   const accuracy =
     questionsAnswered > 0
@@ -48,13 +84,29 @@ export function calculateTrainerHistorySummary(
       : 0;
 
   return {
-    sessionsCompleted: sessions.length,
+    sessionsCompleted,
     questionsAnswered,
     correct,
     incorrect,
     giveUps,
     accuracy,
     score: correct - incorrect - giveUps,
+    averageQuestionsPerSession:
+      sessionsCompleted > 0
+        ? Math.round(
+            (questionsAnswered / sessionsCompleted) * 10
+          ) / 10
+        : 0,
+    averageSessionDurationSeconds:
+      sessionsCompleted > 0
+        ? Math.round(
+            totalSessionDurationMs /
+              sessionsCompleted /
+              1000
+          )
+        : 0,
+    bestSessionAccuracy,
+    bestSessionCorrect,
   };
 }
 
