@@ -1,9 +1,12 @@
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
 import ChallengeLeaderboard from "@/components/challenge/ChallengeLeaderboard";
+import ChallengePersonalStats from "@/components/challenge/ChallengePersonalStats";
 import {
   getChallengeLeaderboard,
+  getChallengeStatistics,
   getTodayChallenge,
   getUserChallengeAttempt,
+  getUserLeaderboardPosition,
 } from "@/lib/challenge";
 import type { ChallengeSubmissionResult } from "@/types/challenge";
 
@@ -19,10 +22,18 @@ function formatChallengeDate(date: string): string {
 }
 
 export default async function ChallengePage() {
-  const [dailyChallenge, existingAttempt, leaderboard] = await Promise.all([
+  const [
+    dailyChallenge,
+    existingAttempt,
+    leaderboard,
+    statistics,
+    userPosition,
+  ] = await Promise.all([
     getTodayChallenge(),
     getUserChallengeAttempt(),
     getChallengeLeaderboard(),
+    getChallengeStatistics(),
+    getUserLeaderboardPosition(),
   ]);
 
   const initialResult: ChallengeSubmissionResult | null =
@@ -55,6 +66,11 @@ export default async function ChallengePage() {
       </header>
 
       <ChallengeLeaderboard entries={leaderboard} />
+
+      <ChallengePersonalStats
+        statistics={statistics}
+        position={userPosition}
+      />
 
       <section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
         {!dailyChallenge ? (
