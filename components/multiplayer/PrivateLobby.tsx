@@ -13,10 +13,11 @@ interface PrivateLobbyProps {
 
 export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps) {
   const [lobby, setLobby] = useState(initialLobby);
+  const [now, setNow] = useState<number | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (lobby.room.status !== "waiting") return;
+    if (!["waiting", "countdown"].includes(lobby.room.status)) return;
     const endpoint = `/api/multiplayer/rooms/${lobby.room.id}/lobby`;
     const timer = window.setInterval(async () => {
       const response = await fetch(endpoint, { cache: "no-store" });
@@ -40,8 +41,15 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
     };
   }, [lobby.room.id, lobby.room.status, router]);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 250);
+    return () => window.clearInterval(timer);
+  }, []);
+
   const isHost = lobby.currentPlayer.isHost;
-  const started = lobby.room.status !== "waiting";
+  const started = lobby.room.status === "in-progress" || lobby.room.status === "completed";
+  const publicRoom = lobby.room.visibility === "public";
+  const countdown = now !== null && lobby.room.countdownEndsAt ? Math.max(0, Math.ceil((lobby.room.countdownEndsAt - now) / 1000)) : null;
 
   return (
     <>
@@ -68,14 +76,14 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
 
         <aside className="rounded-2xl bg-gray-50 p-5">
           <h2 className="font-bold">Ready to play?</h2>
-          <p className="mt-2 text-sm text-gray-600">{isHost ? "Start whenever everyone has joined." : "Waiting for the host to start the game."}</p>
-          {isHost && !started ? (
+          <p className="mt-2 text-sm text-gray-600">{publicRoom ? (lobby.room.status === "countdown" ? `Match begins in ${countdown ?? 60}s` : "The countdown begins when a second player joins.") : isHost ? "Start whenever everyone has joined." : "Waiting for the host to start the game."}</p>
+          {!publicRoom && isHost && !started ? (
             <form action={startPrivateRoomAction} className="mt-5">
               <input type="hidden" name="roomId" value={lobby.room.id} />
               <button className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Start Game</button>
             </form>
           ) : null}
-          {isHost && lobby.players.length === 1 && !started ? <p className="mt-3 text-xs text-gray-500">Solo games automatically become unranked.</p> : null}
+          {!publicRoom && isHost && lobby.players.length === 1 && !started ? <p className="mt-3 text-xs text-gray-500">Solo games automatically become unranked.</p> : null}
           {started ? <div className="mt-5 rounded-lg bg-green-100 px-3 py-2 text-sm font-semibold text-green-800">Game started</div> : null}
         </aside>
       </div>
