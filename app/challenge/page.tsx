@@ -1,5 +1,10 @@
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
-import { getTodayChallenge, getUserChallengeAttempt } from "@/lib/challenge";
+import ChallengeLeaderboard from "@/components/challenge/ChallengeLeaderboard";
+import {
+  getChallengeLeaderboard,
+  getTodayChallenge,
+  getUserChallengeAttempt,
+} from "@/lib/challenge";
 import type { ChallengeSubmissionResult } from "@/types/challenge";
 
 export const dynamic = "force-dynamic";
@@ -14,9 +19,10 @@ function formatChallengeDate(date: string): string {
 }
 
 export default async function ChallengePage() {
-  const [dailyChallenge, existingAttempt] = await Promise.all([
+  const [dailyChallenge, existingAttempt, leaderboard] = await Promise.all([
     getTodayChallenge(),
     getUserChallengeAttempt(),
+    getChallengeLeaderboard(),
   ]);
 
   const initialResult: ChallengeSubmissionResult | null =
@@ -47,6 +53,8 @@ export default async function ChallengePage() {
           in the next packs.
         </p>
       </header>
+
+      <ChallengeLeaderboard entries={leaderboard} />
 
       <section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
         {!dailyChallenge ? (
