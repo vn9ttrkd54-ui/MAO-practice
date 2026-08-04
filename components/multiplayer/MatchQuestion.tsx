@@ -67,7 +67,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }
 
   if (finished) {
-    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><h1 className="text-3xl font-bold">Match complete</h1><p className="mt-3 text-gray-600">Final results and question review arrive in the next pack.</p></div></main>;
+    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><h1 className="text-3xl font-bold">Match complete</h1><p className="mt-3 text-gray-600">Loading final results and question review…</p></div></main>;
   }
 
   const inIntermission = round.intermissionEndsAt !== null;
