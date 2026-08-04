@@ -1,8 +1,5 @@
 import { questions } from "@/data/questions";
-
-import {
-  getQuestionProgress,
-} from "@/lib/progress";
+import { getQuestionProgress } from "@/lib/services/progressService";
 
 import type {
   Division,
@@ -21,17 +18,17 @@ export function getTrainerQuestions(
   division: Division
 ): Question[] {
   return questions.filter(
-    (question) =>
-      question.division === division
+    (question) => question.division === division
   );
 }
 
-export function isQuestionEligibleForTrainer(
+export async function isQuestionEligibleForTrainer(
   question: Question,
   currentTime = Date.now()
-): boolean {
-  const progress =
-    getQuestionProgress(question.id);
+): Promise<boolean> {
+  const progress = await getQuestionProgress(
+    question.id
+  );
 
   if (progress.lastResult !== "correct") {
     return true;
@@ -42,8 +39,7 @@ export function isQuestionEligibleForTrainer(
   }
 
   const timeSinceLastCorrect =
-    currentTime -
-    progress.lastCorrectAt;
+    currentTime - progress.lastCorrectAt;
 
   return (
     timeSinceLastCorrect >=
@@ -51,18 +47,24 @@ export function isQuestionEligibleForTrainer(
   );
 }
 
-export function getEligibleTrainerQuestions(
+export async function getEligibleTrainerQuestions(
   division: Division
-): Question[] {
+): Promise<Question[]> {
   const currentTime = Date.now();
+  const divisionQuestions =
+    getTrainerQuestions(division);
 
-  return getTrainerQuestions(
-    division
-  ).filter((question) =>
-    isQuestionEligibleForTrainer(
-      question,
-      currentTime
+  const eligibility = await Promise.all(
+    divisionQuestions.map((question) =>
+      isQuestionEligibleForTrainer(
+        question,
+        currentTime
+      )
     )
+  );
+
+  return divisionQuestions.filter(
+    (_, index) => eligibility[index]
   );
 }
 
@@ -92,25 +94,16 @@ function chooseRandomQuestion(
   return finalPool[randomIndex];
 }
 
-export function getNextTrainerQuestion({
+export async function getNextTrainerQuestion({
   division,
   previousQuestionId,
 }: {
   division: Division;
   previousQuestionId?: number | null;
-}): Question | null {
+}): Promise<Question | null> {
   const primaryPool =
-    getEligibleTrainerQuestions(
-      division
-    );
+    await getEligibleTrainerQuestions(division);
 
-  /*
-   * Primary queue:
-   * - never answered correctly, or
-   * - last correct answer was at least 30 days ago, or
-   * - most recent result was incorrect/give-up without
-   *   a correct answer during the cooldown period.
-   */
   if (primaryPool.length > 0) {
     return chooseRandomQuestion(
       primaryPool,
@@ -118,14 +111,6 @@ export function getNextTrainerQuestion({
     );
   }
 
-  /*
-   * Secondary queue:
-   * If every question is on cooldown, allow questions
-   * from the complete division pool to appear again.
-   *
-   * This prevents small question sets from locking the
-   * user out of MAO Trainer.
-   */
   const secondaryPool =
     getTrainerQuestions(division);
 
@@ -139,29 +124,23 @@ export function calculateTrainerStats(
   results: TrainerQuestionResult[]
 ): TrainerSessionStats {
   const correct = results.filter(
-    (result) =>
-      result.result === "correct"
+    (result) => result.result === "correct"
   ).length;
 
   const incorrect = results.filter(
-    (result) =>
-      result.result === "incorrect"
+    (result) => result.result === "incorrect"
   ).length;
 
   const giveUps = results.filter(
-    (result) =>
-      result.result === "give-up"
+    (result) => result.result === "give-up"
   ).length;
 
-  const questionsAnswered =
-    results.length;
+  const questionsAnswered = results.length;
 
   const accuracy =
     questionsAnswered > 0
       ? Math.round(
-          (correct /
-            questionsAnswered) *
-            100
+          (correct / questionsAnswered) * 100
         )
       : 0;
 
