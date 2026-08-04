@@ -58,3 +58,11 @@ export interface SubmitChallengeInput {
   questionId: ChallengeQuestionId;
   selectedAnswer: AnswerChoice;
 }
+
+export interface ChallengeSubmissionResult {
+  challengeDate: string;
+  questionId: ChallengeQuestionId;
+  selectedAnswer: AnswerChoice;
+  correct: boolean;
+  saved: boolean;
+}
