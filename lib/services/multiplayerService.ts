@@ -747,6 +747,22 @@ export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> {
     return mapRoom(room, count ?? 0);
   }));
 }
+export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]> {
+  const user = await currentUser();
+  if (!user) return [];
+  const admin = createAdminClient();
+  const { data: memberships, error: membershipError } = await admin.from("multiplayer_players").select("room_id").eq("user_id", user.id).is("left_at", null);
+  if (membershipError) throw new Error(`Unable to load active games: ${membershipError.message}`);
+  const roomIds = [...new Set((memberships ?? []).map((membership) => membership.room_id))];
+  if (roomIds.length === 0) return [];
+
+  const { data, error } = await admin.from("multiplayer_rooms").select("*").in("id", roomIds).in("status", ["waiting", "countdown", "in-progress"]).order("created_at", { ascending: false });
+  if (error) throw new Error(`Unable to load active games: ${error.message}`);
+  return Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
+    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
+    return mapRoom(room, count ?? 0);
+  }));
+}
 export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   const user = await currentUser();
   if (!user) throw new Error("Sign in or create an account to join public rooms.");
