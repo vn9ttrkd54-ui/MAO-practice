@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { leaveMultiplayerRoomAction, startPrivateRoomAction } from "@/app/multiplayer/actions";
-import { RankPill } from "@/components/multiplayer/RankTheme";
+import { RankIcon, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import type { MultiplayerLobbyState } from "@/types/multiplayer";
 
 interface PrivateLobbyProps {
@@ -64,12 +64,15 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
             <h2 className="text-lg font-bold">Players</h2>
             <span className="text-sm text-gray-500">{lobby.players.length}/{lobby.room.capacity}</span>
           </div>
-          <ul className="mt-3 divide-y rounded-2xl border bg-white">
+          <ul className="mt-3 space-y-3">
             {lobby.players.map((player) => (
-              <li key={player.playerId} className="flex items-center justify-between gap-4 px-4 py-3">
+              <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-4 py-4`}>
                 <div>
-                  <p className="font-semibold">{player.displayName}{player.isHost ? <span className="ml-2 text-xs text-blue-600">HOST</span> : null}</p>
-                  <div className="mt-1 flex items-center gap-2">{player.isGuest ? <RankPill rank={null} /> : <RankPill rank={player.rankTier} />}<span className="text-xs text-gray-500">{player.isGuest ? "Guest" : `${player.rp} RP`}</span></div>
+                  <p className="font-semibold">{player.displayName}{player.isHost ? <span className="ml-2 rounded-full border border-current/30 bg-white/15 px-2 py-0.5 text-[10px] font-bold">HOST</span> : null}</p>
+                  <div className={`mt-1 flex items-center gap-2 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>
+                    {player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}
+                    <span>{player.isGuest ? "Unranked guest" : `${player.rankTier} · ${player.rp} RP`}</span>
+                  </div>
                 </div>
                 <span className="h-2.5 w-2.5 rounded-full bg-green-500" aria-label="Connected" />
               </li>
