@@ -1,4 +1,10 @@
 export {
+  challengeQuestions,
+  getChallengeQuestionById,
+  requireChallengeQuestionById,
+} from "@/data/challengeQuestions";
+
+export {
   getChallengeLeaderboard,
   getChallengeOverview,
   getChallengeStatistics,
