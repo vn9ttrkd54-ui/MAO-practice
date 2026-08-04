@@ -344,13 +344,8 @@ export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyS
   return { ...access, room: { ...access.room, playerCount: players.length }, players };
 }
 
-export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom> {
-  const lobby = await getPrivateLobby(roomId);
-  if (!lobby) throw new Error("Private room not found.");
-  if (lobby.room.visibility !== "private") throw new Error("This is not a private room.");
-  if (!lobby.currentPlayer.isHost) throw new Error("Only the host can start this room.");
-  if (lobby.room.status !== "waiting") throw new Error("This room has already started.");
-
+async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "waiting" | "countdown"): Promise<MultiplayerRoom> {
+  const roomId = lobby.room.id;
   const admin = createAdminClient();
   const availableQuestions = questions.filter((question) => question.division === lobby.room.settings.division);
   if (availableQuestions.length < lobby.room.settings.questionCount) {
@@ -375,19 +370,55 @@ export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom>
       ends_at: index === 0 ? firstQuestionEndsAt.toISOString() : null,
     }))
   );
-  if (questionsError) throw new Error(`Unable to prepare match questions: ${questionsError.message}`);
+  if (questionsError) {
+    if (questionsError.code === "23505") {
+      const { data: existingRoom } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
+      if (existingRoom?.status === "in-progress") return mapRoom(existingRoom, lobby.players.length);
+    }
+    throw new Error(`Unable to prepare match questions: ${questionsError.message}`);
+  }
 
   const { data, error } = await admin.from("multiplayer_rooms").update({
     status: "in-progress",
     started_at: startedAt.toISOString(),
     current_question_number: 1,
     mode: lobby.players.length === 1 ? "unranked" : lobby.room.settings.mode,
-  }).eq("id", roomId).eq("status", "waiting").select("*").single<RoomRow>();
+  }).eq("id", roomId).eq("status", expectedStatus).select("*").single<RoomRow>();
   if (error) {
     await admin.from("multiplayer_match_questions").delete().eq("room_id", roomId);
     throw new Error(`Unable to start the room: ${error.message}`);
   }
+
+  if (lobby.room.visibility === "public") {
+    await admin.from("multiplayer_rooms").insert({
+      visibility: "public", mode: "ranked", division: lobby.room.settings.division,
+      question_count: lobby.room.settings.questionCount, seconds_per_question: 60,
+      status: "waiting", capacity: 20,
+    });
+  }
   return mapRoom(data, lobby.players.length);
+}
+
+export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom> {
+  const lobby = await getPrivateLobby(roomId);
+  if (!lobby) throw new Error("Private room not found.");
+  if (lobby.room.visibility !== "private") throw new Error("This is not a private room.");
+  if (!lobby.currentPlayer.isHost) throw new Error("Only the host can start this room.");
+  if (lobby.room.status !== "waiting") throw new Error("This room has already started.");
+  return prepareRoomMatch(lobby, "waiting");
+}
+
+export async function beginPublicRoomIfReady(roomId: string): Promise<MultiplayerRoom | null> {
+  const lobby = await getPrivateLobby(roomId);
+  if (!lobby || lobby.room.visibility !== "public") return null;
+  if (lobby.room.status !== "countdown") return lobby.room;
+  if (lobby.players.length < 2) {
+    const admin = createAdminClient();
+    const { data } = await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown").select("*").single<RoomRow>();
+    return data ? mapRoom(data, lobby.players.length) : lobby.room;
+  }
+  if ((lobby.room.countdownEndsAt ?? Infinity) > Date.now() && lobby.players.length < lobby.room.capacity) return lobby.room;
+  return prepareRoomMatch(lobby, "countdown");
 }
 
 export async function getMultiplayerRoundState(roomId: string): Promise<MultiplayerRoundState | null> {
@@ -707,7 +738,15 @@ export async function listPublicRooms(): Promise<MultiplayerRoom[]> {
     return mapRoom(room, count ?? 0);
   }));
 }
-export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> { return notImplemented(); }
+export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> {
+  const admin = createAdminClient();
+  const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").eq("status", "in-progress").order("started_at", { ascending: false }).limit(20);
+  if (error) throw new Error(`Unable to load ongoing public matches: ${error.message}`);
+  return Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
+    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
+    return mapRoom(room, count ?? 0);
+  }));
+}
 export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   const user = await currentUser();
   if (!user) throw new Error("Sign in or create an account to join public rooms.");
