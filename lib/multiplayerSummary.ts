@@ -1,5 +1,5 @@
 export interface MultiplayerSummary {
-  status: "coming-soon";
+  status: "active";
   rank: string;
   rating: number | null;
   matchesPlayed: number;
@@ -8,14 +8,40 @@ export interface MultiplayerSummary {
   currentStreak: number;
 }
 
-export function getMultiplayerSummary(): MultiplayerSummary {
+interface MultiplayerSummaryInput {
+  rp?: number;
+  rankedMatchesPlayed?: number;
+  rankedWins?: number;
+  placements?: number[];
+}
+
+function rankForRp(rp: number) {
+  if (rp >= 2200) return "Legend";
+  if (rp >= 1750) return "Grandmaster";
+  if (rp >= 1350) return "Master";
+  if (rp >= 1000) return "Diamond";
+  if (rp >= 700) return "Platinum";
+  if (rp >= 450) return "Gold";
+  if (rp >= 250) return "Silver";
+  if (rp >= 100) return "Bronze";
+  return "Novice";
+}
+
+export function getMultiplayerSummary(input: MultiplayerSummaryInput = {}): MultiplayerSummary {
+  const rating = input.rp ?? 0;
+  const placements = input.placements ?? [];
+  let currentStreak = 0;
+  for (const placement of placements) {
+    if (placement !== 1) break;
+    currentStreak += 1;
+  }
   return {
-    status: "coming-soon",
-    rank: "Unranked",
-    rating: null,
-    matchesPlayed: 0,
-    wins: 0,
-    averagePlacement: null,
-    currentStreak: 0,
+    status: "active",
+    rank: rankForRp(rating),
+    rating,
+    matchesPlayed: input.rankedMatchesPlayed ?? 0,
+    wins: input.rankedWins ?? 0,
+    averagePlacement: placements.length ? Number((placements.reduce((sum, placement) => sum + placement, 0) / placements.length).toFixed(1)) : null,
+    currentStreak,
   };
 }
