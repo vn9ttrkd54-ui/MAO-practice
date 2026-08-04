@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { beginPrivateRoom, createPrivateRoom, joinPrivateRoom, joinPublicRoom, spectatePublicMatch } from "@/lib/services/multiplayerService";
+import { beginPrivateRoom, createPrivateRoom, joinPrivateRoom, joinPublicRoom, leaveMultiplayerRoom, spectatePublicMatch } from "@/lib/services/multiplayerService";
 import type { Division } from "@/types/question";
 import type { MultiplayerQuestionTime, MultiplayerRoomMode } from "@/types/multiplayer";
 
@@ -72,4 +72,10 @@ export async function spectatePublicRoomAction(formData: FormData) {
   const roomId = value(formData, "roomId");
   try { await spectatePublicMatch(roomId); } catch (error) { errorRedirect(error); }
   redirect(`/multiplayer/room/${roomId}/spectate`);
+}
+
+export async function leaveMultiplayerRoomAction(formData: FormData) {
+  const roomId = value(formData, "roomId");
+  try { await leaveMultiplayerRoom(roomId); } catch (error) { errorRedirect(error, `/multiplayer/room/${roomId}`); }
+  redirect("/multiplayer");
 }
