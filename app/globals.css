@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.rank-surface { position: relative; isolation: isolate; color: #f8fafc; background: linear-gradient(135deg,#1e3a8a,#1d4ed8 55%,#172554); border-color: #60a5fa; box-shadow: 0 12px 28px rgb(15 23 42 / .2),inset 0 1px 0 rgb(255 255 255 / .35); }
+.rank-surface::before { content: ""; position: absolute; z-index: -1; inset: 0; pointer-events: none; background: radial-gradient(circle at 14% 5%,rgb(255 255 255 / .28),transparent 30%),linear-gradient(120deg,transparent 22%,rgb(255 255 255 / .18) 45%,transparent 62%); }
+.rank-surface .rank-secondary { color: rgb(248 250 252 / .78); }
+.rank-surface .rank-icon,.rank-surface .rank-chip { color: inherit; background: rgb(255 255 255 / .16); border-color: rgb(255 255 255 / .38); backdrop-filter: blur(10px); }
+.rank-surface .rank-chip:hover { background: rgb(255 255 255 / .26); }
+.rank-surface > * { position: relative; z-index: 1; }
+.rank-bronze { color:#ffedd5; background:linear-gradient(135deg,#5c2414,#d28b55 36%,#f0b77c 48%,#9a4d2b 70%,#4b1f12); border-color:#d28b55; }
+.rank-silver { color:#f8fafc; background:linear-gradient(135deg,#697582,#dce3e8 34%,#fff 47%,#aeb9c4 68%,#58636f); border-color:#cbd5e1; }
+.rank-silver .rank-secondary { color:rgb(15 23 42 / .7); }.rank-silver { color:#1f2937; }
+.rank-gold { color:#3f2c00; background:linear-gradient(135deg,#805100,#e7b62d 32%,#fff0a3 48%,#d69a08 69%,#6f4800); border-color:#facc15; }
+.rank-gold .rank-secondary { color:rgb(63 44 0 / .72); }
+.rank-platinum { color:#153b3b; background:linear-gradient(135deg,#547879,#c5e2df 31%,#f5ffff 47%,#9bc1bf 68%,#45696a); border-color:#c9e4e0; }
+.rank-platinum .rank-secondary { color:rgb(21 59 59 / .72); }
+.rank-diamond { color:#e0f2fe; background:linear-gradient(135deg,rgb(14 165 233 / .74),rgb(255 255 255 / .36) 45%,rgb(99 102 241 / .58)),linear-gradient(120deg,#075985,#7dd3fc,#6d28d9); border-color:rgb(224 242 254 / .85); backdrop-filter:blur(16px) saturate(150%); }
+.rank-master { color:#ecfeff; background:linear-gradient(135deg,#064e3b,#047857 38%,#0891b2 72%,#164e63); border-color:#5eead4; }
+.rank-grandmaster { color:#faf5ff; background:linear-gradient(135deg,#3b0764,#6b21a8 38%,#7c3aed 70%,#4c1d95); border-color:#d8b4fe; }
+.rank-legend { color:#fff1a6; background:linear-gradient(135deg,#050505,#27220f 38%,#0a0a0a 58%,#31250a 82%,#050505); border-color:#facc15; box-shadow:0 16px 38px rgb(120 83 0 / .32),0 0 24px rgb(250 204 21 / .2),inset 0 1px 0 rgb(255 247 176 / .7); }
+.rank-legend::after { content:""; position:absolute; z-index:0; width:40%; height:220%; right:4%; top:-70%; transform:rotate(25deg); pointer-events:none; background:linear-gradient(90deg,transparent,rgb(255 248 184 / .42),rgb(255 255 255 / .18),transparent); }
