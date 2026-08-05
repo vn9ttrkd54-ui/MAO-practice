@@ -22,14 +22,14 @@ export default function QuestionBankPage() {
         {divisions.map((division) => {
           const count = questions.filter((question) => question.division === division.name).length;
           return (
-            <Link key={division.name} href={`/practice/question-bank/${division.slug}`} className="group flex min-h-64 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-slate-200/50 transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl">
+            <Link key={division.name} href={`/practice/question-bank/${division.slug}`} className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg shadow-slate-200/50 transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl" style={{ minHeight: "330px" }}>
               <div className="h-2" style={{ background: division.accent }} />
-              <div className="flex flex-1 flex-col" style={{ padding: "28px" }}>
+              <div className="flex flex-1 flex-col" style={{ padding: "34px" }}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex min-h-14 items-center justify-center rounded-2xl px-5 text-xl font-black text-white shadow-lg" style={{ background: division.accent }}>{division.name}</div>
                   <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-600">{count} questions</span>
                 </div>
-                <span className="mt-auto flex w-full items-center justify-center rounded-xl px-5 py-3.5 font-bold text-white shadow-md transition group-hover:-translate-y-0.5 group-hover:shadow-lg" style={{ background: division.accent }}>Explore {division.name}<span className="ml-2 transition group-hover:translate-x-1">→</span></span>
+                <span className="mt-auto flex w-full items-center justify-center rounded-xl px-5 py-3.5 font-bold text-white shadow-md transition group-hover:-translate-y-0.5 group-hover:shadow-lg" style={{ background: division.accent, marginTop: "72px" }}>Explore {division.name}<span className="ml-2 transition group-hover:translate-x-1">→</span></span>
               </div>
             </Link>
           );
