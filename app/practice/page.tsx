@@ -8,7 +8,7 @@ export default function PracticePage() {
       </h1>
 
       <p className="text-gray-600 mb-10">
-        Choose how you'd like to practice.
+        Choose how you want to practice.
       </p>
 
       <div className="grid md:grid-cols-2 gap-8">
@@ -19,8 +19,9 @@ export default function PracticePage() {
           </h2>
 
           <p className="text-gray-600 mb-8">
-            Browse every MAO problem, filter by topic,
-            difficulty, and year, and study solutions.
+            Explore Mu, Alpha, and Theta questions with
+            filters for topic, method, difficulty, progress,
+            and bookmarks.
           </p>
 
           <Link
@@ -37,8 +38,9 @@ export default function PracticePage() {
           </h2>
 
           <p className="text-gray-600 mb-8">
-            Continuous practice that automatically tracks
-            your progress and level.
+            Build your skills with adaptive questions,
+            level progression, instant solutions, and
+            session tracking.
           </p>
 
           <Link
