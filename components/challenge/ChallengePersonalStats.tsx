@@ -38,7 +38,7 @@ export default function ChallengePersonalStats({
 
       <dl className="mt-4 grid grid-cols-2 gap-3">
         {metrics.map(([label, value]) => (
-          <div key={label} className="rounded-xl bg-slate-50 p-3 last:col-span-2">
+          <div key={label} className="rounded-xl border border-slate-200 p-3 last:col-span-2" style={{ backgroundColor: "#f8fafc" }}>
             <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
               {label}
             </dt>
