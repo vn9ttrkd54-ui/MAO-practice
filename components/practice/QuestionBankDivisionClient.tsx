@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bookmark, Check, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
+import { Bookmark, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -18,7 +18,6 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") ?? "";
   const topic = searchParams.get("topic") ?? "All Topics";
   const difficulty = searchParams.get("difficulty") ?? "All Difficulties";
   const method = searchParams.get("method") ?? "All Methods";
@@ -59,19 +58,17 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
     router.replace(next.size ? `${pathname}?${next.toString()}` : pathname, { scroll: false });
   };
 
-  const normalizedQuery = query.trim().toLowerCase();
   const filteredQuestions = filterQuestions({ division, topic, difficulty, method })
     .filter((question) => {
       const questionStatus = questionStatuses[question.id] ?? "new";
       const statusMatches = status === "All Status" || questionStatus === status;
       const bookmarked = bookmarkedQuestionIds.has(question.id);
       const bookmarkMatches = bookmarkFilter === "All Bookmarks" || (bookmarkFilter === "Bookmarked" && bookmarked) || (bookmarkFilter === "Not Bookmarked" && !bookmarked);
-      const searchMatches = !normalizedQuery || question.number.toString() === normalizedQuery || question.topic.toLowerCase().includes(normalizedQuery) || question.methods.some((item) => item.toLowerCase().includes(normalizedQuery));
-      return statusMatches && bookmarkMatches && searchMatches;
+      return statusMatches && bookmarkMatches;
     })
     .sort((a, b) => a.number - b.number);
 
-  const activeFilterCount = [query, topic !== "All Topics", difficulty !== "All Difficulties", method !== "All Methods", status !== "All Status", bookmarkFilter !== "All Bookmarks"].filter(Boolean).length;
+  const activeFilterCount = [topic !== "All Topics", difficulty !== "All Difficulties", method !== "All Methods", status !== "All Status", bookmarkFilter !== "All Bookmarks"].filter(Boolean).length;
   const returnTo = searchParams.size ? `${pathname}?${searchParams.toString()}` : pathname;
   const tileStyle = (value: QuestionStatus) => value === "solved" ? "border-emerald-200 bg-emerald-50 text-emerald-900 hover:border-emerald-400" : value === "attempted" ? "border-rose-200 bg-rose-50 text-rose-900 hover:border-rose-400" : "border-slate-200 bg-white text-slate-800 hover:border-blue-400 hover:bg-blue-50";
   const dotStyle = (value: QuestionStatus) => value === "solved" ? "bg-emerald-500" : value === "attempted" ? "bg-rose-500" : "bg-slate-300";
@@ -81,7 +78,10 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
         <Link href="/practice/question-bank" className="inline-flex items-center font-semibold text-blue-600 transition hover:-translate-x-0.5 hover:text-blue-800">← All divisions</Link>
 
-        <header className="mt-6 overflow-hidden rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 px-6 py-8 text-white shadow-xl shadow-blue-900/10 sm:px-9">
+        <header
+          className="mt-6 overflow-hidden rounded-3xl border border-blue-500 px-6 py-7 text-white shadow-xl shadow-blue-900/10 sm:px-9"
+          style={{ background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 52%, #4338ca 100%)" }}
+        >
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">{division} division</p>
           <div className="mt-2 flex flex-wrap items-end justify-between gap-5">
             <div><h1 className="text-4xl font-bold sm:text-5xl">Question Bank</h1><p className="mt-3 max-w-2xl text-blue-100">Find questions by topic, method, progress, or bookmark without leaving the {division} collection.</p></div>
@@ -92,8 +92,7 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         <section className="relative z-10 -mt-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5 sm:p-6">
           <div className="flex items-center justify-between gap-4"><div className="flex items-center gap-2"><SlidersHorizontal size={19} className="text-blue-600" /><h2 className="font-bold">Find your questions</h2>{activeFilterCount ? <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">{activeFilterCount} active</span> : null}</div>{activeFilterCount ? <button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-blue-700"><RotateCcw size={15} /> Clear filters</button> : null}</div>
 
-          <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <label className="relative md:col-span-2 lg:col-span-1"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Search</span><Search size={17} className="absolute bottom-3 left-3 text-slate-400" /><input value={query} onChange={(event) => setFilter("q", event.target.value, "")} placeholder="Question number, topic, or method" className={`${fieldClass} pl-10`} /></label>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <FilterSelect label="Topic" value={topic} onChange={(value) => setFilter("topic", value, "All Topics")} options={["All Topics", ...topics]} />
             <FilterSelect label="Method" value={method} onChange={(value) => setFilter("method", value, "All Methods")} options={["All Methods", ...methods]} />
             <FilterSelect label="Difficulty" value={difficulty} onChange={(value) => setFilter("difficulty", value, "All Difficulties")} options={["All Difficulties", ...difficulties.map(String)]} render={(value) => value === "All Difficulties" ? value : "★".repeat(Number(value))} />
@@ -105,13 +104,13 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         <section className="mt-9">
           <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div><div className="flex flex-wrap gap-4 text-xs font-semibold text-slate-500"><Legend color="bg-emerald-500" label="Solved" /><Legend color="bg-rose-500" label="Attempted" /><Legend color="bg-slate-300" label="Not attempted" /></div></div>
 
-          {filteredQuestions.length ? <div className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10">
+          {filteredQuestions.length ? <div className="mt-5 grid grid-cols-5 gap-2.5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12">
             {filteredQuestions.map((question) => {
               const questionStatus = questionStatuses[question.id] ?? "new";
               const bookmarked = bookmarkedQuestionIds.has(question.id);
-              return <Link key={question.id} href={`/practice/question-bank/${question.id}?returnTo=${encodeURIComponent(returnTo)}`} aria-label={`Question ${question.number}, ${question.topic}`} className={`${tileStyle(questionStatus)} group relative min-h-24 rounded-2xl border p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md`}><div className="flex items-start justify-between"><span className={`${dotStyle(questionStatus)} mt-1 h-2.5 w-2.5 rounded-full`} />{bookmarked ? <Bookmark size={16} fill="currentColor" className="text-amber-500" /> : null}</div><p className="mt-3 text-2xl font-bold">{question.number}</p><p className="mt-1 truncate text-[11px] font-semibold opacity-65">{question.topic}</p>{questionStatus === "solved" ? <Check size={14} className="absolute bottom-3 right-3 text-emerald-600" /> : null}</Link>;
+              return <Link key={question.id} href={`/practice/question-bank/${question.id}?returnTo=${encodeURIComponent(returnTo)}`} aria-label={`Question ${question.number}, ${question.topic}`} className={`${tileStyle(questionStatus)} group relative flex h-14 items-center justify-center rounded-xl border text-lg font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md`}><span className={`${dotStyle(questionStatus)} absolute left-2 top-2 h-2 w-2 rounded-full`} />{question.number}{bookmarked ? <Bookmark size={14} fill="currentColor" className="absolute right-1.5 top-1.5 text-amber-500" /> : null}</Link>;
             })}
-          </div> : <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center"><Search className="mx-auto text-slate-300" size={34} /><h3 className="mt-4 font-bold">No matching questions</h3><p className="mt-1 text-sm text-slate-500">Try changing or clearing one of your filters.</p><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="mt-5 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Clear all filters</button></div>}
+          </div> : <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center"><SlidersHorizontal className="mx-auto text-slate-300" size={34} /><h3 className="mt-4 font-bold">No matching questions</h3><p className="mt-1 text-sm text-slate-500">Try changing or clearing one of your filters.</p><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="mt-5 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Clear all filters</button></div>}
         </section>
       </div>
     </main>
