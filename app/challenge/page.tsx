@@ -1,6 +1,7 @@
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
 import ChallengeLeaderboard from "@/components/challenge/ChallengeLeaderboard";
 import ChallengePersonalStats from "@/components/challenge/ChallengePersonalStats";
+import MathText from "@/components/math/MathText";
 import { getChallengeOverview } from "@/lib/challenge";
 import type { ChallengeSubmissionResult } from "@/types/challenge";
 
@@ -38,21 +39,17 @@ export default async function ChallengePage() {
       : null;
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-12 sm:px-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">Challenge</h1>
+    <main className="mx-auto max-w-7xl px-5 py-6 sm:px-8">
+      <header className="mb-6 overflow-hidden rounded-3xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-400 px-6 py-6 text-white shadow-lg shadow-amber-900/10 sm:px-8">
+        <p className="text-sm font-bold uppercase tracking-[0.22em] text-orange-100">Daily competition</p>
+        <h1 className="mt-1 text-4xl font-bold tracking-tight">Challenge</h1>
       </header>
 
-      <ChallengeLeaderboard entries={leaderboard} />
-
-      <ChallengePersonalStats
-        statistics={statistics}
-        position={userPosition}
-      />
-
-      <section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
-        {!dailyChallenge ? (
-          <div className="py-12 text-center">
+      <div className="challenge-layout">
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-900/5 sm:p-7">
+          {!dailyChallenge ? (
+          <div className="flex min-h-96 flex-col items-center justify-center rounded-2xl bg-slate-50 px-6 py-12 text-center">
+            <span className="text-4xl" aria-hidden="true">📅</span>
             <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
               Daily Challenge
             </p>
@@ -64,7 +61,7 @@ export default async function ChallengePage() {
               today&apos;s question is assigned.
             </p>
           </div>
-        ) : (
+          ) : (
           <>
             <div className="border-b pb-6">
               <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
@@ -93,9 +90,7 @@ export default async function ChallengePage() {
 
             <div className="mt-8">
               <h3 className="text-lg font-semibold text-gray-500">Question</h3>
-              <p className="mt-3 text-lg leading-8">
-                {dailyChallenge.question.question}
-              </p>
+              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-lg leading-8"><MathText>{dailyChallenge.question.question}</MathText></div>
             </div>
 
             <ChallengeAnswerForm
@@ -105,8 +100,23 @@ export default async function ChallengePage() {
               initialResult={initialResult}
             />
           </>
-        )}
-      </section>
+          )}
+        </section>
+
+        <aside className="challenge-sidebar">
+          <ChallengePersonalStats statistics={statistics} position={userPosition} />
+          <ChallengeLeaderboard entries={leaderboard} />
+        </aside>
+      </div>
+
+      <style>{`
+        .challenge-layout { display: grid; gap: 24px; align-items: start; }
+        .challenge-sidebar { display: grid; gap: 24px; }
+        @media (min-width: 1024px) {
+          .challenge-layout { grid-template-columns: minmax(0, 1fr) 360px; }
+          .challenge-sidebar { position: sticky; top: 24px; }
+        }
+      `}</style>
     </main>
   );
 }
