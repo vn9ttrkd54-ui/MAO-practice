@@ -3,9 +3,10 @@ type TrainerStatsSidebarProps = {
   correct: number;
   incorrect: number;
   giveUps: number;
+  onEndSession: () => void;
 };
 
-export default function TrainerStatsSidebar({ difficulty, correct, incorrect, giveUps }: TrainerStatsSidebarProps) {
+export default function TrainerStatsSidebar({ difficulty, correct, incorrect, giveUps, onEndSession }: TrainerStatsSidebarProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5">
       <p className="text-sm font-semibold uppercase tracking-wider text-slate-500">Current question</p>
@@ -22,6 +23,8 @@ export default function TrainerStatsSidebar({ difficulty, correct, incorrect, gi
         <StatRow label="Incorrect" value={incorrect} className="bg-rose-50 text-rose-800" />
         <StatRow label="Gave Up" value={giveUps} className="bg-amber-50 text-amber-800" />
       </div>
+
+      <button type="button" onClick={onEndSession} className="mt-5 w-full rounded-xl bg-black px-4 py-3 font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg">End Session</button>
     </section>
   );
 }
