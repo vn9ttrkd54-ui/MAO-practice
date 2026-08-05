@@ -21,6 +21,7 @@ import {
   getNextQuestion,
   getPreviousQuestion,
 } from "@/lib/questions";
+import { questions } from "@/data/questions";
 
 import QuestionHeader from "@/components/practice/QuestionHeader";
 import QuestionStats from "@/components/practice/QuestionStats";
@@ -113,17 +114,25 @@ export default function QuestionClient({
     };
   }, [question.id]);
 
-  const nextQuestion =
-    getNextQuestion(question.id);
-
-  const previousQuestion =
-    getPreviousQuestion(question.id);
+  const sequence = (searchParams.get("sequence") ?? "")
+    .split(",")
+    .map(Number)
+    .filter((id) => Number.isInteger(id));
+  const sequenceIndex = sequence.indexOf(question.id);
+  const sequenceQuestion = (offset: number) => {
+    if (sequenceIndex === -1) return null;
+    const id = sequence[sequenceIndex + offset];
+    return questions.find((item) => item.id === id) ?? null;
+  };
+  const nextQuestion = sequence.length ? sequenceQuestion(1) : getNextQuestion(question.id);
+  const previousQuestion = sequence.length ? sequenceQuestion(-1) : getPreviousQuestion(question.id);
+  const sequenceQuery = sequence.length ? `&sequence=${encodeURIComponent(sequence.join(","))}` : "";
 
   const goToQuestion = (
     destinationId: number
   ) => {
     router.push(
-      `/practice/question-bank/${destinationId}?returnTo=${encodeURIComponent(returnTo)}`
+      `/practice/question-bank/${destinationId}?returnTo=${encodeURIComponent(returnTo)}${sequenceQuery}`
     );
   };
 
