@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Check, RotateCcw, Search, SlidersHorizontal } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -12,11 +12,13 @@ import type { Division } from "@/types/question";
 import type { QuestionStatus } from "@/types/progress";
 
 type BookmarkFilter = "All Bookmarks" | "Bookmarked" | "Not Bookmarked";
+const fieldClass = "h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-800 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
 
 export default function QuestionBankDivisionClient({ division }: { division: Division }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const query = searchParams.get("q") ?? "";
   const topic = searchParams.get("topic") ?? "All Topics";
   const difficulty = searchParams.get("difficulty") ?? "All Difficulties";
   const method = searchParams.get("method") ?? "All Methods";
@@ -52,61 +54,74 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
 
   const setFilter = (key: string, value: string, defaultValue: string) => {
     const next = new URLSearchParams(searchParams.toString());
-    if (value === defaultValue) next.delete(key);
+    if (value === defaultValue || value.trim() === "") next.delete(key);
     else next.set(key, value);
     router.replace(next.size ? `${pathname}?${next.toString()}` : pathname, { scroll: false });
   };
 
+  const normalizedQuery = query.trim().toLowerCase();
   const filteredQuestions = filterQuestions({ division, topic, difficulty, method })
     .filter((question) => {
       const questionStatus = questionStatuses[question.id] ?? "new";
       const statusMatches = status === "All Status" || questionStatus === status;
       const bookmarked = bookmarkedQuestionIds.has(question.id);
       const bookmarkMatches = bookmarkFilter === "All Bookmarks" || (bookmarkFilter === "Bookmarked" && bookmarked) || (bookmarkFilter === "Not Bookmarked" && !bookmarked);
-      return statusMatches && bookmarkMatches;
+      const searchMatches = !normalizedQuery || question.number.toString() === normalizedQuery || question.topic.toLowerCase().includes(normalizedQuery) || question.methods.some((item) => item.toLowerCase().includes(normalizedQuery));
+      return statusMatches && bookmarkMatches && searchMatches;
     })
     .sort((a, b) => a.number - b.number);
 
+  const activeFilterCount = [query, topic !== "All Topics", difficulty !== "All Difficulties", method !== "All Methods", status !== "All Status", bookmarkFilter !== "All Bookmarks"].filter(Boolean).length;
   const returnTo = searchParams.size ? `${pathname}?${searchParams.toString()}` : pathname;
-  const statusColor = (value: QuestionStatus) => value === "solved" ? "bg-green-500" : value === "attempted" ? "bg-red-500" : "bg-gray-300";
+  const tileStyle = (value: QuestionStatus) => value === "solved" ? "border-emerald-200 bg-emerald-50 text-emerald-900 hover:border-emerald-400" : value === "attempted" ? "border-rose-200 bg-rose-50 text-rose-900 hover:border-rose-400" : "border-slate-200 bg-white text-slate-800 hover:border-blue-400 hover:bg-blue-50";
+  const dotStyle = (value: QuestionStatus) => value === "solved" ? "bg-emerald-500" : value === "attempted" ? "bg-rose-500" : "bg-slate-300";
 
   return (
-    <main className="mx-auto max-w-7xl p-8">
-      <Link href="/practice/question-bank" className="font-semibold text-blue-600 hover:underline">← All divisions</Link>
-      <h1 className="mt-5 text-4xl font-bold">{division} Question Bank</h1>
-      <p className="mt-2 text-gray-600">Browse and filter topics unique to the {division} division.</p>
+    <main className="min-h-full bg-gradient-to-b from-slate-50 via-white to-white">
+      <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+        <Link href="/practice/question-bank" className="inline-flex items-center font-semibold text-blue-600 transition hover:-translate-x-0.5 hover:text-blue-800">← All divisions</Link>
 
-      <div className="mt-8 flex flex-wrap gap-4">
-        <select aria-label="Topic" value={topic} onChange={(event) => setFilter("topic", event.target.value, "All Topics")} className="rounded-lg border p-2">
-          <option>All Topics</option>{topics.map((item) => <option key={item}>{item}</option>)}
-        </select>
-        <select aria-label="Difficulty" value={difficulty} onChange={(event) => setFilter("difficulty", event.target.value, "All Difficulties")} className="rounded-lg border p-2">
-          <option>All Difficulties</option>{difficulties.map((item) => <option key={item} value={item}>{"★".repeat(item)}</option>)}
-        </select>
-        <select aria-label="Method" value={method} onChange={(event) => setFilter("method", event.target.value, "All Methods")} className="rounded-lg border p-2">
-          <option>All Methods</option>{methods.map((item) => <option key={item}>{item}</option>)}
-        </select>
-        <select aria-label="Status" value={status} onChange={(event) => setFilter("status", event.target.value, "All Status")} className="rounded-lg border p-2">
-          <option>All Status</option><option value="solved">Solved</option><option value="attempted">Attempted</option><option value="new">Not Attempted</option>
-        </select>
-        <select aria-label="Bookmarks" value={bookmarkFilter} onChange={(event) => setFilter("bookmarks", event.target.value, "All Bookmarks")} className="rounded-lg border p-2">
-          <option>All Bookmarks</option><option>Bookmarked</option><option>Not Bookmarked</option>
-        </select>
-      </div>
+        <header className="mt-6 overflow-hidden rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 px-6 py-8 text-white shadow-xl shadow-blue-900/10 sm:px-9">
+          <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">{division} division</p>
+          <div className="mt-2 flex flex-wrap items-end justify-between gap-5">
+            <div><h1 className="text-4xl font-bold sm:text-5xl">Question Bank</h1><p className="mt-3 max-w-2xl text-blue-100">Find questions by topic, method, progress, or bookmark without leaving the {division} collection.</p></div>
+            <div className="rounded-2xl border border-white/25 bg-white/15 px-5 py-3 text-center backdrop-blur"><p className="text-3xl font-bold">{divisionQuestions.length}</p><p className="text-xs font-semibold uppercase tracking-wider text-blue-100">Available</p></div>
+          </div>
+        </header>
 
-      <p className="mt-6 text-sm font-medium text-gray-500">Showing {filteredQuestions.length} of {divisionQuestions.length} questions</p>
-      <div className="mt-4 grid grid-cols-5 gap-3 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12">
-        {filteredQuestions.map((question) => {
-          const bookmarked = bookmarkedQuestionIds.has(question.id);
-          return (
-            <Link key={question.id} href={`/practice/question-bank/${question.id}?returnTo=${encodeURIComponent(returnTo)}`} className={`${statusColor(questionStatuses[question.id] ?? "new")} relative flex h-12 items-center justify-center rounded-lg font-semibold text-white transition hover:scale-105`}>
-              {question.number}{bookmarked ? <Bookmark size={14} fill="currentColor" className="absolute right-1 top-1" /> : null}
-            </Link>
-          );
-        })}
+        <section className="relative z-10 -mt-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5 sm:p-6">
+          <div className="flex items-center justify-between gap-4"><div className="flex items-center gap-2"><SlidersHorizontal size={19} className="text-blue-600" /><h2 className="font-bold">Find your questions</h2>{activeFilterCount ? <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">{activeFilterCount} active</span> : null}</div>{activeFilterCount ? <button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-blue-700"><RotateCcw size={15} /> Clear filters</button> : null}</div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <label className="relative md:col-span-2 lg:col-span-1"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Search</span><Search size={17} className="absolute bottom-3 left-3 text-slate-400" /><input value={query} onChange={(event) => setFilter("q", event.target.value, "")} placeholder="Question number, topic, or method" className={`${fieldClass} pl-10`} /></label>
+            <FilterSelect label="Topic" value={topic} onChange={(value) => setFilter("topic", value, "All Topics")} options={["All Topics", ...topics]} />
+            <FilterSelect label="Method" value={method} onChange={(value) => setFilter("method", value, "All Methods")} options={["All Methods", ...methods]} />
+            <FilterSelect label="Difficulty" value={difficulty} onChange={(value) => setFilter("difficulty", value, "All Difficulties")} options={["All Difficulties", ...difficulties.map(String)]} render={(value) => value === "All Difficulties" ? value : "★".repeat(Number(value))} />
+            <FilterSelect label="Progress" value={status} onChange={(value) => setFilter("status", value, "All Status")} options={["All Status", "solved", "attempted", "new"]} render={(value) => ({ solved: "Solved", attempted: "Attempted", new: "Not Attempted" }[value] ?? value)} />
+            <FilterSelect label="Bookmarks" value={bookmarkFilter} onChange={(value) => setFilter("bookmarks", value, "All Bookmarks")} options={["All Bookmarks", "Bookmarked", "Not Bookmarked"]} />
+          </div>
+        </section>
+
+        <section className="mt-9">
+          <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div><div className="flex flex-wrap gap-4 text-xs font-semibold text-slate-500"><Legend color="bg-emerald-500" label="Solved" /><Legend color="bg-rose-500" label="Attempted" /><Legend color="bg-slate-300" label="Not attempted" /></div></div>
+
+          {filteredQuestions.length ? <div className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10">
+            {filteredQuestions.map((question) => {
+              const questionStatus = questionStatuses[question.id] ?? "new";
+              const bookmarked = bookmarkedQuestionIds.has(question.id);
+              return <Link key={question.id} href={`/practice/question-bank/${question.id}?returnTo=${encodeURIComponent(returnTo)}`} aria-label={`Question ${question.number}, ${question.topic}`} className={`${tileStyle(questionStatus)} group relative min-h-24 rounded-2xl border p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md`}><div className="flex items-start justify-between"><span className={`${dotStyle(questionStatus)} mt-1 h-2.5 w-2.5 rounded-full`} />{bookmarked ? <Bookmark size={16} fill="currentColor" className="text-amber-500" /> : null}</div><p className="mt-3 text-2xl font-bold">{question.number}</p><p className="mt-1 truncate text-[11px] font-semibold opacity-65">{question.topic}</p>{questionStatus === "solved" ? <Check size={14} className="absolute bottom-3 right-3 text-emerald-600" /> : null}</Link>;
+            })}
+          </div> : <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center"><Search className="mx-auto text-slate-300" size={34} /><h3 className="mt-4 font-bold">No matching questions</h3><p className="mt-1 text-sm text-slate-500">Try changing or clearing one of your filters.</p><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="mt-5 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Clear all filters</button></div>}
+        </section>
       </div>
-      {filteredQuestions.length === 0 ? <p className="mt-8 text-gray-500">No questions match your filters.</p> : null}
-      <div className="mt-10 flex flex-wrap gap-6 text-sm"><div>🟢 Solved</div><div>🔴 Attempted</div><div>⚪ Not Attempted</div><div className="flex items-center gap-1"><Bookmark size={15} fill="currentColor" /> Bookmarked</div></div>
     </main>
   );
+}
+
+function FilterSelect({ label, value, options, onChange, render = (item) => item }: { label: string; value: string; options: string[]; onChange: (value: string) => void; render?: (value: string) => string }) {
+  return <label><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className={fieldClass}>{options.map((option) => <option key={option} value={option}>{render(option)}</option>)}</select></label>;
+}
+
+function Legend({ color, label }: { color: string; label: string }) {
+  return <span className="inline-flex items-center gap-1.5"><span className={`${color} h-2.5 w-2.5 rounded-full`} />{label}</span>;
 }
