@@ -38,7 +38,15 @@ export default function TrainerHeader({
             <p className="font-semibold">{safeLevelProgress} / 30</p>
           </div>
 
-          <div className="mt-2 h-3 w-full overflow-hidden rounded-full border-2 border-slate-400 bg-white shadow-inner" role="progressbar" aria-label={`Progress to Level ${level + 1}`} aria-valuemin={0} aria-valuemax={30} aria-valuenow={safeLevelProgress}>
+          <div
+            className="mt-2 overflow-hidden rounded-full shadow-inner"
+            style={{ width: "100%", height: "14px", border: "2px solid #64748b", backgroundColor: "#e2e8f0", boxSizing: "border-box" }}
+            role="progressbar"
+            aria-label={`Progress to Level ${level + 1}`}
+            aria-valuemin={0}
+            aria-valuemax={30}
+            aria-valuenow={safeLevelProgress}
+          >
             <div className="h-full rounded-full bg-blue-600 transition-all duration-300" style={{ width: `${progressPercent}%` }} />
           </div>
 
