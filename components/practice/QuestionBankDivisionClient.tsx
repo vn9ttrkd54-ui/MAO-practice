@@ -80,12 +80,14 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         <Link href="/practice/question-bank" className="inline-flex items-center font-semibold text-blue-600 transition hover:-translate-x-0.5 hover:text-blue-800">← All divisions</Link>
 
         <header
-          className="mt-6 overflow-hidden rounded-3xl border border-blue-500 px-6 py-7 text-white shadow-xl shadow-blue-900/10 sm:px-9"
+          className="mt-6 overflow-hidden rounded-3xl border border-blue-500 px-6 py-8 text-white shadow-xl shadow-blue-900/10 sm:px-9"
           style={{ background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 52%, #4338ca 100%)" }}
         >
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">{division} division</p>
-          <div className="mt-2 flex flex-wrap items-end justify-between gap-5">
-            <div><h1 className="text-4xl font-bold sm:text-5xl">Question Bank</h1></div>
+          <div className="flex min-h-28 flex-wrap items-center justify-between gap-5">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">{division} division</p>
+              <h1 className="mt-2 text-4xl font-bold sm:text-5xl">Question Bank</h1>
+            </div>
             <div className="rounded-2xl border border-white/25 bg-white/15 px-5 py-3 text-center backdrop-blur"><p className="text-3xl font-bold">{divisionQuestions.length}</p><p className="text-xs font-semibold uppercase tracking-wider text-blue-100">Available</p></div>
           </div>
         </header>
@@ -103,7 +105,7 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         </section>
 
         <section className="mt-9">
-          <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div><div className="flex flex-wrap gap-4 text-sm font-semibold text-slate-600"><StatusLegend color="#10b981" label="Solved" /><StatusLegend color="#f43f5e" label="Attempted" /><StatusLegend color="#cbd5e1" label="Not attempted" /></div></div>
+          <div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div>
 
           {filteredQuestions.length ? <div className="mt-5" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 58px)", gap: "12px" }}>
             {filteredQuestions.map((question) => {
@@ -120,8 +122,4 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
 
 function FilterSelect({ label, value, options, onChange, render = (item) => item }: { label: string; value: string; options: string[]; onChange: (value: string) => void; render?: (value: string) => string }) {
   return <label><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className={fieldClass}>{options.map((option) => <option key={option} value={option}>{render(option)}</option>)}</select></label>;
-}
-
-function StatusLegend({ color, label }: { color: string; label: string }) {
-  return <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full border border-black/10" style={{ backgroundColor: color }} />{label}</span>;
 }
