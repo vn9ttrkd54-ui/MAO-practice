@@ -60,7 +60,7 @@ export default function ChallengeAnswerForm({
 
   return (
     <>
-      <div className="mt-8 space-y-3">
+      <div className="mt-5 space-y-2.5">
         {answerChoices.map((choice) => {
           const selected = selectedAnswer === choice;
           return (
@@ -69,7 +69,7 @@ export default function ChallengeAnswerForm({
               key={choice}
               disabled={completed || isSubmitting}
               onClick={() => setSelectedAnswer(choice)}
-              className={`flex w-full items-start gap-4 rounded-xl border p-4 text-left transition ${
+              className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition ${
                 selected ? "border-blue-500 bg-blue-50" : "hover:bg-gray-50"
               } disabled:cursor-not-allowed`}
             >
@@ -86,7 +86,7 @@ export default function ChallengeAnswerForm({
         type="button"
         disabled={!selectedAnswer || completed || isSubmitting}
         onClick={() => void handleSubmit()}
-        className="mt-8 rounded-lg bg-black px-6 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-5 w-full rounded-xl bg-black px-6 py-3 font-semibold text-white shadow-md transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {completed ? "Answer Submitted" : isSubmitting ? "Submitting..." : "Submit Answer"}
       </button>
