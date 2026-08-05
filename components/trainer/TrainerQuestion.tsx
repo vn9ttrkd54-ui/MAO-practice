@@ -5,6 +5,7 @@ import type {
 
 import MultipleChoice from "@/components/practice/MultipleChoice";
 import SolutionPanel from "@/components/practice/SolutionPanel";
+import MathText from "@/components/math/MathText";
 
 type TrainerQuestionProps = {
   question: Question;
@@ -31,9 +32,7 @@ export default function TrainerQuestion({
         Question
       </h2>
 
-      <p className="text-lg mb-8">
-        {question.question}
-      </p>
+      <div className="text-lg mb-8 leading-8"><MathText>{question.question}</MathText></div>
 
       <MultipleChoice
         choices={question.choices}
