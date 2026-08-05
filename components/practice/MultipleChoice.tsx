@@ -1,3 +1,5 @@
+import MathText from "@/components/math/MathText";
+
 type MultipleChoiceProps = {
   choices: string[];
   selectedAnswer: string | null;
@@ -32,7 +34,7 @@ export default function MultipleChoice({
             className={style}
             onClick={() => onSelect(letter)}
           >
-            <strong>{letter}.</strong> {choice}
+            <strong>{letter}.</strong>{" "}<MathText>{choice}</MathText>
           </button>
         );
       })}
