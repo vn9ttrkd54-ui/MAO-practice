@@ -32,7 +32,12 @@ export default function TrainerQuestion({
         Question
       </h2>
 
-      <div className="mb-5 text-lg leading-8"><MathText>{question.question}</MathText></div>
+      <div
+        className="text-lg leading-8"
+        style={{ marginBottom: "30px", padding: "18px 20px", border: "1px solid #e2e8f0", borderRadius: "14px", backgroundColor: "#f8fafc" }}
+      >
+        <MathText>{question.question}</MathText>
+      </div>
 
       <MultipleChoice
         choices={question.choices}
