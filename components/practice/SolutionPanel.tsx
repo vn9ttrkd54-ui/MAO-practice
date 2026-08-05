@@ -1,3 +1,5 @@
+import MathText from "@/components/math/MathText";
+
 type SolutionPanelProps = {
   submitted: boolean;
   selectedAnswer: string | null;
@@ -34,9 +36,7 @@ export default function SolutionPanel({
           Solution
         </h3>
 
-        <p className="mt-3">
-          {solution}
-        </p>
+        <div className="mt-3 leading-8"><MathText>{solution}</MathText></div>
       </div>
 
       {showReattemptButton && onReattempt && (
