@@ -475,7 +475,6 @@ export default function TrainerClient() {
         division={division}
         level={levelProgress.level}
         levelProgress={levelProgress.progress}
-        onEndSession={handleEndSession}
       />
 
       <div className="trainer-workspace mt-6">
@@ -503,6 +502,7 @@ export default function TrainerClient() {
             correct={sessionStats.correct}
             incorrect={sessionStats.incorrect}
             giveUps={sessionStats.giveUps}
+            onEndSession={handleEndSession}
           />
         </aside>
       </div>
