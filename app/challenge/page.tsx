@@ -40,7 +40,10 @@ export default async function ChallengePage() {
 
   return (
     <main className="mx-auto max-w-7xl px-5 py-6 sm:px-8">
-      <header className="mb-6 overflow-hidden rounded-3xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-400 px-6 py-6 text-white shadow-lg shadow-amber-900/10 sm:px-8">
+      <header
+        className="mb-6 overflow-hidden rounded-3xl px-6 py-6 text-white shadow-lg sm:px-8"
+        style={{ background: "linear-gradient(120deg, #ea580c 0%, #f59e0b 55%, #facc15 100%)", color: "white" }}
+      >
         <p className="text-sm font-bold uppercase tracking-[0.22em] text-orange-100">Daily competition</p>
         <h1 className="mt-1 text-4xl font-bold tracking-tight">Challenge</h1>
       </header>
@@ -48,7 +51,7 @@ export default async function ChallengePage() {
       <div className="challenge-layout">
         <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-900/5 sm:p-7">
           {!dailyChallenge ? (
-          <div className="flex min-h-96 flex-col items-center justify-center rounded-2xl bg-slate-50 px-6 py-12 text-center">
+          <div className="flex min-h-96 flex-col items-center justify-center rounded-2xl px-6 py-12 text-center" style={{ backgroundColor: "#f8fafc" }}>
             <span className="text-4xl" aria-hidden="true">📅</span>
             <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
               Daily Challenge
