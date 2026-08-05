@@ -29,6 +29,7 @@ import MultipleChoice from "@/components/practice/MultipleChoice";
 import SolutionPanel from "@/components/practice/SolutionPanel";
 import QuestionNavigation from "@/components/practice/QuestionNavigation";
 import BookmarkButton from "@/components/practice/BookmarkButton";
+import MathText from "@/components/math/MathText";
 
 const EMPTY_PROGRESS: QuestionProgress = {
   attempts: 0,
@@ -227,9 +228,7 @@ export default function QuestionClient({
               Question
             </h2>
 
-            <p className="mb-8 text-lg">
-              {question.question}
-            </p>
+            <div className="mb-8 text-lg leading-8"><MathText>{question.question}</MathText></div>
 
             <MultipleChoice
               choices={question.choices}
