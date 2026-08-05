@@ -1,264 +1,35 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { Bookmark } from "lucide-react";
 
 import { questions } from "@/data/questions";
-import { filterQuestions, getDifficulties, getMethods, getTopics } from "@/lib/filters";
-import { getQuestionBankUserData } from "@/lib/services/questionBankUserDataService";
 import type { Division } from "@/types/question";
-import type { QuestionStatus } from "@/types/progress";
 
-type BookmarkFilter =
-  | "All Bookmarks"
-  | "Bookmarked"
-  | "Not Bookmarked";
+const divisions: Array<{ name: Division; slug: string; description: string }> = [
+  { name: "Mu", slug: "mu", description: "Calculus, advanced algebra, probability, and higher-level topics." },
+  { name: "Alpha", slug: "alpha", description: "Algebra II, precalculus, sequences, functions, and related topics." },
+  { name: "Theta", slug: "theta", description: "Geometry, algebra, counting, number theory, and foundational topics." },
+];
 
 export default function QuestionBankPage() {
-  const [division, setDivision] = useState<Division>("Mu");
-  const [topic, setTopic] = useState("All Topics");
-  const [difficulty, setDifficulty] = useState("All Difficulties");
-  const [method, setMethod] = useState("All Methods");
-  const [status, setStatus] = useState("All Status");
-  const [bookmarkFilter, setBookmarkFilter] =
-    useState<BookmarkFilter>("All Bookmarks");
-  const [questionStatuses, setQuestionStatuses] =
-    useState<Record<number, QuestionStatus>>({});
-  const [bookmarkedQuestionIds, setBookmarkedQuestionIds] =
-    useState<Set<number>>(new Set());
-
-  const topics = getTopics(division);
-  const difficulties = getDifficulties(division);
-  const methods = getMethods(division);
-
-  const loadUserQuestionData = async () => {
-    try {
-      const userData = await getQuestionBankUserData(
-        questions.map((question) => question.id)
-      );
-
-      setQuestionStatuses(userData.statuses);
-      setBookmarkedQuestionIds(
-        new Set(userData.bookmarkedQuestionIds)
-      );
-    } catch {
-      const defaultStatuses: Record<number, QuestionStatus> = {};
-
-      questions.forEach((question) => {
-        defaultStatuses[question.id] = "new";
-      });
-
-      setQuestionStatuses(defaultStatuses);
-      setBookmarkedQuestionIds(new Set());
-    }
-  };
-
-  useEffect(() => {
-    void loadUserQuestionData();
-
-    const handlePageVisible = () => {
-      void loadUserQuestionData();
-    };
-
-    window.addEventListener("focus", handlePageVisible);
-    window.addEventListener("pageshow", handlePageVisible);
-
-    return () => {
-      window.removeEventListener("focus", handlePageVisible);
-      window.removeEventListener("pageshow", handlePageVisible);
-    };
-  }, []);
-
-  useEffect(() => {
-    setTopic("All Topics");
-    setDifficulty("All Difficulties");
-    setMethod("All Methods");
-  }, [division]);
-
-  const filteredQuestions = useMemo(() => {
-    return filterQuestions({
-      division,
-      topic,
-      difficulty,
-      method,
-    })
-      .filter((question) => {
-        const questionStatus =
-          questionStatuses[question.id] ?? "new";
-
-        const statusMatches =
-          status === "All Status" || questionStatus === status;
-
-        const isBookmarked = bookmarkedQuestionIds.has(question.id);
-
-        const bookmarkMatches =
-          bookmarkFilter === "All Bookmarks" ||
-          (bookmarkFilter === "Bookmarked" && isBookmarked) ||
-          (bookmarkFilter === "Not Bookmarked" && !isBookmarked);
-
-        return statusMatches && bookmarkMatches;
-      })
-      .sort((a, b) => a.number - b.number);
-  }, [
-    division,
-    topic,
-    difficulty,
-    method,
-    status,
-    bookmarkFilter,
-    questionStatuses,
-    bookmarkedQuestionIds,
-  ]);
-
-  const statusColor = (questionStatus: QuestionStatus) => {
-    switch (questionStatus) {
-      case "solved":
-        return "bg-green-500";
-      case "attempted":
-        return "bg-red-500";
-      default:
-        return "bg-gray-300";
-    }
-  };
-
   return (
-    <main className="max-w-7xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-2">Question Bank</h1>
+    <main className="mx-auto max-w-7xl p-8">
+      <p className="font-semibold uppercase tracking-[0.2em] text-blue-600">Practice</p>
+      <h1 className="mt-2 text-4xl font-bold">Question Bank</h1>
+      <p className="mt-3 text-gray-600">Choose a division to browse its questions and division-specific filters.</p>
 
-      <p className="text-gray-600 mb-8">
-        Browse every Mu Alpha Theta problem.
-      </p>
-
-      <div className="flex flex-wrap gap-4 mb-8">
-        <select
-          value={division}
-          onChange={(event) =>
-            setDivision(event.target.value as Division)
-          }
-          className="border rounded-lg p-2"
-        >
-          <option value="Mu">Mu</option>
-          <option value="Alpha">Alpha</option>
-          <option value="Theta">Theta</option>
-        </select>
-
-        <select
-          value={topic}
-          onChange={(event) => setTopic(event.target.value)}
-          className="border rounded-lg p-2"
-        >
-          <option value="All Topics">All Topics</option>
-          {topics.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={difficulty}
-          onChange={(event) => setDifficulty(event.target.value)}
-          className="border rounded-lg p-2"
-        >
-          <option value="All Difficulties">All Difficulties</option>
-          {difficulties.map((item) => (
-            <option key={item} value={item.toString()}>
-              {"★".repeat(item)}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={method}
-          onChange={(event) => setMethod(event.target.value)}
-          className="border rounded-lg p-2"
-        >
-          <option value="All Methods">All Methods</option>
-          {methods.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={status}
-          onChange={(event) => setStatus(event.target.value)}
-          className="border rounded-lg p-2"
-        >
-          <option value="All Status">All Status</option>
-          <option value="solved">Solved</option>
-          <option value="attempted">Attempted</option>
-          <option value="new">Not Attempted</option>
-        </select>
-
-        <select
-          value={bookmarkFilter}
-          onChange={(event) =>
-            setBookmarkFilter(event.target.value as BookmarkFilter)
-          }
-          className="border rounded-lg p-2"
-        >
-          <option value="All Bookmarks">All Bookmarks</option>
-          <option value="Bookmarked">Bookmarked</option>
-          <option value="Not Bookmarked">Not Bookmarked</option>
-        </select>
-      </div>
-
-      <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-3">
-        {filteredQuestions.map((question) => {
-          const questionStatus =
-            questionStatuses[question.id] ?? "new";
-          const isBookmarked = bookmarkedQuestionIds.has(question.id);
-
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
+        {divisions.map((division) => {
+          const count = questions.filter((question) => question.division === division.name).length;
           return (
-            <Link
-              key={question.id}
-              href={`/practice/question-bank/${question.id}`}
-              aria-label={
-                isBookmarked
-                  ? `Question ${question.number}, bookmarked`
-                  : `Question ${question.number}`
-              }
-              className={`${statusColor(
-                questionStatus
-              )} relative text-white rounded-lg h-12 font-semibold flex items-center justify-center hover:scale-105 transition`}
-            >
-              {question.number}
-
-              {isBookmarked ? (
-                <Bookmark
-                  size={14}
-                  fill="currentColor"
-                  aria-hidden="true"
-                  className="absolute right-1 top-1"
-                />
-              ) : null}
+            <Link key={division.name} href={`/practice/question-bank/${division.slug}`} className="group rounded-2xl border-2 border-gray-900 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-blue-600 hover:shadow-lg">
+              <div className="flex items-start justify-between gap-4">
+                <h2 className="text-3xl font-bold">{division.name}</h2>
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">{count} questions</span>
+              </div>
+              <p className="mt-4 min-h-20 leading-7 text-gray-600">{division.description}</p>
+              <span className="mt-7 inline-flex font-semibold text-blue-600 group-hover:underline">Open {division.name} questions →</span>
             </Link>
           );
         })}
-      </div>
-
-      {filteredQuestions.length === 0 ? (
-        <p className="text-gray-500 mt-8">
-          No questions match your filters.
-        </p>
-      ) : null}
-
-      <div className="flex flex-wrap gap-6 mt-10 text-sm">
-        <div>🟢 Solved</div>
-        <div>🔴 Attempted</div>
-        <div>⚪ Not Attempted</div>
-
-        <div className="flex items-center gap-1">
-          <Bookmark
-            size={15}
-            fill="currentColor"
-            aria-hidden="true"
-          />
-          Bookmarked
-        </div>
       </div>
     </main>
   );
