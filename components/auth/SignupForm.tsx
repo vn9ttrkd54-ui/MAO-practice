@@ -32,7 +32,10 @@ export default function SignupForm() {
       return;
     }
 
-    if (!normalizedEmail) {
+    if (
+      normalizedEmail &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
+    ) {
       setErrorMessage("Enter a valid email address.");
       return;
     }
@@ -104,7 +107,7 @@ export default function SignupForm() {
           htmlFor="email"
           className="block text-sm font-semibold text-gray-900"
         >
-          Email
+          Email <span className="font-normal text-gray-500">(optional)</span>
         </label>
         <input
           id="email"
@@ -113,12 +116,11 @@ export default function SignupForm() {
           autoComplete="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          required
           className="mt-2 w-full rounded-xl border px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
           placeholder="student@example.com"
         />
         <p className="mt-2 text-xs text-gray-500">
-          You can use the account immediately and verify this email later.
+          Add an email for future account recovery, or leave this blank.
         </p>
       </div>
 
