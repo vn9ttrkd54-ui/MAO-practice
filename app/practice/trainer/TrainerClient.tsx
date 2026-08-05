@@ -85,7 +85,7 @@ export default function TrainerClient() {
     useState(false);
 
   const [startTime, setStartTime] =
-    useState(Date.now());
+    useState(() => Date.now());
 
   const [
     sessionStartedAt,
@@ -460,7 +460,7 @@ export default function TrainerClient() {
   }
 
   return (
-    <main className="max-w-5xl mx-auto p-8">
+    <main className="mx-auto max-w-7xl px-5 py-6 sm:px-8">
       {startError ? (
         <div
           role="alert"
@@ -470,32 +470,38 @@ export default function TrainerClient() {
         </div>
       ) : null}
 
-      <TrainerHeader
-        division={division}
-        difficulty={currentQuestion.difficulty}
-        level={levelProgress.level}
-        levelProgress={levelProgress.progress}
-        correct={sessionStats.correct}
-        incorrect={sessionStats.incorrect}
-        giveUps={sessionStats.giveUps}
-        onEndSession={handleEndSession}
-      />
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="order-2 lg:order-1">
+          <TrainerQuestion
+            question={currentQuestion}
+            selectedAnswer={selectedAnswer}
+            submitted={submitted || isSaving}
+            onSelectAnswer={setSelectedAnswer}
+            onSubmit={() => {
+              void handleSubmit();
+            }}
+            onGiveUp={() => {
+              void handleGiveUp();
+            }}
+            onNextQuestion={() => {
+              void handleNextQuestion();
+            }}
+          />
+        </div>
 
-      <TrainerQuestion
-        question={currentQuestion}
-        selectedAnswer={selectedAnswer}
-        submitted={submitted || isSaving}
-        onSelectAnswer={setSelectedAnswer}
-        onSubmit={() => {
-          void handleSubmit();
-        }}
-        onGiveUp={() => {
-          void handleGiveUp();
-        }}
-        onNextQuestion={() => {
-          void handleNextQuestion();
-        }}
-      />
+        <aside className="order-1 lg:order-2 lg:sticky lg:top-6">
+          <TrainerHeader
+            division={division}
+            difficulty={currentQuestion.difficulty}
+            level={levelProgress.level}
+            levelProgress={levelProgress.progress}
+            correct={sessionStats.correct}
+            incorrect={sessionStats.incorrect}
+            giveUps={sessionStats.giveUps}
+            onEndSession={handleEndSession}
+          />
+        </aside>
+      </div>
 
       <EndSessionDialog
         open={showEndDialog}
