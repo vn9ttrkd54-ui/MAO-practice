@@ -179,12 +179,6 @@ export default function TrainerChartsSection({
               );
             })}
           </div>
-
-          <p className="mt-8 text-sm leading-6 text-gray-500">
-            Balanced practice across Mu, Alpha, and
-            Theta can help reveal division-specific
-            strengths and gaps.
-          </p>
         </article>
       </div>
     </section>
