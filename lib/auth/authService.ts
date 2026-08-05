@@ -7,7 +7,7 @@ export interface AuthResult {
 
 interface SignUpInput {
   username: string;
-  email: string;
+  email?: string;
   password: string;
 }
 
@@ -22,6 +22,9 @@ export async function signUp({
   password,
 }: SignUpInput): Promise<AuthResult> {
   const supabase = createClient();
+  const authenticationEmail =
+    email?.trim().toLowerCase() ||
+    `${username}@users.mao-practice.local`;
 
   const { data: isAvailable, error: availabilityError } =
     await supabase.rpc("is_username_available", {
@@ -43,11 +46,12 @@ export async function signUp({
   }
 
   const { data, error } = await supabase.auth.signUp({
-    email,
+    email: authenticationEmail,
     password,
     options: {
       data: {
         username,
+        email_provided: Boolean(email?.trim()),
       },
     },
   });
