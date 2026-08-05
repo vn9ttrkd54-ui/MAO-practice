@@ -28,7 +28,8 @@ export default function ChallengeLeaderboard({
           {entries.map((entry) => (
             <li
               key={entry.userId}
-              className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-2 py-3"
+              className="items-center py-3"
+              style={{ display: "grid", gridTemplateColumns: "40px minmax(0, 1fr) auto", columnGap: "10px" }}
             >
               <span className="font-bold text-gray-500">#{entry.rank}</span>
               <span className="truncate font-semibold">{entry.username}</span>
