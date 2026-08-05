@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertCircle, Bookmark, CheckCircle2, Circle, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { Bookmark, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -85,13 +85,13 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         >
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">{division} division</p>
           <div className="mt-2 flex flex-wrap items-end justify-between gap-5">
-            <div><h1 className="text-4xl font-bold sm:text-5xl">Question Bank</h1><p className="mt-3 max-w-2xl text-blue-100">Find questions by topic, method, progress, or bookmark without leaving the {division} collection.</p></div>
+            <div><h1 className="text-4xl font-bold sm:text-5xl">Question Bank</h1></div>
             <div className="rounded-2xl border border-white/25 bg-white/15 px-5 py-3 text-center backdrop-blur"><p className="text-3xl font-bold">{divisionQuestions.length}</p><p className="text-xs font-semibold uppercase tracking-wider text-blue-100">Available</p></div>
           </div>
         </header>
 
-        <section className="relative z-10 -mt-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5 sm:p-6">
-          <div className="flex items-center justify-between gap-4"><div className="flex items-center gap-2"><SlidersHorizontal size={19} className="text-blue-600" /><h2 className="font-bold">Find your questions</h2>{activeFilterCount ? <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">{activeFilterCount} active</span> : null}</div>{activeFilterCount ? <button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-blue-700"><RotateCcw size={15} /> Clear filters</button> : null}</div>
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5 sm:p-6">
+          <div className="flex items-center justify-between gap-4"><div className="flex items-center gap-2"><SlidersHorizontal size={19} className="text-blue-600" /><h2 className="font-bold">Find your questions</h2>{activeFilterCount ? <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">{activeFilterCount} active</span> : null}</div><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"><RotateCcw size={15} /> Reset filters</button></div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <FilterSelect label="Topic" value={topic} onChange={(value) => setFilter("topic", value, "All Topics")} options={["All Topics", ...topics]} />
@@ -103,13 +103,13 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         </section>
 
         <section className="mt-9">
-          <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div><div className="flex flex-wrap gap-4 text-sm font-semibold text-slate-600"><span className="inline-flex items-center gap-1.5"><CheckCircle2 size={17} className="text-emerald-600" />Solved</span><span className="inline-flex items-center gap-1.5"><AlertCircle size={17} className="text-rose-600" />Attempted</span><span className="inline-flex items-center gap-1.5"><Circle size={17} className="text-slate-400" />Not attempted</span></div></div>
+          <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div><div className="flex flex-wrap gap-4 text-sm font-semibold text-slate-600"><StatusLegend color="#10b981" label="Solved" /><StatusLegend color="#f43f5e" label="Attempted" /><StatusLegend color="#cbd5e1" label="Not attempted" /></div></div>
 
-          {filteredQuestions.length ? <div className="mt-5 grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10">
+          {filteredQuestions.length ? <div className="mt-5" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 58px)", gap: "12px" }}>
             {filteredQuestions.map((question) => {
               const questionStatus = questionStatuses[question.id] ?? "new";
               const bookmarked = bookmarkedQuestionIds.has(question.id);
-              return <Link key={question.id} href={`/practice/question-bank/${question.id}?returnTo=${encodeURIComponent(returnTo)}&sequence=${encodeURIComponent(questionSequence)}`} aria-label={`Question ${question.number}, ${question.topic}`} className={`${tileStyle(questionStatus)} group relative flex h-16 items-center justify-center rounded-xl border text-xl font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md`}><span className={`${dotStyle(questionStatus)} absolute h-2.5 w-2.5 rounded-full`} style={{ left: 8, top: 8 }} />{question.number}{bookmarked ? <Bookmark size={13} fill="currentColor" className="absolute text-amber-500" style={{ right: 7, top: 7 }} /> : null}</Link>;
+              return <Link key={question.id} href={`/practice/question-bank/${question.id}?returnTo=${encodeURIComponent(returnTo)}&sequence=${encodeURIComponent(questionSequence)}`} aria-label={`Question ${question.number}, ${question.topic}`} className={`${tileStyle(questionStatus)} group relative flex items-center justify-center rounded-xl border text-lg font-bold shadow-sm transition hover:-translate-y-0.5 hover:shadow-md`} style={{ width: 58, height: 58 }}><span className={`${dotStyle(questionStatus)} absolute h-2 w-2 rounded-full`} style={{ left: 6, top: 6 }} />{question.number}{bookmarked ? <Bookmark size={11} fill="currentColor" className="absolute text-amber-500" style={{ right: 5, top: 5 }} /> : null}</Link>;
             })}
           </div> : <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center"><SlidersHorizontal className="mx-auto text-slate-300" size={34} /><h3 className="mt-4 font-bold">No matching questions</h3><p className="mt-1 text-sm text-slate-500">Try changing or clearing one of your filters.</p><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="mt-5 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Clear all filters</button></div>}
         </section>
@@ -120,4 +120,8 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
 
 function FilterSelect({ label, value, options, onChange, render = (item) => item }: { label: string; value: string; options: string[]; onChange: (value: string) => void; render?: (value: string) => string }) {
   return <label><span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className={fieldClass}>{options.map((option) => <option key={option} value={option}>{render(option)}</option>)}</select></label>;
+}
+
+function StatusLegend({ color, label }: { color: string; label: string }) {
+  return <span className="inline-flex items-center gap-1.5"><span className="h-3 w-3 rounded-full border border-black/10" style={{ backgroundColor: color }} />{label}</span>;
 }
