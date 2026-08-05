@@ -27,12 +27,12 @@ export default function TrainerQuestion({
   onNextQuestion,
 }: TrainerQuestionProps) {
   return (
-    <section className="mt-8 border rounded-xl p-6">
-      <h2 className="text-2xl font-bold mb-6">
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5 sm:p-6">
+      <h2 className="mb-4 text-2xl font-bold">
         Question
       </h2>
 
-      <div className="text-lg mb-8 leading-8"><MathText>{question.question}</MathText></div>
+      <div className="mb-5 text-lg leading-8"><MathText>{question.question}</MathText></div>
 
       <MultipleChoice
         choices={question.choices}
@@ -44,7 +44,7 @@ export default function TrainerQuestion({
       />
 
       {!submitted && (
-        <div className="flex flex-wrap gap-4 mt-8">
+        <div className="mt-5 flex flex-wrap gap-3">
           <button
             type="button"
             onClick={onSubmit}
