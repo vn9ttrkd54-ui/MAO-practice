@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import type { Question } from "@/types/question";
 import type { QuestionProgress } from "@/types/progress";
@@ -45,6 +45,12 @@ export default function QuestionClient({
   question: Question;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedReturnTo = searchParams.get("returnTo");
+  const defaultReturnTo = `/practice/question-bank/${question.division.toLowerCase()}`;
+  const returnTo = requestedReturnTo?.startsWith("/practice/question-bank/")
+    ? requestedReturnTo
+    : defaultReturnTo;
 
   const [selectedAnswer, setSelectedAnswer] =
     useState<string | null>(null);
@@ -117,7 +123,7 @@ export default function QuestionClient({
     destinationId: number
   ) => {
     router.push(
-      `/practice/question-bank/${destinationId}`
+      `/practice/question-bank/${destinationId}?returnTo=${encodeURIComponent(returnTo)}`
     );
   };
 
@@ -205,6 +211,7 @@ export default function QuestionClient({
           question.difficulty
         )}
         status="Question Bank"
+        backHref={returnTo}
       />
 
       <div className="flex justify-between items-center mt-6 mb-6">
