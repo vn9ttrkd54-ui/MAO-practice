@@ -39,13 +39,13 @@ export default async function ChallengePage() {
       : null;
 
   return (
-    <main className="mx-auto max-w-7xl px-5 py-6 sm:px-8">
+    <main className="mx-auto max-w-7xl px-5 sm:px-8" style={{ paddingTop: "34px", paddingBottom: "34px" }}>
       <header
-        className="mb-6 overflow-hidden rounded-3xl px-6 py-6 text-white shadow-lg sm:px-8"
-        style={{ background: "linear-gradient(120deg, #ea580c 0%, #f59e0b 55%, #facc15 100%)", color: "white" }}
+        className="overflow-hidden rounded-3xl text-white shadow-lg"
+        style={{ background: "linear-gradient(120deg, #ea580c 0%, #f59e0b 55%, #facc15 100%)", color: "white", padding: "30px 38px", marginBottom: "32px", minHeight: "150px" }}
       >
         <p className="text-sm font-bold uppercase tracking-[0.22em] text-orange-100">Daily competition</p>
-        <h1 className="mt-1 text-4xl font-bold tracking-tight">Challenge</h1>
+        <h1 className="text-4xl font-bold tracking-tight" style={{ marginTop: "12px", lineHeight: 1.08 }}>Challenge</h1>
       </header>
 
       <div className="challenge-layout">
