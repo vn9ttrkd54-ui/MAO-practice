@@ -6,6 +6,7 @@ type QuestionHeaderProps = {
   topic: string;
   difficulty: string;
   status: string;
+  backHref: string;
 };
 
 export default function QuestionHeader({
@@ -14,12 +15,13 @@ export default function QuestionHeader({
   topic,
   difficulty,
   status,
+  backHref,
 }: QuestionHeaderProps) {
   return (
     <div className="mb-8">
 
       <Link
-        href="/practice/question-bank"
+        href={backHref}
         className="
           inline-flex
           items-center
