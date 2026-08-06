@@ -717,19 +717,30 @@ async function finalizeCompletedMatch(roomId: string): Promise<void> {
 
 export async function getMultiplayerMatchResult(roomId: string): Promise<MultiplayerMatchResult | null> {
   const access = await getMultiplayerRoom(roomId);
-  if (!access || access.room.status !== "completed") return null;
+  const admin = createAdminClient();
+  let spectatorMode = false;
+
+  if (!access) {
+    const user = await currentUser();
+    if (!user) return null;
+    const { data: publicRoom } = await admin.from("multiplayer_rooms").select("id").eq("id", roomId).eq("visibility", "public").eq("status", "completed").maybeSingle();
+    if (!publicRoom) return null;
+    spectatorMode = true;
+  } else if (access.room.status !== "completed") {
+    return null;
+  }
+
   await finalizeCompletedMatch(roomId);
 
-  const admin = createAdminClient();
   const [resultResponse, resultsResponse, playersResponse, submissionsResponse, matchQuestionsResponse] = await Promise.all([
-    admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).eq("player_id", access.currentPlayer.playerId).maybeSingle(),
+    spectatorMode ? Promise.resolve({ data: null }) : admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).eq("player_id", access!.currentPlayer.playerId).maybeSingle(),
     admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).order("placement"),
     admin.from("multiplayer_players").select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question").eq("room_id", roomId),
-    admin.from("multiplayer_submissions").select("player_id, question_number, question_id, selected_answer, correct, answer_time_ms, points_earned").eq("room_id", roomId).eq("player_id", access.currentPlayer.playerId),
+    spectatorMode ? Promise.resolve({ data: [] }) : admin.from("multiplayer_submissions").select("player_id, question_number, question_id, selected_answer, correct, answer_time_ms, points_earned").eq("room_id", roomId).eq("player_id", access!.currentPlayer.playerId),
     admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId).order("question_number"),
   ]);
   const result = resultResponse.data;
-  if (!result) return null;
+  if (!spectatorMode && !result) return null;
 
   const resultByPlayer = new Map((resultsResponse.data ?? []).map((entry) => [entry.player_id, entry]));
   const finalPlayerRows = (playersResponse.data ?? []) as PlayerRow[];
@@ -755,8 +766,11 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
   });
 
   return {
-    roomId, placement: result.placement, score: result.final_score, ranked: result.ranked,
-    ratingChange: result.previous_rp === null ? null : {
+    roomId, viewerMode: spectatorMode ? "spectator" : "player",
+    placement: spectatorMode ? null : result.placement,
+    score: spectatorMode ? null : result.final_score,
+    ranked: spectatorMode ? false : result.ranked,
+    ratingChange: spectatorMode || result.previous_rp === null ? null : {
       previousRp: result.previous_rp, change: result.rp_change, newRp: result.new_rp,
       previousTier: tierForRp(result.previous_rp)!, newTier: tierForRp(result.new_rp)!,
       opponentAdjustment: Number(result.opponent_adjustment), performanceIndex: Number(result.performance_index), completionFactor: Number(result.completion_factor),
