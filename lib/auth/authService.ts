@@ -7,7 +7,6 @@ export interface AuthResult {
 
 interface SignUpInput {
   username: string;
-  email?: string;
   password: string;
 }
 
@@ -18,13 +17,10 @@ interface LoginInput {
 
 export async function signUp({
   username,
-  email,
   password,
 }: SignUpInput): Promise<AuthResult> {
   const supabase = createClient();
-  const authenticationEmail =
-    email?.trim().toLowerCase() ||
-    `${username}@users.mao-practice.local`;
+  const authenticationEmail = `${username}@users.mao-practice.local`;
 
   const { data: isAvailable, error: availabilityError } =
     await supabase.rpc("is_username_available", {
@@ -51,7 +47,6 @@ export async function signUp({
     options: {
       data: {
         username,
-        email_provided: Boolean(email?.trim()),
       },
     },
   });
@@ -65,7 +60,7 @@ export async function signUp({
     ) {
       return {
         success: false,
-        error: "An account already exists with that email.",
+        error: "That username is already registered.",
       };
     }
 
@@ -90,7 +85,7 @@ export async function signUp({
     return {
       success: false,
       error:
-        "Account created, but immediate sign-in is disabled. Check the Supabase email confirmation setting.",
+        "Account created, but automatic sign-in is currently disabled.",
     };
   }
 
