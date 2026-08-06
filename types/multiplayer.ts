@@ -130,8 +130,9 @@ export interface MultiplayerRatingChange {
 
 export interface MultiplayerMatchResult {
   roomId: string;
-  placement: number;
-  score: number;
+  viewerMode: "player" | "spectator";
+  placement: number | null;
+  score: number | null;
   ranked: boolean;
   ratingChange: MultiplayerRatingChange | null;
   rounds: MultiplayerRoundResult[];
