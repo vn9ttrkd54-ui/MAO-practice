@@ -12,7 +12,6 @@ const MIN_PASSWORD_LENGTH = 8;
 export default function SignupForm() {
   const router = useRouter();
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -23,20 +22,11 @@ export default function SignupForm() {
     setErrorMessage(null);
 
     const normalizedUsername = username.trim().toLowerCase();
-    const normalizedEmail = email.trim().toLowerCase();
 
     if (!USERNAME_PATTERN.test(normalizedUsername)) {
       setErrorMessage(
         "Username must be 3–20 characters and use only lowercase letters, numbers, or underscores."
       );
-      return;
-    }
-
-    if (
-      normalizedEmail &&
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
-    ) {
-      setErrorMessage("Enter a valid email address.");
       return;
     }
 
@@ -57,7 +47,6 @@ export default function SignupForm() {
     try {
       const result = await signUp({
         username: normalizedUsername,
-        email: normalizedEmail,
         password,
       });
 
@@ -99,28 +88,6 @@ export default function SignupForm() {
         />
         <p className="mt-2 text-xs text-gray-500">
           Use 3–20 lowercase letters, numbers, or underscores.
-        </p>
-      </div>
-
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-semibold text-gray-900"
-        >
-          Email <span className="font-normal text-gray-500">(optional)</span>
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          className="mt-2 w-full rounded-xl border px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
-          placeholder="student@example.com"
-        />
-        <p className="mt-2 text-xs text-gray-500">
-          Add an email for future account recovery, or leave this blank.
         </p>
       </div>
 
