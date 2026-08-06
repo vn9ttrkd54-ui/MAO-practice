@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import type { MultiplayerSpectator, MultiplayerSpectatorState } from "@/types/multiplayer";
@@ -11,6 +12,7 @@ function Spectators({ spectators }: { spectators: MultiplayerSpectator[] }) {
 }
 
 export default function SpectatorView({ initialState }: { initialState: MultiplayerSpectatorState }) {
+  const router = useRouter();
   const [state, setState] = useState(initialState);
   const [now, setNow] = useState<number | null>(null);
   const [ended, setEnded] = useState(false);
@@ -18,12 +20,22 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
     const clock = window.setInterval(() => setNow(Date.now()), 250);
     const poll = window.setInterval(async () => {
       const response = await fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { cache: "no-store" });
-      if (response.ok) setState(await response.json() as MultiplayerSpectatorState); else setEnded(true);
+      if (!response.ok) {
+        setEnded(true);
+        return;
+      }
+      const payload = await response.json() as MultiplayerSpectatorState | { completed: true };
+      if ("completed" in payload) {
+        window.clearInterval(poll);
+        router.replace(`/multiplayer/room/${state.roomId}/results`);
+        return;
+      }
+      setState(payload);
     }, 1000);
     const leave = () => { fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true }); };
     window.addEventListener("pagehide", leave);
     return () => { window.clearInterval(clock); window.clearInterval(poll); window.removeEventListener("pagehide", leave); fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true }); };
-  }, [state.roomId]);
+  }, [router, state.roomId]);
   if (ended) return <main className="mx-auto max-w-xl px-6 py-16 text-center"><h1 className="text-3xl font-bold">Match ended</h1><Link href="/multiplayer" className="mt-5 inline-flex rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white">Back to multiplayer</Link></main>;
   const leaderboard = [...state.players].sort((a, b) => b.score - a.score);
   const seconds = now === null ? null : Math.max(0, Math.ceil((state.questionEndsAt - now) / 1000));
