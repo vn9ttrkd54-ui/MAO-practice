@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { joinPrivateRoomAction, joinPublicRoomAction, spectatePublicRoomAction } from "@/app/multiplayer/actions";
+import { LiveRoomListRefresh } from "@/components/multiplayer/LiveRoomListRefresh";
 import { RankIcon, rankChipClass, rankIconClass, rankPageClass, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { getMultiplayerProfile, getMultiplayerRatingLeaderboard, listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms, listRecentMultiplayerMatches } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
@@ -33,7 +34,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
   const currentRankRp = rankIndex >= 0 ? rankSteps[rankIndex].rp : 0;
   const progress = profile ? nextRank ? Math.min(100, Math.round((profile.rp - currentRankRp) / (nextRank.rp - currentRankRp) * 100)) : 100 : 0;
 
-  return <div className={rankPageClass(profile?.rankTier ?? "Novice")}><main className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
+  return <div className={rankPageClass(profile?.rankTier ?? "Novice")}><LiveRoomListRefresh /><main className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
     <header><p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Multiplayer</p><h1 className="mt-1.5 text-3xl font-bold tracking-tight">Create or join a private room</h1><p className="mt-2 text-sm text-gray-600">Enter a code to join, or create a room with your own settings.</p></header>
     {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
 
