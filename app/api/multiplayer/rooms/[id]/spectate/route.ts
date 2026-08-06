@@ -9,7 +9,11 @@ export async function GET(_request: Request, { params }: SpectateRouteContext) {
     const { id } = await params;
     return NextResponse.json(await spectatePublicMatch(id), { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to spectate." }, { status: 404 });
+    const message = error instanceof Error ? error.message : "Unable to spectate.";
+    if (message === "That public match is no longer in progress.") {
+      return NextResponse.json({ completed: true }, { headers: { "Cache-Control": "no-store" } });
+    }
+    return NextResponse.json({ error: message }, { status: 404 });
   }
 }
 
