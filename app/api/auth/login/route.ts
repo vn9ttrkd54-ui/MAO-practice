@@ -8,6 +8,9 @@ const GENERIC_LOGIN_ERROR = "Incorrect username or password.";
 
 export async function POST(request: Request) {
   try {
+    if (Number(request.headers.get("content-length") ?? 0) > 8_192) {
+      return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: 413 });
+    }
     const body = (await request.json()) as {
       username?: string;
       password?: string;
@@ -23,8 +26,9 @@ export async function POST(request: Request) {
       );
     }
 
+    // Usernames can change while the private authentication email remains stable,
+    // so resolve the current username without ever exposing that email to clients.
     const admin = createAdminClient();
-
     const { data: profile, error: profileError } = await admin
       .from("profiles")
       .select("id")
@@ -32,22 +36,13 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (profileError || !profile) {
-      return NextResponse.json(
-        { error: GENERIC_LOGIN_ERROR },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: 401 });
     }
 
-    const { data: userData, error: userError } =
-      await admin.auth.admin.getUserById(profile.id);
-
+    const { data: userData, error: userError } = await admin.auth.admin.getUserById(profile.id);
     const email = userData.user?.email;
-
     if (userError || !email) {
-      return NextResponse.json(
-        { error: GENERIC_LOGIN_ERROR },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: 401 });
     }
 
     const supabase = await createClient();
