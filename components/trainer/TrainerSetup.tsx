@@ -17,7 +17,7 @@ export default function TrainerSetup({
     <main className="max-w-5xl mx-auto p-8">
       <div className="max-w-xl mx-auto">
         <h1 className="text-4xl font-bold">
-          MAO Trainer
+          Daily Trainer
         </h1>
 
         <p className="mt-3 text-gray-600">
