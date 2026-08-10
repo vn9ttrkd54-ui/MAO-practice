@@ -29,6 +29,7 @@ const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
 const ALLOWED_TIMES = new Set([30, 60, 90, 120]);
+const INTERMISSION_DURATION_MS = 5_000;
 
 interface RoomRow {
   id: string;
@@ -475,7 +476,7 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
         await finalizeCompletedMatch(roomId);
         return null;
       }
-      const response = await admin.from("multiplayer_match_questions").update({ intermission_ends_at: new Date(now + 10_000).toISOString() }).eq("room_id", roomId).eq("question_number", data.question_number).select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").single<MatchQuestionRow>();
+      const response = await admin.from("multiplayer_match_questions").update({ intermission_ends_at: new Date(now + INTERMISSION_DURATION_MS).toISOString() }).eq("room_id", roomId).eq("question_number", data.question_number).select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").single<MatchQuestionRow>();
       if (!response.error) data = response.data;
     }
   }
@@ -580,7 +581,7 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
       await finalizeCompletedMatch(input.roomId);
       return null;
     }
-    intermissionEndsAt = new Date(Date.now() + 10_000).toISOString();
+    intermissionEndsAt = new Date(Date.now() + INTERMISSION_DURATION_MS).toISOString();
     await admin.from("multiplayer_match_questions").update({ intermission_ends_at: intermissionEndsAt }).eq("room_id", input.roomId).eq("question_number", matchQuestion.question_number).is("intermission_ends_at", null);
   }
 
