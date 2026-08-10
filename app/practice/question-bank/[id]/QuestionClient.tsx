@@ -30,6 +30,7 @@ import MultipleChoice from "@/components/practice/MultipleChoice";
 import SolutionPanel from "@/components/practice/SolutionPanel";
 import QuestionNavigation from "@/components/practice/QuestionNavigation";
 import BookmarkButton from "@/components/practice/BookmarkButton";
+import QuestionReportButton from "@/components/feedback/QuestionReportButton";
 import MathText from "@/components/math/MathText";
 
 const EMPTY_PROGRESS: QuestionProgress = {
@@ -223,18 +224,21 @@ export default function QuestionClient({
         backHref={returnTo}
       />
 
-      <div className="flex justify-between items-center mt-6 mb-6">
+      <div className="flex flex-wrap justify-between items-center gap-3 mt-6 mb-6">
         <Timer
           running={!submitted && !isSaving}
           resetKey={timerReset}
         />
 
-        <BookmarkButton
-          bookmarked={bookmarked}
-          onToggle={() => {
-            void handleBookmarkToggle();
-          }}
-        />
+        <div className="flex flex-wrap items-center gap-3">
+          <QuestionReportButton questionId={question.id} division={question.division} />
+          <BookmarkButton
+            bookmarked={bookmarked}
+            onToggle={() => {
+              void handleBookmarkToggle();
+            }}
+          />
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-4 gap-8">
