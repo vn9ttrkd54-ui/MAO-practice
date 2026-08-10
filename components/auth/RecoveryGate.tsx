@@ -15,17 +15,41 @@ export default function RecoveryGate({ serverVerified }: { serverVerified: boole
     if (serverVerified) return;
 
     const supabase = createClient();
-    const timeout = window.setTimeout(() => setStatus("invalid"), 5000);
+    let completed = false;
+    const markReady = () => {
+      if (completed) return;
+      completed = true;
+      window.clearTimeout(timeout);
+      setBrowserRecovery(true);
+      setStatus("ready");
+      window.history.replaceState({}, document.title, "/reset-password");
+    };
+    const timeout = window.setTimeout(() => {
+      if (!completed) setStatus("invalid");
+    }, 8000);
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
-        window.clearTimeout(timeout);
-        setBrowserRecovery(true);
-        setStatus("ready");
-        window.history.replaceState({}, document.title, "/reset-password");
+        markReady();
       }
     });
 
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const accessToken = hash.get("access_token");
+    const refreshToken = hash.get("refresh_token");
+    const recoveryType = hash.get("type");
+
+    if (recoveryType === "recovery" && accessToken && refreshToken) {
+      void supabase.auth
+        .setSession({ access_token: accessToken, refresh_token: refreshToken })
+        .then(async ({ error }) => {
+          if (error) return;
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) markReady();
+        });
+    }
+
     return () => {
+      completed = true;
       window.clearTimeout(timeout);
       subscription.unsubscribe();
     };
