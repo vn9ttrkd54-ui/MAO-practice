@@ -4,10 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function AccountSettings({ initialUsername }: { initialUsername: string }) {
+type AccountSettingsProps = {
+  initialUsername: string;
+  initialEmail: string;
+  emailVerified: boolean;
+};
+
+export default function AccountSettings({ initialUsername, initialEmail, emailVerified }: AccountSettingsProps) {
   const router = useRouter();
   const [username, setUsername] = useState(initialUsername);
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(initialEmail);
+  const [emailPassword, setEmailPassword] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [deletePassword, setDeletePassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -19,7 +27,7 @@ export default function AccountSettings({ initialUsername }: { initialUsername: 
     setSaving(true); setError(null); setMessage(null);
     try {
       const response = await fetch("/api/account", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      const data = (await response.json()) as { error?: string };
+      const data = (await response.json()) as { error?: string; pendingEmail?: string | null };
       if (!response.ok) { setError(data.error ?? "Unable to update your account."); return false; }
       return true;
     } finally { setSaving(false); }
@@ -34,6 +42,18 @@ export default function AccountSettings({ initialUsername }: { initialUsername: 
       {error ? <p className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">{error}</p> : null}
 
       <section className="mt-7 rounded-2xl border bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">Username</h2><p className="mt-1 text-sm text-slate-500">Lowercase letters, numbers, and underscores only.</p><input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} className="mt-4 w-full rounded-xl border p-3" /><button disabled={saving || username === initialUsername} onClick={async () => { if (await request("PATCH", { action: "username", username })) { setMessage("Username changed successfully. It will update across the site shortly."); router.refresh(); } }} className="mt-4 rounded-xl bg-black px-5 py-3 font-semibold text-white disabled:opacity-40">Change username</button></section>
+
+      <section className="mt-5 rounded-2xl border bg-white p-6 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><h2 className="text-xl font-bold">Recovery email</h2><p className="mt-1 text-sm text-slate-500">Add an email so you can recover your account without administrator help.</p></div>
+          {initialEmail ? <span className={`rounded-full px-3 py-1 text-xs font-bold ${emailVerified ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-800"}`}>{emailVerified ? "Verified" : "Confirmation pending"}</span> : null}
+        </div>
+        <label className="mt-4 block text-sm font-semibold">Email address</label>
+        <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" className="mt-2 w-full rounded-xl border p-3" placeholder="you@example.com" />
+        <label className="mt-4 block text-sm font-semibold">Current password</label>
+        <input type="password" value={emailPassword} onChange={(event) => setEmailPassword(event.target.value)} autoComplete="current-password" className="mt-2 w-full rounded-xl border p-3" placeholder="Confirm your password" />
+        <button disabled={saving || !emailPassword || !email.includes("@") || email === initialEmail} onClick={async () => { if (await request("PATCH", { action: "email", email, currentPassword: emailPassword })) { setEmailPassword(""); setMessage("Email submitted. Check that inbox and confirm the address to finish linking it."); router.refresh(); } }} className="mt-4 rounded-xl bg-black px-5 py-3 font-semibold text-white disabled:opacity-40">{initialEmail ? "Change recovery email" : "Add recovery email"}</button>
+      </section>
 
       <section className="mt-5 rounded-2xl border bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">Password</h2><p className="mt-1 text-sm text-slate-500">Confirm your current password, then use at least 8 characters for the new one.</p><input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} autoComplete="current-password" className="mt-4 w-full rounded-xl border p-3" placeholder="Current password" /><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" className="mt-3 w-full rounded-xl border p-3" placeholder="New password" /><button disabled={saving || !currentPassword || password.length < 8} onClick={async () => { if (await request("PATCH", { action: "password", password, currentPassword })) { setPassword(""); setCurrentPassword(""); setMessage("Password changed successfully."); } }} className="mt-4 rounded-xl bg-black px-5 py-3 font-semibold text-white disabled:opacity-40">Change password</button></section>
 
