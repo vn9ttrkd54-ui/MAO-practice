@@ -4,23 +4,13 @@ import { useEffect, useState } from "react";
 
 type TimerProps = {
   running: boolean;
-  resetKey: number;
 };
 
 export default function Timer({
   running,
-  resetKey,
 }: TimerProps) {
 
   const [seconds, setSeconds] = useState(0);
-
-
-
-  useEffect(() => {
-
-    setSeconds(0);
-
-  }, [resetKey]);
 
 
 
