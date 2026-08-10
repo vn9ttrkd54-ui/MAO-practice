@@ -50,7 +50,14 @@ export async function PATCH(request: Request) {
 
     const { error } = await admin.from("profiles").update({ username }).eq("id", user.id);
     if (error) return NextResponse.json({ error: "Unable to change the username." }, { status: 500 });
-    await admin.auth.admin.updateUserById(user.id, { user_metadata: { ...user.user_metadata, username } });
+    await admin.auth.admin.updateUserById(user.id, {
+      user_metadata: {
+        ...user.user_metadata,
+        username,
+        display_name: username,
+        full_name: username,
+      },
+    });
     return NextResponse.json({ success: true, username });
   }
 
