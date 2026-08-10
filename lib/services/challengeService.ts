@@ -181,7 +181,7 @@ export async function submitChallenge(
     throw new Error("You have already submitted today's Challenge.");
   }
   if (error) {
-    throw new Error(`Unable to submit the Challenge: ${error.message}`);
+    throw new Error("Unable to submit the Challenge right now.");
   }
 
   return {
