@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MAO Practice",
-  description: "Mu Alpha Theta mathematics practice platform",
+  title: "Mathematic Daily",
+  description:
+    "Daily mathematics practice, challenges, and multiplayer competition for Mu, Alpha, and Theta students.",
 };
 
 export default function RootLayout({
