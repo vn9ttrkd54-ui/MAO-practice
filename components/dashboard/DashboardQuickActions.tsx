@@ -3,7 +3,11 @@ import { Lightbulb, Settings, ShieldCheck } from "lucide-react";
 
 export default function DashboardQuickActions({ isAdmin }: { isAdmin: boolean }) {
   return (
-    <section className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <section
+      className={`mx-auto mt-5 grid w-full gap-4 sm:grid-cols-2 ${
+        isAdmin ? "max-w-6xl lg:grid-cols-3" : "max-w-4xl"
+      }`}
+    >
       <Link href="/suggestions/new" className="flex items-center gap-4 rounded-2xl border bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
         <span className="grid h-11 w-11 place-items-center rounded-xl bg-amber-100 text-amber-700"><Lightbulb size={21} /></span>
         <span><span className="block font-bold">Make a suggestion</span><span className="mt-0.5 block text-sm text-slate-500">Share an idea or report a site issue</span></span>
