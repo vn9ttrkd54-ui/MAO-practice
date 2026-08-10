@@ -77,7 +77,7 @@ export async function signUp({
 
     return {
       success: false,
-      error: error.message || "Unable to create the account.",
+      error: "Unable to create the account right now. Please try again.",
     };
   }
 
