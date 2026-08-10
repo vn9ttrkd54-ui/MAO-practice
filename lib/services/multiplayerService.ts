@@ -184,7 +184,7 @@ async function addPlayer(room: RoomRow, guestNickname?: string, isHost = false) 
 
   if (error) {
     if (error.code === "23505") throw new Error("That account or nickname is already in this room.");
-    throw new Error(`Unable to join the private room: ${error.message}`);
+    throw new Error("Unable to join the private room right now.");
   }
 
   if (reconnectToken) {
@@ -213,7 +213,7 @@ export async function createPrivateRoom(input: CreatePrivateRoomInput): Promise<
       seconds_per_question: input.settings.secondsPerQuestion, capacity: 30,
     }).select("*").single<RoomRow>();
     if (!error) room = data;
-    else if (error.code !== "23505") throw new Error(`Unable to create the private room: ${error.message}`);
+    else if (error.code !== "23505") throw new Error("Unable to create the private room right now.");
   }
   if (!room) throw new Error("Unable to create a unique room code. Please try again.");
 
@@ -233,7 +233,7 @@ export async function joinPrivateRoom(input: JoinPrivateRoomInput): Promise<Mult
   if (!ROOM_CODE_PATTERN.test(code)) throw new Error("Enter a valid 8-character room code.");
   const admin = createAdminClient();
   const { data: room, error } = await admin.from("multiplayer_rooms").select("*").eq("code", code).eq("visibility", "private").maybeSingle<RoomRow>();
-  if (error) throw new Error(`Unable to find the private room: ${error.message}`);
+  if (error) throw new Error("Unable to find the private room right now.");
   if (!room) throw new Error("Private room not found.");
   if (room.status !== "waiting") throw new Error("That room is no longer accepting players.");
   const { count, error: countError } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
@@ -287,7 +287,7 @@ async function listActiveSpectators(roomId: string): Promise<MultiplayerSpectato
   const admin = createAdminClient();
   await admin.from("multiplayer_spectators").delete().eq("room_id", roomId).lt("last_seen_at", new Date(Date.now() - 10_000).toISOString());
   const { data, error } = await admin.from("multiplayer_spectators").select("user_id, joined_at").eq("room_id", roomId).order("joined_at");
-  if (error) throw new Error(`Unable to load spectators: ${error.message}`);
+  if (error) throw new Error("Unable to load spectators right now.");
   const rows = (data ?? []) as SpectatorRow[];
   if (rows.length === 0) return [];
   const userIds = rows.map((row) => row.user_id);
@@ -340,7 +340,7 @@ export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyS
     .eq("connected", true)
     .is("left_at", null)
     .order("joined_at", { ascending: true });
-  if (error) throw new Error(`Unable to load the lobby: ${error.message}`);
+  if (error) throw new Error("Unable to load the lobby right now.");
 
   const rows = (data ?? []) as PlayerRow[];
   const userIds = rows.flatMap((row) => row.user_id ? [row.user_id] : []);
@@ -411,7 +411,7 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
   }).eq("id", roomId).eq("status", expectedStatus).select("*").single<RoomRow>();
   if (error) {
     await admin.from("multiplayer_match_questions").delete().eq("room_id", roomId);
-    throw new Error(`Unable to start the room: ${error.message}`);
+    throw new Error("Unable to start the room right now.");
   }
 
   if (lobby.room.visibility === "public") {
@@ -564,11 +564,11 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
   });
   if (submissionError) {
     if (submissionError.code === "23505") throw new Error("You already answered this question.");
-    throw new Error(`Unable to submit the answer: ${submissionError.message}`);
+    throw new Error("Unable to submit the answer right now.");
   }
 
   const { error: playerError } = await admin.from("multiplayer_players").update({ score: lobby.currentPlayer.score + pointsEarned, has_submitted_current_question: true }).eq("room_id", input.roomId).eq("id", lobby.currentPlayer.playerId);
-  if (playerError) throw new Error(`Unable to update the score: ${playerError.message}`);
+  if (playerError) throw new Error("Unable to update the score right now.");
 
   const [{ count: submissionCount }, { count: activePlayerCount }] = await Promise.all([
     admin.from("multiplayer_submissions").select("id", { count: "exact", head: true }).eq("room_id", input.roomId).eq("question_number", matchQuestion.question_number),
@@ -804,7 +804,7 @@ export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHi
   if (!user) return [];
   const admin = createAdminClient();
   const { data, error } = await admin.from("multiplayer_match_results").select("room_id, placement, final_score, ranked, rp_change, finalized_at").eq("user_id", user.id).order("finalized_at", { ascending: false }).limit(10);
-  if (error) throw new Error(`Unable to load recent matches: ${error.message}`);
+  if (error) throw new Error("Unable to load recent matches right now.");
   const results = data ?? [];
   if (results.length === 0) return [];
   const roomIds = results.map((result) => result.room_id);
@@ -821,7 +821,7 @@ export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHi
 export async function listPublicRooms(): Promise<MultiplayerRoom[]> {
   const admin = createAdminClient();
   const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").in("status", ["waiting", "countdown"]).order("division").order("question_count");
-  if (error) throw new Error(`Unable to load public rooms: ${error.message}`);
+  if (error) throw new Error("Unable to load public rooms right now.");
   return Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
     const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).eq("connected", true).is("left_at", null);
     return mapRoom(room, count ?? 0);
@@ -839,7 +839,7 @@ export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> {
   const admin = createAdminClient();
   await admin.from("multiplayer_players").update({ connected: false }).eq("connected", true).lt("updated_at", new Date(Date.now() - 10_000).toISOString());
   const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").eq("status", "in-progress").order("started_at", { ascending: false }).limit(20);
-  if (error) throw new Error(`Unable to load ongoing public matches: ${error.message}`);
+  if (error) throw new Error("Unable to load ongoing public matches right now.");
   const rooms = await Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
     if (!multiplayerRoomHasNotExpired(room)) {
       await admin.from("multiplayer_rooms").update({ status: "cancelled" }).eq("id", room.id).eq("status", "in-progress");
@@ -860,7 +860,7 @@ export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]>
   if (roomIds.length === 0) return [];
 
   const { data, error } = await admin.from("multiplayer_rooms").select("*").in("id", roomIds).in("status", ["waiting", "countdown", "in-progress"]).order("created_at", { ascending: false });
-  if (error) throw new Error(`Unable to load active games: ${error.message}`);
+  if (error) throw new Error("Unable to load active games right now.");
   const rooms = await Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
     if (room.status === "in-progress" && !multiplayerRoomHasNotExpired(room)) return null;
     const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
@@ -898,10 +898,10 @@ export async function leaveMultiplayerRoom(roomId: string): Promise<void> {
 
   if (access.room.visibility === "private" && access.currentPlayer.isHost) {
     const { error } = await admin.from("multiplayer_rooms").delete().eq("id", roomId).in("status", ["waiting", "countdown"]);
-    if (error) throw new Error(`Unable to close the room: ${error.message}`);
+    if (error) throw new Error("Unable to close the room right now.");
   } else {
     const { error } = await admin.from("multiplayer_players").delete().eq("room_id", roomId).eq("id", access.currentPlayer.playerId);
-    if (error) throw new Error(`Unable to leave the room: ${error.message}`);
+    if (error) throw new Error("Unable to leave the room right now.");
     if (access.room.visibility === "public" && access.room.status === "countdown") {
       const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null);
       if ((count ?? 0) < 2) await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown");
@@ -969,7 +969,7 @@ export async function getMultiplayerProfile(): Promise<MultiplayerProfile | null
 export async function getMultiplayerRatingLeaderboard(): Promise<MultiplayerRatingLeaderboardEntry[]> {
   const admin = createAdminClient();
   const { data, error } = await admin.from("multiplayer_profiles").select("user_id, rp, ranked_matches_played, ranked_wins").order("rp", { ascending: false }).order("ranked_wins", { ascending: false }).limit(10);
-  if (error) throw new Error(`Unable to load the RP leaderboard: ${error.message}`);
+  if (error) throw new Error("Unable to load the RP leaderboard right now.");
   const profiles = data ?? [];
   if (profiles.length === 0) return [];
   const { data: names } = await admin.from("profiles").select("id, username").in("id", profiles.map((profile) => profile.user_id));
