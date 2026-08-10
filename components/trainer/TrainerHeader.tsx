@@ -24,7 +24,7 @@ export default function TrainerHeader({
       <div className="grid items-center gap-5 md:grid-cols-[auto_minmax(260px,1fr)]">
         <div className="shrink-0">
           <h1 className="text-2xl font-bold">
-            MAO Trainer
+            Daily Trainer
           </h1>
 
           <p className="mt-1 text-gray-600">
