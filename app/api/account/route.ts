@@ -4,6 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const INTERNAL_EMAIL_DOMAIN = "@users.mao-practice.local";
 const MAX_REQUEST_BYTES = 8_192;
 
 function requestIsTooLarge(request: Request) {
@@ -34,9 +36,30 @@ export async function PATCH(request: Request) {
   const body = (await request.json()) as {
     action?: string;
     username?: string;
+    email?: string;
     password?: string;
     currentPassword?: string;
   };
+
+  if (body.action === "email") {
+    const email = body.email?.trim().toLowerCase() ?? "";
+    if (!EMAIL_PATTERN.test(email) || email.endsWith(INTERNAL_EMAIL_DOMAIN)) {
+      return NextResponse.json({ error: "Enter a valid personal email address." }, { status: 400 });
+    }
+    if (!(await verifyCurrentPassword(supabase, user.email, body.currentPassword))) {
+      return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });
+    }
+
+    const { data, error } = await supabase.auth.updateUser({ email });
+    if (error) {
+      return NextResponse.json({ error: "Unable to add that email. It may already be in use." }, { status: 400 });
+    }
+    return NextResponse.json({
+      success: true,
+      email: data.user.email ?? email,
+      pendingEmail: data.user.new_email ?? null,
+    });
+  }
 
   if (body.action === "username") {
     const username = body.username?.trim().toLowerCase() ?? "";
