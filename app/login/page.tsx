@@ -21,7 +21,7 @@ export default async function LoginPage() {
         </p>
 
         <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-          Log in to Mathematic Daily
+          Log in to Mathematics Daily
         </h1>
 
         <p className="mt-3 text-gray-600">
