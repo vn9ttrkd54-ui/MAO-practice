@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mathematic Daily",
+  title: "Mathematics Daily",
   description:
     "Daily mathematics practice, challenges, and multiplayer competition for Mu, Alpha, and Theta students.",
 };
