@@ -1,0 +1,41 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+export default function AccountSettings({ initialUsername }: { initialUsername: string }) {
+  const router = useRouter();
+  const [username, setUsername] = useState(initialUsername);
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const request = async (method: "PATCH" | "DELETE", body: object) => {
+    setSaving(true); setError(null); setMessage(null);
+    try {
+      const response = await fetch("/api/account", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) { setError(data.error ?? "Unable to update your account."); return false; }
+      return true;
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-10 sm:px-8">
+      <Link href="/dashboard" className="text-sm font-semibold text-blue-600">← Dashboard</Link>
+      <div className="mt-5"><p className="text-sm font-bold uppercase tracking-[0.18em] text-blue-600">Account</p><h1 className="mt-2 text-4xl font-bold">Account settings</h1></div>
+
+      {message ? <p className="mt-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">{message}</p> : null}
+      {error ? <p className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">{error}</p> : null}
+
+      <section className="mt-7 rounded-2xl border bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">Username</h2><p className="mt-1 text-sm text-slate-500">Lowercase letters, numbers, and underscores only.</p><input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} className="mt-4 w-full rounded-xl border p-3" /><button disabled={saving || username === initialUsername} onClick={async () => { if (await request("PATCH", { action: "username", username })) { setMessage("Username changed successfully. It will update across the site shortly."); router.refresh(); } }} className="mt-4 rounded-xl bg-black px-5 py-3 font-semibold text-white disabled:opacity-40">Change username</button></section>
+
+      <section className="mt-5 rounded-2xl border bg-white p-6 shadow-sm"><h2 className="text-xl font-bold">Password</h2><p className="mt-1 text-sm text-slate-500">Use at least 8 characters.</p><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" className="mt-4 w-full rounded-xl border p-3" placeholder="New password" /><button disabled={saving || password.length < 8} onClick={async () => { if (await request("PATCH", { action: "password", password })) { setPassword(""); setMessage("Password changed successfully."); } }} className="mt-4 rounded-xl bg-black px-5 py-3 font-semibold text-white disabled:opacity-40">Change password</button></section>
+
+      <section className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-6"><h2 className="text-xl font-bold text-red-800">Delete account</h2><p className="mt-2 text-sm text-red-700">This permanently deletes your account, progress, bookmarks, trainer history, challenge history, multiplayer profile, and feedback. This cannot be undone.</p><label className="mt-4 block text-sm font-semibold text-red-900">Type DELETE to confirm</label><input value={confirmation} onChange={(e) => setConfirmation(e.target.value)} className="mt-2 w-full rounded-xl border border-red-300 bg-white p-3" /><button disabled={saving || confirmation !== "DELETE"} onClick={async () => { if (await request("DELETE", { confirmation })) { router.replace("/"); router.refresh(); } }} className="mt-4 rounded-xl bg-red-700 px-5 py-3 font-semibold text-white disabled:opacity-40">Permanently delete account</button></section>
+    </main>
+  );
+}
