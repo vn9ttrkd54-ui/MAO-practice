@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center">
@@ -9,9 +11,12 @@ export default function Home() {
         Practice math. Improve skills. Compete.
       </p>
 
-      <button className="mt-8 px-6 py-3 rounded-lg bg-black text-white">
-        Start Practicing
-      </button>
+      <Link
+        href="/multiplayer"
+        className="mt-8 rounded-lg bg-black px-6 py-3 text-white"
+      >
+        Play
+      </Link>
     </main>
   );
 }
