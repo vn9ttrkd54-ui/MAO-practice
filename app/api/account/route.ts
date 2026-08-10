@@ -4,13 +4,39 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
+const MAX_REQUEST_BYTES = 8_192;
+
+function requestIsTooLarge(request: Request) {
+  return Number(request.headers.get("content-length") ?? 0) > MAX_REQUEST_BYTES;
+}
+
+async function verifyCurrentPassword(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  email: string | undefined,
+  currentPassword: string | undefined
+) {
+  if (!email || !currentPassword) return false;
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password: currentPassword,
+  });
+  return !error;
+}
 
 export async function PATCH(request: Request) {
+  if (requestIsTooLarge(request)) {
+    return NextResponse.json({ error: "Request is too large." }, { status: 413 });
+  }
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
-  const body = (await request.json()) as { action?: string; username?: string; password?: string };
+  const body = (await request.json()) as {
+    action?: string;
+    username?: string;
+    password?: string;
+    currentPassword?: string;
+  };
 
   if (body.action === "username") {
     const username = body.username?.trim().toLowerCase() ?? "";
@@ -31,8 +57,11 @@ export async function PATCH(request: Request) {
   if (body.action === "password") {
     const password = body.password ?? "";
     if (password.length < 8) return NextResponse.json({ error: "Password must be at least 8 characters." }, { status: 400 });
+    if (!(await verifyCurrentPassword(supabase, user.email, body.currentPassword))) {
+      return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });
+    }
     const { error } = await supabase.auth.updateUser({ password });
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    if (error) return NextResponse.json({ error: "Unable to change the password." }, { status: 400 });
     return NextResponse.json({ success: true });
   }
 
@@ -40,12 +69,18 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (requestIsTooLarge(request)) {
+    return NextResponse.json({ error: "Request is too large." }, { status: 413 });
+  }
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
-  const body = (await request.json()) as { confirmation?: string };
+  const body = (await request.json()) as { confirmation?: string; currentPassword?: string };
   if (body.confirmation !== "DELETE") {
     return NextResponse.json({ error: "Type DELETE to confirm." }, { status: 400 });
+  }
+  if (!(await verifyCurrentPassword(supabase, user.email, body.currentPassword))) {
+    return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });
   }
 
   const admin = createAdminClient();
