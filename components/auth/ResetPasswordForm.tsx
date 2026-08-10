@@ -3,7 +3,9 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ResetPasswordForm() {
+import { createClient } from "@/lib/supabase/client";
+
+export default function ResetPasswordForm({ browserRecovery = false }: { browserRecovery?: boolean }) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -24,6 +26,19 @@ export default function ResetPasswordForm() {
 
     setSaving(true);
     try {
+      if (browserRecovery) {
+        const supabase = createClient();
+        const { error: updateError } = await supabase.auth.updateUser({ password });
+        if (updateError) {
+          setError("Unable to reset the password. Request a new recovery email.");
+          return;
+        }
+        await supabase.auth.signOut();
+        router.replace("/login?passwordReset=success");
+        router.refresh();
+        return;
+      }
+
       const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
