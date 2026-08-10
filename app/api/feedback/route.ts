@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { questions } from "@/data/questions";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { Division } from "@/types/question";
 
@@ -43,7 +44,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid feedback type." }, { status: 400 });
   }
 
-  const { error } = await supabase.from("feedback_requests").insert({
+  const admin = createAdminClient();
+  const { error } = await admin.from("feedback_requests").insert({
     user_id: user.id,
     kind: body.kind,
     question_id: questionId,
@@ -52,7 +54,10 @@ export async function POST(request: Request) {
   });
 
   if (error) {
-    return NextResponse.json({ error: "Unable to submit feedback right now." }, { status: 500 });
+    return NextResponse.json(
+      { error: `Unable to submit feedback: ${error.message}` },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ success: true });
