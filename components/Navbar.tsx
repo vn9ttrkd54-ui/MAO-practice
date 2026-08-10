@@ -12,7 +12,7 @@ export default async function Navbar() {
   return (
     <nav className="flex w-full items-center justify-between border-b p-6">
       <Link href="/" className="text-xl font-bold">
-        MAO Practice
+        Mathematic Daily
       </Link>
 
       <div className="flex items-center gap-6">
