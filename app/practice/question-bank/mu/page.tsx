@@ -1,5 +1,11 @@
+import { Suspense } from "react";
+
 import QuestionBankDivisionClient from "@/components/practice/QuestionBankDivisionClient";
 
 export default function MuQuestionBankPage() {
-  return <QuestionBankDivisionClient division="Mu" />;
+  return (
+    <Suspense fallback={null}>
+      <QuestionBankDivisionClient division="Mu" />
+    </Suspense>
+  );
 }
