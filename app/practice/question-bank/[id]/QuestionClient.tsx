@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import type { Question } from "@/types/question";
@@ -46,6 +46,10 @@ export default function QuestionClient({
 }: {
   question: Question;
 }) {
+  return <QuestionSession key={question.id} question={question} />;
+}
+
+function QuestionSession({ question }: { question: Question }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedReturnTo = searchParams.get("returnTo");
@@ -66,11 +70,7 @@ export default function QuestionClient({
   const [isBookmarkSaving, setIsBookmarkSaving] =
     useState(false);
 
-  const [startTime, setStartTime] =
-    useState(Date.now());
-
-  const [timerReset, setTimerReset] =
-    useState(0);
+  const startTime = useRef(0);
 
   const [bookmarked, setBookmarked] =
     useState(false);
@@ -80,6 +80,7 @@ export default function QuestionClient({
 
   useEffect(() => {
     let cancelled = false;
+    startTime.current = Date.now();
 
     async function loadQuestionState() {
       try {
@@ -102,13 +103,6 @@ export default function QuestionClient({
     }
 
     void loadQuestionState();
-
-    setSelectedAnswer(null);
-    setSubmitted(false);
-    setIsSaving(false);
-    setIsBookmarkSaving(false);
-    setStartTime(Date.now());
-    setTimerReset((current) => current + 1);
 
     return () => {
       cancelled = true;
@@ -143,7 +137,7 @@ export default function QuestionClient({
     }
 
     const timeSpent = Math.floor(
-      (Date.now() - startTime) / 1000
+      (Date.now() - startTime.current) / 1000
     );
 
     const isCorrect =
@@ -226,8 +220,8 @@ export default function QuestionClient({
 
       <div className="flex flex-wrap justify-between items-center gap-3 mt-6 mb-6">
         <Timer
+          key={question.id}
           running={!submitted && !isSaving}
-          resetKey={timerReset}
         />
 
         <div className="flex flex-wrap items-center gap-3">
