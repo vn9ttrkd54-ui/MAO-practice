@@ -746,11 +746,23 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
   const resultByPlayer = new Map((resultsResponse.data ?? []).map((entry) => [entry.player_id, entry]));
   const finalPlayerRows = (playersResponse.data ?? []) as PlayerRow[];
   const finalUserIds = finalPlayerRows.flatMap((player) => player.user_id ? [player.user_id] : []);
-  const { data: finalNames } = finalUserIds.length > 0 ? await admin.from("profiles").select("id, username").in("id", finalUserIds) : { data: [] };
+  const [finalNamesResponse, finalRatingsResponse] = finalUserIds.length > 0
+    ? await Promise.all([
+      admin.from("profiles").select("id, username").in("id", finalUserIds),
+      admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", finalUserIds),
+    ])
+    : [{ data: [] }, { data: [] }];
+  const finalNames = finalNamesResponse.data;
   const finalNameByUser = new Map((finalNames ?? []).map((profile) => [profile.id, profile.username]));
+  const finalRatingByUser = new Map((finalRatingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
   const finalLeaderboard = finalPlayerRows.map((player) => {
     const mapped = mapPlayer(player, player.guest_nickname ?? (player.user_id ? finalNameByUser.get(player.user_id) ?? "Account player" : "Guest"));
     mapped.placement = resultByPlayer.get(player.id)?.placement ?? null;
+    if (player.user_id) {
+      const rp = finalRatingByUser.get(player.user_id) ?? 0;
+      mapped.rp = rp;
+      mapped.rankTier = tierForRp(rp);
+    }
     return mapped;
   }).sort((a, b) => (a.placement ?? 999) - (b.placement ?? 999));
   const submissionByQuestion = new Map(((submissionsResponse.data ?? []) as SubmissionRow[]).map((submission) => [submission.question_number, submission]));
@@ -765,6 +777,10 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
       pointsEarned: submission?.points_earned ?? 0, solution: question.solution,
     };
   });
+  const viewerUserId = access?.currentPlayer.userId ?? null;
+  const viewerCurrentRp = viewerUserId ? finalRatingByUser.get(viewerUserId) : undefined;
+  const displayedNewRp = viewerCurrentRp ?? result?.new_rp ?? 0;
+  const displayedPreviousRp = Math.max(0, displayedNewRp - (result?.rp_change ?? 0));
 
   return {
     roomId, viewerMode: spectatorMode ? "spectator" : "player",
@@ -772,8 +788,11 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
     score: spectatorMode ? null : result.final_score,
     ranked: spectatorMode ? false : result.ranked,
     ratingChange: spectatorMode || result.previous_rp === null ? null : {
-      previousRp: result.previous_rp, change: result.rp_change, newRp: result.new_rp,
-      previousTier: tierForRp(result.previous_rp)!, newTier: tierForRp(result.new_rp)!,
+      previousRp: displayedPreviousRp,
+      change: result.rp_change,
+      newRp: displayedNewRp,
+      previousTier: tierForRp(displayedPreviousRp)!,
+      newTier: tierForRp(displayedNewRp)!,
       opponentAdjustment: Number(result.opponent_adjustment), performanceIndex: Number(result.performance_index), completionFactor: Number(result.completion_factor),
     },
     rounds, finalLeaderboard,
