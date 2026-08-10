@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { submitDailyChallenge } from "@/app/challenge/actions";
+import MathText from "@/components/math/MathText";
 import type {
   ChallengeQuestionId,
   ChallengeSubmissionResult,
@@ -76,7 +77,7 @@ export default function ChallengeAnswerForm({
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 font-bold">
                 {choice}
               </span>
-              <span className="pt-1">{choices[choice]}</span>
+              <span className="pt-1"><MathText>{choices[choice]}</MathText></span>
             </button>
           );
         })}
@@ -109,7 +110,7 @@ export default function ChallengeAnswerForm({
                 Your Answer
               </p>
               <p className="mt-1 font-semibold">
-                {result.selectedAnswer}. {choices[result.selectedAnswer]}
+                {result.selectedAnswer}. <MathText>{choices[result.selectedAnswer]}</MathText>
               </p>
             </div>
             <div>
@@ -117,7 +118,7 @@ export default function ChallengeAnswerForm({
                 Correct Answer
               </p>
               <p className="mt-1 font-semibold">
-                {result.correctAnswer}. {choices[result.correctAnswer]}
+                {result.correctAnswer}. <MathText>{choices[result.correctAnswer]}</MathText>
               </p>
             </div>
           </div>
@@ -126,7 +127,7 @@ export default function ChallengeAnswerForm({
             <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
               Official Solution
             </p>
-            <p className="mt-2 leading-7 text-gray-700">{result.solution}</p>
+            <div className="mt-2 leading-7 text-gray-700"><MathText>{result.solution}</MathText></div>
           </div>
 
           <p className="mt-6 text-sm font-medium text-gray-600">
