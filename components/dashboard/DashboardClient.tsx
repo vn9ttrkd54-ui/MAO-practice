@@ -11,6 +11,7 @@ import RecentActivitySection from "@/components/dashboard/RecentActivitySection"
 import RecentSessionsSection from "@/components/dashboard/RecentSessionsSection";
 import TrainerChartsSection from "@/components/dashboard/TrainerChartsSection";
 import TrainerSection from "@/components/dashboard/TrainerSection";
+import DashboardQuickActions from "@/components/dashboard/DashboardQuickActions";
 import { getDashboardData } from "@/lib/dashboardService";
 
 import type { DashboardData } from "@/lib/dashboardService";
@@ -84,6 +85,7 @@ export default function DashboardClient() {
 
   const {
     username,
+    isAdmin,
     multiplayer,
     trainer,
     questionBank,
@@ -99,6 +101,8 @@ export default function DashboardClient() {
         username={username}
         level={level}
       />
+
+      <DashboardQuickActions isAdmin={isAdmin} />
 
       <OverviewSection
         level={level}
