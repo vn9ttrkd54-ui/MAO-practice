@@ -42,7 +42,7 @@ export default function EndSessionDialog({
           id="end-session-title"
           className="text-2xl font-bold"
         >
-          End MAO Trainer?
+          End Daily Trainer?
         </h2>
 
         <p className="mt-3 text-gray-600">
