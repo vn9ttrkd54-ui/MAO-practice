@@ -47,6 +47,8 @@ export async function signUp({
     options: {
       data: {
         username,
+        display_name: username,
+        full_name: username,
       },
     },
   });
