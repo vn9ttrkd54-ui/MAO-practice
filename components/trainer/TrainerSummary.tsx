@@ -38,7 +38,7 @@ export default function TrainerSummary({
         </p>
 
         <h1 className="mt-1 text-4xl font-bold">
-          MAO Trainer Summary
+          Daily Trainer Summary
         </h1>
 
         <p className="mt-3 text-gray-600">
