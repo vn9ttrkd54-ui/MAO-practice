@@ -1,4 +1,6 @@
 import MathText from "@/components/math/MathText";
+import QuestionReportButton from "@/components/feedback/QuestionReportButton";
+import type { Division } from "@/types/question";
 
 type SolutionPanelProps = {
   submitted: boolean;
@@ -7,6 +9,8 @@ type SolutionPanelProps = {
   solution: string;
   onReattempt?: () => void;
   showReattemptButton?: boolean;
+  questionId?: number;
+  division?: Division;
 };
 
 export default function SolutionPanel({
@@ -16,6 +20,8 @@ export default function SolutionPanel({
   solution,
   onReattempt,
   showReattemptButton = true,
+  questionId,
+  division,
 }: SolutionPanelProps) {
   if (!submitted) {
     return null;
@@ -38,6 +44,12 @@ export default function SolutionPanel({
 
         <div className="mt-3 leading-8"><MathText>{solution}</MathText></div>
       </div>
+
+      {questionId && division ? (
+        <div className="mt-5">
+          <QuestionReportButton questionId={questionId} division={division} />
+        </div>
+      ) : null}
 
       {showReattemptButton && onReattempt && (
         <button
