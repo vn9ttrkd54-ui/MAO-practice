@@ -72,6 +72,9 @@ function QuestionSession({ question }: { question: Question }) {
 
   const startTime = useRef(0);
 
+  const [attemptNumber, setAttemptNumber] =
+    useState(0);
+
   const [bookmarked, setBookmarked] =
     useState(false);
 
@@ -182,10 +185,8 @@ function QuestionSession({ question }: { question: Question }) {
   const handleReattempt = () => {
     setSubmitted(false);
     setSelectedAnswer(null);
-    setStartTime(Date.now());
-    setTimerReset(
-      (current) => current + 1
-    );
+    startTime.current = Date.now();
+    setAttemptNumber((current) => current + 1);
   };
 
   const handleBookmarkToggle = async () => {
@@ -220,7 +221,7 @@ function QuestionSession({ question }: { question: Question }) {
 
       <div className="flex flex-wrap justify-between items-center gap-3 mt-6 mb-6">
         <Timer
-          key={question.id}
+          key={`${question.id}-${attemptNumber}`}
           running={!submitted && !isSaving}
         />
 
