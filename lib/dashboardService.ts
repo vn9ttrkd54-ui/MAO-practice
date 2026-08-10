@@ -38,6 +38,7 @@ export type DashboardActivity =
 
 export interface DashboardData {
   username: string;
+  isAdmin: boolean;
   multiplayer: ReturnType<typeof getMultiplayerSummary>;
   trainer: ReturnType<typeof calculateTrainerHistorySummary>;
   questionBank: ReturnType<typeof calculateQuestionBankSummary>;
@@ -65,6 +66,7 @@ interface BookmarkRow {
 
 interface ProfileRow {
   username: string;
+  role: "user" | "admin";
 }
 
 interface ChallengeStatisticsRow {
@@ -122,7 +124,7 @@ export async function getDashboardData():
       .eq("user_id", userId),
     supabase
       .from("profiles")
-      .select("username")
+      .select("username, role")
       .eq("id", userId)
       .single<ProfileRow>(),
     supabase
@@ -285,6 +287,7 @@ export async function getDashboardData():
 
   return {
     username: profileResponse.data.username,
+    isAdmin: profileResponse.data.role === "admin",
     multiplayer: getMultiplayerSummary({
       rp: multiplayerProfileResponse.data?.rp ?? 0,
       rankedMatchesPlayed: multiplayerProfileResponse.data?.ranked_matches_played ?? 0,
