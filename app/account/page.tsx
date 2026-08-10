@@ -11,5 +11,13 @@ export default async function AccountPage() {
   const { data: profile } = await supabase.from("profiles").select("username").eq("id", user.id).single<{ username: string }>();
   if (!profile) redirect("/dashboard");
 
-  return <AccountSettings initialUsername={profile.username} />;
+  const usesInternalEmail = user.email?.endsWith("@users.mao-practice.local") ?? true;
+
+  return (
+    <AccountSettings
+      initialUsername={profile.username}
+      initialEmail={usesInternalEmail ? "" : (user.email ?? "")}
+      emailVerified={!usesInternalEmail && Boolean(user.email_confirmed_at)}
+    />
+  );
 }
