@@ -89,6 +89,8 @@ export default function TrainerQuestion({
         correctAnswer={question.answer}
         solution={question.solution}
         showReattemptButton={false}
+        questionId={question.id}
+        division={question.division}
       />
 
       {submitted && (
