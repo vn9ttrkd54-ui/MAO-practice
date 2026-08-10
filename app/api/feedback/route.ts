@@ -6,6 +6,11 @@ import { createClient } from "@/lib/supabase/server";
 import type { Division } from "@/types/question";
 
 export async function POST(request: Request) {
+  const contentLength = Number(request.headers.get("content-length") ?? 0);
+  if (contentLength > 16_384) {
+    return NextResponse.json({ error: "Feedback is too large." }, { status: 413 });
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -45,6 +50,23 @@ export async function POST(request: Request) {
   }
 
   const admin = createAdminClient();
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count, error: countError } = await admin
+    .from("feedback_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .gte("created_at", oneHourAgo);
+
+  if (countError) {
+    return NextResponse.json({ error: "Unable to submit feedback right now." }, { status: 500 });
+  }
+  if ((count ?? 0) >= 10) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   const { error } = await admin.from("feedback_requests").insert({
     user_id: user.id,
     kind: body.kind,
@@ -55,7 +77,7 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json(
-      { error: `Unable to submit feedback: ${error.message}` },
+      { error: "Unable to submit feedback right now." },
       { status: 500 }
     );
   }
