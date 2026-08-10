@@ -15,6 +15,8 @@ export default function MathText({ children, className }: MathTextProps) {
           displayMode: display,
           throwOnError: false,
           strict: false,
+          trust: false,
+          maxExpand: 1000,
           output: "htmlAndMathml",
         });
         return <span key={index} className={display ? "my-3 block overflow-x-auto py-1" : undefined} dangerouslySetInnerHTML={{ __html: html }} />;
