@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { leaveMultiplayerRoomAction, startPrivateRoomAction } from "@/app/multiplayer/actions";
+import PendingSubmitButton from "@/components/multiplayer/PendingSubmitButton";
 import { RankIcon, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import type { MultiplayerLobbyState } from "@/types/multiplayer";
 
@@ -86,11 +87,11 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
           {!publicRoom && isHost && !started ? (
             <form action={startPrivateRoomAction} className="mt-5">
               <input type="hidden" name="roomId" value={lobby.room.id} />
-              <button className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Start Game</button>
+              <PendingSubmitButton pendingText="Starting game…" className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Start Game</PendingSubmitButton>
             </form>
           ) : null}
           {!publicRoom && isHost && lobby.players.length === 1 && !started ? <p className="mt-3 text-xs text-gray-500">Solo games automatically become unranked.</p> : null}
-          {!started ? <form action={leaveMultiplayerRoomAction} className="mt-3" onSubmit={(event) => { if (!publicRoom && isHost && !window.confirm("Close this private room for everyone?")) event.preventDefault(); }}><input type="hidden" name="roomId" value={lobby.room.id} /><button className="w-full rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50">{!publicRoom && isHost ? "Close Room" : "Leave Room"}</button></form> : null}
+          {!started ? <form action={leaveMultiplayerRoomAction} className="mt-3" onSubmit={(event) => { if (!publicRoom && isHost && !window.confirm("Close this private room for everyone?")) event.preventDefault(); }}><input type="hidden" name="roomId" value={lobby.room.id} /><PendingSubmitButton pendingText={!publicRoom && isHost ? "Closing room…" : "Leaving room…"} className="w-full rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50">{!publicRoom && isHost ? "Close Room" : "Leave Room"}</PendingSubmitButton></form> : null}
           {started ? <div className="mt-5 rounded-lg bg-green-100 px-3 py-2 text-sm font-semibold text-green-800">Game started</div> : null}
         </aside>
       </div>
