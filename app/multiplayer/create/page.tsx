@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { createPrivateRoomAction } from "@/app/multiplayer/actions";
+import PendingSubmitButton from "@/components/multiplayer/PendingSubmitButton";
 import { createClient } from "@/lib/supabase/server";
 
 interface CreateRoomPageProps {
@@ -40,7 +41,7 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
           <label className="block text-sm font-semibold">Rating mode
             <select name="mode" defaultValue="unranked" className={fieldClass}><option value="unranked">Unranked</option><option value="ranked">Ranked (5+ questions)</option></select>
           </label>
-          <button className="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 sm:col-span-2">Create Room</button>
+          <PendingSubmitButton pendingText="Creating room…" className="rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 sm:col-span-2">Create Room</PendingSubmitButton>
         </form>
       </section>
     </main>
