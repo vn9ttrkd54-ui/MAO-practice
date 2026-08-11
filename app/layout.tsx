@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   title: "Mathematics Daily",
   description:
     "Daily mathematics practice, challenges, and multiplayer competition for Mu, Alpha, and Theta students.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
