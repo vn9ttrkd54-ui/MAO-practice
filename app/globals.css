@@ -44,3 +44,24 @@ body {
 .rank-grandmaster { color:#faf5ff; background:linear-gradient(135deg,#3b0764,#6b21a8 38%,#7c3aed 70%,#4c1d95); border-color:#d8b4fe; }
 .rank-legend { color:#fff1a6; background:linear-gradient(135deg,#050505,#27220f 38%,#0a0a0a 58%,#31250a 82%,#050505); border-color:#facc15; box-shadow:0 16px 38px rgb(120 83 0 / .32),0 0 24px rgb(250 204 21 / .2),inset 0 1px 0 rgb(255 247 176 / .7); }
 .rank-legend::after { content:""; position:absolute; z-index:0; width:40%; height:220%; right:4%; top:-70%; transform:rotate(25deg); pointer-events:none; background:linear-gradient(90deg,transparent,rgb(255 248 184 / .42),rgb(255 255 255 / .18),transparent); }
+
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.route-transition {
+  animation: route-enter 180ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-transition {
+    animation: none;
+  }
+}
