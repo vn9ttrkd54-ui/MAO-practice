@@ -14,10 +14,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description =
+  "Practice mathematics daily, strengthen your problem-solving skills, take on challenges, and compete with other students in real-time multiplayer.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mathematicsdaily.com"),
   title: "Mathematics Daily",
-  description:
-    "Daily mathematics practice, challenges, and multiplayer competition for Mu, Alpha, and Theta students.",
+  description,
+  openGraph: {
+    title: "Mathematics Daily",
+    description,
+    url: "https://mathematicsdaily.com",
+    siteName: "Mathematics Daily",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Mathematics Daily",
+    description,
+  },
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
