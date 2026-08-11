@@ -9,12 +9,19 @@ import LogoutButton from "@/components/auth/LogoutButton";
 export default function MobileNavbarMenu({ signedIn }: { signedIn: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [pendingPage, setPendingPage] = useState<string | null>(null);
 
   useEffect(() => {
     setOpen(false);
+    setPendingPage(null);
   }, [pathname]);
 
-  const closeMenu = () => setOpen(false);
+  function beginNavigation(href: string, label: string) {
+    setOpen(false);
+    if (pathname !== href) setPendingPage(label);
+  }
+
+  const linkClass = "rounded-lg px-4 py-3 hover:bg-slate-100";
 
   return (
     <div className="relative md:hidden">
@@ -34,23 +41,32 @@ export default function MobileNavbarMenu({ signedIn }: { signedIn: boolean }) {
 
       {open ? (
         <div className="absolute right-0 top-12 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
-          <div className="flex flex-col text-sm font-semibold text-slate-800" onClick={closeMenu}>
-            <Link href="/practice" className="rounded-lg px-4 py-3 hover:bg-slate-100">Practice</Link>
-            <Link href="/challenge" className="rounded-lg px-4 py-3 hover:bg-slate-100">Challenge</Link>
-            <Link href="/multiplayer" className="rounded-lg px-4 py-3 hover:bg-slate-100">Multiplayer</Link>
+          <div className="flex flex-col text-sm font-semibold text-slate-800">
+            <Link href="/practice" onClick={() => beginNavigation("/practice", "Practice")} className={linkClass}>Practice</Link>
+            <Link href="/challenge" onClick={() => beginNavigation("/challenge", "Challenge")} className={linkClass}>Challenge</Link>
+            <Link href="/multiplayer" onClick={() => beginNavigation("/multiplayer", "Multiplayer")} className={linkClass}>Multiplayer</Link>
             {signedIn ? (
               <>
-                <Link href="/dashboard" className="rounded-lg px-4 py-3 hover:bg-slate-100">Dashboard</Link>
+                <Link href="/dashboard" onClick={() => beginNavigation("/dashboard", "Dashboard")} className={linkClass}>Dashboard</Link>
                 <div className="border-t border-slate-200 px-4 py-3">
                   <LogoutButton />
                 </div>
               </>
             ) : (
               <>
-                <Link href="/login" className="rounded-lg px-4 py-3 hover:bg-slate-100">Login</Link>
-                <Link href="/signup" className="rounded-lg bg-slate-950 px-4 py-3 text-white hover:bg-slate-800">Sign Up</Link>
+                <Link href="/login" onClick={() => beginNavigation("/login", "Login")} className={linkClass}>Login</Link>
+                <Link href="/signup" onClick={() => beginNavigation("/signup", "Sign Up")} className="rounded-lg bg-slate-950 px-4 py-3 text-white hover:bg-slate-800">Sign Up</Link>
               </>
             )}
+          </div>
+        </div>
+      ) : null}
+
+      {pendingPage ? (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm" role="status" aria-live="polite">
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-slate-200 bg-white px-8 py-7 shadow-xl">
+            <span className="h-9 w-9 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
+            <p className="text-sm font-semibold text-slate-700">Loading {pendingPage}…</p>
           </div>
         </div>
       ) : null}
