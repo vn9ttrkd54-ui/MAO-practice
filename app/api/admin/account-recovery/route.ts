@@ -19,13 +19,33 @@ export async function POST(request: Request) {
   const { data: ownProfile } = await admin.from("profiles").select("role").eq("id", user.id).maybeSingle<{ role: string }>();
   if (ownProfile?.role !== "admin") return NextResponse.json({ error: "Administrator access required." }, { status: 403 });
 
-  const body = (await request.json()) as { username?: string; identityVerified?: boolean };
+  let body: { username?: string; identityVerified?: boolean; currentPassword?: string };
+  try {
+    const rawBody = await request.text();
+    if (rawBody.length > MAX_REQUEST_BYTES) {
+      return NextResponse.json({ error: "Request is too large." }, { status: 413 });
+    }
+    body = JSON.parse(rawBody) as typeof body;
+  } catch {
+    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  }
   const username = body.username?.trim().toLowerCase() ?? "";
   if (!USERNAME_PATTERN.test(username)) {
     return NextResponse.json({ error: "Enter a valid username." }, { status: 400 });
   }
   if (body.identityVerified !== true) {
     return NextResponse.json({ error: "Confirm that you verified the account holder's identity in person." }, { status: 400 });
+  }
+  if (!body.currentPassword || !user.email) {
+    return NextResponse.json({ error: "Enter your administrator password." }, { status: 400 });
+  }
+
+  const { error: passwordError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: body.currentPassword,
+  });
+  if (passwordError) {
+    return NextResponse.json({ error: "Administrator password is incorrect." }, { status: 401 });
   }
 
   const { data: profile } = await admin.from("profiles").select("id").eq("username", username).maybeSingle<{ id: string }>();
@@ -40,12 +60,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unable to generate a recovery link." }, { status: 400 });
   }
 
-  const recoveryUrl = new URL("/auth/confirm", request.url);
-  recoveryUrl.searchParams.set("token_hash", data.properties.hashed_token);
-  recoveryUrl.searchParams.set("type", "recovery");
+  const recoveryPath = new URLSearchParams({
+    token_hash: data.properties.hashed_token,
+    type: "recovery",
+  });
 
   return NextResponse.json(
-    { resetUrl: recoveryUrl.toString() },
+    { resetPath: `/auth/confirm?${recoveryPath.toString()}` },
     { headers: { "Cache-Control": "no-store, max-age=0" } }
   );
 }
