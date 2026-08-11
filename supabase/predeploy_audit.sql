@@ -34,6 +34,15 @@ select 'table' as object_type, name as object_name,
   to_regclass('public.' || name) is not null as installed
 from required_tables
 union all
+select 'rls', name,
+  coalesce((
+    select c.relrowsecurity
+    from pg_class c
+    join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname = 'public' and c.relname = required_tables.name
+  ), false)
+from required_tables
+union all
 select 'function', name,
   to_regprocedure(signature) is not null
 from required_functions
