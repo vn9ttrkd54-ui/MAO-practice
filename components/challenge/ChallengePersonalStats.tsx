@@ -19,10 +19,10 @@ export default function ChallengePersonalStats({
   ];
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5">
-      <div className="border-b border-slate-200 pb-4">
+    <section className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-5 shadow-[0_12px_30px_rgba(17,24,39,0.16)]">
+      <div className="border-b border-slate-300 pb-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
+          <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
             Your Challenge Record
           </p>
           <h2 className="mt-1 truncate text-xl font-bold">
@@ -30,7 +30,7 @@ export default function ChallengePersonalStats({
           </h2>
         </div>
         {!position && (
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-slate-600">
             Complete a Challenge while signed in to enter the rankings.
           </p>
         )}
@@ -38,8 +38,8 @@ export default function ChallengePersonalStats({
 
       <dl className="mt-4 grid grid-cols-2 gap-3">
         {metrics.map(([label, value]) => (
-          <div key={label} className="rounded-xl border border-slate-200 p-3 last:col-span-2" style={{ backgroundColor: "#f8fafc" }}>
-            <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+          <div key={label} className="rounded-xl border border-slate-300 bg-white p-3 last:col-span-2">
+            <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               {label}
             </dt>
             <dd className="mt-1 text-lg font-bold">{value}</dd>
