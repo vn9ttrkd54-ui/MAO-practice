@@ -1,11 +1,25 @@
+import Image from "next/image";
 import Link from "next/link";
+
+import AnimatedLogo from "@/components/brand/AnimatedLogo";
 
 export default function Home() {
   return (
     <main
-      className="flex flex-col items-center justify-center px-6 text-center"
+      className="relative isolate flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-100 px-6 text-center"
       style={{ minHeight: "calc(100vh - 81px)" }}
     >
+      <Image
+        src="/icon.svg"
+        alt=""
+        aria-hidden="true"
+        width={544}
+        height={544}
+        className="pointer-events-none absolute -bottom-24 -right-20 -z-10 w-[min(34rem,72vw)] -rotate-6 opacity-[0.07]"
+      />
+
+      <AnimatedLogo className="mb-7 h-28 w-28 drop-shadow-[0_18px_25px_rgba(37,99,235,0.24)]" />
+
       <h1
         className="font-black tracking-tight"
         style={{
