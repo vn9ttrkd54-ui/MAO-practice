@@ -39,77 +39,86 @@ export default async function ChallengePage() {
       : null;
 
   return (
-    <main className="mx-auto max-w-7xl px-5 sm:px-8" style={{ paddingTop: "34px", paddingBottom: "34px" }}>
-      <header
-        className="overflow-hidden rounded-3xl text-white shadow-lg"
-        style={{ background: "linear-gradient(120deg, #ea580c 0%, #f59e0b 55%, #facc15 100%)", color: "white", padding: "30px 38px", marginBottom: "32px", minHeight: "150px" }}
-      >
-        <p className="text-sm font-bold uppercase tracking-[0.22em] text-orange-100">Daily competition</p>
-        <h1 className="text-4xl font-bold tracking-tight" style={{ marginTop: "12px", lineHeight: 1.08 }}>Challenge</h1>
-      </header>
+    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-9 sm:px-8">
+      <div className="mx-auto max-w-7xl">
+        <header
+          className="mb-8 min-h-36 overflow-hidden rounded-3xl border-2 border-[#111827] px-8 py-7 text-white shadow-lg sm:px-10"
+          style={{ background: "linear-gradient(120deg, #2563eb 0%, #1d4ed8 48%, #111827 100%)" }}
+        >
+          <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">
+            Daily competition
+          </p>
+          <h1 className="mt-3 text-4xl font-bold leading-tight tracking-tight">
+            Challenge
+          </h1>
+          <div className="mt-4 h-1 w-16 rounded-full bg-[#fbbf24]" aria-hidden="true" />
+        </header>
 
-      <div className="challenge-layout">
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-900/5 sm:p-7">
-          {!dailyChallenge ? (
-          <div className="flex min-h-96 flex-col items-center justify-center rounded-2xl px-6 py-12 text-center" style={{ backgroundColor: "#f8fafc" }}>
-            <span className="text-4xl" aria-hidden="true">📅</span>
-            <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
-              Daily Challenge
-            </p>
-            <h2 className="mt-2 text-2xl font-bold">
-              Today&apos;s question has not been scheduled yet.
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-gray-600">
-              Check back soon. A new official Challenge will appear here once
-              today&apos;s question is assigned.
-            </p>
-          </div>
-          ) : (
-          <>
-            <div className="border-b pb-6">
-              <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">
-                Today&apos;s Challenge
-              </p>
-              <h2 className="mt-1 text-2xl font-bold">
-                {formatChallengeDate(dailyChallenge.date)}
-              </h2>
-            </div>
+        <div className="challenge-layout">
+          <section className="rounded-3xl border-2 border-[#111827] bg-[#f8fafc] p-6 shadow-[0_12px_30px_rgba(17,24,39,0.16)] sm:p-7">
+            {!dailyChallenge ? (
+              <div className="flex min-h-96 flex-col items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-12 text-center">
+                <span className="text-4xl" aria-hidden="true">📅</span>
+                <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
+                  Daily Challenge
+                </p>
+                <h2 className="mt-2 text-2xl font-bold">
+                  Today&apos;s question has not been scheduled yet.
+                </h2>
+                <p className="mx-auto mt-3 max-w-xl text-slate-600">
+                  Check back soon. A new official Challenge will appear here once
+                  today&apos;s question is assigned.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="border-b border-slate-300 pb-6">
+                  <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
+                    Today&apos;s Challenge
+                  </p>
+                  <h2 className="mt-1 text-2xl font-bold">
+                    {formatChallengeDate(dailyChallenge.date)}
+                  </h2>
+                </div>
 
-            <div className="mt-6 flex flex-wrap gap-2">
-              <span className="rounded-full border px-3 py-1 text-sm">
-                {dailyChallenge.question.division}
-              </span>
-              <span className="rounded-full border px-3 py-1 text-sm">
-                {dailyChallenge.question.topic}
-              </span>
-              <span
-                aria-label={`Difficulty ${dailyChallenge.question.difficulty} out of 5`}
-                className="rounded-full border px-3 py-1 text-sm"
-              >
-                {"★".repeat(dailyChallenge.question.difficulty)}
-                {"☆".repeat(5 - dailyChallenge.question.difficulty)}
-              </span>
-            </div>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-slate-400 bg-white px-3 py-1 text-sm">
+                    {dailyChallenge.question.division}
+                  </span>
+                  <span className="rounded-full border border-slate-400 bg-white px-3 py-1 text-sm">
+                    {dailyChallenge.question.topic}
+                  </span>
+                  <span
+                    aria-label={`Difficulty ${dailyChallenge.question.difficulty} out of 5`}
+                    className="rounded-full border border-slate-400 bg-white px-3 py-1 text-sm text-[#b77900]"
+                  >
+                    {"★".repeat(dailyChallenge.question.difficulty)}
+                    {"☆".repeat(5 - dailyChallenge.question.difficulty)}
+                  </span>
+                </div>
 
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold text-gray-500">Question</h3>
-              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-lg leading-8"><MathText>{dailyChallenge.question.question}</MathText></div>
-            </div>
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold text-slate-600">Question</h3>
+                  <div className="mt-3 rounded-2xl border border-slate-300 bg-white p-5 text-lg leading-8">
+                    <MathText>{dailyChallenge.question.question}</MathText>
+                  </div>
+                </div>
 
-            <ChallengeAnswerForm
-              challengeDate={dailyChallenge.date}
-              questionId={dailyChallenge.questionId}
-              choices={dailyChallenge.question.choices}
-              initialResult={initialResult}
-            />
-          </>
-          )}
-        </section>
+                <ChallengeAnswerForm
+                  challengeDate={dailyChallenge.date}
+                  questionId={dailyChallenge.questionId}
+                  choices={dailyChallenge.question.choices}
+                  initialResult={initialResult}
+                />
+              </>
+            )}
+          </section>
 
-        <aside className="challenge-sidebar">
-          <ChallengePersonalStats statistics={statistics} position={userPosition} />
-          <ChallengeLeaderboard entries={leaderboard} />
-        </aside>
+          <aside className="challenge-sidebar">
+            <ChallengePersonalStats statistics={statistics} position={userPosition} />
+            <ChallengeLeaderboard entries={leaderboard} />
+          </aside>
+        </div>
       </div>
 
       <style>{`
