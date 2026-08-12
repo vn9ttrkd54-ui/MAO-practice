@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import LogoutButton from "@/components/auth/LogoutButton";
 
@@ -11,10 +11,7 @@ export default function MobileNavbarMenu({ signedIn }: { signedIn: boolean }) {
   const [open, setOpen] = useState(false);
   const [pendingPage, setPendingPage] = useState<string | null>(null);
 
-  useEffect(() => {
-    setOpen(false);
-    setPendingPage(null);
-  }, [pathname]);
+
 
   function beginNavigation(href: string, label: string) {
     setOpen(false);
