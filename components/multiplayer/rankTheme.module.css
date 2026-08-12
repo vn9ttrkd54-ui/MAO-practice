@@ -17,12 +17,12 @@
 .legend { color:#fff1a6; background:linear-gradient(135deg,#050505,#27220f 38%,#0a0a0a 58%,#31250a 82%,#050505); border-color:#facc15; box-shadow:0 16px 38px rgb(120 83 0/.32),0 0 24px rgb(250 204 21/.2),inset 0 1px 0 rgb(255 247 176/.7); }
 .legend::after { content:""; position:absolute; z-index:0; width:40%; height:220%; right:4%; top:-70%; transform:rotate(25deg); pointer-events:none; background:linear-gradient(90deg,transparent,rgb(255 248 184/.42),rgb(255 255 255/.18),transparent); }
 .page { min-height:100%; transition:background .2s ease; }
-.pageNovice { background:linear-gradient(145deg,#eff6ff 0%,#fff 38%,#dbeafe 100%); }
-.pageBronze { background:linear-gradient(145deg,#fff7ed 0%,#fff 40%,#fed7aa 100%); }
-.pageSilver { background:linear-gradient(145deg,#f8fafc 0%,#fff 40%,#e2e8f0 100%); }
-.pageGold { background:linear-gradient(145deg,#fefce8 0%,#fff 40%,#fef08a 100%); }
-.pagePlatinum { background:linear-gradient(145deg,#f0fdfa 0%,#fff 40%,#ccfbf1 100%); }
-.pageDiamond { background:linear-gradient(145deg,#f0f9ff 0%,rgb(255 255 255/.88) 42%,#e0e7ff 100%); }
-.pageMaster { background:linear-gradient(145deg,#ecfdf5 0%,#fff 40%,#cffafe 100%); }
-.pageGrandmaster { background:linear-gradient(145deg,#faf5ff 0%,#fff 40%,#ede9fe 100%); }
-.pageLegend { background:linear-gradient(145deg,#fefce8 0%,#fff 40%,#fef3c7 100%); }
+.pageNovice { background:linear-gradient(145deg,#dbeafe 0%,#bfdbfe 48%,#c7d2fe 100%); }
+.pageBronze { background:linear-gradient(145deg,#fff7ed 0%,#ffedd5 48%,#fed7aa 100%); }
+.pageSilver { background:linear-gradient(145deg,#f1f5f9 0%,#e2e8f0 48%,#cbd5e1 100%); }
+.pageGold { background:linear-gradient(145deg,#fef9c3 0%,#fef08a 48%,#fde68a 100%); }
+.pagePlatinum { background:linear-gradient(145deg,#ecfeff 0%,#ccfbf1 48%,#99f6e4 100%); }
+.pageDiamond { background:linear-gradient(145deg,#eef2ff 0%,#e0e7ff 48%,#c7d2fe 100%); }
+.pageMaster { background:linear-gradient(145deg,#ecfeff 0%,#cffafe 48%,#a5f3fc 100%); }
+.pageGrandmaster { background:linear-gradient(145deg,#f5f3ff 0%,#ede9fe 48%,#ddd6fe 100%); }
+.pageLegend { background:linear-gradient(145deg,#fff7ed 0%,#fef3c7 48%,#fde68a 100%); }
