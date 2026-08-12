@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import ChallengeSection from "@/components/dashboard/ChallengeSection";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardQuickActions from "@/components/dashboard/DashboardQuickActions";
 import MultiplayerSection from "@/components/dashboard/MultiplayerSection";
 import OverviewSection from "@/components/dashboard/OverviewSection";
 import QuestionBankSection from "@/components/dashboard/QuestionBankSection";
@@ -11,10 +12,11 @@ import RecentActivitySection from "@/components/dashboard/RecentActivitySection"
 import RecentSessionsSection from "@/components/dashboard/RecentSessionsSection";
 import TrainerChartsSection from "@/components/dashboard/TrainerChartsSection";
 import TrainerSection from "@/components/dashboard/TrainerSection";
-import DashboardQuickActions from "@/components/dashboard/DashboardQuickActions";
-import { getDashboardData } from "@/lib/dashboardService";
-
-import type { DashboardData } from "@/lib/dashboardService";
+import { rankPageClass } from "@/components/multiplayer/RankTheme";
+import {
+  getDashboardData,
+  type DashboardData,
+} from "@/lib/dashboardService";
 
 export default function DashboardClient() {
   const [dashboardData, setDashboardData] =
@@ -67,7 +69,6 @@ export default function DashboardClient() {
       <main className="mx-auto min-h-[60vh] max-w-6xl px-6 py-10 sm:px-8">
         <div className="animate-pulse">
           <div className="h-10 w-52 rounded-lg bg-gray-200" />
-
           <div className="mt-4 h-5 w-full max-w-xl rounded bg-gray-100" />
 
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -96,44 +97,38 @@ export default function DashboardClient() {
   } = dashboardData;
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8 lg:py-14">
-      <DashboardHeader
-        username={username}
-        level={level}
-      />
+    <div className={`${rankPageClass(multiplayer.rank)} min-h-screen`}>
+      <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8 lg:py-14">
+        <DashboardHeader username={username} level={level} />
 
-      <DashboardQuickActions isAdmin={isAdmin} />
+        <DashboardQuickActions isAdmin={isAdmin} />
 
-      <OverviewSection
-        level={level}
-        questionBank={questionBank}
-        multiplayer={multiplayer}
-      />
+        <OverviewSection
+          level={level}
+          questionBank={questionBank}
+          multiplayer={multiplayer}
+        />
 
-      <ChallengeSection
-        currentStreak={challenge.currentStreak}
-        longestStreak={challenge.longestStreak}
-      />
+        <ChallengeSection
+          currentStreak={challenge.currentStreak}
+          longestStreak={challenge.longestStreak}
+        />
 
-      <MultiplayerSection multiplayer={multiplayer} />
+        <MultiplayerSection multiplayer={multiplayer} />
 
-      <TrainerSection
-        level={level}
-        trainer={trainer}
-      />
+        <TrainerSection level={level} trainer={trainer} />
 
-      <TrainerChartsSection trainer={trainer} />
+        <TrainerChartsSection trainer={trainer} />
 
-      <RecentActivitySection
-        activities={recentActivity}
-      />
+        <RecentActivitySection activities={recentActivity} />
 
-      <RecentSessionsSection
-        sessionsCompleted={trainer.sessionsCompleted}
-        sessions={recentTrainerSessions}
-      />
+        <RecentSessionsSection
+          sessionsCompleted={trainer.sessionsCompleted}
+          sessions={recentTrainerSessions}
+        />
 
-      <QuestionBankSection questionBank={questionBank} />
-    </main>
+        <QuestionBankSection questionBank={questionBank} />
+      </main>
+    </div>
   );
 }
