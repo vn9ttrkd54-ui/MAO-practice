@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function PracticePage() {
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-[#dbeafe] px-5 py-12 sm:px-8 sm:py-16">
+    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-5xl">
         <h1 className="mb-2 text-4xl font-bold text-slate-950">
           Practice
@@ -13,7 +13,7 @@ export default function PracticePage() {
         </p>
 
         <div className="grid gap-8 md:grid-cols-2">
-          <section className="rounded-2xl border-2 border-slate-900 bg-white p-8 shadow-[0_12px_30px_rgba(30,64,175,0.16)]">
+          <section className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-8 shadow-[0_12px_30px_rgba(17,24,39,0.16)]">
             <h2 className="mb-3 text-2xl font-bold">
               📚 Question Bank
             </h2>
@@ -26,13 +26,13 @@ export default function PracticePage() {
 
             <Link
               href="/practice/question-bank"
-              className="inline-block rounded-lg bg-black px-6 py-3 text-white transition hover:bg-slate-800"
+              className="inline-block rounded-lg bg-gradient-to-br from-[#2563eb] to-[#111827] px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110"
             >
               Open
             </Link>
           </section>
 
-          <section className="rounded-2xl border-2 border-slate-900 bg-white p-8 shadow-[0_12px_30px_rgba(30,64,175,0.16)]">
+          <section className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-8 shadow-[0_12px_30px_rgba(17,24,39,0.16)]">
             <h2 className="mb-3 text-2xl font-bold">
               ⚡ Daily Trainer
             </h2>
@@ -45,7 +45,7 @@ export default function PracticePage() {
 
             <Link
               href="/practice/trainer"
-              className="inline-block rounded-lg bg-black px-6 py-3 text-white transition hover:bg-slate-800"
+              className="inline-block rounded-lg bg-gradient-to-br from-[#2563eb] to-[#111827] px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110"
             >
               Start
             </Link>
