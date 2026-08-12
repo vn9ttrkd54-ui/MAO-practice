@@ -37,6 +37,30 @@ export async function saveQuestionAttempt(
   isCorrect: boolean,
   timeInSeconds: number
 ): Promise<QuestionProgress> {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    const question = (await import("@/data/questions")).questions.find(
+      (item) => item.id === questionId
+    );
+    if (!question) throw new Error("Question not found.");
+    const response = await fetch("/api/practice/result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        questionId,
+        selectedAnswer: isCorrect
+          ? question.answer
+          : ({ A: "B", B: "A", C: "A", D: "A", E: "A" } as const)[question.answer],
+        elapsedSeconds: timeInSeconds,
+        trainer: false,
+      }),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error ?? "Unable to save result.");
+    return payload.progress as QuestionProgress;
+  }
+
   const storage = await getProgressStorage();
   const current = await storage.getQuestionProgress(
     questionId
@@ -63,9 +87,47 @@ export async function saveQuestionAttempt(
   );
 }
 
+export async function saveVerifiedTrainerResult(
+  questionId: number,
+  selectedAnswer: string | null,
+  timeInSeconds: number
+) {
+  const response = await fetch("/api/practice/result", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      questionId,
+      selectedAnswer,
+      elapsedSeconds: timeInSeconds,
+      trainer: true,
+    }),
+  });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error ?? "Unable to save result.");
+  return payload;
+}
+
 export async function saveQuestionGiveUp(
   questionId: number
 ): Promise<QuestionProgress> {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    const response = await fetch("/api/practice/result", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        questionId,
+        selectedAnswer: null,
+        elapsedSeconds: 0,
+        trainer: false,
+      }),
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.error ?? "Unable to save result.");
+    return payload.progress as QuestionProgress;
+  }
+
   const storage = await getProgressStorage();
   const current = await storage.getQuestionProgress(
     questionId

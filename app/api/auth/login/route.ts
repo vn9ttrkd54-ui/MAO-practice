@@ -6,6 +6,18 @@ import { createClient } from "@/lib/supabase/server";
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
 const GENERIC_LOGIN_ERROR = "Incorrect username or password.";
 
+function getClientAddress(request: Request) {
+  return request.headers.get("x-real-ip")
+    ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    ?? "unknown";
+}
+
+async function hashIdentifier(value: string) {
+  const bytes = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 export async function POST(request: Request) {
   try {
     if (Number(request.headers.get("content-length") ?? 0) > 8_192) {
@@ -26,9 +38,22 @@ export async function POST(request: Request) {
       );
     }
 
+    const admin = createAdminClient();
+    const rateLimitKey = await hashIdentifier(`${getClientAddress(request)}:${username}`);
+    const { data: allowed, error: rateLimitError } = await admin.rpc(
+      "consume_login_attempt",
+      { attempt_identifier: rateLimitKey }
+    );
+    if (rateLimitError) throw rateLimitError;
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again in 15 minutes." },
+        { status: 429, headers: { "Retry-After": "900" } }
+      );
+    }
+
     // Usernames can change while the private authentication email remains stable,
     // so resolve the current username without ever exposing that email to clients.
-    const admin = createAdminClient();
     const { data: profile, error: profileError } = await admin
       .from("profiles")
       .select("id")
@@ -57,6 +82,8 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
+
+    await admin.rpc("clear_login_attempts", { attempt_identifier: rateLimitKey });
 
     return NextResponse.json({ success: true });
   } catch {

@@ -27,12 +27,10 @@ import {
 } from "@/lib/trainer";
 
 import {
-  saveQuestionAttempt,
-  saveQuestionGiveUp,
+  saveVerifiedTrainerResult,
 } from "@/lib/services/progressService";
 
 import {
-  applyTrainerResult,
   getLevelProgress,
 } from "@/lib/services/levelService";
 
@@ -217,14 +215,12 @@ export default function TrainerClient() {
     setIsSaving(true);
 
     try {
-      await saveQuestionAttempt(
+      const savedResult = await saveVerifiedTrainerResult(
         currentQuestion.id,
-        isCorrect,
+        selectedAnswer,
         timeSpent
       );
-
-      const levelChange =
-        await applyTrainerResult(isCorrect);
+      const levelChange = savedResult.levelChange;
 
       setLevelProgress({
         level: levelChange.level,
@@ -272,12 +268,12 @@ export default function TrainerClient() {
     setIsSaving(true);
 
     try {
-      await saveQuestionGiveUp(
-        currentQuestion.id
+      const savedResult = await saveVerifiedTrainerResult(
+        currentQuestion.id,
+        null,
+        Math.floor((Date.now() - startTime) / 1000)
       );
-
-      const levelChange =
-        await applyTrainerResult(false);
+      const levelChange = savedResult.levelChange;
 
       setLevelProgress({
         level: levelChange.level,
