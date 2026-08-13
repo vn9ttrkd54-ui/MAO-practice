@@ -94,6 +94,21 @@ export const challengeQuestions = [
     solution:
       "There are 36 equally likely ordered outcomes. The four outcomes with sum 9 are (3, 6), (4, 5), (5, 4), and (6, 3), so the probability is 4/36 = 1/9.",
   },
+  {
+    id: "CH-0006",
+    division: "Theta",
+    topic: "Arithmetic",
+    difficulty: 1,
+    question: "What is 1 + 1?",
+    choices: {
+      A: "1",
+      B: "2",
+      C: "3",
+      D: "4",
+      E: "5",
+    },
+    answer: "B",
+    solution: "Adding 1 and 1 gives 2.",
 ] as const satisfies readonly ChallengeQuestion[];
 
 function buildChallengeQuestionMap(
