@@ -29,7 +29,7 @@ const divisions: Array<{ name: Division; slug: string; accent: string; surface: 
 
 export default function QuestionBankPage() {
   return (
-    <main className="min-h-full bg-[#e5e7eb] px-5 py-10 sm:px-8 sm:py-16">
+    <main className="min-h-screen bg-[#e5e7eb] px-5 py-10 pb-16 sm:px-8 sm:py-16 sm:pb-20">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
           <p className="font-bold uppercase tracking-[0.22em] text-blue-600">Practice library</p>
