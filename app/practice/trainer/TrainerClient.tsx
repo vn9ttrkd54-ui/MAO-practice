@@ -36,7 +36,6 @@ import {
 } from "@/lib/services/levelService";
 
 import {
-  getTrainerHistory,
   saveTrainerSession,
 } from "@/lib/services/trainerHistoryService";
 
