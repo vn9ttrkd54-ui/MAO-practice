@@ -74,3 +74,12 @@ export default function QuestionStats({
   );
 
 }
+
+function Stat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="flex items-center justify-between rounded-xl bg-white px-4 py-3 ring-1 ring-slate-200">
+      <span className="text-sm font-semibold text-slate-600">{label}</span>
+      <span className="font-bold text-slate-950">{value}</span>
+    </div>
+  );
+}
