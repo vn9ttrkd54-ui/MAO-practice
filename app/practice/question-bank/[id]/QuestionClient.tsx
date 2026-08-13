@@ -207,7 +207,7 @@ function QuestionSession({ question }: { question: Question }) {
   };
 
   return (
-    <main className="max-w-7xl mx-auto p-8">
+    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">\n      <div className="mx-auto max-w-7xl">
       <QuestionHeader
         questionNumber={question.number}
         division={question.division}
@@ -238,7 +238,7 @@ function QuestionSession({ question }: { question: Question }) {
 
       <div className="grid lg:grid-cols-4 gap-8">
         <div className="lg:col-span-3">
-          <div className="border rounded-xl p-6">
+          <div className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-6 shadow-[0_12px_30px_rgba(17,24,39,0.14)] sm:p-7">
             <h2 className="text-2xl font-bold mb-6">
               Question
             </h2>
@@ -263,13 +263,19 @@ function QuestionSession({ question }: { question: Question }) {
                   void handleSubmit();
                 }}
                 className="
-                  bg-black
-                  text-white
+                  rounded-lg
+                  bg-gradient-to-br
+                  from-[#2563eb]
+                  to-[#111827]
                   px-6
                   py-3
-                  rounded-lg
-                  disabled:opacity-50
+                  font-semibold
+                  text-white
+                  shadow-md
+                  transition
+                  hover:brightness-110
                   disabled:cursor-not-allowed
+                  disabled:opacity-50
                 "
               >
                 {isSaving ? "Saving..." : "Submit"}
@@ -281,15 +287,18 @@ function QuestionSession({ question }: { question: Question }) {
                   void handleGiveUp();
                 }}
                 className="
-                  border
-                  border-gray-400
+                  rounded-lg
+                  border-2
+                  border-[#111827]
                   bg-white
                   px-6
                   py-3
-                  rounded-lg
-                  hover:bg-gray-100
-                  disabled:opacity-50
+                  font-semibold
+                  text-slate-950
+                  transition
+                  hover:bg-slate-100
                   disabled:cursor-not-allowed
+                  disabled:opacity-50
                 "
               >
                 Give Up
@@ -326,6 +335,7 @@ function QuestionSession({ question }: { question: Question }) {
           correct={progress.correct}
           times={progress.times}
         />
+      </div>
       </div>
     </main>
   );
