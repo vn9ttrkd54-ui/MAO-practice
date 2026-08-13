@@ -20,19 +20,19 @@ export default function TrainerHeader({
     (safeLevelProgress / 30) * 100;
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5">
+    <section className="overflow-hidden rounded-2xl border-2 border-[#111827] bg-gradient-to-r from-[#2563eb] to-[#111827] p-5 text-white shadow-[0_12px_30px_rgba(17,24,39,0.18)] sm:p-6">
       <div className="grid items-center gap-5 md:grid-cols-[auto_minmax(260px,1fr)]">
         <div className="shrink-0">
           <h1 className="text-2xl font-bold">
             Daily Trainer
           </h1>
 
-          <p className="mt-1 text-gray-600">
+          <p className="mt-1 text-blue-100">
             {division} Division
           </p>
         </div>
 
-        <div className="rounded-xl bg-slate-50 px-4 py-3">
+        <div className="rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/20">
           <div className="flex items-center justify-between gap-3 text-sm">
             <p className="font-semibold">Level {level}</p>
             <p className="font-semibold">{safeLevelProgress} / 30</p>
@@ -40,17 +40,17 @@ export default function TrainerHeader({
 
           <div
             className="mt-2 overflow-hidden rounded-full shadow-inner"
-            style={{ width: "100%", height: "14px", border: "2px solid #64748b", backgroundColor: "#e2e8f0", boxSizing: "border-box" }}
+            style={{ width: "100%", height: "14px", border: "2px solid rgba(255,255,255,0.72)", backgroundColor: "rgba(255,255,255,0.2)", boxSizing: "border-box" }}
             role="progressbar"
             aria-label={`Progress to Level ${level + 1}`}
             aria-valuemin={0}
             aria-valuemax={30}
             aria-valuenow={safeLevelProgress}
           >
-            <div className="h-full rounded-full bg-blue-600 transition-all duration-300" style={{ width: `${progressPercent}%` }} />
+            <div className="h-full rounded-full bg-white transition-all duration-300" style={{ width: `${progressPercent}%` }} />
           </div>
 
-          <p className="mt-1.5 text-xs text-gray-500">Progress to Level {level + 1}</p>
+          <p className="mt-1.5 text-xs text-blue-100">Progress to Level {level + 1}</p>
         </div>
 
       </div>
