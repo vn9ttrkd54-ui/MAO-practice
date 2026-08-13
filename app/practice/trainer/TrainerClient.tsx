@@ -15,6 +15,7 @@ import type {
 
 import type {
   TrainerQuestionResult,
+  TrainerSessionRecord,
 } from "@/types/trainer";
 
 import type {
@@ -35,6 +36,7 @@ import {
 } from "@/lib/services/levelService";
 
 import {
+  getTrainerHistory,
   saveTrainerSession,
 } from "@/lib/services/trainerHistoryService";
 
@@ -93,6 +95,11 @@ export default function TrainerClient() {
 
   const [results, setResults] =
     useState<TrainerQuestionResult[]>([]);
+
+  const [
+    trainerHistory,
+    setTrainerHistory,
+  ] = useState<TrainerSessionRecord[]>([]);
 
   const [startError, setStartError] =
     useState<string | null>(null);
@@ -362,7 +369,7 @@ export default function TrainerClient() {
     setStartError(null);
 
     try {
-      await saveTrainerSession({
+      const savedHistory = await saveTrainerSession({
         id: crypto.randomUUID(),
         division,
         startedAt: sessionStartedAt,
@@ -373,6 +380,7 @@ export default function TrainerClient() {
         results,
       });
 
+      setTrainerHistory(savedHistory);
       setShowEndDialog(false);
       setShowSummary(true);
     } catch {
@@ -425,6 +433,7 @@ export default function TrainerClient() {
         results={results}
         startingLevel={startingLevelProgress}
         endingLevel={levelProgress}
+        sessionHistory={trainerHistory}
         onStartNewSession={handleStartNewSession}
         onReturnToPractice={handleReturnToPractice}
       />
