@@ -30,6 +30,20 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
   const topics = getTopics(division);
   const difficulties = getDifficulties(division);
   const methods = getMethods(division);
+  const divisionTheme = {
+    Mu: {
+      gradient: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 52%, #4338ca 100%)",
+      border: "#3b82f6",
+    },
+    Alpha: {
+      gradient: "linear-gradient(135deg, #6d28d9 0%, #7c3aed 52%, #9333ea 100%)",
+      border: "#8b5cf6",
+    },
+    Theta: {
+      gradient: "linear-gradient(135deg, #047857 0%, #059669 52%, #0f766e 100%)",
+      border: "#10b981",
+    },
+  }[division];
 
   useEffect(() => {
     const load = async () => {
@@ -75,24 +89,24 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
   const dotStyle = (value: QuestionStatus) => value === "solved" ? "bg-emerald-500" : value === "attempted" ? "bg-rose-500" : "bg-slate-300";
 
   return (
-    <main className="min-h-full bg-gradient-to-b from-slate-50 via-white to-white">
+    <main className="min-h-full bg-[#e5e7eb]">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
         <Link href="/practice/question-bank" className="inline-flex items-center font-semibold text-blue-600 transition hover:-translate-x-0.5 hover:text-blue-800">← All divisions</Link>
 
         <header
-          className="mt-6 overflow-hidden rounded-3xl border border-blue-500 px-6 py-8 text-white shadow-xl shadow-blue-900/10 sm:px-9"
-          style={{ background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 52%, #4338ca 100%)" }}
+          className="mt-6 overflow-hidden rounded-3xl border px-6 py-8 text-white shadow-xl shadow-slate-900/15 sm:px-9"
+          style={{ background: divisionTheme.gradient, borderColor: divisionTheme.border }}
         >
           <div className="flex min-h-28 flex-wrap items-center justify-between gap-5">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">{division} division</p>
+              <p className="text-sm font-bold uppercase tracking-[0.22em] text-white/80">{division} division</p>
               <h1 className="mt-2 text-4xl font-bold sm:text-5xl">Question Bank</h1>
             </div>
-            <div className="rounded-2xl border border-white/25 bg-white/15 px-5 py-3 text-center backdrop-blur"><p className="text-3xl font-bold">{divisionQuestions.length}</p><p className="text-xs font-semibold uppercase tracking-wider text-blue-100">Available</p></div>
+            <div className="rounded-2xl border border-white/25 bg-white/15 px-5 py-3 text-center backdrop-blur"><p className="text-3xl font-bold">{divisionQuestions.length}</p><p className="text-xs font-semibold uppercase tracking-wider text-white/80">Available</p></div>
           </div>
         </header>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5 sm:p-6">
+        <section className="mt-6 rounded-2xl border-2 border-slate-900 bg-[#f8fafc] p-5 shadow-lg shadow-slate-900/10 sm:p-6">
           <div className="flex items-center justify-between gap-4"><div className="flex items-center gap-2"><SlidersHorizontal size={19} className="text-blue-600" /><h2 className="font-bold">Find your questions</h2>{activeFilterCount ? <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">{activeFilterCount} active</span> : null}</div><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"><RotateCcw size={15} /> Reset filters</button></div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -104,7 +118,7 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
           </div>
         </section>
 
-        <section className="mt-9">
+        <section className="mt-8 rounded-2xl border-2 border-slate-900 bg-[#f8fafc] p-5 shadow-lg shadow-slate-900/10 sm:p-6">
           <div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div>
 
           {filteredQuestions.length ? <div className="mt-5" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 58px)", gap: "12px" }}>
