@@ -109,6 +109,7 @@ export const challengeQuestions = [
     },
     answer: "B",
     solution: "Adding 1 and 1 gives 2.",
+  },
 ] as const satisfies readonly ChallengeQuestion[];
 
 function buildChallengeQuestionMap(
