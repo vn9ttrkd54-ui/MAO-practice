@@ -457,7 +457,8 @@ export default function TrainerClient() {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-5 py-6 sm:px-8">
+    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">
+      <div className="mx-auto max-w-7xl">
       {startError ? (
         <div
           role="alert"
@@ -543,6 +544,7 @@ export default function TrainerClient() {
           setLevelUpLevel(null)
         }
       />
+      </div>
     </main>
   );
 }
