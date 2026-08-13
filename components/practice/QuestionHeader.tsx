@@ -18,18 +18,19 @@ export default function QuestionHeader({
   backHref,
 }: QuestionHeaderProps) {
   return (
-    <div className="mb-8">
+    <div className="mb-8 overflow-hidden rounded-2xl border-2 border-[#111827] bg-gradient-to-r from-[#2563eb] to-[#111827] p-6 text-white shadow-[0_12px_30px_rgba(17,24,39,0.18)] sm:p-7">
 
       <Link
         href={backHref}
         className="
+          mb-6
           inline-flex
           items-center
           gap-2
-          text-blue-600
-          hover:text-blue-800
+          text-blue-100
+          transition
+          hover:text-white
           hover:underline
-          mb-6
         "
       >
         ← Question Bank
@@ -41,19 +42,19 @@ export default function QuestionHeader({
 
       <div className="flex flex-wrap gap-3">
 
-        <span className="border rounded-full px-3 py-1">
+        <span className="rounded-full border border-white/40 bg-white/10 px-3 py-1">
           {division}
         </span>
 
-        <span className="border rounded-full px-3 py-1">
+        <span className="rounded-full border border-white/40 bg-white/10 px-3 py-1">
           {topic}
         </span>
 
-        <span className="border rounded-full px-3 py-1">
+        <span className="rounded-full border border-white/40 bg-white/10 px-3 py-1">
           {difficulty}
         </span>
 
-        <span className="border rounded-full px-3 py-1">
+        <span className="rounded-full border border-white/40 bg-white/10 px-3 py-1">
           {status}
         </span>
 
