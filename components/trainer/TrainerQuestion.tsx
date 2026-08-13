@@ -27,14 +27,14 @@ export default function TrainerQuestion({
   onNextQuestion,
 }: TrainerQuestionProps) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-lg shadow-slate-900/5 sm:p-6">
+    <section className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-5 shadow-[0_12px_30px_rgba(17,24,39,0.14)] sm:p-7">
       <h2 className="mb-4 text-2xl font-bold">
         Question
       </h2>
 
       <div
         className="text-lg leading-8"
-        style={{ marginBottom: "30px", padding: "18px 20px", border: "1px solid #e2e8f0", borderRadius: "14px", backgroundColor: "#f8fafc" }}
+        style={{ marginBottom: "30px", padding: "20px 22px", border: "2px solid #cbd5e1", borderRadius: "14px", backgroundColor: "#ffffff" }}
       >
         <MathText>{question.question}</MathText>
       </div>
@@ -55,13 +55,19 @@ export default function TrainerQuestion({
             onClick={onSubmit}
             disabled={!selectedAnswer}
             className="
-              bg-black
-              text-white
+              rounded-lg
+              bg-gradient-to-br
+              from-[#2563eb]
+              to-[#111827]
               px-6
               py-3
-              rounded-lg
-              disabled:opacity-50
+              font-semibold
+              text-white
+              shadow-md
+              transition
+              hover:brightness-110
               disabled:cursor-not-allowed
+              disabled:opacity-50
             "
           >
             Submit
@@ -71,11 +77,16 @@ export default function TrainerQuestion({
             type="button"
             onClick={onGiveUp}
             className="
-              border
+              rounded-lg
+              border-2
+              border-[#111827]
+              bg-white
               px-6
               py-3
-              rounded-lg
-              hover:bg-gray-100
+              font-semibold
+              text-slate-950
+              transition
+              hover:bg-slate-100
             "
           >
             Give Up
@@ -99,12 +110,17 @@ export default function TrainerQuestion({
             type="button"
             onClick={onNextQuestion}
             className="
-              bg-black
-              text-white
+              rounded-lg
+              bg-gradient-to-br
+              from-[#2563eb]
+              to-[#111827]
               px-6
               py-3
-              rounded-lg
-              hover:bg-gray-800
+              font-semibold
+              text-white
+              shadow-md
+              transition
+              hover:brightness-110
             "
           >
             Next Question
