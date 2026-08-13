@@ -54,31 +54,19 @@ export default function QuestionStats({
 
   return (
 
-    <div className="border rounded-xl p-5">
+    <div className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-5 shadow-[0_12px_30px_rgba(17,24,39,0.14)]">
 
       <h2 className="font-bold text-xl mb-4">
         Statistics
       </h2>
 
 
-      <p>
-        Attempts: {attempts}
-      </p>
-
-
-      <p>
-        Correct: {correct}
-      </p>
-
-
-      <p>
-        Best Time: {formatTime(bestTime)}
-      </p>
-
-
-      <p>
-        Average Time: {formatTime(averageTime)}
-      </p>
+      <div className="space-y-3">
+        <Stat label="Attempts" value={attempts} />
+        <Stat label="Correct" value={correct} />
+        <Stat label="Best Time" value={formatTime(bestTime)} />
+        <Stat label="Average Time" value={formatTime(averageTime)} />
+      </div>
 
 
     </div>
