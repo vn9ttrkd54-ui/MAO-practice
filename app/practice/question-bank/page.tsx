@@ -29,7 +29,7 @@ const divisions: Array<{ name: Division; slug: string; accent: string; surface: 
 
 export default function QuestionBankPage() {
   return (
-    <main className="min-h-full bg-gradient-to-b from-slate-50 to-white px-5 py-10 sm:px-8 sm:py-16">
+    <main className="min-h-full bg-[#e5e7eb] px-5 py-10 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
           <p className="font-bold uppercase tracking-[0.22em] text-blue-600">Practice library</p>
@@ -46,7 +46,7 @@ export default function QuestionBankPage() {
               <Link
                 key={division.name}
                 href={`/practice/question-bank/${division.slug}`}
-                className="group flex flex-col overflow-hidden rounded-3xl border shadow-lg shadow-slate-200/60 transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
+                className="group flex flex-col overflow-hidden rounded-3xl border-2 shadow-xl shadow-slate-900/10 transition duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
                 style={{ minHeight: "330px", background: division.surface, borderColor: division.border }}
               >
                 <div className="h-2" style={{ background: division.accent }} />
