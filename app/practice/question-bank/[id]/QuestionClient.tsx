@@ -207,7 +207,8 @@ function QuestionSession({ question }: { question: Question }) {
   };
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">\n      <div className="mx-auto max-w-7xl">
+    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">
+      <div className="mx-auto max-w-7xl">
       <QuestionHeader
         questionNumber={question.number}
         division={question.division}
