@@ -17,21 +17,46 @@ export default function QuestionHeader({
   status,
   backHref,
 }: QuestionHeaderProps) {
+  const divisionTheme = {
+    Mu: {
+      background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 52%, #4338ca 100%)",
+      borderColor: "#3b82f6",
+      linkClass: "text-blue-100",
+    },
+    Alpha: {
+      background: "linear-gradient(135deg, #6d28d9 0%, #7c3aed 52%, #9333ea 100%)",
+      borderColor: "#8b5cf6",
+      linkClass: "text-purple-100",
+    },
+    Theta: {
+      background: "linear-gradient(135deg, #047857 0%, #059669 52%, #0f766e 100%)",
+      borderColor: "#10b981",
+      linkClass: "text-emerald-100",
+    },
+  }[division] ?? {
+    background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 52%, #4338ca 100%)",
+    borderColor: "#3b82f6",
+    linkClass: "text-blue-100",
+  };
+
   return (
-    <div className="mb-8 overflow-hidden rounded-2xl border-2 border-[#111827] bg-gradient-to-r from-[#2563eb] to-[#111827] p-6 text-white shadow-[0_12px_30px_rgba(17,24,39,0.18)] sm:p-7">
+    <div
+      className="mb-8 overflow-hidden rounded-2xl border-2 p-6 text-white shadow-[0_12px_30px_rgba(17,24,39,0.18)] sm:p-7"
+      style={{ background: divisionTheme.background, borderColor: divisionTheme.borderColor }}
+    >
 
       <Link
         href={backHref}
-        className="
+        className={`
           mb-6
           inline-flex
           items-center
           gap-2
-          text-blue-100
+          ${divisionTheme.linkClass}
           transition
           hover:text-white
           hover:underline
-        "
+        `}
       >
         ← Question Bank
       </Link>
