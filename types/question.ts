@@ -10,6 +10,13 @@ export type AnswerChoice =
   | "D"
   | "E";
 
+export interface QuestionIllustration {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
 export interface Question {
   id: number;
   number: number;
@@ -21,4 +28,5 @@ export interface Question {
   choices: string[];
   answer: AnswerChoice;
   solution: string;
+  illustration?: QuestionIllustration;
 }

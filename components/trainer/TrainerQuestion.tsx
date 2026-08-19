@@ -6,6 +6,7 @@ import type {
 import MultipleChoice from "@/components/practice/MultipleChoice";
 import SolutionPanel from "@/components/practice/SolutionPanel";
 import MathText from "@/components/math/MathText";
+import QuestionImage from "@/components/questions/QuestionImage";
 
 type TrainerQuestionProps = {
   question: Question;
@@ -37,6 +38,7 @@ export default function TrainerQuestion({
         style={{ marginBottom: "30px", padding: "20px 22px", border: "2px solid #cbd5e1", borderRadius: "14px", backgroundColor: "#ffffff" }}
       >
         <MathText>{question.question}</MathText>
+        <QuestionImage illustration={question.illustration} />
       </div>
 
       <MultipleChoice

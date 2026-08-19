@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" viewBox="0 0 720 360" role="img" aria-labelledby="title desc">
+  <title id="title">Increasing exponential curve</title>
+  <desc id="desc">An increasing, concave-down exponential curve approaches the horizontal asymptote y equals 2 from below.</desc>
+  <rect width="720" height="360" rx="20" fill="#f8fafc"/>
+  <g stroke="#dbe4f0" stroke-width="1">
+    <path d="M80 45V315M160 45V315M240 45V315M320 45V315M400 45V315M480 45V315M560 45V315M640 45V315"/>
+    <path d="M55 70H675M55 125H675M55 180H675M55 235H675M55 290H675"/>
+  </g>
+  <path d="M55 125H675" stroke="#f59e0b" stroke-width="3" stroke-dasharray="10 9"/>
+  <text x="625" y="113" fill="#92400e" font-family="system-ui, sans-serif" font-size="18">y = 2</text>
+  <path d="M80 290H675M240 315V45" stroke="#334155" stroke-width="3"/>
+  <path d="M80 315l-10-6v12zM675 290l-10-6v12zM240 45l-6 10h12z" fill="#334155"/>
+  <text x="684" y="297" fill="#334155" font-family="system-ui, sans-serif" font-size="18">x</text>
+  <text x="225" y="38" fill="#334155" font-family="system-ui, sans-serif" font-size="18">y</text>
+  <path d="M96 302C132 292 170 271 207 239C241 210 278 181 320 160C365 138 423 129 500 126C558 124 612 125 660 125" fill="none" stroke="#2563eb" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="240" cy="210" r="6" fill="#2563eb"/>
+</svg>

@@ -21,13 +21,6 @@ type TrainerSummaryProps = {
   onReturnToPractice: () => void;
 };
 
-type TopicPerformance = {
-  topic: string;
-  attempted: number;
-  correct: number;
-  accuracy: number;
-};
-
 const questionById = new Map(
   questions.map((question) => [question.id, question])
 );

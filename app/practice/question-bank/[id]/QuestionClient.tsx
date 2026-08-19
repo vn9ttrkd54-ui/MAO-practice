@@ -32,6 +32,7 @@ import QuestionNavigation from "@/components/practice/QuestionNavigation";
 import BookmarkButton from "@/components/practice/BookmarkButton";
 import QuestionReportButton from "@/components/feedback/QuestionReportButton";
 import MathText from "@/components/math/MathText";
+import QuestionImage from "@/components/questions/QuestionImage";
 
 const EMPTY_PROGRESS: QuestionProgress = {
   attempts: 0,
@@ -244,7 +245,10 @@ function QuestionSession({ question }: { question: Question }) {
               Question
             </h2>
 
-            <div className="mb-8 text-lg leading-8"><MathText>{question.question}</MathText></div>
+            <div className="mb-8 text-lg leading-8">
+              <MathText>{question.question}</MathText>
+              <QuestionImage illustration={question.illustration} />
+            </div>
 
             <MultipleChoice
               choices={question.choices}
