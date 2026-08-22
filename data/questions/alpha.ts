@@ -813,8 +813,19 @@ The positive root is \(m=\frac2{11}\).`,
     question: String.raw`The eccentricity of a hyperbola is the ratio of the distance between its foci to the distance between its vertices. Find the eccentricity of \(2x^2-7xy-22y^2=1\), given that its transverse axis has negative slope.`,
     choices: [String.raw`\(\frac54\)`, String.raw`\(\sqrt{10}\)`, String.raw`\(\frac{\sqrt{10}}3\)`, String.raw`\(\frac53\)`, "NOTA"],
     answer: "C",
-    solution: String.raw`The quadratic-form matrix is \(\begin{pmatrix}2&-7/2\\-7/2&-22\end{pmatrix}\), whose eigenvalues are \(5/2\) and \(-45/2\). After rotation, the hyperbola has semiaxis squares proportional to \(a^2=2/5\) and \(b^2=2/45\). Hence
-\[e=\sqrt{1+\frac{b^2}{a^2}}=\sqrt{1+\frac19}=\frac{\sqrt{10}}3.\]`,
+    solution: String.raw`Write the quadratic form as
+\[\begin{pmatrix}x&y\end{pmatrix}
+\begin{pmatrix}2&-7/2\\-7/2&-22\end{pmatrix}
+\begin{pmatrix}x\\y\end{pmatrix}=1.\]
+The matrix has eigenvalues \(5/2\) and \(-45/2\). An eigenvector for \(5/2\) satisfies \(x=-7y\), so this eigendirection has negative slope and is therefore the given transverse axis. Rotating to coordinates \((u,v)\) along the two eigendirections gives
+\[\frac52u^2-\frac{45}{2}v^2=1,
+\qquad
+\frac{u^2}{2/5}-\frac{v^2}{2/45}=1.\]
+Thus \(a^2=2/5\) and \(b^2=2/45\). For a hyperbola, \(c^2=a^2+b^2\), where the foci are \(2c\) apart and the vertices are \(2a\) apart. Therefore
+\[e=\frac{2c}{2a}=\frac ca
+=\sqrt{1+\frac{b^2}{a^2}}
+=\sqrt{1+\frac19}
+=\boxed{\frac{\sqrt{10}}3}.\]`,
   },
   {
     id: 20052,
