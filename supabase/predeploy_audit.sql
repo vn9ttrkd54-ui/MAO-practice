@@ -18,7 +18,8 @@ required_functions(name, signature) as (
     ('submit_challenge_attempt', 'public.submit_challenge_attempt(uuid,date,text,text,boolean)'),
     ('get_challenge_leaderboard', 'public.get_challenge_leaderboard()'),
     ('get_my_challenge_leaderboard_position', 'public.get_my_challenge_leaderboard_position()'),
-    ('is_admin', 'public.is_admin()')
+    ('is_admin', 'public.is_admin()'),
+    ('is_owner', 'public.is_owner()')
 ),
 required_columns(table_name, column_name) as (
   values

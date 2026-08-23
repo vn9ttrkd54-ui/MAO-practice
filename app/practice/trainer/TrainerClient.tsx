@@ -36,6 +36,7 @@ import {
 } from "@/lib/services/levelService";
 
 import {
+  hasTrainerAccount,
   saveTrainerSession,
 } from "@/lib/services/trainerHistoryService";
 
@@ -87,9 +88,20 @@ export default function TrainerClient() {
   const [startTime, setStartTime] =
     useState(() => Date.now());
 
+  const [questionFinishedAt, setQuestionFinishedAt] =
+    useState<number | null>(null);
+
+  const [now, setNow] =
+    useState(() => Date.now());
+
   const [
     sessionStartedAt,
     setSessionStartedAt,
+  ] = useState<number | null>(null);
+
+  const [
+    sessionEndedAt,
+    setSessionEndedAt,
   ] = useState<number | null>(null);
 
   const [results, setResults] =
@@ -99,6 +111,9 @@ export default function TrainerClient() {
     trainerHistory,
     setTrainerHistory,
   ] = useState<TrainerSessionRecord[]>([]);
+
+  const [hasAccount, setHasAccount] =
+    useState(false);
 
   const [startError, setStartError] =
     useState<string | null>(null);
@@ -128,17 +143,22 @@ export default function TrainerClient() {
 
     async function loadLevel() {
       try {
-        const savedLevel =
-          await getLevelProgress();
+        const [savedLevel, accountAvailable] =
+          await Promise.all([
+            getLevelProgress(),
+            hasTrainerAccount(),
+          ]);
 
         if (!cancelled) {
           setLevelProgress(savedLevel);
           setStartingLevelProgress(savedLevel);
+          setHasAccount(accountAvailable);
         }
       } catch {
         if (!cancelled) {
           setLevelProgress(DEFAULT_LEVEL);
           setStartingLevelProgress(DEFAULT_LEVEL);
+          setHasAccount(false);
         }
       }
     }
@@ -149,6 +169,18 @@ export default function TrainerClient() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!sessionStarted || showSummary) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setNow(Date.now());
+    }, 1_000);
+
+    return () => window.clearInterval(timer);
+  }, [sessionStarted, showSummary]);
 
   const sessionStats =
     calculateTrainerStats(results);
@@ -161,13 +193,14 @@ export default function TrainerClient() {
     setIsSaving(true);
 
     try {
-      const [firstQuestion, currentLevel] =
+      const [firstQuestion, currentLevel, accountAvailable] =
         await Promise.all([
           getNextTrainerQuestion({
             division,
             previousQuestionId: null,
           }),
           getLevelProgress(),
+          hasTrainerAccount(),
         ]);
 
       if (!firstQuestion) {
@@ -185,9 +218,13 @@ export default function TrainerClient() {
       const startedAt = Date.now();
 
       setStartTime(startedAt);
+      setQuestionFinishedAt(null);
+      setNow(startedAt);
       setSessionStartedAt(startedAt);
+      setSessionEndedAt(null);
       setLevelProgress(currentLevel);
       setStartingLevelProgress(currentLevel);
+      setHasAccount(accountAvailable);
       setSessionStarted(true);
       setShowSummary(false);
       setShowEndDialog(false);
@@ -211,8 +248,9 @@ export default function TrainerClient() {
       return;
     }
 
+    const answeredAt = Date.now();
     const timeSpent = Math.floor(
-      (Date.now() - startTime) / 1000
+      (answeredAt - startTime) / 1000
     );
 
     const isCorrect =
@@ -245,6 +283,7 @@ export default function TrainerClient() {
         result: isCorrect
           ? "correct"
           : "incorrect",
+        elapsedSeconds: timeSpent,
       };
 
       setResults((currentResults) => [
@@ -252,6 +291,8 @@ export default function TrainerClient() {
         newResult,
       ]);
 
+      setQuestionFinishedAt(answeredAt);
+      setNow(answeredAt);
       setSubmitted(true);
     } catch {
       setStartError(
@@ -271,13 +312,15 @@ export default function TrainerClient() {
       return;
     }
 
+    const answeredAt = Date.now();
+
     setIsSaving(true);
 
     try {
       const savedResult = await saveVerifiedTrainerResult(
         currentQuestion.id,
         null,
-        Math.floor((Date.now() - startTime) / 1000)
+        Math.floor((answeredAt - startTime) / 1000)
       );
       const levelChange = savedResult.levelChange;
 
@@ -292,6 +335,9 @@ export default function TrainerClient() {
         selectedAnswer: null,
         correctAnswer: currentQuestion.answer,
         result: "give-up",
+        elapsedSeconds: Math.floor(
+          (answeredAt - startTime) / 1_000
+        ),
       };
 
       setResults((currentResults) => [
@@ -300,6 +346,8 @@ export default function TrainerClient() {
       ]);
 
       setSelectedAnswer(null);
+      setQuestionFinishedAt(answeredAt);
+      setNow(answeredAt);
       setSubmitted(true);
     } catch {
       setStartError(
@@ -326,6 +374,7 @@ export default function TrainerClient() {
         });
 
       if (!nextQuestion) {
+        setSessionEndedAt(Date.now());
         setCurrentQuestion(null);
         setShowSummary(true);
         return;
@@ -334,7 +383,10 @@ export default function TrainerClient() {
       setCurrentQuestion(nextQuestion);
       setSelectedAnswer(null);
       setSubmitted(false);
-      setStartTime(Date.now());
+      const startedAt = Date.now();
+      setStartTime(startedAt);
+      setQuestionFinishedAt(null);
+      setNow(startedAt);
       setStartError(null);
     } catch {
       setStartError(
@@ -380,6 +432,7 @@ export default function TrainerClient() {
       });
 
       setTrainerHistory(savedHistory);
+      setSessionEndedAt(endedAt);
       setShowEndDialog(false);
       setShowSummary(true);
     } catch {
@@ -398,6 +451,8 @@ export default function TrainerClient() {
     setSessionStarted(false);
     setCurrentQuestion(null);
     setSessionStartedAt(null);
+    setSessionEndedAt(null);
+    setQuestionFinishedAt(null);
     setSelectedAnswer(null);
     setSubmitted(false);
     setResults([]);
@@ -432,7 +487,18 @@ export default function TrainerClient() {
         results={results}
         startingLevel={startingLevelProgress}
         endingLevel={levelProgress}
+        sessionSeconds={
+          sessionStartedAt === null
+            ? 0
+            : Math.max(
+                0,
+                Math.floor(
+                  ((sessionEndedAt ?? now) - sessionStartedAt) / 1_000
+                )
+              )
+        }
         sessionHistory={trainerHistory}
+        hasAccount={hasAccount}
         onStartNewSession={handleStartNewSession}
         onReturnToPractice={handleReturnToPractice}
       />
@@ -504,6 +570,18 @@ export default function TrainerClient() {
         <aside className="trainer-sidebar">
           <TrainerStatsSidebar
             difficulty={currentQuestion.difficulty}
+            questionSeconds={Math.max(
+              0,
+              Math.floor(
+                ((questionFinishedAt ?? now) - startTime) / 1_000
+              )
+            )}
+            sessionSeconds={Math.max(
+              0,
+              Math.floor(
+                (now - (sessionStartedAt ?? now)) / 1_000
+              )
+            )}
             correct={sessionStats.correct}
             incorrect={sessionStats.incorrect}
             giveUps={sessionStats.giveUps}

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { hasAdminAccess } from "@/lib/auth/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -10,7 +11,7 @@ async function getAdminUser() {
 
   const admin = createAdminClient();
   const { data: profile } = await admin.from("profiles").select("role").eq("id", user.id).maybeSingle<{ role: string }>();
-  return profile?.role === "admin" ? user : null;
+  return hasAdminAccess(profile?.role) ? user : null;
 }
 
 export async function PATCH(request: Request) {

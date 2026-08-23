@@ -16,7 +16,9 @@ type TrainerSummaryProps = {
   results: TrainerQuestionResult[];
   startingLevel: LevelProgress;
   endingLevel: LevelProgress;
+  sessionSeconds: number;
   sessionHistory: TrainerSessionRecord[];
+  hasAccount: boolean;
   onStartNewSession: () => void;
   onReturnToPractice: () => void;
 };
@@ -62,6 +64,7 @@ function topicPerformance(results: TrainerQuestionResult[]) {
   return Array.from(topics, ([topic, values]) => ({
     topic,
     ...values,
+    missed: values.attempted - values.correct,
     accuracy:
       values.attempted > 0
         ? Math.round((values.correct / values.attempted) * 100)
@@ -83,28 +86,56 @@ function sessionAccuracy(session: TrainerSessionRecord) {
   return Math.round((correct / session.results.length) * 100);
 }
 
+function formatDuration(totalSeconds: number) {
+  const hours = Math.floor(totalSeconds / 3_600);
+  const minutes = Math.floor((totalSeconds % 3_600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
 export default function TrainerSummary({
   division,
   stats,
   results,
   startingLevel,
   endingLevel,
+  sessionSeconds,
   sessionHistory,
+  hasAccount,
   onStartNewSession,
   onReturnToPractice,
 }: TrainerSummaryProps) {
   const sessionScore =
     stats.correct - stats.incorrect - stats.giveUps;
+  const totalQuestionSeconds = results.reduce(
+    (total, result) => total + result.elapsedSeconds,
+    0
+  );
+  const averageQuestionSeconds =
+    results.length > 0
+      ? Math.round(totalQuestionSeconds / results.length)
+      : 0;
   const topics = topicPerformance(results);
   const rankedTopics = [...topics].sort(
     (first, second) =>
+      second.correct - first.correct ||
       second.accuracy - first.accuracy ||
       second.attempted - first.attempted
   );
-  const strongestTopic = rankedTopics[0] ?? null;
+  const noCorrectTopics =
+    stats.questionsAnswered > 0 && stats.correct === 0;
+  const strongestTopic = !noCorrectTopics
+    ? rankedTopics[0] ?? null
+    : null;
   const focusTopic =
     [...topics].sort(
       (first, second) =>
+        second.missed - first.missed ||
         first.accuracy - second.accuracy ||
         second.attempted - first.attempted
     )[0] ?? null;
@@ -203,7 +234,7 @@ export default function TrainerSummary({
               />
             </section>
 
-            <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
               <SummaryCard
                 label="Session score"
                 value={sessionScore > 0 ? `+${sessionScore}` : sessionScore}
@@ -227,6 +258,16 @@ export default function TrainerSummary({
                 label="Improving streak"
                 value={`${improvingStreak} session${improvingStreak === 1 ? "" : "s"}`}
                 detail="consecutive accuracy improvements"
+              />
+              <SummaryCard
+                label="Session time"
+                value={formatDuration(sessionSeconds)}
+                detail="total training time"
+              />
+              <SummaryCard
+                label="Average time"
+                value={formatDuration(averageQuestionSeconds)}
+                detail="per answered question"
               />
             </section>
 
@@ -282,7 +323,19 @@ export default function TrainerSummary({
                   Last five sessions
                 </h2>
 
-                {recentSessions.length === 0 ? (
+                {!hasAccount ? (
+                  <div className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-6 text-center">
+                    <p className="font-bold text-blue-950">
+                      Create an account to compare sessions
+                    </p>
+                    <Link
+                      href="/signup"
+                      className="mt-4 inline-flex rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
+                    >
+                      Create Account
+                    </Link>
+                  </div>
+                ) : recentSessions.length === 0 ? (
                   <p className="mt-6 text-slate-500">
                     Your session trend will appear here.
                   </p>
@@ -298,9 +351,14 @@ export default function TrainerSummary({
                           key={session.id}
                           className="flex min-w-0 flex-1 flex-col items-center"
                         >
-                          <p className="mb-2 text-xs font-bold text-slate-600">
-                            {accuracy}%
-                          </p>
+                          <div className="mb-2 text-center">
+                            <p className="text-xs font-bold text-slate-600">
+                              {accuracy}%
+                            </p>
+                            <p className="mt-0.5 text-[11px] font-semibold text-slate-400">
+                              {session.results.length} Q
+                            </p>
+                          </div>
                           <div className="flex h-36 w-full items-end overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
                             <div
                               className={
@@ -327,9 +385,11 @@ export default function TrainerSummary({
             <section className="mt-6 grid gap-4 md:grid-cols-2">
               <InsightCard
                 eyebrow="Strongest topic"
-                title={strongestTopic?.topic ?? "Not enough data"}
+                title={noCorrectTopics ? ":(" : strongestTopic?.topic ?? "Not enough data"}
                 description={
-                  strongestTopic
+                  noCorrectTopics
+                    ? "No topics mastered this session."
+                    : strongestTopic
                     ? `${strongestTopic.accuracy}% accuracy across ${strongestTopic.attempted} attempt${strongestTopic.attempted === 1 ? "" : "s"}.`
                     : "Complete a question to identify your strongest topic."
                 }
@@ -389,7 +449,7 @@ export default function TrainerSummary({
                           </div>
                           <p className="mt-2 text-sm text-slate-500">
                             Your answer: {result.selectedAnswer ?? "None"} ·
-                            Correct answer: {result.correctAnswer}
+                            Correct answer: {result.correctAnswer} · Time: {formatDuration(result.elapsedSeconds)}
                           </p>
                         </div>
 

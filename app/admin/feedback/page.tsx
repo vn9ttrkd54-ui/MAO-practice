@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import AdminFeedbackList from "@/components/admin/AdminFeedbackList";
 import AdminAccountRecovery from "@/components/admin/AdminAccountRecovery";
 import { questions } from "@/data/questions";
+import { hasAdminAccess, hasOwnerAccess } from "@/lib/auth/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { Division } from "@/types/question";
@@ -25,7 +26,7 @@ export default async function AdminFeedbackPage() {
 
   const admin = createAdminClient();
   const { data: ownProfile } = await admin.from("profiles").select("role").eq("id", user.id).maybeSingle<{ role: string }>();
-  if (ownProfile?.role !== "admin") redirect("/dashboard");
+  if (!hasAdminAccess(ownProfile?.role)) redirect("/dashboard");
 
   const { data } = await admin.from("feedback_requests").select("id, user_id, kind, question_id, division, message, created_at").eq("status", "open").order("created_at", { ascending: false });
   const rows = (data ?? []) as FeedbackRow[];
@@ -53,7 +54,7 @@ export default async function AdminFeedbackPage() {
     <main className="mx-auto max-w-5xl px-6 py-10 sm:px-8">
       <Link href="/dashboard" className="text-sm font-semibold text-blue-600">← Dashboard</Link>
       <div className="mt-5"><p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">Admin</p><h1 className="mt-2 text-4xl font-bold">Admin tools</h1></div>
-      <AdminAccountRecovery />
+      {hasOwnerAccess(ownProfile.role) ? <AdminAccountRecovery /> : null}
       <div className="mt-9 flex flex-wrap items-end justify-between gap-4"><h2 className="text-3xl font-bold">Feedback inbox</h2><p className="rounded-full bg-violet-100 px-4 py-2 text-sm font-bold text-violet-800">{requests.length} open</p></div>
       <AdminFeedbackList initialRequests={requests} />
     </main>

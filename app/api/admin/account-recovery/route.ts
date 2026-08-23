@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { hasOwnerAccess } from "@/lib/auth/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
 
   const admin = createAdminClient();
   const { data: ownProfile } = await admin.from("profiles").select("role").eq("id", user.id).maybeSingle<{ role: string }>();
-  if (ownProfile?.role !== "admin") return NextResponse.json({ error: "Administrator access required." }, { status: 403 });
+  if (!hasOwnerAccess(ownProfile?.role)) return NextResponse.json({ error: "Owner access required." }, { status: 403 });
 
   let body: { username?: string; identityVerified?: boolean; currentPassword?: string };
   try {
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Confirm that you verified the account holder's identity in person." }, { status: 400 });
   }
   if (!body.currentPassword || !user.email) {
-    return NextResponse.json({ error: "Enter your administrator password." }, { status: 400 });
+    return NextResponse.json({ error: "Enter your owner password." }, { status: 400 });
   }
 
   const { error: passwordError } = await supabase.auth.signInWithPassword({
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
     password: body.currentPassword,
   });
   if (passwordError) {
-    return NextResponse.json({ error: "Administrator password is incorrect." }, { status: 401 });
+    return NextResponse.json({ error: "Owner password is incorrect." }, { status: 401 });
   }
 
   const { data: profile } = await admin.from("profiles").select("id").eq("username", username).maybeSingle<{ id: string }>();

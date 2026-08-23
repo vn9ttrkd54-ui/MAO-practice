@@ -7,6 +7,7 @@ import { getLevelProgress } from "@/lib/services/levelService";
 import { getTrainerHistory } from "@/lib/services/trainerHistoryService";
 import { getMultiplayerSummary } from "@/lib/multiplayerSummary";
 import { createClient } from "@/lib/supabase/client";
+import { hasAdminAccess, type AccountRole } from "@/lib/auth/roles";
 
 import type { AttemptResult } from "@/types/progress";
 import type { Division } from "@/types/question";
@@ -66,7 +67,7 @@ interface BookmarkRow {
 
 interface ProfileRow {
   username: string;
-  role: "user" | "admin";
+  role: AccountRole;
 }
 
 interface ChallengeStatisticsRow {
@@ -287,7 +288,7 @@ export async function getDashboardData():
 
   return {
     username: profileResponse.data.username,
-    isAdmin: profileResponse.data.role === "admin",
+    isAdmin: hasAdminAccess(profileResponse.data.role),
     multiplayer: getMultiplayerSummary({
       rp: multiplayerProfileResponse.data?.rp ?? 0,
       rankedMatchesPlayed: multiplayerProfileResponse.data?.ranked_matches_played ?? 0,

@@ -33,7 +33,7 @@ export default function AdminAccountRecovery() {
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Only use this after verifying the person&apos;s identity outside the website. The generated link is temporary and lets the user choose their own password; you never see it.</p>
       <label className="mt-5 block text-sm font-semibold">Username</label>
       <input value={username} onChange={(event) => setUsername(event.target.value.toLowerCase())} className="mt-2 w-full rounded-xl border bg-white p-3" placeholder="username" />
-      <label className="mt-4 block text-sm font-semibold">Your administrator password</label>
+      <label className="mt-4 block text-sm font-semibold">Your owner password</label>
       <input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} autoComplete="current-password" className="mt-2 w-full rounded-xl border bg-white p-3" placeholder="Confirm your password" />
       <label className="mt-4 flex items-start gap-3 rounded-xl border border-violet-200 bg-white p-4 text-sm font-semibold"><input type="checkbox" checked={identityVerified} onChange={(event) => setIdentityVerified(event.target.checked)} className="mt-1" /><span>I verified this person&apos;s identity in real life and confirmed this is their account.</span></label>
       <button disabled={working || !identityVerified || !username || !currentPassword} onClick={generateLink} className="mt-4 rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white disabled:opacity-40">Generate one-time reset link</button>

@@ -18,6 +18,7 @@ export interface TrainerQuestionResult {
   selectedAnswer: AnswerChoice | null;
   correctAnswer: AnswerChoice;
   result: TrainerResult;
+  elapsedSeconds: number;
 }
 
 export interface TrainerSessionStats {

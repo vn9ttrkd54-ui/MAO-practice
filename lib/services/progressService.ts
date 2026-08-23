@@ -3,6 +3,7 @@ import { memoryProgressStorage } from "@/lib/storage/progress/memoryProgressStor
 import type { ProgressStorage } from "@/lib/storage/progress/progressStorage";
 import { createSupabaseProgressStorage } from "@/lib/storage/progress/supabaseProgressStorage";
 import type { QuestionProgress } from "@/types/progress";
+import { applyTrainerResult } from "@/lib/services/levelService";
 
 async function getProgressStorage(): Promise<ProgressStorage> {
   const supabase = createClient();
@@ -92,6 +93,33 @@ export async function saveVerifiedTrainerResult(
   selectedAnswer: string | null,
   timeInSeconds: number
 ) {
+  const supabase = createClient();
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (error) {
+    throw new Error(`Unable to read authentication session: ${error.message}`);
+  }
+
+  if (!session?.user) {
+    const question = (await import("@/data/questions")).questions.find(
+      (item) => item.id === questionId
+    );
+
+    if (!question) {
+      throw new Error("Question not found.");
+    }
+
+    const isCorrect = selectedAnswer === question.answer;
+    const [progress, levelChange] = await Promise.all([
+      selectedAnswer === null
+        ? saveQuestionGiveUp(questionId)
+        : saveQuestionAttempt(questionId, isCorrect, timeInSeconds),
+      applyTrainerResult(isCorrect),
+    ]);
+
+    return { progress, levelChange };
+  }
+
   const response = await fetch("/api/practice/result", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

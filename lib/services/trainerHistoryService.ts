@@ -30,6 +30,20 @@ export async function getTrainerHistory():
   return storage.getHistory();
 }
 
+export async function hasTrainerAccount(): Promise<boolean> {
+  const supabase = createClient();
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.getSession();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return Boolean(session?.user);
+}
+
 export async function saveTrainerSession(
   session: TrainerSessionRecord
 ): Promise<TrainerSessionRecord[]> {

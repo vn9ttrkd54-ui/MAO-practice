@@ -51,6 +51,7 @@ function rowToSession(
         correctAnswer:
           result.correct_answer as TrainerQuestionResult["correctAnswer"],
         result: result.result,
+        elapsedSeconds: 0,
       })
     ),
   };
