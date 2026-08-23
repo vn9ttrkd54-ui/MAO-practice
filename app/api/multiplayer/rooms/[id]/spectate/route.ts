@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { leavePublicSpectator, spectatePublicMatch } from "@/lib/services/multiplayerService";
+import { isTrustedMutationRequest } from "@/lib/security/request";
 
 interface SpectateRouteContext { params: Promise<{ id: string }>; }
 
@@ -17,7 +18,8 @@ export async function GET(_request: Request, { params }: SpectateRouteContext) {
   }
 }
 
-export async function DELETE(_request: Request, { params }: SpectateRouteContext) {
+export async function DELETE(request: Request, { params }: SpectateRouteContext) {
+  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   const { id } = await params;
   await leavePublicSpectator(id);
   return new NextResponse(null, { status: 204 });

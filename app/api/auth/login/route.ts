@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
 const GENERIC_LOGIN_ERROR = "Incorrect username or password.";
@@ -20,13 +21,13 @@ async function hashIdentifier(value: string) {
 
 export async function POST(request: Request) {
   try {
-    if (Number(request.headers.get("content-length") ?? 0) > 8_192) {
-      return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: 413 });
+    if (!isTrustedMutationRequest(request)) {
+      return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
     }
-    const body = (await request.json()) as {
+    const body = await readJsonBody<{
       username?: string;
       password?: string;
-    };
+    }>(request, 8_192);
 
     const username = body.username?.trim().toLowerCase() ?? "";
     const password = body.password ?? "";
@@ -86,7 +87,10 @@ export async function POST(request: Request) {
     await admin.rpc("clear_login_attempts", { attempt_identifier: rateLimitKey });
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    if (error instanceof RequestBodyError) {
+      return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: error.status });
+    }
     return NextResponse.json(
       { error: "Unable to log in right now. Please try again." },
       { status: 500 }

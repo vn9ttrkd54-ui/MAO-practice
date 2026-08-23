@@ -3,13 +3,11 @@ import { NextResponse } from "next/server";
 import { questions } from "@/data/questions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 import type { Division } from "@/types/question";
 
 export async function POST(request: Request) {
-  const contentLength = Number(request.headers.get("content-length") ?? 0);
-  if (contentLength > 16_384) {
-    return NextResponse.json({ error: "Feedback is too large." }, { status: 413 });
-  }
+  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
 
   const supabase = await createClient();
   const {
@@ -20,12 +18,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please sign in to submit feedback." }, { status: 401 });
   }
 
-  const body = (await request.json()) as {
-    kind?: "question_report" | "general_suggestion";
-    questionId?: number;
-    division?: Division;
-    message?: string;
-  };
+  let body: { kind?: "question_report" | "general_suggestion"; questionId?: number; division?: Division; message?: string };
+  try {
+    body = await readJsonBody<typeof body>(request, 16_384);
+  } catch (error) {
+    const status = error instanceof RequestBodyError ? error.status : 400;
+    return NextResponse.json({ error: status === 413 ? "Feedback is too large." : "Invalid request." }, { status });
+  }
   const message = body.message?.trim() ?? "";
 
   if (message.length < 10 || message.length > 2000) {

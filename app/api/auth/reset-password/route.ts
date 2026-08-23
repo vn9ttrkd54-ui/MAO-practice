@@ -3,13 +3,12 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { verifyRecoveryToken } from "@/lib/auth/recoveryToken";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 
 const RECOVERY_COOKIE = "mathematics_daily_password_recovery";
 
 export async function POST(request: Request) {
-  if (Number(request.headers.get("content-length") ?? 0) > 8_192) {
-    return NextResponse.json({ error: "Request is too large." }, { status: 413 });
-  }
+  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
 
   const cookieStore = await cookies();
   const supabase = await createClient();
@@ -22,10 +21,11 @@ export async function POST(request: Request) {
 
   let password = "";
   try {
-    const body = (await request.json()) as { password?: string };
+    const body = await readJsonBody<{ password?: string }>(request, 8_192);
     password = body.password ?? "";
-  } catch {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+  } catch (error) {
+    const status = error instanceof RequestBodyError ? error.status : 400;
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status });
   }
 
   if (password.length < 8) {

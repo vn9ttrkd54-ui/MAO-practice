@@ -2,15 +2,12 @@ import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const INTERNAL_EMAIL_DOMAIN = "@users.mao-practice.local";
 const MAX_REQUEST_BYTES = 8_192;
-
-function requestIsTooLarge(request: Request) {
-  return Number(request.headers.get("content-length") ?? 0) > MAX_REQUEST_BYTES;
-}
 
 async function verifyCurrentPassword(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -26,20 +23,18 @@ async function verifyCurrentPassword(
 }
 
 export async function PATCH(request: Request) {
-  if (requestIsTooLarge(request)) {
-    return NextResponse.json({ error: "Request is too large." }, { status: 413 });
-  }
+  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
-  const body = (await request.json()) as {
-    action?: string;
-    username?: string;
-    email?: string;
-    password?: string;
-    currentPassword?: string;
-  };
+  let body: { action?: string; username?: string; email?: string; password?: string; currentPassword?: string };
+  try {
+    body = await readJsonBody<typeof body>(request, MAX_REQUEST_BYTES);
+  } catch (error) {
+    const status = error instanceof RequestBodyError ? error.status : 400;
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status });
+  }
 
   if (body.action === "email") {
     const email = body.email?.trim().toLowerCase() ?? "";
@@ -99,13 +94,17 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (requestIsTooLarge(request)) {
-    return NextResponse.json({ error: "Request is too large." }, { status: 413 });
-  }
+  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
-  const body = (await request.json()) as { confirmation?: string; currentPassword?: string };
+  let body: { confirmation?: string; currentPassword?: string };
+  try {
+    body = await readJsonBody<typeof body>(request, MAX_REQUEST_BYTES);
+  } catch (error) {
+    const status = error instanceof RequestBodyError ? error.status : 400;
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status });
+  }
   if (body.confirmation !== "DELETE") {
     return NextResponse.json({ error: "Type DELETE to confirm." }, { status: 400 });
   }

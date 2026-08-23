@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { hasOwnerAccess } from "@/lib/auth/roles";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -8,9 +9,7 @@ const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
 const MAX_REQUEST_BYTES = 8_192;
 
 export async function POST(request: Request) {
-  if (Number(request.headers.get("content-length") ?? 0) > MAX_REQUEST_BYTES) {
-    return NextResponse.json({ error: "Request is too large." }, { status: 413 });
-  }
+  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -22,13 +21,10 @@ export async function POST(request: Request) {
 
   let body: { username?: string; identityVerified?: boolean; currentPassword?: string };
   try {
-    const rawBody = await request.text();
-    if (rawBody.length > MAX_REQUEST_BYTES) {
-      return NextResponse.json({ error: "Request is too large." }, { status: 413 });
-    }
-    body = JSON.parse(rawBody) as typeof body;
-  } catch {
-    return NextResponse.json({ error: "Invalid request." }, { status: 400 });
+    body = await readJsonBody<typeof body>(request, MAX_REQUEST_BYTES);
+  } catch (error) {
+    const status = error instanceof RequestBodyError ? error.status : 400;
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status });
   }
   const username = body.username?.trim().toLowerCase() ?? "";
   if (!USERNAME_PATTERN.test(username)) {

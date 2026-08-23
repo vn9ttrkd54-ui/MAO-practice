@@ -3,23 +3,21 @@ import { NextResponse } from "next/server";
 import { questions } from "@/data/questions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 import type { AnswerChoice } from "@/types/question";
 
 const ANSWERS = new Set<AnswerChoice>(["A", "B", "C", "D", "E"]);
 
 export async function POST(request: Request) {
   try {
-    const rawBody = await request.text();
-    if (new TextEncoder().encode(rawBody).byteLength > 2_048) {
-      return NextResponse.json({ error: "Request is too large." }, { status: 413 });
-    }
+    if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
 
-    const body = JSON.parse(rawBody) as {
+    const body = await readJsonBody<{
       questionId?: number;
       selectedAnswer?: AnswerChoice | null;
       elapsedSeconds?: number;
       trainer?: boolean;
-    };
+    }>(request, 2_048);
     const question = questions.find((item) => item.id === body.questionId);
     const answer = body.selectedAnswer ?? null;
     const elapsedSeconds = Math.max(0, Math.min(86_400, Math.floor(body.elapsedSeconds ?? 0)));
@@ -63,7 +61,8 @@ export async function POST(request: Request) {
       },
       isCorrect: result === "correct",
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof RequestBodyError) return NextResponse.json({ error: error.message }, { status: error.status });
     return NextResponse.json({ error: "Unable to save this result." }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { hasAdminAccess } from "@/lib/auth/roles";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -15,10 +16,17 @@ async function getAdminUser() {
 }
 
 export async function PATCH(request: Request) {
+  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
   const user = await getAdminUser();
   if (!user) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
 
-  const body = (await request.json()) as { id?: string };
+  let body: { id?: string };
+  try {
+    body = await readJsonBody<{ id?: string }>(request, 2_048);
+  } catch (error) {
+    const status = error instanceof RequestBodyError ? error.status : 400;
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status });
+  }
   if (!body.id) return NextResponse.json({ error: "Feedback ID is required." }, { status: 400 });
 
   const admin = createAdminClient();
