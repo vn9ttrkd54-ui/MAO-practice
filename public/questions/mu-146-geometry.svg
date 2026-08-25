@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-labelledby="title desc">
+  <title id="title">Geometry diagram for Mu question 146</title>
+  <desc id="desc">Two adjacent right triangles sharing a point on a horizontal base, with vertical sides a and b, bases x and y, diagonals c and d, and three angles theta.</desc>
+  <g fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M120 300V62L600 165V300H120Z"/>
+    <path d="M120 62L330 300L600 165"/>
+    <path d="M120 276H144V300"/>
+    <path d="M576 300V276H600"/>
+    <path d="M315 283L332 270L346 288"/>
+    <path d="M120 92A30 30 0 0 0 141 82"/>
+    <path d="M143 83A31 31 0 0 0 148 103"/>
+    <path d="M358 300A28 28 0 0 0 350 279"/>
+  </g>
+  <g fill="#111827" font-family="Georgia, serif" font-size="24" font-style="italic">
+    <text x="91" y="190">a</text>
+    <text x="615" y="240">b</text>
+    <text x="222" y="326">x</text>
+    <text x="470" y="326">y</text>
+    <text x="218" y="170">c</text>
+    <text x="470" y="225">d</text>
+    <text x="126" y="90">θ</text>
+    <text x="142" y="112">θ</text>
+    <text x="360" y="292">θ</text>
+  </g>
+</svg>
