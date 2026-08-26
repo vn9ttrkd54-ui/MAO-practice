@@ -647,7 +647,7 @@ This corrects the printed solution's unjustified treatment of the diagram's chan
       src: "/questions/mu-146-geometry.svg",
       alt: "Two adjacent right triangles with vertical sides a and b, bases x and y, diagonals c and d, and three angles labeled theta",
       width: 720,
-      height: 360,
+      height: 397,
     },
   },
   {
