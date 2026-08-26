@@ -174,7 +174,13 @@ II. \(f(x)\) is nowhere differentiable.
 III. \(f(x)\) is non-differentiable at an infinite number of points.`,
     choices: ["I only", "I, II only", "I, III only", "III only", "NOTA"],
     answer: "C",
-    solution: String.raw`The absolute value preserves continuity, so I is true. The function is differentiable wherever \(\cos x\ne0\), making II false. At every odd multiple of \(\pi/2\), the sign of \(\cos x\) changes and \(|\cos x|\) has a corner. There are infinitely many such points, so III is true.`,
+    solution: String.raw`Because \(\cos x\) is continuous everywhere and taking an absolute value preserves continuity, \(|\cos x|\), and therefore \(f(x)=1-|\cos x|\), is continuous everywhere. Thus statement I is true.
+
+On any interval where \(\cos x>0\), we have \(f(x)=1-\cos x\), and where \(\cos x<0\), we have \(f(x)=1+\cos x\). Both expressions are differentiable, so statement II is false.
+
+The possible failures of differentiability occur where \(\cos x=0\), namely
+\[x=\frac{(2k+1)\pi}{2},\qquad k\in\mathbb Z.\]
+At each such point, the sign of \(\cos x\) changes, so the two formulas above meet in a corner and the one-sided derivatives are unequal. There are infinitely many such points, making statement III true. Therefore I and III only are true.`,
   },
   {
     id: 10122,
@@ -182,12 +188,13 @@ III. \(f(x)\) is non-differentiable at an infinite number of points.`,
     division: "Mu",
     topic: "Derivatives",
     difficulty: 1,
-    methods: ["Product Rule"],
+    methods: ["Maclaurin Series"],
     question: String.raw`Let \(f(x)=(-2+x)(1-x^3)(1+x^6)\). Find \(f'(0)\).`,
     choices: ["−2", "−1", "0", "1", "NOTA"],
     answer: "D",
-    solution: String.raw`Only the factor \((-2+x)\) contributes a nonzero derivative term at \(x=0\):
-\[f'(0)=1\cdot1\cdot1+(-2)\cdot0\cdot1+(-2)\cdot1\cdot0=1.\]`,
+    solution: String.raw`The value \(f'(0)\) is the coefficient of \(x\) in the Maclaurin expansion of \(f(x)\). The factors \(1-x^3\) and \(1+x^6\) have constant term 1 and contain no linear term. Therefore the only linear term in
+\[(-2+x)(1-x^3)(1+x^6)\]
+comes from choosing \(x\) from the first factor and the constant term from each of the other two factors. Its coefficient is \(1\), so \(f'(0)=1\).`,
   },
   {
     id: 10123,
@@ -280,7 +287,18 @@ Since 0 is not listed, the answer is NOTA.`,
 intersects itself at the point \((x,y)\). Find the sum of all possible \(x+y\).`,
     choices: ["0", "3", "2", "−6", "NOTA"],
     answer: "A",
-    solution: String.raw`If two distinct parameters \(s,t\) give the same point, equality of the second coordinates gives \(s^2=t^2\), hence \(s=-t\). Equality of the first coordinates then gives \(t^3-4t=0\). The nonzero pair is \(t=\pm2\), and both produce \((0,0)\). Thus \(x+y=0\).`,
+    solution: String.raw`Suppose two distinct parameter values \(s\ne t\) produce the same point. Equality of the second coordinates gives
+\[s^2-4=t^2-4,\]
+so \(s^2=t^2\). Since \(s\ne t\), we must have \(s=-t\).
+
+Now equate the first coordinates and substitute \(s=-t\):
+\[s^3-4s=t^3-4t\]
+\[-t^3+4t=t^3-4t,\]
+so
+\[2t^3-8t=2t(t^2-4)=0.\]
+The solution \(t=0\) would give \(s=t\), which is not a self-intersection. Thus \(t=\pm2\), paired with \(s=\mp2\). Both parameter values produce
+\[\alpha(2)=\alpha(-2)=(0,0).\]
+Hence the only self-intersection point has \(x+y=0\).`,
   },
   {
     id: 10129,
@@ -423,9 +441,21 @@ Thus there is one critical point, no discontinuity, and two inflection points: \
 If the series in \((x)\) is absolutely convergent, assign 1 to letter \((x)\). If it converges conditionally, assign \(-1\). Otherwise, assign 0. Find \((a)+(b)+(c)\).`,
     choices: ["2", "1", "0", "−2", "NOTA"],
     answer: "C",
-    solution: String.raw`For (a), the terms are asymptotic to \(1/\sqrt n\), so the series diverges and contributes 0. In (b), the positive magnitudes are asymptotic to \(1/n\), but decrease to 0, so the alternating series converges conditionally and contributes \(-1\). In (c),
-\[1-\cos(1/n)\sim\frac1{2n^2},\]
-so it converges absolutely and contributes 1. The total is \(0-1+1=0\).`,
+    solution: String.raw`For (a), compare the terms with \(1/\sqrt n\):
+\[\lim_{n\to\infty}\frac{n^2/\sqrt{1+n^5}}{1/\sqrt n}
+=\lim_{n\to\infty}\frac{n^{5/2}}{\sqrt{1+n^5}}=1.\]
+Since \(\sum 1/\sqrt n\) diverges, the Limit Comparison Test shows that (a) diverges, so it contributes 0.
+
+For (b),
+\[\frac{n^2-1}{n^3+1}=\frac{(n-1)(n+1)}{(n+1)(n^2-n+1)}=\frac{n-1}{n^2-n+1}.\]
+These positive magnitudes approach 0 and are eventually decreasing, so the Alternating Series Test gives convergence. Their ratio to \(1/n\) approaches 1, so the corresponding absolute-value series diverges by limit comparison with the harmonic series. Thus (b) converges conditionally and contributes \(-1\).
+
+For (c), use the standard limit
+\[\lim_{u\to0}\frac{1-\cos u}{u^2}=\frac12.\]
+With \(u=1/n\), this gives
+\[1-\cos(1/n)\sim\frac1{2n^2}.\]
+Therefore the absolute-value series converges by comparison with \(\sum 1/n^2\), so (c) converges absolutely and contributes 1. The requested total is
+\[0+(-1)+1=0.\]`,
   },
   {
     id: 10138,
@@ -438,11 +468,17 @@ so it converges absolutely and contributes 1. The total is \(0-1+1=0\).`,
 \[\frac{\ln a}{a}+a.\]`,
     choices: ["3", String.raw`\(e\)`, "2", "1", "NOTA"],
     answer: "C",
-    solution: String.raw`Minimize the squared distance
+    solution: String.raw`A point on the curve has coordinates \((x,\ln x)\), where \(x>0\). Its squared distance from \((2,0)\) is
 \[D^2(x)=(x-2)^2+(\ln x)^2.\]
-At an interior minimum \(x=a\),
-\[0=(D^2)'(a)=2(a-2)+\frac{2\ln a}{a},\]
-so \(a+\frac{\ln a}{a}=2\). The second derivative is positive at this critical point, confirming it is the minimum.`,
+Minimizing \(D^2\) is equivalent to minimizing the distance. Differentiate:
+\[(D^2)'(x)=2(x-2)+\frac{2\ln x}{x}.\]
+At the closest point \((a,b)\), we must have
+\[0=2(a-2)+\frac{2\ln a}{a},\]
+and hence
+\[a+\frac{\ln a}{a}=2.\]
+For completeness, \(a=1\) satisfies this critical-point equation. Also,
+\[(D^2)''(x)=2+\frac{2(1-\ln x)}{x^2},\]
+so \((D^2)''(1)=4>0\). Moreover, \(D^2(x)\to\infty\) as \(x\to0^+\) or \(x\to\infty\), confirming that this critical point gives the absolute minimum. Therefore the requested value is \(2\).`,
   },
   {
     id: 10139,
@@ -466,14 +502,24 @@ whose derivative at \(x=26/25\) is
     division: "Mu",
     topic: "Polar",
     difficulty: 4,
-    methods: [],
+    methods: ["Polar Arc Length"],
     question: String.raw`Compute the perimeter of the polar curve \(r=\max(\sin\theta,\cos\theta)\) on the interval \(0\le\theta\le\pi\).`,
     choices: [String.raw`\(\pi\)`, String.raw`\(\frac{7\pi}{8}\)`, String.raw`\(2\pi\)`, String.raw`\(\frac\pi2\)`, "NOTA"],
     answer: "A",
-    solution: String.raw`We have \(r=\cos\theta\) on \([0,\pi/4]\) and \(r=\sin\theta\) on \([\pi/4,\pi]\). For either branch,
-\[\sqrt{r^2+\left(\frac{dr}{d\theta}\right)^2}=1.\]
-Therefore the total polar arc length is
-\[\int_0^{\pi/4}1\,d\theta+\int_{\pi/4}^{\pi}1\,d\theta=\pi.\]`,
+    solution: String.raw`First determine which expression is larger. Since \(\cos\theta\ge\sin\theta\) on \([0,\pi/4]\), and \(\sin\theta\ge\cos\theta\) on \([\pi/4,\pi]\),
+\[r=\begin{cases}
+\cos\theta,&0\le\theta\le\pi/4,\\
+\sin\theta,&\pi/4\le\theta\le\pi.
+\end{cases}\]
+The polar arc-length formula is
+\[L=\int\sqrt{r^2+\left(\frac{dr}{d\theta}\right)^2}\,d\theta.\]
+For \(r=\cos\theta\), the integrand is
+\[\sqrt{\cos^2\theta+(-\sin\theta)^2}=1,\]
+and for \(r=\sin\theta\), it is
+\[\sqrt{\sin^2\theta+\cos^2\theta}=1.\]
+Therefore
+\[L=\int_0^{\pi/4}1\,d\theta+\int_{\pi/4}^{\pi}1\,d\theta
+=\frac\pi4+\frac{3\pi}4=\pi.\]`,
   },
   {
     id: 10141,
@@ -503,10 +549,20 @@ Hence \(B=-5/2\), while setting \(y=0\) gives \(A=5\sqrt6/24\). Therefore
 \[\int_0^1\lfloor\log_2x\rfloor\,dx.\]`,
     choices: ["−2", String.raw`\(-\frac1{\ln2}\)`, "2", "divergent", "NOTA"],
     answer: "A",
-    solution: String.raw`On \([2^{-(n+1)},2^{-n})\), \(\lfloor\log_2x\rfloor=-(n+1)\). Thus
-\[\int_0^1\lfloor\log_2x\rfloor dx
+    solution: String.raw`The integral is improper because \(\log_2x\to-\infty\) as \(x\to0^+\). Partition \((0,1]\) into the intervals
+\[\left[2^{-(n+1)},2^{-n}\right),\qquad n=0,1,2,\ldots.\]
+On each such interval,
+\[-(n+1)\le\log_2x<-n,\]
+so \(\lfloor\log_2x\rfloor=-(n+1)\). The interval has length
+\[2^{-n}-2^{-(n+1)}=2^{-(n+1)}.\]
+Therefore
+\[\int_0^1\lfloor\log_2x\rfloor\,dx
 =-\sum_{n=0}^{\infty}(n+1)\left(2^{-n}-2^{-(n+1)}\right)
-=-\sum_{n=0}^{\infty}\frac{n+1}{2^{n+1}}=-2.\]`,
+=-\sum_{n=0}^{\infty}\frac{n+1}{2^{n+1}}.\]
+Using \(\sum_{n=0}^{\infty}(n+1)r^n=1/(1-r)^2\) with \(r=1/2\),
+\[\sum_{n=0}^{\infty}\frac{n+1}{2^{n+1}}
+=\frac12\cdot\frac1{(1-1/2)^2}=2.\]
+Hence the improper integral converges to \(-2\).`,
   },
   {
     id: 10143,
@@ -544,34 +600,49 @@ At \(x=1/2\), the full series equals \(1/(2\sqrt e)\). Removing its \(n=0\) term
     id: 10145,
     number: 145,
     division: "Mu",
-    topic: "Definite Integrals",
+    topic: "Applications of Integration",
     difficulty: 4,
     methods: ["Cross Sections"],
     question: String.raw`A solid with a triangular base with vertices \((0,1)\), \((-2,0)\), and \((3,0)\) has rectangular cross-sections perpendicular to the y-axis with height twice as large as the width. Find the volume of the solid.`,
     choices: [String.raw`\(\frac{25}{54}\)`, String.raw`\(\frac{10}{3}\)`, "25", String.raw`\(\frac{50}{3}\)`, "NOTA"],
     answer: "D",
-    solution: String.raw`At height \(y\), the right and left sides of the triangular base are \(x=3-3y\) and \(x=2y-2\). Thus the width is \(5(1-y)\), and the rectangle's height is \(10(1-y)\). Its area is \(50(1-y)^2\), so
-\[V=\int_0^1 50(1-y)^2dy=\frac{50}{3}.\]`,
+    solution: String.raw`Let \(\ell(y)\) be the width of the triangular base at height \(y\). The line through \((0,1)\) and \((3,0)\) is
+\[x=3-3y,\]
+while the line through \((-2,0)\) and \((0,1)\) is
+\[x=2y-2.\]
+Thus the right and left boundaries at height \(y\) are \(g(y)=3-3y\) and \(f(y)=2y-2\), respectively, so
+\[\ell(y)=g(y)-f(y)=(3-3y)-(2y-2)=5(1-y).\]
+Each cross-section is a rectangle whose height is twice its width. Its height is therefore \(2\ell(y)=10(1-y)\), and its area is
+\[A(y)=\ell(y)\cdot2\ell(y)=2[5(1-y)]^2=50(1-y)^2.\]
+Integrating from the base \(y=0\) to the top \(y=1\) gives
+\[V=\int_0^1 50(1-y)^2\,dy
+=50\left[-\frac{(1-y)^3}{3}\right]_0^1
+=\frac{50}{3}.\]`,
   },
   {
     id: 10146,
     number: 146,
     division: "Mu",
-    topic: "Series",
+    topic: "Limits",
     difficulty: 5,
-    methods: ["Trig Identity"],
+    methods: ["Direct Substitution", "Trigonometric Identities"],
     question: String.raw`In the figure below, \(b\) is held constant. Evaluate
 \[\lim_{a\to b}\left(\frac{a-b}{c-d}\right).\]`,
     choices: [String.raw`\(\frac{\sqrt2}{2}\)`, String.raw`\(-\frac{\sqrt2}{2}\)`, String.raw`\(\sqrt2\)`, "1", "NOTA"],
     answer: "C",
     solution: String.raw`Let \(t=\tan\theta\). The right triangles give
 \[x=at,\qquad y=\frac bt,\qquad c=a\sqrt{1+t^2},\qquad d=\frac b{t}\sqrt{1+t^2}.\]
-The angle condition along the upper segment gives \(at^2=b\), so \(t=\sqrt{b/a}\). Consequently
+The angle condition along the upper segment gives
+\[\tan\theta=\frac{x}{a}=\frac{b}{y}.\]
+Since \(x=at\) and \(y=b/t\), this condition yields \(at^2=b\), so \(t=\sqrt{b/a}\). Consequently
 \[c=\sqrt{a(a+b)},\qquad d=\sqrt{b(a+b)}.\]
 Therefore
 \[\frac{a-b}{c-d}
 =\frac{(\sqrt a-\sqrt b)(\sqrt a+\sqrt b)}{\sqrt{a+b}(\sqrt a-\sqrt b)}
-=\frac{\sqrt a+\sqrt b}{\sqrt{a+b}}\longrightarrow\sqrt2.\]`,
+=\frac{\sqrt a+\sqrt b}{\sqrt{a+b}}.\]
+Now direct substitution at \(a=b\) gives
+\[\frac{2\sqrt b}{\sqrt{2b}}=\sqrt2.\]
+This corrects the printed solution's unjustified treatment of the diagram's changing lengths while retaining its right-triangle approach.`,
     illustration: {
       src: "/questions/mu-146-geometry.svg",
       alt: "Two adjacent right triangles with vertical sides a and b, bases x and y, diagonals c and d, and three angles labeled theta",
