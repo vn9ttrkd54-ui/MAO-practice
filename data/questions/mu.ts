@@ -696,7 +696,7 @@ for a total of \(2027\) non-differentiable points.`,
     topic: "Probability",
     difficulty: 2,
     methods: ["U-Substitution"],
-    question: String.raw`For Questions 2 and 3, you may use the following information. Bob Beamon is competing in the Long Jump event at the 1968 Summer Olympics in Mexico City. According to some sportswriters, Bob's longest jump must be between \(x=26\) and \(x=28\) feet, with the probability density function for the length of this jump following the curve
+    question: String.raw`Use the following information. Bob Beamon is competing in the Long Jump event at the 1968 Summer Olympics in Mexico City. According to some sportswriters, Bob's longest jump must be between \(x=26\) and \(x=28\) feet, with the probability density function for the length of this jump following the curve
 \[y=\frac{k}{1+(x-27)^2}\]
 in that range for some positive constant \(k\).
 
@@ -718,7 +718,7 @@ The area under a probability distribution is 1, so \(k\pi/2=1\), and therefore
     topic: "Probability",
     difficulty: 3,
     methods: [],
-    question: String.raw`For Questions 2 and 3, you may use the following information. Bob Beamon is competing in the Long Jump event at the 1968 Summer Olympics in Mexico City. According to some sportswriters, Bob's longest jump must be between \(x=26\) and \(x=28\) feet, with the probability density function for the length of this jump following the curve
+    question: String.raw`Use the following information. Bob Beamon is competing in the Long Jump event at the 1968 Summer Olympics in Mexico City. According to some sportswriters, Bob's longest jump must be between \(x=26\) and \(x=28\) feet, with the probability density function for the length of this jump following the curve
 \[y=\frac{k}{1+(x-27)^2}\]
 in that range for some positive constant \(k\).
 
@@ -747,7 +747,7 @@ At \(x=-1\), this is
     number: 152,
     division: "Mu",
     topic: "Polynomial Equations",
-    difficulty: 4,
+    difficulty: 3,
     methods: [],
     question: String.raw`\(f(x)\) is a monic cubic function with a local minimum at \((2,9)\) and an inflection point at \(x=1\). Find \(f(3)\).`,
     choices: ["13", "15", "17", "19", "NOTA"],
@@ -797,7 +797,7 @@ so \(r=2\pm\sqrt3\). The condition \(-1<r<1\) leaves
     number: 154,
     division: "Mu",
     topic: "Derivatives",
-    difficulty: 3,
+    difficulty: 2,
     methods: ["Chain Rule", "Trig Identity"],
     question: String.raw`The graph of \(f(x)=-\ln(2+\cos x)\) has an inflection point for \(x\) in the range \([0,\pi]\). Find the slope of the tangent line to \(f(x)\) at this point.`,
     choices: [String.raw`\(\frac{4-\sqrt3}{13}\)`, String.raw`\(\frac{\sqrt3}{5}\)`, String.raw`\(\frac{4+\sqrt3}{13}\)`, String.raw`\(\frac{\sqrt3}{3}\)`, "NOTA"],
@@ -838,7 +838,7 @@ Therefore
     division: "Mu",
     topic: "Differential Equations",
     difficulty: 5,
-    methods: ["Substitution", "Separation of Variables"],
+    methods: ["Homogeneous First-Order"],
     question: String.raw`Find the general solution to the differential equation
 \[\frac{dy}{dx}=\frac{3y^4-x^4}{xy^3}.\]`,
     choices: [String.raw`\(y^4=Kx^4+\frac1{2x^4}\)`, String.raw`\(y^4=Kx^8+\frac1{3x^4}\)`, String.raw`\(y^4=Kx^{12}+\frac{x^4}{2}\)`, String.raw`\(y^4=Kx^{16}+\frac{x^4}{3}\)`, "NOTA"],
@@ -861,7 +861,7 @@ Since \(v=y/x\), multiplying by \(x^4\) yields
     number: 157,
     division: "Mu",
     topic: "Riemann Sums",
-    difficulty: 5,
+    difficulty: 3,
     methods: ["Riemann Sums"],
     question: String.raw`Hopefully you are aware that \(\int_{-a}^{a}\sin\theta\,d\theta=0\) for all \(a\). Which of the following methods of definite integral approximation can have a value of \(a\) and a number of equal-width subintervals selected such that the resulting approximation is positive?
 
@@ -880,8 +880,8 @@ Every midpoint sum is 0 because the midpoint samples occur in symmetric pairs an
     id: 10158,
     number: 158,
     division: "Mu",
-    topic: "Nested Functions",
-    difficulty: 5,
+    topic: "Limits",
+    difficulty: 4,
     methods: [],
     question: String.raw`Evaluate:
 \[\lim_{x\to-2}f(f(x))\]
@@ -963,7 +963,7 @@ Because \(f''\) has odd degree, its values have opposite end behavior as \(x\to-
     number: 162,
     division: "Mu",
     topic: "Derivatives",
-    difficulty: 5,
+    difficulty: 4,
     methods: [],
     question: String.raw`The tangent line to the graph of \(y=ax^2+bx+c\) at \(x=1\) is the line \(ax+by+c=0\) for some \(a\), \(b\), and \(c\). Find \(\frac ca\) in terms of \(b\).`,
     choices: [String.raw`\(\frac1{1+2b}\)`, String.raw`\(\frac b{1+2b}\)`, String.raw`\(\frac1{1+b}\)`, String.raw`\(\frac b{1+b}\)`, "NOTA"],
@@ -987,8 +987,8 @@ so
     id: 10163,
     number: 163,
     division: "Mu",
-    topic: "Power Series",
-    difficulty: 4,
+    topic: "Derivatives",
+    difficulty: 3,
     methods: ["Maclaurin Series"],
     question: String.raw`Evaluate:
 \[\left.\frac{d^{2025}}{dx^{2025}}[\arctan x]\right|_{x=0}.\]`,
@@ -1009,7 +1009,7 @@ and
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 3,
-    methods: ["U-Substitution", "Integral Properties"],
+    methods: ["U-Substitution"],
     question: String.raw`Evaluate:
 \[\int_0^1(1-2x)^4x^2\,dx.\]`,
     choices: [String.raw`\(\frac1{70}\)`, String.raw`\(\frac3{35}\)`, String.raw`\(\frac{107}{840}\)`, String.raw`\(\frac{71}{420}\)`, "NOTA"],
@@ -1047,7 +1047,7 @@ The printed solution obtains 2 by first requesting \(f(1)=S\) and then using \(f
     topic: "Optimization",
     difficulty: 5,
     methods: ["Implicit Differentiation", "First Derivative Test"],
-    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+    question: String.raw`Use the following information. Consider the graph \(\mathcal G\) of
 \[2xy^2-x^3=y^4\]
 in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
 
@@ -1078,7 +1078,7 @@ Thus \(A=4\), \(B=6\), \(C=9\), and
     topic: "Implicit Differentiation",
     difficulty: 5,
     methods: ["Implicit Differentiation"],
-    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+    question: String.raw`Use the following information. Consider the graph \(\mathcal G\) of
 \[2xy^2-x^3=y^4\]
 in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
 
@@ -1106,7 +1106,7 @@ The first-quadrant branch has positive slope, so
     topic: "Limits",
     difficulty: 5,
     methods: ["Implicit Differentiation"],
-    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+    question: String.raw`Use the following information. Consider the graph \(\mathcal G\) of
 \[2xy^2-x^3=y^4\]
 in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
 
@@ -1127,9 +1127,9 @@ Equivalently, setting \(x=0\) in the implicit derivative expression gives \(dy/d
     number: 169,
     division: "Mu",
     topic: "Polar Area",
-    difficulty: 5,
+    difficulty: 4,
     methods: ["U-Substitution"],
-    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+    question: String.raw`Use the following information. Consider the graph \(\mathcal G\) of
 \[2xy^2-x^3=y^4\]
 in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
 
@@ -1156,7 +1156,7 @@ Therefore
     number: 170,
     division: "Mu",
     topic: "Definite Integrals",
-    difficulty: 3,
+    difficulty: 2,
     methods: ["U-Substitution"],
     question: String.raw`Evaluate:
 \[\int_0^{\pi/21}\frac{d\theta}{\cos(7\theta)}.\]`,
@@ -1198,7 +1198,7 @@ Therefore
     topic: "Limits",
     difficulty: 5,
     methods: [],
-    question: String.raw`For Questions 26 and 27, consider the graph \(\mathcal G_n\) of
+    question: String.raw`Use the following information. Consider the graph \(\mathcal G_n\) of
 \[x^n+y^n=1\]
 for positive integer \(n\). This graph is a closed loop when \(n\) is even and a function when \(n\) is odd.
 
@@ -1222,7 +1222,7 @@ The two diagonal segments each have length \(2\sqrt2\), the horizontal segment h
     topic: "Limits",
     difficulty: 4,
     methods: [],
-    question: String.raw`For Questions 26 and 27, consider the graph \(\mathcal G_n\) of
+    question: String.raw`Use the following information. Consider the graph \(\mathcal G_n\) of
 \[x^n+y^n=1\]
 for positive integer \(n\). This graph is a closed loop when \(n\) is even and a function when \(n\) is odd.
 
@@ -1258,7 +1258,7 @@ Therefore
     division: "Mu",
     topic: "Volumes of Revolution",
     difficulty: 5,
-    methods: ["Pappus's Centroid Theorem"],
+    methods: ["Pappus's Theorem"],
     question: String.raw`A convex polygon has vertices at \((-1,3)\), \((1,2)\), \((1,9)\), and \((4,13)\). It is rotated about the line \(x=8\). Find the volume of the solid formed.`,
     choices: [String.raw`\(\frac{560\pi}{3}\)`, String.raw`\(\frac{640\pi}{3}\)`, String.raw`\(\frac{700\pi}{3}\)`, String.raw`\(\frac{850\pi}{3}\)`, "NOTA"],
     answer: "C",
