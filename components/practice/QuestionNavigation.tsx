@@ -12,7 +12,7 @@ export default function QuestionNavigation({
   onNext,
 }: QuestionNavigationProps) {
   return (
-    <div className="flex justify-between gap-4 mt-6">
+    <div className="mt-6 flex flex-wrap justify-between gap-3">
       <button
         type="button"
         disabled={previousDisabled}
@@ -20,7 +20,7 @@ export default function QuestionNavigation({
         className="
           bg-black
           text-white
-          px-6
+          px-4
           py-3
           rounded-lg
           hover:bg-gray-800
@@ -38,7 +38,7 @@ export default function QuestionNavigation({
         className="
           bg-black
           text-white
-          px-6
+          px-4
           py-3
           rounded-lg
           hover:bg-gray-800

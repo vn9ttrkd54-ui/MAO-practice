@@ -90,7 +90,7 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
 
   return (
     <main className="min-h-full bg-[#e5e7eb]">
-      <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+      <div className="mx-auto w-full min-w-0 max-w-7xl px-4 py-8 sm:px-8 sm:py-12">
         <Link href="/practice/question-bank" className="inline-flex items-center font-semibold text-blue-600 transition hover:-translate-x-0.5 hover:text-blue-800">← All divisions</Link>
 
         <header
@@ -107,7 +107,7 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         </header>
 
         <section className="mt-6 rounded-2xl border-2 border-slate-900 bg-[#f8fafc] p-5 shadow-lg shadow-slate-900/10 sm:p-6">
-          <div className="flex items-center justify-between gap-4"><div className="flex items-center gap-2"><SlidersHorizontal size={19} className="text-blue-600" /><h2 className="font-bold">Find your questions</h2>{activeFilterCount ? <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">{activeFilterCount} active</span> : null}</div><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"><RotateCcw size={15} /> Reset filters</button></div>
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3"><div className="flex min-w-0 flex-wrap items-center gap-2"><SlidersHorizontal size={19} className="shrink-0 text-blue-600" /><h2 className="font-bold">Find your questions</h2>{activeFilterCount ? <span className="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-bold text-blue-700">{activeFilterCount} active</span> : null}</div><button type="button" onClick={() => router.replace(pathname, { scroll: false })} className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"><RotateCcw size={15} /> Reset filters</button></div>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <FilterSelect label="Topic" value={topic} onChange={(value) => setFilter("topic", value, "All Topics")} options={["All Topics", ...topics]} />
@@ -121,7 +121,7 @@ export default function QuestionBankDivisionClient({ division }: { division: Div
         <section className="mt-8 rounded-2xl border-2 border-slate-900 bg-[#f8fafc] p-5 shadow-lg shadow-slate-900/10 sm:p-6">
           <div><p className="text-sm font-bold uppercase tracking-wider text-blue-600">Browse</p><h2 className="mt-1 text-2xl font-bold">{filteredQuestions.length} {filteredQuestions.length === 1 ? "question" : "questions"}</h2></div>
 
-          {filteredQuestions.length ? <div className="mt-5" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, 58px)", gap: "12px" }}>
+          {filteredQuestions.length ? <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(52px,58px))] gap-3">
             {filteredQuestions.map((question) => {
               const questionStatus = questionStatuses[question.id] ?? "new";
               const bookmarked = bookmarkedQuestionIds.has(question.id);

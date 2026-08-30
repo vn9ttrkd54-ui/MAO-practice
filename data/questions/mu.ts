@@ -502,7 +502,7 @@ whose derivative at \(x=26/25\) is
     division: "Mu",
     topic: "Polar",
     difficulty: 4,
-    methods: ["Polar Arc Length"],
+    methods: [],
     question: String.raw`Compute the perimeter of the polar curve \(r=\max(\sin\theta,\cos\theta)\) on the interval \(0\le\theta\le\pi\).`,
     choices: [String.raw`\(\pi\)`, String.raw`\(\frac{7\pi}{8}\)`, String.raw`\(2\pi\)`, String.raw`\(\frac\pi2\)`, "NOTA"],
     answer: "A",
@@ -600,7 +600,7 @@ At \(x=1/2\), the full series equals \(1/(2\sqrt e)\). Removing its \(n=0\) term
     id: 10145,
     number: 145,
     division: "Mu",
-    topic: "Applications of Integration",
+    topic: "Definite Integrals",
     difficulty: 4,
     methods: ["Cross Sections"],
     question: String.raw`A solid with a triangular base with vertices \((0,1)\), \((-2,0)\), and \((3,0)\) has rectangular cross-sections perpendicular to the y-axis with height twice as large as the width. Find the volume of the solid.`,
@@ -625,29 +625,39 @@ Integrating from the base \(y=0\) to the top \(y=1\) gives
     division: "Mu",
     topic: "Limits",
     difficulty: 5,
-    methods: ["Direct Substitution", "Trigonometric Identities"],
+    methods: ["Trig Identity"],
     question: String.raw`In the figure below, \(b\) is held constant. Evaluate
 \[\lim_{a\to b}\left(\frac{a-b}{c-d}\right).\]`,
     choices: [String.raw`\(\frac{\sqrt2}{2}\)`, String.raw`\(-\frac{\sqrt2}{2}\)`, String.raw`\(\sqrt2\)`, "1", "NOTA"],
     answer: "C",
-    solution: String.raw`Let \(t=\tan\theta\). The right triangles give
+    solution: String.raw`Let \(t=\tan\theta\). From the left and right triangles,
 \[x=at,\qquad y=\frac bt,\qquad c=a\sqrt{1+t^2},\qquad d=\frac b{t}\sqrt{1+t^2}.\]
-The angle condition along the upper segment gives
-\[\tan\theta=\frac{x}{a}=\frac{b}{y}.\]
-Since \(x=at\) and \(y=b/t\), this condition yields \(at^2=b\), so \(t=\sqrt{b/a}\). Consequently
-\[c=\sqrt{a(a+b)},\qquad d=\sqrt{b(a+b)}.\]
-Therefore
+
+The line containing \(c\) makes direction angle \(\theta-\pi/2\) with the positive horizontal axis. Because the angle between \(c\) and the upper segment is also \(\theta\), the upper segment has direction angle \(2\theta-\pi/2\). Its slope can therefore be written in two ways:
+\[\frac{b-a}{x+y}=\tan\left(2\theta-\frac\pi2\right)=\frac{t^2-1}{2t}.\]
+Substituting \(x=at\) and \(y=b/t\) gives
+\[\frac{b-a}{at+b/t}=\frac{t^2-1}{2t}.\]
+After cross-multiplying and factoring,
+\[2t^2(b-a)=(at^2+b)(t^2-1),\]
+\[0=at^4+(a-b)t^2-b=(t^2+1)(at^2-b).\]
+Since \(t^2+1\ne0\), we obtain
+\[t^2=\frac ba.\]
+Consequently,
+\[c=a\sqrt{1+\frac ba}=\sqrt{a(a+b)},\qquad
+d=\frac b{\sqrt{b/a}}\sqrt{1+\frac ba}=\sqrt{b(a+b)}.\]
+Thus
 \[\frac{a-b}{c-d}
 =\frac{(\sqrt a-\sqrt b)(\sqrt a+\sqrt b)}{\sqrt{a+b}(\sqrt a-\sqrt b)}
-=\frac{\sqrt a+\sqrt b}{\sqrt{a+b}}.\]
-Now direct substitution at \(a=b\) gives
+=\frac{\sqrt a+\sqrt b}{\sqrt{a+b}},\]
+and letting \(a\to b\) gives
 \[\frac{2\sqrt b}{\sqrt{2b}}=\sqrt2.\]
-This corrects the printed solution's unjustified treatment of the diagram's changing lengths while retaining its right-triangle approach.`,
+
+The printed solution substitutes \(\theta=\pi/4\) before resolving the indeterminate form and then cancels \(x-y\). However, the relation \(t^2=b/a\) shows that \(x=y=\sqrt{ab}\), so its cancellation is actually a cancellation of zero in the limiting configuration. That step is invalid. The correct answer is \(\boxed{\sqrt2}\).`,
     illustration: {
       src: "/questions/mu-146-geometry.svg",
       alt: "Two adjacent right triangles with vertical sides a and b, bases x and y, diagonals c and d, and three angles labeled theta",
       width: 720,
-      height: 397,
+      height: 360,
     },
   },
   {
@@ -664,5 +674,633 @@ This corrects the printed solution's unjustified treatment of the diagram's chan
     solution: String.raw`Each term \(|x-n|\) has a corner at \(x=n\). At that point all other terms are differentiable, so their sum cannot remove the jump in slope. The distinct corner locations are
 \[0,1,2,\ldots,2026,\]
 for a total of \(2027\) non-differentiable points.`,
+  },
+  {
+    id: 10148,
+    number: 148,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`Evaluate:
+\[\lim_{x\to\sqrt{2025}}\sqrt{25}.\]`,
+    choices: ["5", "25", "45", "2025", "NOTA"],
+    answer: "A",
+    solution: String.raw`The expression \(\sqrt{25}\) is the constant 5, so
+\[\lim_{x\to\sqrt{2025}}\sqrt{25}=\lim_{x\to45}5=5.\]`,
+  },
+  {
+    id: 10149,
+    number: 149,
+    division: "Mu",
+    topic: "Probability",
+    difficulty: 2,
+    methods: ["U-Substitution"],
+    question: String.raw`For Questions 2 and 3, you may use the following information. Bob Beamon is competing in the Long Jump event at the 1968 Summer Olympics in Mexico City. According to some sportswriters, Bob's longest jump must be between \(x=26\) and \(x=28\) feet, with the probability density function for the length of this jump following the curve
+\[y=\frac{k}{1+(x-27)^2}\]
+in that range for some positive constant \(k\).
+
+Find the value of \(k\). Hint: The area under a probability density function must be one.`,
+    choices: [String.raw`\(\frac1\pi\)`, String.raw`\(\frac2\pi\)`, String.raw`\(\frac\pi4\)`, String.raw`\(\frac\pi2\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Using the substitution \(u=x-27\),
+\[\int_{26}^{28}\frac{k}{1+(x-27)^2}\,dx
+=k\int_{-1}^{1}\frac{du}{1+u^2}
+=k\,[\arctan u]_{-1}^{1}
+=\frac{k\pi}{2}.\]
+The area under a probability distribution is 1, so \(k\pi/2=1\), and therefore
+\[k=\frac2\pi.\]`,
+  },
+  {
+    id: 10150,
+    number: 150,
+    division: "Mu",
+    topic: "Probability",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`For Questions 2 and 3, you may use the following information. Bob Beamon is competing in the Long Jump event at the 1968 Summer Olympics in Mexico City. According to some sportswriters, Bob's longest jump must be between \(x=26\) and \(x=28\) feet, with the probability density function for the length of this jump following the curve
+\[y=\frac{k}{1+(x-27)^2}\]
+in that range for some positive constant \(k\).
+
+Find the probability (rounded to the nearest tenth) that, according to the model, Bob's jump will be 29.2 feet or longer. Hint: The area under a range of values of a probability density function is the probability of an outcome in that range occurring.`,
+    choices: ["0.1", "0.2", "0.3", "0.4", "NOTA"],
+    answer: "E",
+    solution: String.raw`The model states that \(x\) must be between 26 and 28. Therefore a jump of 29.2 feet or longer is outside the support of the probability density function and is impossible according to the model. Its probability is 0, which is not among choices A–D, so the answer is NOTA.`,
+  },
+  {
+    id: 10151,
+    number: 151,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Power Rule"],
+    question: String.raw`Find the slope of the tangent line to \(y=x^{20}+25x\) at \(x=-1\).`,
+    choices: ["−20", "5", "20", "45", "NOTA"],
+    answer: "B",
+    solution: String.raw`Differentiate:
+\[\frac{dy}{dx}=20x^{19}+25.\]
+At \(x=-1\), this is
+\[20(-1)^{19}+25=-20+25=5.\]`,
+  },
+  {
+    id: 10152,
+    number: 152,
+    division: "Mu",
+    topic: "Polynomial Equations",
+    difficulty: 4,
+    methods: [],
+    question: String.raw`\(f(x)\) is a monic cubic function with a local minimum at \((2,9)\) and an inflection point at \(x=1\). Find \(f(3)\).`,
+    choices: ["13", "15", "17", "19", "NOTA"],
+    answer: "A",
+    solution: String.raw`Let
+\[f(x)=x^3+bx^2+cx+d.\]
+Since \((2,9)\) is on the graph,
+\[8+4b+2c+d=9.\]
+Also,
+\[f'(x)=3x^2+2bx+c,\]
+and the local minimum at \(x=2\) gives
+\[12+4b+c=0.\]
+Finally,
+\[f''(x)=6x+2b,\]
+and the inflection point at \(x=1\) gives \(6+2b=0\), so \(b=-3\). Working backward yields \(c=0\) and \(d=13\). Thus
+\[f(x)=x^3-3x^2+13,\qquad f(3)=27-27+13=13.\]`,
+  },
+  {
+    id: 10153,
+    number: 153,
+    division: "Mu",
+    topic: "Series",
+    difficulty: 5,
+    methods: ["Infinite Geometric Series"],
+    question: String.raw`Find the nonzero \(-1<r<1\) such that
+\[\sum_{n\text{ odd}}nr^n=2\left(\sum_{n\text{ even}}nr^n\right),\]
+where \(n\) ranges over \(\mathbb N\).`,
+    choices: [String.raw`\(3-2\sqrt2\)`, String.raw`\(2-\sqrt3\)`, String.raw`\(\sqrt2-1\)`, String.raw`\(\frac{\sqrt5-1}{2}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Let
+\[S=2\sum_{k=1}^{\infty}(2k)r^{2k}-\sum_{k=1}^{\infty}(2k-1)r^{2k-1}.\]
+The required equation is \(S=0\). Using
+\[\sum_{k=1}^{\infty}kr^{2k}=\frac{r^2}{(1-r^2)^2},\]
+we obtain
+\[2\sum_{k=1}^{\infty}(2k)r^{2k}=\frac{4r^2}{(1-r^2)^2}.\]
+For the odd terms,
+\[\sum_{k=1}^{\infty}(2k-1)r^{2k-1}=\frac{r(1+r^2)}{(1-r^2)^2}.\]
+Therefore
+\[S=\frac{4r^2-r-r^3}{(1-r^2)^2}=0.\]
+Since \(r\ne0\),
+\[r^2-4r+1=0,\]
+so \(r=2\pm\sqrt3\). The condition \(-1<r<1\) leaves
+\[r=2-\sqrt3.\]`,
+  },
+  {
+    id: 10154,
+    number: 154,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 3,
+    methods: ["Chain Rule", "Trig Identity"],
+    question: String.raw`The graph of \(f(x)=-\ln(2+\cos x)\) has an inflection point for \(x\) in the range \([0,\pi]\). Find the slope of the tangent line to \(f(x)\) at this point.`,
+    choices: [String.raw`\(\frac{4-\sqrt3}{13}\)`, String.raw`\(\frac{\sqrt3}{5}\)`, String.raw`\(\frac{4+\sqrt3}{13}\)`, String.raw`\(\frac{\sqrt3}{3}\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`By the Chain Rule,
+\[f'(x)=\frac{\sin x}{2+\cos x}.\]
+Using the Quotient Rule,
+\[f''(x)=\frac{\cos x(2+\cos x)+\sin^2x}{(2+\cos x)^2}
+=\frac{2\cos x+1}{(2+\cos x)^2}.\]
+This equals 0 when \(\cos x=-1/2\), so the inflection point in \([0,\pi]\) occurs at \(x=2\pi/3\). Therefore
+\[f'\left(\frac{2\pi}{3}\right)
+=\frac{\sqrt3/2}{2-1/2}
+=\frac{\sqrt3}{3}.\]`,
+  },
+  {
+    id: 10155,
+    number: 155,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["U-Substitution"],
+    question: String.raw`Evaluate:
+\[\exp\left(\int_0^{2025}\frac{dx}{x+\sqrt x}\right),\]
+where \(\exp(x)=e^x\).`,
+    choices: ["2025", "2026", "2115", "2116", "NOTA"],
+    answer: "D",
+    solution: String.raw`Let \(u=\sqrt x\). Then \(x=u^2\) and \(dx=2u\,du\). The upper bound becomes \(u=45\), so
+\[\int_0^{2025}\frac{dx}{x+\sqrt x}
+=\int_0^{45}\frac{2u}{u^2+u}\,du
+=2\int_0^{45}\frac{du}{u+1}
+=2\ln46.\]
+Therefore
+\[\exp(2\ln46)=46^2=2116.\]`,
+  },
+  {
+    id: 10156,
+    number: 156,
+    division: "Mu",
+    topic: "Differential Equations",
+    difficulty: 5,
+    methods: ["Substitution", "Separation of Variables"],
+    question: String.raw`Find the general solution to the differential equation
+\[\frac{dy}{dx}=\frac{3y^4-x^4}{xy^3}.\]`,
+    choices: [String.raw`\(y^4=Kx^4+\frac1{2x^4}\)`, String.raw`\(y^4=Kx^8+\frac1{3x^4}\)`, String.raw`\(y^4=Kx^{12}+\frac{x^4}{2}\)`, String.raw`\(y^4=Kx^{16}+\frac{x^4}{3}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`The differential equation is homogeneous, so let \(y=vx\). Then \(y'=v+v'x\). Substituting,
+\[v+x\frac{dv}{dx}=\frac{3v^4-1}{v^3},\]
+so
+\[x\frac{dv}{dx}=\frac{2v^4-1}{v^3}.\]
+Separating variables gives
+\[\frac{v^3}{2v^4-1}\,dv=\frac{dx}{x}.\]
+Integrating with \(u=2v^4-1\),
+\[\frac18\ln|2v^4-1|=\ln|x|+C,\]
+so
+\[2v^4-1=Kx^8.\]
+Since \(v=y/x\), multiplying by \(x^4\) yields
+\[y^4=Kx^{12}+\frac{x^4}{2}.\]`,
+  },
+  {
+    id: 10157,
+    number: 157,
+    division: "Mu",
+    topic: "Riemann Sums",
+    difficulty: 5,
+    methods: ["Riemann Sums"],
+    question: String.raw`Hopefully you are aware that \(\int_{-a}^{a}\sin\theta\,d\theta=0\) for all \(a\). Which of the following methods of definite integral approximation can have a value of \(a\) and a number of equal-width subintervals selected such that the resulting approximation is positive?
+
+I) Left-hand Riemann sum
+
+II) Midpoint sum
+
+III) Right-hand Riemann sum`,
+    choices: ["III only", "I and II only", "I and III only", "I, II, and III", "NOTA"],
+    answer: "C",
+    solution: String.raw`For a left-hand Riemann sum, choose \(a=3\pi/2\) with 2 equal subintervals. One sampled endpoint lies above the axis while the other contributes no negative rectangle, producing a positive approximation. Similarly, for a right-hand Riemann sum, choose \(a=\pi/2\) with 2 equal subintervals; this also produces a positive approximation.
+
+Every midpoint sum is 0 because the midpoint samples occur in symmetric pairs and \(\sin x\) is odd. Therefore only I and III can be positive.`,
+  },
+  {
+    id: 10158,
+    number: 158,
+    division: "Mu",
+    topic: "Nested Functions",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`Evaluate:
+\[\lim_{x\to-2}f(f(x))\]
+where
+\[f(x)=\begin{cases}
+3-x&\text{if }x<-2,\\
+\dfrac{4-x^2}{2}&\text{if }-2<x<2,\\
+\dfrac{6x-21}{x-5}&\text{if }2<x<5,\\
+\dfrac{2x-1}{3}&\text{if }x>5,
+\end{cases}\]
+and \(f(-2)=f(2)=f(5)=4\).`,
+    choices: ["2", "3", "5", "DNE", "NOTA"],
+    answer: "B",
+    solution: String.raw`First evaluate the one-sided behavior of the inner function. As \(x\to-2^-\),
+\[f(x)=3-x\to5^+,\]
+while as \(x\to-2^+\),
+\[f(x)=\frac{4-x^2}{2}\to2^+.\]
+Therefore
+\[\lim_{x\to-2^-}f(f(x))=\lim_{u\to5^+}f(u)=\lim_{u\to5^+}\frac{2u-1}{3}=3,\]
+and
+\[\lim_{x\to-2^+}f(f(x))=\lim_{u\to2^+}f(u)=\lim_{u\to2^+}\frac{6u-21}{u-5}=3.\]
+The one-sided limits agree, so
+\[\lim_{x\to-2}f(f(x))=3.\]`,
+  },
+  {
+    id: 10159,
+    number: 159,
+    division: "Mu",
+    topic: "Telescoping Series",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`Let \(H_k\) be the \(k^{\text{th}}\) harmonic sum, \(H_k=\sum_{n=1}^{k}\frac1n\). If
+\[\sum_{n=46}^{\infty}\frac{8100}{n^3-2025n}=RH_Y-TH_M,\]
+find the value of \(RY-TM\).`,
+    choices: ["−12", "−3", "0", "6", "NOTA"],
+    answer: "C",
+    solution: String.raw`Write \(2025=45^2\). More generally, with \(a=45\),
+\[\frac{4a^2}{n^3-a^2n}=\frac{4a^2}{n(n-a)(n+a)}
+=-\frac4n+\frac2{n-a}+\frac2{n+a}.\]
+Thus
+\[\sum_{n=a+1}^{\infty}\frac{4a^2}{n^3-a^2n}
+=\sum_{n=a+1}^{\infty}\left(-\frac4n+\frac2{n-a}+\frac2{n+a}\right).\]
+The tails cancel, leaving
+\[4H_a-2H_{2a}.\]
+For \(a=45\), the given expression is
+\[4H_{45}-2H_{90}.\]
+Hence \(R=4\), \(Y=45\), \(T=2\), and \(M=90\), so
+\[RY-TM=4(45)-2(90)=0.\]`,
+  },
+  {
+    id: 10160,
+    number: 160,
+    division: "Mu",
+    topic: "Function Analysis",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`\(f(x)\) is a polynomial of degree 2025. The number of inflection points on the graph of \(y=f(x)\) is \(I\). The minimum possible value of \(I\) is \(m\), and the maximum possible value of \(I\) is \(M\). Find the ordered pair \((m,M)\).`,
+    choices: ["(0, 2022)", "(0, 2023)", "(1, 2022)", "(1, 2023)", "NOTA"],
+    answer: "D",
+    solution: String.raw`Inflection points are found by investigating sign changes of \(f''(x)\). Since \(f\) has degree 2025, \(f''\) has degree 2023. Therefore it can have at most 2023 real zeros, and this maximum can be attained with 2023 distinct real roots, each producing a sign change. Thus \(M=2023\).
+
+Because \(f''\) has odd degree, its values have opposite end behavior as \(x\to-\infty\) and \(x\to\infty\). It must therefore change sign at least once, so \(m=1\). Hence
+\[(m,M)=(1,2023).\]`,
+  },
+  {
+    id: 10161,
+    number: 161,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`Which of the following incorrectly matches a derivative of the position vector \(\vec{x}\) with respect to time with its name?`,
+    choices: [String.raw`\(\dfrac{d^3\vec{x}}{dt^3}\): Jounce`, String.raw`\(\dfrac{d^4\vec{x}}{dt^4}\): Snap`, String.raw`\(\dfrac{d^5\vec{x}}{dt^5}\): Crackle`, String.raw`\(\dfrac{d^6\vec{x}}{dt^6}\): Pop`, "NOTA"],
+    answer: "A",
+    solution: String.raw`The third derivative of position is called jerk. Jounce, also called snap, is the fourth derivative of position. Therefore choice A is the incorrect match.`,
+  },
+  {
+    id: 10162,
+    number: 162,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`The tangent line to the graph of \(y=ax^2+bx+c\) at \(x=1\) is the line \(ax+by+c=0\) for some \(a\), \(b\), and \(c\). Find \(\frac ca\) in terms of \(b\).`,
+    choices: [String.raw`\(\frac1{1+2b}\)`, String.raw`\(\frac b{1+2b}\)`, String.raw`\(\frac1{1+b}\)`, String.raw`\(\frac b{1+b}\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`At \(x=1\), the point on the parabola is
+\[(1,a+b+c),\]
+and since \(y'=2ax+b\), the tangent slope is \(2a+b\). Therefore the tangent line is
+\[y-(a+b+c)=(2a+b)(x-1),\]
+or
+\[y=(2a+b)x+(c-a).\]
+The given line \(ax+by+c=0\) has slope-intercept form
+\[y=-\frac abx-\frac cb.\]
+Matching slope and intercept gives
+\[2a+b=-\frac ab,qquad c-a=-\frac cb.\]
+The second equation yields
+\[bc-ab=-c,\]
+so
+\[c(1+b)=ab,qquad \frac ca=\frac b{1+b}.\]`,
+  },
+  {
+    id: 10163,
+    number: 163,
+    division: "Mu",
+    topic: "Power Series",
+    difficulty: 4,
+    methods: ["Maclaurin Series"],
+    question: String.raw`Evaluate:
+\[\left.\frac{d^{2025}}{dx^{2025}}[\arctan x]\right|_{x=0}.\]`,
+    choices: ["−2024!", String.raw`\(-\frac1{2025}\)`, String.raw`\(\frac1{2025}\)`, "2024!", "NOTA"],
+    answer: "D",
+    solution: String.raw`The Maclaurin series for arctangent is
+\[\arctan x=x-\frac{x^3}{3}+\frac{x^5}{5}-\frac{x^7}{7}+\cdots.\]
+Since 2025 is one more than a multiple of 4, the coefficient of \(x^{2025}\) is \(1/2025\). In a Maclaurin series, that coefficient is
+\[\frac{f^{(2025)}(0)}{2025!}.\]
+Therefore
+\[\frac{f^{(2025)}(0)}{2025!}=\frac1{2025},\]
+and
+\[f^{(2025)}(0)=2024!.\]`,
+  },
+  {
+    id: 10164,
+    number: 164,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["U-Substitution", "Integral Properties"],
+    question: String.raw`Evaluate:
+\[\int_0^1(1-2x)^4x^2\,dx.\]`,
+    choices: [String.raw`\(\frac1{70}\)`, String.raw`\(\frac3{35}\)`, String.raw`\(\frac{107}{840}\)`, String.raw`\(\frac{71}{420}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Let \(u=2x-1\), so \(du=2\,dx\), \(x=(u+1)/2\), and the bounds become \(-1\) and 1. Then
+\[\int_0^1(1-2x)^4x^2\,dx
+=\frac18\int_{-1}^{1}u^4(u+1)^2\,du
+=\frac18\int_{-1}^{1}(u^6+2u^5+u^4)\,du.\]
+The odd term integrates to 0 over \([-1,1]\), so
+\[\frac18\int_{-1}^{1}(u^6+u^4)\,du
+=\frac14\int_0^1(u^6+u^4)\,du
+=\frac14\left(\frac17+\frac15\right)
+=\frac3{35}.\]`,
+  },
+  {
+    id: 10165,
+    number: 165,
+    division: "Mu",
+    topic: "Polynomial Equations",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`\(f(x)\) is a polynomial of unknown degree \(d\) with non-negative integer coefficients. Nick agrees that he will tell Manny the value of \(f(n)\) for any value of \(n\) Manny wants. Find the minimum number of values of \(n\) Manny would need to ask Nick to evaluate to guarantee that he can identify \(f(x)\) uniquely.`,
+    choices: ["2", "3", String.raw`\(d\)`, String.raw`\(d+1\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`Manny can ask for the value at a transcendental number, such as \(n=\pi\). Suppose two polynomials \(f\) and \(g\), both with non-negative integer coefficients, gave the same value there. Then
+\[f(\pi)-g(\pi)=0.\]
+But \(f-g\) is a polynomial with integer coefficients. If it were nonzero, this equation would make \(\pi\) algebraic, contradicting the fact that \(\pi\) is transcendental. Therefore \(f-g\) must be the zero polynomial and \(f=g\). One requested value is sufficient, and zero values clearly cannot identify the polynomial. The minimum is therefore 1, which is not listed, so the answer is NOTA.
+
+The printed solution obtains 2 by first requesting \(f(1)=S\) and then using \(f(S+1)\) as a base-\((S+1)\) encoding of the coefficients. That method works, but it is not minimal because the question does not require \(n\) to be an integer.`,
+  },
+  {
+    id: 10166,
+    number: 166,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 5,
+    methods: ["Implicit Differentiation", "First Derivative Test"],
+    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+\[2xy^2-x^3=y^4\]
+in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
+
+The line \(y=y_0\) intersects \(\mathcal G\). If the maximum possible value of \(y_0\) is \(\frac{A\sqrt B}{C}\) in simplest form, find \(A+B+C\).`,
+    choices: ["14", "16", "17", "19", "NOTA"],
+    answer: "D",
+    solution: String.raw`Instead of maximizing \(y\), maximize \(y^2\). Treating the equation as a quadratic in \(y^2\),
+\[y^4-2xy^2+x^3=0,\]
+so
+\[y^2=x\pm x\sqrt{1-x}.\]
+The upper branch is \(y^2=x+x\sqrt{1-x}\). Differentiating,
+\[\frac d{dx}(y^2)=1+\sqrt{1-x}-\frac{x}{2\sqrt{1-x}}.\]
+At the maximum this equals 0, so
+\[2\sqrt{1-x}+2(1-x)-x=0,\]
+or
+\[2\sqrt{1-x}=3x-2.\]
+Squaring gives
+\[4(1-x)=9x^2-12x+4,\]
+so \(9x^2-8x=0\), and the valid positive solution is \(x=8/9\). Substitution gives
+\[y^2=\frac89+\frac8{27}=\frac{32}{27},\qquad y=\frac{4\sqrt6}{9}.\]
+Thus \(A=4\), \(B=6\), \(C=9\), and
+\[A+B+C=19.\]`,
+  },
+  {
+    id: 10167,
+    number: 167,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 5,
+    methods: ["Implicit Differentiation"],
+    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+\[2xy^2-x^3=y^4\]
+in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
+
+Let \(m_\ell(x_0)\) be the slope of the tangent line to the concave up portion of \(\mathcal G\) at \(x=x_0\). Find the value of
+\[\lim_{x_0\to0^+}m_\ell(x_0).\]`,
+    choices: [String.raw`\(\frac{\sqrt6}{6}\)`, String.raw`\(\frac{\sqrt2}{2}\)`, String.raw`\(\frac{\sqrt6}{3}\)`, String.raw`\(\frac{\sqrt3}{2}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Implicit differentiation of
+\[2xy^2-x^3=y^4\]
+gives
+\[2y^2+4xy\frac{dy}{dx}-3x^2=4y^3\frac{dy}{dx},\]
+so
+\[\frac{dy}{dx}=\frac{2y^2-3x^2}{4y^3-4xy}.\]
+As the concave up branch approaches the origin, write \(y\sim mx\). In the original equation, the fourth-degree term \(y^4\) approaches 0 faster than the cubic terms, so the leading relation is
+\[2x(mx)^2-x^3\sim0.\]
+Thus
+\[2m^2-1=0.\]
+The first-quadrant branch has positive slope, so
+\[m=\frac1{\sqrt2}=\frac{\sqrt2}{2}.\]`,
+  },
+  {
+    id: 10168,
+    number: 168,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 5,
+    methods: ["Implicit Differentiation"],
+    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+\[2xy^2-x^3=y^4\]
+in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
+
+Let \(m_\mathcal U(x_0)\) be the slope of the tangent line to the concave down portion of \(\mathcal G\) at \(x=x_0\). Find the value of
+\[\lim_{x_0\to0^+}m_\mathcal U(x_0).\]`,
+    choices: [String.raw`\(\frac32\)`, String.raw`\(\sqrt6\)`, String.raw`\(2\sqrt2\)`, String.raw`\(\frac{3\sqrt3}{2}\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`The loop can be written as
+\[y^2=x\pm x\sqrt{1-x}.\]
+The concave down branch is the upper branch,
+\[y^2=x+x\sqrt{1-x}.\]
+As \(x\to0^+\), this satisfies \(y^2\sim2x\), so \(y\sim\sqrt{2x}\). Therefore
+\[\frac{dy}{dx}\sim\frac1{\sqrt{2x}}\to+\infty.\]
+Equivalently, setting \(x=0\) in the implicit derivative expression gives \(dy/dx=1/(2y)\), which becomes unbounded as \(y\to0^+\). No finite choice A–D is correct, so the answer is NOTA.`,
+  },
+  {
+    id: 10169,
+    number: 169,
+    division: "Mu",
+    topic: "Polar Area",
+    difficulty: 5,
+    methods: ["U-Substitution"],
+    question: String.raw`For Questions 20–23, consider the graph \(\mathcal G\) of
+\[2xy^2-x^3=y^4\]
+in the first quadrant. \(\mathcal G\) is a closed loop and can be separated into a portion that is concave up and a portion that is concave down.
+
+Let the area of the portion of \(\mathcal G\) above the line \(y=x\) equal \(\frac AB\). Find \(A+B\).`,
+    choices: ["176", "209", "253", "281", "NOTA"],
+    answer: "D",
+    solution: String.raw`Convert the curve to polar coordinates with \(x=r\cos\theta\) and \(y=r\sin\theta\):
+\[2r^3\cos\theta\sin^2\theta-r^3\cos^3\theta=r^4\sin^4\theta.\]
+For \(r\ne0\),
+\[r=2\cot\theta\csc\theta-\cot^3\theta\csc\theta
+=\cot\theta\csc\theta(2-\cot^2\theta).\]
+The portion above \(y=x\) corresponds to \(\pi/4\le\theta\le\pi/2\). Its area is
+\[\frac12\int_{\pi/4}^{\pi/2}\cot^2\theta\csc^2\theta(2-\cot^2\theta)^2\,d\theta.\]
+Let \(u=\cot\theta\), so \(du=-\csc^2\theta\,d\theta\). The bounds become 1 and 0, giving
+\[\frac12\int_0^1u^2(2-u^2)^2\,du
+=\frac12\int_0^1(4u^2-4u^4+u^6)\,du.\]
+Thus the area is
+\[\frac12\left(\frac43-\frac45+\frac17\right)=\frac{71}{210}.\]
+Therefore
+\[A+B=71+210=281.\]`,
+  },
+  {
+    id: 10170,
+    number: 170,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["U-Substitution"],
+    question: String.raw`Evaluate:
+\[\int_0^{\pi/21}\frac{d\theta}{\cos(7\theta)}.\]`,
+    choices: [String.raw`\(\frac{\ln3}{7}\)`, String.raw`\(\frac{\ln(2+\sqrt3)}7\)`, String.raw`\(\ln3\)`, String.raw`\(\ln(2+\sqrt3)\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Let \(u=7\theta\), so \(d\theta=du/7\). Then
+\[\int_0^{\pi/21}\frac{d\theta}{\cos(7\theta)}
+=\frac17\int_0^{\pi/3}\sec u\,du.\]
+Using \(\int\sec u\,du=\ln|\sec u+\tan u|+C\),
+\[\frac17\left[\ln(\sec u+\tan u)\right]_0^{\pi/3}
+=\frac{\ln(2+\sqrt3)}7.\]`,
+  },
+  {
+    id: 10171,
+    number: 171,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 4,
+    methods: ["U-Substitution", "Trig Identity"],
+    question: String.raw`Evaluate:
+\[\int_0^{\pi/21}\frac{d\theta}{\cos(7\theta)+1}.\]`,
+    choices: [String.raw`\(\frac1{21}\)`, String.raw`\(\frac{\sqrt3}{21}\)`, String.raw`\(\frac13\)`, String.raw`\(\frac{\sqrt3}{3}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Let \(u=7\theta\), so
+\[\int_0^{\pi/21}\frac{d\theta}{1+\cos(7\theta)}
+=\frac17\int_0^{\pi/3}\frac{du}{1+\cos u}.\]
+Using \(1+\cos u=2\cos^2(u/2)\),
+\[\frac1{1+\cos u}=\frac12\sec^2\left(\frac u2\right).\]
+Therefore
+\[\frac17\int_0^{\pi/3}\frac12\sec^2\left(\frac u2\right)du
+=\frac17\left[\tan\left(\frac u2\right)\right]_0^{\pi/3}
+=\frac1{7\sqrt3}
+=\frac{\sqrt3}{21}.\]`,
+  },
+  {
+    id: 10172,
+    number: 172,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`For Questions 26 and 27, consider the graph \(\mathcal G_n\) of
+\[x^n+y^n=1\]
+for positive integer \(n\). This graph is a closed loop when \(n\) is even and a function when \(n\) is odd.
+
+Let \(n\) be odd. As \(n\) approaches \(\infty\), find the arc length of \(\mathcal G_n\) for \(x\in[-3,3]\).`,
+    choices: [String.raw`\(6\sqrt2\)`, String.raw`\(4\sqrt2+4\)`, String.raw`\(2\sqrt2+8\)`, "12", "NOTA"],
+    answer: "B",
+    solution: String.raw`For odd \(n\),
+\[y=(1-x^n)^{1/n}.\]
+As \(n\to\infty\), when \(|x|<1\), \(x^n\to0\) and the graph approaches \(y=1\). When \(|x|>1\), the dominant terms must nearly cancel, and the graph approaches \(y=-x\).
+
+Near \(x=1\), the increasingly sharp transition from \(y=1\) to \(y=-1\) contributes a vertical segment in the limiting arc. Thus, on \([-3,3]\), the limiting arc follows
+
+\[(-3,3)\to(-1,1)\to(1,1)\to(1,-1)\to(3,-3).\]
+The two diagonal segments each have length \(2\sqrt2\), the horizontal segment has length 2, and the vertical segment has length 2. Therefore the limiting arc length is
+\[2\sqrt2+2+2+2\sqrt2=4\sqrt2+4.\]`,
+  },
+  {
+    id: 10173,
+    number: 173,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 4,
+    methods: [],
+    question: String.raw`For Questions 26 and 27, consider the graph \(\mathcal G_n\) of
+\[x^n+y^n=1\]
+for positive integer \(n\). This graph is a closed loop when \(n\) is even and a function when \(n\) is odd.
+
+Let \(n\) be even. Which of the following is the most restrictive continuous interval that contains all possible values of the area of \(\mathcal G_n\)?`,
+    choices: ["[2, 4)", "[2, 4]", String.raw`\([\pi,4)\)`, String.raw`\([\pi,4]\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`The smallest even value is \(n=2\), which gives the unit circle, so the minimum area is \(\pi\). As even \(n\to\infty\), the graph approaches the square with vertices \((1,1)\), \((-1,1)\), \((-1,-1)\), and \((1,-1)\), whose area is 4. No finite \(n\) produces the square itself, so 4 is approached but not attained. Therefore the most restrictive interval is
+\[[\pi,4).\]`,
+  },
+  {
+    id: 10174,
+    number: 174,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Logarithmic Differentiation"],
+    question: String.raw`Find \(f'(0)\) if
+\[f(x)=(x+1)^3(x+2)^2\sqrt{x+4}.\]`,
+    choices: ["33", "34", "36", "40", "NOTA"],
+    answer: "A",
+    solution: String.raw`Using logarithmic differentiation,
+\[\ln f(x)=3\ln(x+1)+2\ln(x+2)+\frac12\ln(x+4),\]
+so
+\[\frac{f'(x)}{f(x)}=\frac3{x+1}+\frac2{x+2}+\frac1{2(x+4)}.\]
+Now \(f(0)=1^3\cdot2^2\cdot2=8\), and
+\[\frac{f'(0)}{f(0)}=3+1+\frac18=\frac{33}{8}.\]
+Therefore
+\[f'(0)=8\left(\frac{33}{8}\right)=33.\]`,
+  },
+  {
+    id: 10175,
+    number: 175,
+    division: "Mu",
+    topic: "Volumes of Revolution",
+    difficulty: 5,
+    methods: ["Pappus's Centroid Theorem"],
+    question: String.raw`A convex polygon has vertices at \((-1,3)\), \((1,2)\), \((1,9)\), and \((4,13)\). It is rotated about the line \(x=8\). Find the volume of the solid formed.`,
+    choices: [String.raw`\(\frac{560\pi}{3}\)`, String.raw`\(\frac{640\pi}{3}\)`, String.raw`\(\frac{700\pi}{3}\)`, String.raw`\(\frac{850\pi}{3}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`The line \(x=1\) splits the quadrilateral into two triangles, each with vertical base 7. The left triangle has horizontal height 2 and area 7; its centroid has x-coordinate
+\[\frac{-1+1+1}{3}=\frac13.\]
+The right triangle has horizontal height 3 and area \(21/2\); its centroid has x-coordinate
+\[\frac{1+1+4}{3}=2.\]
+Thus the quadrilateral has area
+\[7+\frac{21}{2}=\frac{35}{2},\]
+and its centroid has x-coordinate
+\[\bar x=\frac{7(1/3)+(21/2)(2)}{35/2}=\frac43.\]
+The centroid is therefore \(8-4/3=20/3\) units from the axis of rotation. By Pappus's Centroid Theorem,
+\[V=\left(2\pi\cdot\frac{20}{3}\right)\left(\frac{35}{2}\right)=\frac{700\pi}{3}.\]`,
+  },
+  {
+    id: 10176,
+    number: 176,
+    division: "Mu",
+    topic: "Sequences",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`\(\{a_n\}_{1\le n\le9}\) is a nonconstant arithmetic sequence of integers such that the following is true for some positive integer \(N\):
+\[\sum_{n=1}^{9}a_n^2=N^2.\]
+Find the smallest possible value of \(N\).`,
+    choices: ["24", "48", "60", "72", "NOTA"],
+    answer: "A",
+    solution: String.raw`Write the nine-term arithmetic sequence as
+\[p-4q,p-3q,\ldots,p,\ldots,p+3q,p+4q,\]
+where \(q\ne0\). When the squares are summed, the cross terms cancel. There are nine \(p^2\) terms, and the squared coefficients of the paired \(q^2\) terms sum to
+\[2(1^2+2^2+3^2+4^2)=60.\]
+Therefore
+\[N^2=9p^2+60q^2,\]
+so
+\[(N-3p)(N+3p)=60q^2.\]
+The two factors have difference \(6p\), so both must be divisible by 6. It follows that \(q\) must be divisible by 3. Trying the smallest possibility \(|q|=3\), we seek factors of
+\[60q^2=540\]
+whose difference is divisible by 6. The pair \(N-3p=18\), \(N+3p=30\) gives
+\[N=24,\qquad p=2.\]
+Indeed, the sequence
+\[-10,-7,-4,-1,2,5,8,11,14\]
+satisfies
+\[(-10)^2+(-7)^2+(-4)^2+(-1)^2+2^2+5^2+8^2+11^2+14^2=24^2.\]
+Hence the smallest possible value is \(24\).`,
   },
 ];

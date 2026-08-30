@@ -208,8 +208,8 @@ function QuestionSession({ question }: { question: Question }) {
   };
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-4 py-8 sm:px-8 sm:py-10">
+      <div className="mx-auto w-full min-w-0 max-w-7xl">
       <QuestionHeader
         questionNumber={question.number}
         division={question.division}
@@ -238,9 +238,9 @@ function QuestionSession({ question }: { question: Question }) {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-3">
-          <div className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-6 shadow-[0_12px_30px_rgba(17,24,39,0.14)] sm:p-7">
+      <div className="grid min-w-0 gap-8 lg:grid-cols-4">
+        <div className="min-w-0 lg:col-span-3">
+          <div className="min-w-0 rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-4 shadow-[0_12px_30px_rgba(17,24,39,0.14)] sm:p-7">
             <h2 className="text-2xl font-bold mb-6">
               Question
             </h2>
@@ -257,7 +257,7 @@ function QuestionSession({ question }: { question: Question }) {
               onSelect={setSelectedAnswer}
             />
 
-            <div className="flex gap-4 mt-8">
+            <div className="mt-8 flex flex-wrap gap-4">
               <button
                 disabled={
                   !selectedAnswer ||

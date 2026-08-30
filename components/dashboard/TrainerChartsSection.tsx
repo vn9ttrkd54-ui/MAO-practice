@@ -49,8 +49,8 @@ export default function TrainerChartsSection({
         </div>
       </div>
 
-      <div className="mt-6 grid gap-5 lg:grid-cols-[1.5fr_1fr]">
-        <article className="rounded-3xl border bg-white p-6 shadow-sm">
+      <div className="mt-6 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <article className="min-w-0 rounded-3xl border bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-semibold text-gray-500">
@@ -71,7 +71,7 @@ export default function TrainerChartsSection({
 
           {hasSessionData ? (
             <div className="mt-8">
-              <div className="flex h-56 items-end gap-3 border-b border-gray-200 pb-1">
+              <div className="flex h-56 min-w-0 items-end gap-2 border-b border-gray-200 pb-1 sm:gap-3">
                 {trainer.recentSessionAccuracy.map(
                   (session, index) => {
                     const visibleHeight = Math.max(
@@ -84,7 +84,7 @@ export default function TrainerChartsSection({
                         key={session.id}
                         className="flex min-w-0 flex-1 flex-col items-center justify-end"
                       >
-                        <span className="mb-2 text-xs font-semibold text-gray-700">
+                        <span className="mb-2 max-w-full truncate text-xs font-semibold text-gray-700">
                           {session.accuracy}%
                         </span>
 
@@ -99,7 +99,7 @@ export default function TrainerChartsSection({
                           />
                         </div>
 
-                        <span className="mt-3 truncate text-xs text-gray-500">
+                        <span className="mt-3 w-full truncate text-center text-[10px] text-gray-500 sm:text-xs">
                           {formatSessionDate(session.endedAt)}
                         </span>
 
@@ -120,7 +120,7 @@ export default function TrainerChartsSection({
           )}
         </article>
 
-        <article className="rounded-3xl border bg-white p-6 shadow-sm">
+        <article className="min-w-0 rounded-3xl border bg-white p-5 shadow-sm sm:p-6">
           <p className="text-sm font-semibold text-gray-500">
             Sessions by Division
           </p>
@@ -156,12 +156,12 @@ export default function TrainerChartsSection({
 
               return (
                 <div key={item.division}>
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex min-w-0 items-center justify-between gap-3">
                     <span className="font-semibold text-gray-800">
                       {item.division}
                     </span>
 
-                    <span className="text-sm text-gray-500">
+                    <span className="shrink-0 text-right text-xs text-gray-500 sm:text-sm">
                       {formatSessionCount(item.sessions)} · {share}%
                     </span>
                   </div>
