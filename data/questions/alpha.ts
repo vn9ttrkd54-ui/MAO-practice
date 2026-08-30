@@ -958,4 +958,559 @@ a^2&=b^2+c^2-2bc\cos A.
 Adding and simplifying yields
 \[2ab\cos C+2ac\cos B+2bc\cos A=a^2+b^2+c^2=7^2+4^2+5^2=90.\]`,
   },
+  {
+     id: 20061,
+     number: 1,
+     division: "Alpha",
+     topic: "Functions",
+     difficulty: 1,
+     methods: [],
+     question: String.raw`Define \(P(x) = x^2 - \frac{3}{x-1}\) and \(D(x) = x + 1\). What is the value of \((P \circ D)(-3)\)?`,
+     choices: ["3", "5", "7", "9", "NOTA"],
+     answer: "B",
+     solution: String.raw`Evaluate the inner function first: \(D(-3) = -3 + 1 = -2\). Then
+  \[(P \circ D)(-3) = P(-2) = (-2)^2 - \frac{3}{-2-1} = 4 + 1 = \boxed{5}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20062,
+     number: 2,
+     division: "Alpha",
+     topic: "Functions",
+     difficulty: 1,
+     methods: [],
+     question: String.raw`Define \(P(x) = x^2 - \frac{3}{x-1}\) and \(D(x) = x + 1\). Evaluate \(\displaystyle\lim_{x \to -3}[P(x)]^{\frac{1}{2}}\).`,
+     choices: [String.raw`\(\sqrt{3}\)`, String.raw`\(2\sqrt{3}\)`, String.raw`\(\sqrt{39}\)`, String.raw`\(\frac{\sqrt{39}}{2}\)`, "NOTA"],
+     answer: "D",
+     solution: String.raw`By direct substitution:
+  \[\lim_{x \to -3}[P(x)]^{\frac{1}{2}} = \left((-3)^2 - \frac{3}{-3-1}\right)^{\!\frac{1}{2}} = \left(9 + \frac{3}{4}\right)^{\!\frac{1}{2}} = \sqrt{\frac{39}{4}} = \boxed{\frac{\sqrt{39}}{2}}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20063,
+     number: 3,
+     division: "Alpha",
+     topic: "Probability",
+     difficulty: 1,
+     methods: [],
+     question: String.raw`The surface temperature on Mars has a uniform probability distribution between \(-150\) degrees Celsius and \(20\) degrees Celsius. Find the probability that the surface temperature on Mars is greater than \(-40\) degrees Celsius and at most \(10\) degrees Celsius.`,
+     choices: [String.raw`\(\frac{3}{17}\)`, String.raw`\(\frac{5}{17}\)`, String.raw`\(\frac{7}{17}\)`, String.raw`\(\frac{9}{17}\)`, "NOTA"],
+     answer: "B",
+     solution: String.raw`The total range is \(20 - (-150) = 170\). The favorable interval \((-40,\, 10]\) has length
+  \(10 - (-40) = 50\). The probability is
+  \[\frac{50}{170} = \boxed{\frac{5}{17}}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20064,
+     number: 4,
+     division: "Alpha",
+     topic: "Vectors",
+     difficulty: 1,
+     methods: [],
+     question: String.raw`Mars is home to the tallest mountain in our Solar System: Olympus Mons. Marvin the Martian wants to climb Olympus Mons. He decides to use a vector to determine his path. If he needs to travel \(610\) km at a direction of \(30\) degrees north of east, what is his path's vector with coordinates in km?`,
+     choices: [String.raw`\(\langle 305,\, 305\sqrt{3}\rangle\)`, String.raw`\(\langle 305\sqrt{3},\, 305\rangle\)`, String.raw`\(\langle 305\sqrt{2},\, 305\rangle\)`, String.raw`\(\langle 305,\, 305\rangle\)`, "NOTA"],
+     answer: "B",
+     solution: String.raw`The east (horizontal) component is \(610\cos(30^\circ) = 610\cdot\frac{\sqrt{3}}{2} = 305\sqrt{3}\)
+  and the north (vertical) component is \(610\sin(30^\circ) = 610\cdot\frac{1}{2} = 305\).
+  The vector is \(\boxed{\langle 305\sqrt{3},\, 305\rangle}\) km.`,
+  },
+  
+  
+  
+  
+  {
+     id: 20065,
+     number: 5,
+     division: "Alpha",
+     topic: "Parametric",
+     difficulty: 3,
+     methods: [],
+     question: String.raw`Marvin starts at the origin, travels to the point \(\left(\frac{\sqrt{3}}{2},\frac{1}{2}\right)\) in a straight line, moves along the curve given by \(x(t)=\cos t\) and \(y(t)=\sin t\) for \(\frac{\pi}{6}\le t\le\frac{\pi}{4}\), then returns to the origin in a straight line. Help Marvin find the area bounded by his path.`,
+     choices: [String.raw`\(\frac{\pi}{36}\)`, String.raw`\(\frac{\pi}{24}\)`, String.raw`\(\frac{\pi}{15}\)`, String.raw`\(\frac{\pi}{12}\)`, "NOTA"],
+     answer: "B",
+     solution: String.raw`The path encloses a circular sector of radius \(r = 1\) and central angle
+  \(\frac{\pi}{4} - \frac{\pi}{6} = \frac{\pi}{12}\) (which is \(15^\circ\)).
+  The area of the sector is
+  \[\frac{15}{360}\pi(1)^2 = \frac{\pi}{24}.\]
+  The enclosed area is \(\boxed{\dfrac{\pi}{24}}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20066,
+     number: 6,
+     division: "Alpha",
+     topic: "Conic Sections",
+     difficulty: 2,
+     methods: ["Eccentricity"],
+     question: String.raw`Mars has the largest dust storms in the Solar System. The seasons are extreme because its elliptical orbital path around the Sun is more elongated than most other planets. If the location of Mars follows the path given by \(\dfrac{x^2}{10000}+\dfrac{y^2}{9919}=1\), what is the eccentricity of Mars?`,
+     choices: [String.raw`\(\frac{9}{100}\)`, String.raw`\(\frac{9}{50}\)`, String.raw`\(\frac{9\sqrt{2}}{100}\)`, String.raw`\(\frac{9\sqrt{2}}{50}\)`, "NOTA"],
+     answer: "A",
+     solution: String.raw`Here \(a^2 = 10000\) and \(b^2 = 9919\), so \(c^2 = a^2 - b^2 = 81\), giving \(c = 9\).
+  Since \(a = \sqrt{10000} = 100\), the eccentricity is
+  \[e = \frac{c}{a} = \frac{9}{100} = \boxed{\frac{9}{100}}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20067,
+     number: 7,
+     division: "Alpha",
+     topic: "Polar",
+     difficulty: 1,
+     methods: [],
+     question: String.raw`Pieces of the Martian atmosphere have been crash-landing on Earth for years. One scientist plotted the location of a Martian rock in polar coordinates that is in Quadrant II of the coordinate plane. Which point could the scientist have plotted?`,
+     choices: [String.raw`\(\left(-6,\,-\frac{4\pi}{3}\right)\)`, String.raw`\(\left(-6,\,-\frac{11\pi}{3}\right)\)`, String.raw`\(\left(6,\,\frac{5\pi}{3}\right)\)`, String.raw`\(\left(-6,\,-\frac{7\pi}{3}\right)\)`, "NOTA"],
+     answer: "D",
+     solution: String.raw`A negative radius plots the point in the opposing quadrant.
+  \(-\frac{4\pi}{3}\) terminates in Quadrant II, so \(r=-6\) places the point in Quadrant IV.
+  \(-\frac{11\pi}{3}\) terminates in Quadrant I, so \(r=-6\) places it in Quadrant III.
+  \(\frac{5\pi}{3}\) terminates in Quadrant IV, so \(r=6\) gives Quadrant IV.
+  \(-\frac{7\pi}{3}\) terminates in Quadrant IV, so \(r=-6\) places the point in \(\boxed{\text{Quadrant II}}\), as desired.`,
+  },
+  
+  
+  
+  
+  {
+     id: 20068,
+     number: 8,
+     division: "Alpha",
+     topic: "Sequences",
+     difficulty: 2,
+     methods: ["Geometric Sequence"],
+     question: String.raw`Mars does not have nearly the same gravitational pull as Earth does. You can jump nearly three times as high on Mars as you can here. Marvin the Martian is jumping whose heights form a geometric progression with \(6\) feet and \(4\) feet as the first two terms. What is the height of his tenth jump in inches?`,
+     choices: [String.raw`\(\frac{2048}{729}\)`, String.raw`\(\frac{1024}{729}\)`, String.raw`\(\frac{4096}{2187}\)`, String.raw`\(\frac{2048}{2187}\)`, "NOTA"],
+     answer: "C",
+     solution: String.raw`The common ratio is \(r = \frac{4}{6} = \frac{2}{3}\). Converting the first term to inches:
+  \(6\text{ ft} = 72\text{ in}\). The tenth term is
+  \[72\cdot\left(\frac{2}{3}\right)^{\!9} = 72\cdot\frac{2^9}{3^9} = 8\cdot\frac{2^9}{3^7} = \frac{2^{12}}{3^7} = \boxed{\frac{4096}{2187}}\text{ inches}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20069,
+     number: 9,
+     division: "Alpha",
+     topic: "Probability",
+     difficulty: 2,
+     methods: ["Conditional Probability"],
+     question: String.raw`In the year 2045, space travel will become affordable for most families. In a survey, \(25\) students will travel to Mars, \(24\) students will travel to Jupiter, and \(10\) students will travel to Venus. \(3\) students will travel to both Mars and Venus, \(4\) students will travel to both Venus and Jupiter, and \(5\) students will travel to both Jupiter and Mars. \(2\) students will travel to all \(3\). Find the probability that a student chosen randomly from the survey will travel to Mars given that they will travel to Venus.`,
+     choices: ["0.2", "0.25", "0.28", "0.3", "NOTA"],
+     answer: "D",
+     solution: String.raw`There are \(10\) students traveling to Venus and \(3\) traveling to both Mars and Venus.
+  By the definition of conditional probability:
+  \[P(\text{Mars}\mid\text{Venus}) = \frac{P(\text{Mars and Venus})}{P(\text{Venus})} = \frac{3}{10} = \boxed{0.3}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20070,
+     number: 10,
+     division: "Alpha",
+     topic: "Series",
+     difficulty: 1,
+     methods: [],
+     question: String.raw`Marvin the Martian is interested in the series represented by \(\displaystyle\sum_{i=1}^{\infty} i^2\). Which statement is true about Marvin's series?`,
+     choices: ["Converges to 0", "Converges to 100", String.raw`Converges to \(\infty\)`, "Diverges", "NOTA"],
+     answer: "D",
+     solution: String.raw`The series \(\sum_{i=1}^{\infty} i^2 = 1 + 4 + 9 + 16 + \cdots\). Since the terms \(i^2\)
+  increase without bound and do not approach \(0\), the series \(\boxed{\text{diverges}}\)
+  by the Divergence Test.`,
+  },
+  
+  
+  
+  
+  {
+     id: 20071,
+     number: 11,
+     division: "Alpha",
+     topic: "Limits",
+     difficulty: 2,
+     methods: [],
+     question: String.raw`Use the graph of \(f(x)\) below to help Marvin find all values of \(k\) on \([-3,4]\) such that \(\displaystyle\lim_{x\to k} f(x)\) does not exist. Assume that all \(x\)-values where the limit does not exist are integers. [Graph shows labeled points: \((-2,2)\), \((-2,1)\), \((1,2)\), \((2,3)\), \((2,1)\), \((2,-1)\), \((3,2)\), \((3,0)\) with open and closed circles indicating jump discontinuities at \(x=2\) and \(x=3\).]`,
+     illustration: {
+       src: "/questions/alpha-20071-limit-graph.svg",
+       alt: "Graph of a piecewise function with jump discontinuities at x equals 2 and x equals 3.",
+       width: 720,
+       height: 430,
+     },
+     choices: [String.raw`\(x=2\) only`, String.raw`\(x=3\) only`, String.raw`\(x=2,3\) only`, String.raw`\(x=-2,1,2,3\) only`, "NOTA"],
+     answer: "C",
+     solution: String.raw`The limit does not exist at jump discontinuities. From the graph, jump discontinuities occur
+  at \(x=2\) (left-hand limit \(\neq\) right-hand limit) and at \(x=3\) (same reason).
+  Therefore the limit fails to exist at \(\boxed{x=2\text{ and }x=3}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20072,
+     number: 12,
+     division: "Alpha",
+     topic: "Statistics",
+     difficulty: 1,
+     methods: ["Z-Score"],
+     question: String.raw`Mars has an average of \(10\) dust storms per year with a standard deviation of \(3\) dust storms. Calculate the \(z\)-score for the year 2045 when there will be only \(4\) dust storms.`,
+     choices: ["-18", "-3", "-2", "-1.8", "NOTA"],
+     answer: "C",
+     solution: String.raw`The \(z\)-score formula is \(z = \dfrac{x-\mu}{\sigma}\). For \(x=4\), \(\mu=10\), \(\sigma=3\):
+  \[z = \frac{4-10}{3} = \frac{-6}{3} = \boxed{-2}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20073,
+     number: 13,
+     division: "Alpha",
+     topic: "Limits",
+     difficulty: 2,
+     methods: [],
+     question: String.raw`Determine \(\displaystyle\lim_{x\to\infty}\frac{\sin\!\left(\frac{x}{2}\pi\right)}{x^2-4}\).`,
+     choices: ["DNE", "0", "2", "4", "NOTA"],
+     answer: "B",
+     solution: String.raw`Although \(\sin\!\left(\frac{x}{2}\pi\right)\) oscillates, its values satisfy
+  \(-1\le\sin\!\left(\frac{x}{2}\pi\right)\le 1\). The denominator \(x^2-4\to\infty\) as
+  \(x\to\infty\). Therefore
+  \[\lim_{x\to\infty}\frac{\sin\!\left(\frac{x}{2}\pi\right)}{x^2-4} = \boxed{0}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20074,
+     number: 14,
+     division: "Alpha",
+     topic: "Binomial Expansion",
+     difficulty: 2,
+     methods: ["Binomial Theorem"],
+     question: String.raw`Find the coefficient of the \(x^3y^2\) term of the binomial expansion of \(\left(\frac{1}{2}x - 3y\right)^5\).`,
+     choices: [String.raw`\(\frac{45}{2}\)`, String.raw`\(-\frac{135}{2}\)`, String.raw`\(\frac{45}{4}\)`, String.raw`\(-\frac{135}{4}\)`, "NOTA"],
+     answer: "C",
+     solution: String.raw`By the Binomial Theorem, the \(x^3y^2\) term is
+  \[\binom{5}{2}\!\left(\frac{1}{2}x\right)^{\!3}(-3y)^2 = 10\cdot\frac{x^3}{8}\cdot 9y^2 = \frac{90}{8}x^3y^2 = \frac{45}{4}x^3y^2.\]
+  The coefficient is \(\boxed{\dfrac{45}{4}}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20075,
+     number: 15,
+     division: "Alpha",
+     topic: "Trigonometry",
+     difficulty: 2,
+     methods: ["Law of Cosines"],
+     question: String.raw`Marvin is trying to triangulate his position on Mars. He has a labeled triangle \(\Delta MAR\). If \(m\angle A = \frac{2\pi}{3}\), \(MA = 3\), and \(AR = 5\), what is the length \(MR\)?`,
+     choices: ["7", String.raw`\(7\sqrt{2}\)`, String.raw`\(7\sqrt{3}\)`, String.raw`\(5\sqrt{3}\)`, "NOTA"],
+     answer: "A",
+     solution: String.raw`Apply the Law of Cosines with the angle at \(A\):
+  \[MR^2 = MA^2 + AR^2 - 2\cdot MA\cdot AR\cdot\cos\!\left(\frac{2\pi}{3}\right) = 9+25-30\!\left(-\frac{1}{2}\right) = 34+15 = 49.\]
+  Therefore \(MR = \boxed{7}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20076,
+     number: 16,
+     division: "Alpha",
+     topic: "Vectors",
+     difficulty: 3,
+     methods: ["Dot Product"],
+     question: String.raw`Marvin found the angle \(\theta\) between vectors: \(\mathbf{m} = \langle -10, 8\rangle\) and \(\mathbf{r} = \left\langle\frac{1}{2},-4\right\rangle\). Find \(\sec\theta\).`,
+     choices: [String.raw`\(-\frac{\sqrt{697}}{37}\)`, String.raw`\(-\frac{37\sqrt{697}}{697}\)`, String.raw`\(-\frac{\sqrt{41}}{37}\)`, String.raw`\(-\frac{7\sqrt{41}}{41}\)`, "NOTA"],
+     answer: "E",
+     solution: String.raw`Compute the dot product: \(\mathbf{m}\cdot\mathbf{r} = (-10)\!\left(\frac{1}{2}\right)+(8)(-4) = -5-32 = -37\).
+  The magnitudes are \(\|\mathbf{m}\| = \sqrt{100+64} = 2\sqrt{41}\) and \(\|\mathbf{r}\| = \sqrt{\frac{1}{4}+16} = \frac{\sqrt{65}}{2}\).
+  Then \(\cos\theta = \dfrac{-37}{2\sqrt{41}\cdot\frac{\sqrt{65}}{2}} = \dfrac{-37}{\sqrt{2665}}\),
+  so \(\sec\theta = -\dfrac{\sqrt{2665}}{37}\), which is NOTA.`,
+  },
+  
+  
+  
+  
+  {
+     id: 20077,
+     number: 17,
+     division: "Alpha",
+     topic: "Polar",
+     difficulty: 2,
+     methods: [],
+     question: String.raw`Marvin wants to give his long-lost love a polar rose with \(8\) petals on it. Which of the following polar equations could satisfy his requirements?`,
+     choices: [String.raw`\(r = 8\cos\theta\)`, String.raw`\(r = -8\cos^2\theta\)`, String.raw`\(r = 2\cos 4\theta\)`, String.raw`\(r = -2\cos 8\theta\)`, "NOTA"],
+     answer: "C",
+     solution: String.raw`For the polar rose \(r = a\cos(n\theta)\) with \(n\) a positive integer, the number of
+  petals is \(2n\) when \(n\) is even, and \(n\) when \(n\) is odd.
+  Choice C has \(n=4\) (even), giving \(2\times 4 = \boxed{8}\) petals.`,
+  },
+  
+  
+  
+  
+  {
+     id: 20078,
+     number: 18,
+     division: "Alpha",
+     topic: "Derivatives",
+     difficulty: 3,
+     methods: ["Power Rule"],
+     question: String.raw`Marvin the Martian wants to calculate an equation of a line that will be tangent to the Sun. The path of his rocket from his location fired to the Sun is represented by \(y = 3x^2 - 3x + 2019\). Find the equation of the tangent line to that path when \(x=2\).`,
+     choices: [String.raw`\(y + 2025 = 9(x-2)\)`, String.raw`\(y + 2025 = \frac{1}{9}(x-2)\)`, String.raw`\(y - 2025 = 9(x-2)\)`, String.raw`\(y - 2025 = \frac{1}{9}(x-2)\)`, "NOTA"],
+     answer: "C",
+     solution: String.raw`Using the limit definition, the slope at \(x=2\) is
+  \[\lim_{h\to 0}\frac{3(2+h)^2-3(2+h)+2019-(3(4)-6+2019)}{h} = \lim_{h\to 0}\frac{9h+3h^2}{h} = 9.\]
+  The point on the curve: \(y(2) = 12-6+2019 = 2025\). Point-slope form gives
+  \[\boxed{y-2025 = 9(x-2)}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20079,
+     number: 19,
+     division: "Alpha",
+     topic: "Series",
+     difficulty: 2,
+     methods: ["Geometric Series"],
+     question: String.raw`Marvin finds the following geometric series carved in a rock on Mars: \(-2+4-8+\cdots+1024\). Write the series in summation notation and find its sum.`,
+     choices: [String.raw`\(\sum_{i=2}^{10}[(-1)^{i+1}(2)^{i-1}]\); Sum \(=-342\)`, String.raw`\(\sum_{i=2}^{11}[(-1)^{i+1}(2)^{i-1}]\); Sum \(=682\)`, String.raw`\(\sum_{i=2}^{10}[(-1)^{i+1}(2)^{i}]\); Sum \(=-684\)`, String.raw`\(\sum_{i=2}^{11}[(-1)^{i+1}(2)^{2i}]\); Sum \(=1364\)`, "NOTA"],
+     answer: "B",
+     solution: String.raw`The sequence has first term \(-2\), common ratio \(r = -2\), and last term \(1024\).
+  The general term is \((-2)^n\). Solving \((-2)^n = 1024 = 2^{10}\) gives \(n = 10\).
+  The summation \(\sum_{i=2}^{11}[(-1)^{i+1}(2)^{i-1}]\) correctly expands to \(-2+4-8+\cdots+1024\).
+  The finite geometric series sum is
+  \[S = \frac{a(r^n-1)}{r-1} = \frac{-2((-2)^{10}-1)}{-2-1} = \frac{-2(1023)}{-3} = \boxed{682}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20080,
+     number: 20,
+     division: "Alpha",
+     topic: "Parametric",
+     difficulty: 3,
+     methods: [],
+     question: String.raw`Marvin the Martian is traveling along the circular path shown on the coordinate plane. Which set of parametric equations could represent this graph of his path? Each square represents one square unit, for \(t\) in radians. [Graph shows a circle of radius \(2\) centered at the origin, starting at \((-2,0)\) when \(t=0\), at \((0,-2)\) when \(t=\frac{\pi}{2}\), at \((2,0)\) when \(t=\pi\), and at \((0,2)\) when \(t=\frac{3\pi}{2}\).]`,
+     choices: [String.raw`\(x(t)=2\cos t,\ y(t)=2\sin t\)`, String.raw`\(x(t)=\cos 2t,\ y(t)=\sin 2t\)`, String.raw`\(x(t)=2\sin t,\ y(t)=2\sin t\)`, String.raw`\(x(t)=\sin 2t,\ y(t)=\cos 2t\)`, "NOTA"],
+     answer: "E",
+     solution: String.raw`When \(t=0\), the path begins at \((-2,0)\). Testing each choice at \(t=0\):
+  A gives \((2,0)\), B gives \((1,0)\), C gives \((0,0)\), D gives \((0,1)\) --- all wrong.
+  A valid parametrization is \(x(t)=-2\cos t\), \(y(t)=-2\sin t\), which is not a choice.
+  The answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20081,
+     number: 21,
+     division: "Alpha",
+     topic: "Vectors",
+     difficulty: 2,
+     methods: ["Dot Product"],
+     question: String.raw`Marvin the Martian's favorite baseball team is the Los Angeles Dodgers. Joc Pederson, Left Fielder for the Los Angeles Dodgers, spots a fly ball coming to his region of the baseball outfield. He begins his motion towards the ball at a vector of: \(\langle 100, 5, 2\rangle\). Which of the following vectors would be perpendicular to his motion vector?`,
+     choices: [String.raw`\(\langle 2, 20, 50\rangle\)`, String.raw`\(\langle -2, -20, 50\rangle\)`, String.raw`\(\langle 2, -20, -50\rangle\)`, String.raw`\(\langle 2, -20, 50\rangle\)`, "NOTA"],
+     answer: "C",
+     solution: String.raw`Two vectors are perpendicular when their dot product is zero.
+  Testing choice C: \(\langle100,5,2\rangle\cdot\langle2,-20,-50\rangle = 200-100-100 = \boxed{0}\).
+  Therefore \(\langle 2,-20,-50\rangle\) is perpendicular to Joc's vector.`,
+  },
+  
+  
+  
+  
+  
+  
+  {
+     id: 20083,
+     number: 23,
+     division: "Alpha",
+     topic: "Polar",
+     difficulty: 2,
+     methods: [],
+     question: String.raw`Marvin is lost on his planet. He tried to write his location using polar and rectangular coordinates in three different ways: \(P\!\left(-24,-\frac{2\pi}{3}\right)\) in polar, \(Q\!\left(12,-12\sqrt{3}\right)\) in rectangular, \(R\!\left(24,\frac{199\pi}{3}\right)\) in polar. Which statement is true about these three points?`,
+     choices: [String.raw`Only \(P\) and \(Q\) are equivalent`, String.raw`Only \(P\) and \(R\) are equivalent`, String.raw`Only \(Q\) and \(R\) are equivalent`, "None are equivalent", "NOTA"],
+     answer: "B",
+     solution: String.raw`Convert \(P\): \(x=-24\cos\!\left(-\frac{2\pi}{3}\right)=12\) and \(y=-24\sin\!\left(-\frac{2\pi}{3}\right)=12\sqrt{3}\), so \(P=(12,12\sqrt{3})\neq Q\).
+  Convert \(R\): \(\frac{199\pi}{3}=66\pi+\frac{\pi}{3}\) is coterminal with \(\frac{\pi}{3}\),
+  so \(x=24\cos\!\left(\frac{\pi}{3}\right)=12\) and \(y=24\sin\!\left(\frac{\pi}{3}\right)=12\sqrt{3}\).
+  Thus \(R=(12,12\sqrt{3})=P\), so only \(\boxed{P\text{ and }R}\) are equivalent.`,
+  },
+  
+  
+  
+  
+  {
+     id: 20084,
+     number: 24,
+     division: "Alpha",
+     topic: "Polar",
+     difficulty: 3,
+     methods: [],
+     question: String.raw`Convert the following equation from polar form to rectangular form: \(r^4 = 16\csc 4\theta\).`,
+     choices: [String.raw`\(xy(x^2-y^2)=4\)`, String.raw`\(xy(x^2+y^2)=4\)`, String.raw`\(xy(x^2-y^2)=2\)`, String.raw`\((x+y)(x^2-y^2)=4\)`, "NOTA"],
+     answer: "A",
+     solution: String.raw`Multiply both sides by \(\sin(4\theta)\): \(r^4\sin(4\theta)=16\).
+  Expand using double-angle identities:
+  \[r^4\cdot 2\sin(2\theta)\cos(2\theta) = r^4\cdot 4\sin\theta\cos\theta(2\cos^2\theta-1) = 16.\]
+  Writing \(r\sin\theta=y\) and \(r\cos\theta=x\):
+  \[4(yx)(2x^2-(x^2+y^2))=16 \implies 4xy(x^2-y^2)=16 \implies \boxed{xy(x^2-y^2)=4}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20085,
+     number: 25,
+     division: "Alpha",
+     topic: "Series",
+     difficulty: 4,
+     methods: ["Euler's Formula"],
+     question: String.raw`The value of \(\displaystyle\sum_{n=0}^{\infty}\frac{\cos(n)}{2^n}\) can be expressed as \(\dfrac{a-b\cos(1)}{c-d\cos(1)}\), where \(a\), \(b\), \(c\), and \(d\) are positive integers that do not all share a common prime factor. Find \(a+b+c+d\).`,
+     choices: ["12", "15", "16", "18", "NOTA"],
+     answer: "B",
+     solution: String.raw`Since \(e^{i\theta}=\cos\theta+i\sin\theta\), we have \(\cos(n)=\text{Re}(e^{in})\). Thus
+  \[\sum_{n=0}^{\infty}\frac{\cos(n)}{2^n}=\text{Re}\!\left(\sum_{n=0}^{\infty}\frac{e^{in}}{2^n}\right)=\text{Re}\!\left(\frac{1}{1-\frac{e^i}{2}}\right).\]
+  Writing \(\frac{1}{1-\frac{e^i}{2}}=\frac{2}{2-e^i}\) and rationalizing with the conjugate \(2-e^{-i}\):
+  \[\text{Re}\!\left(\frac{2(2-e^{-i})}{(2-e^i)(2-e^{-i})}\right)=\frac{2(2-\cos(1))}{5-4\cos(1)}=\frac{4-2\cos(1)}{5-4\cos(1)}.\]
+  So \(a=4\), \(b=2\), \(c=5\), \(d=4\), giving \(a+b+c+d=\boxed{15}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20086,
+     number: 26,
+     division: "Alpha",
+     topic: "Conic Sections",
+     difficulty: 5,
+     methods: [],
+     question: String.raw`Find the unique positive integer \(K\) such that the (non-degenerate) ellipse given by \(3x^2+4xy+6y^2-10x+12y+K=0\) has vertices with integer coordinates. (For convenience, the major axis of the conic has negative slope.)`,
+     choices: ["10", "12", "15", "17", "NOTA"],
+     answer: "D",
+     solution: String.raw`Rewrite as \(3(x-h)^2+4(x-h)(y-k)+6(y-k)^2=F\) to find the center.
+  Matching \(x\) and \(y\) coefficients: \(-6h-4k=-10\) and \(-4h-12k=12\). Solving gives \(h=3\), \(k=-2\).
+  Shifting to the origin and using major axis direction \(x=-2y\) (slope \(-\tfrac{1}{2}\)):
+  \[3(4y^2)+4(-2y)(y)+6y^2 = 12y^2-8y^2+6y^2 = 10y^2 = F.\]
+  For integer vertex coordinates, \(F=10p^2\) for positive integer \(p\).
+  Shifting back: \(K = 27-10p^2\). For \(p=1\): \(K = 27-10 = \boxed{17}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20087,
+     number: 27,
+     division: "Alpha",
+     topic: "Sequences",
+     difficulty: 2,
+     methods: [],
+     question: String.raw`Consider the sequence defined recursively by \(A_1=100\), \(A_n=-6(A_{n-1})^3\) for \(n\ge 2\). Which of the following correctly describes this sequence?`,
+     choices: ["Increasing", "Decreasing", "Monotonic", "Alternating", "NOTA"],
+     answer: "D",
+     solution: String.raw`The first few terms are \(A_1=100\), \(A_2=-6(100)^3=-6{,}000{,}000\), \(A_3>0\).
+  Cubing preserves sign; multiplying by \(-6\) changes sign each iteration.
+  Therefore the sequence is \(\boxed{\text{alternating}}\) in sign.`,
+  },
+  
+  
+  
+  
+  {
+     id: 20088,
+     number: 28,
+     division: "Alpha",
+     topic: "Probability",
+     difficulty: 2,
+     methods: ["Binomial Theorem"],
+     question: String.raw`Marvin strikes out \(40\%\) of his attempts at the plate. What is the probability that he will strike out exactly \(3\) of his \(5\) attempts in his baseball game? Assume all the attempts are independent.`,
+     choices: [String.raw`\(\frac{144}{625}\)`, String.raw`\(\frac{144}{1875}\)`, String.raw`\(\frac{432}{625}\)`, String.raw`\(\frac{481}{1875}\)`, "NOTA"],
+     answer: "A",
+     solution: String.raw`Using the binomial probability formula with \(n=5\), \(k=3\), \(p=\frac{2}{5}\):
+  \[P(X=3)=\binom{5}{3}\!\left(\frac{2}{5}\right)^{\!3}\!\left(\frac{3}{5}\right)^{\!2}=10\cdot\frac{8}{125}\cdot\frac{9}{25}=\frac{720}{3125}=\boxed{\frac{144}{625}}.\]`,
+  },
+  
+  
+  
+  
+  {
+     id: 20089,
+     number: 29,
+     division: "Alpha",
+     topic: "Complex Numbers",
+     difficulty: 5,
+     methods: ["Roots of Unity"],
+     question: String.raw`Did you know complex numbers are a favorite of Martians? Let \(z=e^{i\cdot\frac{2\pi}{7}}\), where \(i=\sqrt{-1}\). Define \(S=z+z^2+z^4\) and \(T=S^4\). What is the real part of \(T\)?`,
+     choices: [String.raw`\(-\frac{1}{2}\)`, "0", String.raw`\(\frac{1}{8}\)`, String.raw`\(\frac{1}{2}\)`, "NOTA"],
+     answer: "D",
+     solution: String.raw`Note \(\bar{S}=\overline{z+z^2+z^4}=z^6+z^5+z^3\). Since \(z^7=1\),
+  \(1+z+z^2+z^3+z^4+z^5+z^6=0\), so \(S+\bar{S}=-1\) and \(\text{Re}(S)=-\tfrac{1}{2}\).
+  Also \(|S|^2=S\bar{S}=(z+z^2+z^4)(z^3+z^5+z^6)=3+(-1)=2\), so \(|S|=\sqrt{2}\).
+  Write \(S=\sqrt{2}e^{i\theta}\) with \(\cos\theta=-\frac{1}{2\sqrt{2}}\).
+  Then \(T=S^4=4e^{4i\theta}\) and \(\text{Re}(T)=4\cos(4\theta)\).
+  Using double-angle identities: \(\cos(4\theta)=8\cos^4\theta-8\cos^2\theta+1=8\cdot\frac{1}{64}-8\cdot\frac{1}{8}+1=\frac{1}{8}\).
+  Therefore \(\text{Re}(T)=4\cdot\frac{1}{8}=\boxed{\frac{1}{2}}\).`,
+  },
+  
+  
+  
+  
+  {
+     id: 20090,
+     number: 30,
+     division: "Alpha",
+     topic: "Trigonometry",
+     difficulty: 4,
+     methods: ["Sum-to-Product Identity"],
+     question: String.raw`Marvin found the following trig equation inscribed on a rock on his favorite planet:
+  \[\sin(2x)\cos(5x)+\cos(2x)\sin(5x)=\sin(10x)+\sin(4x).\]
+  What is the sum of all solutions in radians on \([0,2\pi)\)?`,
+     choices: [String.raw`\(6\pi\)`, String.raw`\(13\pi\)`, String.raw`\(16\pi\)`, String.raw`\(19\pi\)`, "NOTA"],
+     answer: "D",
+     solution: String.raw`By the angle-addition identity, the left side equals \(\sin(7x)\).
+  By sum-to-product, the right side equals \(2\sin(7x)\cos(3x)\).
+  So the equation becomes \(\sin(7x)=2\sin(7x)\cos(3x)\), i.e., \(\sin(7x)(1-2\cos(3x))=0\).
+  \textbf{Case 1:} \(\sin(7x)=0\). Then \(x=\frac{\pi n}{7}\) for \(n\in\{0,1,\ldots,13\}\).
+  Sum \(=\frac{\pi}{7}\cdot\frac{13\cdot14}{2}=13\pi\).
+  \textbf{Case 2:} \(\cos(3x)=\frac{1}{2}\). Then \(x=\frac{\pi}{9}+\frac{2\pi k}{3}\) or \(x=\frac{5\pi}{9}+\frac{2\pi k}{3}\) for \(k\in\{0,1,2\}\).
+  Sum \(=3\!\left(\frac{\pi}{9}+\frac{5\pi}{9}\right)+2\cdot\frac{2\pi}{3}(0+1+2)=2\pi+4\pi=6\pi\).
+  Total sum \(=13\pi+6\pi=\boxed{19\pi}\).`,
+  },
+  
+  
+  
+  
 ];

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 430" role="img" aria-labelledby="title description">
+  <title id="title">Graph of a piecewise function</title>
+  <desc id="description">A piecewise graph with jump discontinuities at x equals 2 and x equals 3.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111827" />
+    </marker>
+  </defs>
+
+  <rect width="720" height="430" fill="#ffffff" />
+  <g fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M70 345 H665" marker-end="url(#arrow)" />
+    <path d="M285 390 V48" marker-end="url(#arrow)" />
+
+    <path d="M55 205 C77 216 99 228 122 235 C175 215 238 173 360 155 C396 151 425 171 455 235" marker-start="url(#arrow)" />
+    <path d="M455 86 C471 128 475 180 510 198 C536 211 552 201 570 178" />
+    <path d="M540 345 C552 372 575 387 615 390 C638 391 653 388 672 380" marker-end="url(#arrow)" />
+  </g>
+
+  <g fill="#111827">
+    <circle cx="122" cy="235" r="7" fill="#ffffff" stroke="#111827" stroke-width="3" />
+    <circle cx="122" cy="173" r="7" />
+    <circle cx="360" cy="155" r="7" fill="#ffffff" stroke="#111827" stroke-width="3" />
+    <circle cx="455" cy="235" r="7" fill="#ffffff" stroke="#111827" stroke-width="3" />
+    <circle cx="455" cy="86" r="7" fill="#ffffff" stroke="#111827" stroke-width="3" />
+    <circle cx="455" cy="264" r="7" />
+    <circle cx="570" cy="178" r="7" />
+    <circle cx="540" cy="345" r="7" fill="#ffffff" stroke="#111827" stroke-width="3" />
+  </g>
+
+  <g stroke="#111827" stroke-width="2">
+    <path d="M122 339 V351 M360 339 V351 M455 339 V351" />
+    <path d="M279 235 H291 M279 155 H291 M279 86 H291" />
+  </g>
+
+  <g fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="18">
+    <text x="671" y="334" font-size="22" font-weight="700">x</text>
+    <text x="301" y="52" font-size="22" font-weight="700">y</text>
+    <text x="267" y="369">0</text>
+    <text x="107" y="370">-2</text>
+    <text x="353" y="370">1</text>
+    <text x="448" y="370">2</text>
+    <text x="533" y="370">3</text>
+    <text x="258" y="241">1</text>
+    <text x="258" y="161">2</text>
+    <text x="258" y="92">3</text>
+
+    <text x="130" y="161">(-2,2)</text>
+    <text x="130" y="257">(-2,1)</text>
+    <text x="365" y="143">(1,2)</text>
+    <text x="462" y="225">(2,1)</text>
+    <text x="462" y="77">(2,3)</text>
+    <text x="463" y="286">(2,-1)</text>
+    <text x="578" y="167">(3,2)</text>
+    <text x="548" y="332">(3,0)</text>
+  </g>
+</svg>
