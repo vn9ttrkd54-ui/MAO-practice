@@ -1,5 +1,6 @@
 import QuestionClient from "./QuestionClient";
 import { questions } from "@/data/questions";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function QuestionPage({
   params,
@@ -24,7 +25,10 @@ export default async function QuestionPage({
     );
   }
 
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
-    <QuestionClient question={question} />
+    <QuestionClient question={question} tutorEnabled={Boolean(user)} />
   );
 }

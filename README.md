@@ -16,6 +16,16 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Llama Tutor setup
+
+The desktop Question Bank tutor requires:
+
+1. Apply `supabase/migrations/021_ai_tutor_foundation.sql` to the linked Supabase project.
+2. Add `OPENAI_API_KEY` as a server-only environment variable locally and in Vercel.
+3. Optionally set `OPENAI_TUTOR_MODEL`; it defaults to `gpt-5-mini`.
+
+The migration starts with a shared pool of 1,000,000 tokens and keeps 25,000 tokens in reserve. Change `token_limit` or reset `tokens_used` in the single `ai_tutor_budget` row when intentionally adjusting the pool. Never expose the OpenAI key through a `NEXT_PUBLIC_` variable.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

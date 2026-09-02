@@ -4,6 +4,7 @@ import { questions } from "@/data/questions";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
+import { createTutorRevealToken } from "@/lib/tutorRevealToken";
 import type { AnswerChoice } from "@/types/question";
 
 const ANSWERS = new Set<AnswerChoice>(["A", "B", "C", "D", "E"]);
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
     };
     return NextResponse.json({
       ...stored,
+      tutorRevealToken: createTutorRevealToken(user.id, question.id),
       progress: {
         ...stored.progress,
         times: stored.progress.times.map((milliseconds) => Math.floor(milliseconds / 1_000)),

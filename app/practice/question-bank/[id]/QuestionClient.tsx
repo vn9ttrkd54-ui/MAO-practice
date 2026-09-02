@@ -33,6 +33,7 @@ import BookmarkButton from "@/components/practice/BookmarkButton";
 import QuestionReportButton from "@/components/feedback/QuestionReportButton";
 import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
+import LlamaTutor from "@/components/practice/LlamaTutor";
 
 const EMPTY_PROGRESS: QuestionProgress = {
   attempts: 0,
@@ -44,13 +45,15 @@ const EMPTY_PROGRESS: QuestionProgress = {
 
 export default function QuestionClient({
   question,
+  tutorEnabled,
 }: {
   question: Question;
+  tutorEnabled: boolean;
 }) {
-  return <QuestionSession key={question.id} question={question} />;
+  return <QuestionSession key={question.id} question={question} tutorEnabled={tutorEnabled} />;
 }
 
-function QuestionSession({ question }: { question: Question }) {
+function QuestionSession({ question, tutorEnabled }: { question: Question; tutorEnabled: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedReturnTo = searchParams.get("returnTo");
@@ -64,6 +67,9 @@ function QuestionSession({ question }: { question: Question }) {
 
   const [submitted, setSubmitted] =
     useState(false);
+
+  const [tutorRevealToken, setTutorRevealToken] =
+    useState<string | null>(null);
 
   const [isSaving, setIsSaving] =
     useState(false);
@@ -150,14 +156,15 @@ function QuestionSession({ question }: { question: Question }) {
     setIsSaving(true);
 
     try {
-      const updatedProgress =
+      const result =
         await saveQuestionAttempt(
           question.id,
           isCorrect,
           timeSpent
         );
 
-      setProgress(updatedProgress);
+      setProgress(result.progress);
+      setTutorRevealToken(result.tutorRevealToken);
       setSubmitted(true);
     } finally {
       setIsSaving(false);
@@ -172,10 +179,11 @@ function QuestionSession({ question }: { question: Question }) {
     setIsSaving(true);
 
     try {
-      const updatedProgress =
+      const result =
         await saveQuestionGiveUp(question.id);
 
-      setProgress(updatedProgress);
+      setProgress(result.progress);
+      setTutorRevealToken(result.tutorRevealToken);
       setSubmitted(true);
       setSelectedAnswer(null);
     } finally {
@@ -186,6 +194,7 @@ function QuestionSession({ question }: { question: Question }) {
   const handleReattempt = () => {
     setSubmitted(false);
     setSelectedAnswer(null);
+    setTutorRevealToken(null);
     startTime.current = Date.now();
     setAttemptNumber((current) => current + 1);
   };
@@ -341,6 +350,7 @@ function QuestionSession({ question }: { question: Question }) {
           times={progress.times}
         />
       </div>
+      {tutorEnabled ? <LlamaTutor questionId={question.id} revealToken={tutorRevealToken} /> : null}
       </div>
     </main>
   );

@@ -5,6 +5,11 @@ import { createSupabaseProgressStorage } from "@/lib/storage/progress/supabasePr
 import type { QuestionProgress } from "@/types/progress";
 import { applyTrainerResult } from "@/lib/services/levelService";
 
+type QuestionSaveResult = {
+  progress: QuestionProgress;
+  tutorRevealToken: string | null;
+};
+
 async function getProgressStorage(): Promise<ProgressStorage> {
   const supabase = createClient();
   const {
@@ -37,7 +42,7 @@ export async function saveQuestionAttempt(
   questionId: number,
   isCorrect: boolean,
   timeInSeconds: number
-): Promise<QuestionProgress> {
+): Promise<QuestionSaveResult> {
   const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
   if (session?.user) {
@@ -59,7 +64,10 @@ export async function saveQuestionAttempt(
     });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error ?? "Unable to save result.");
-    return payload.progress as QuestionProgress;
+    return {
+      progress: payload.progress as QuestionProgress,
+      tutorRevealToken: typeof payload.tutorRevealToken === "string" ? payload.tutorRevealToken : null,
+    };
   }
 
   const storage = await getProgressStorage();
@@ -82,10 +90,11 @@ export async function saveQuestionAttempt(
       : current.lastCorrectAt,
   };
 
-  return storage.saveQuestionProgress(
+  const progress = await storage.saveQuestionProgress(
     questionId,
     updated
   );
+  return { progress, tutorRevealToken: null };
 }
 
 export async function saveVerifiedTrainerResult(
@@ -110,14 +119,14 @@ export async function saveVerifiedTrainerResult(
     }
 
     const isCorrect = selectedAnswer === question.answer;
-    const [progress, levelChange] = await Promise.all([
+    const [savedResult, levelChange] = await Promise.all([
       selectedAnswer === null
         ? saveQuestionGiveUp(questionId)
         : saveQuestionAttempt(questionId, isCorrect, timeInSeconds),
       applyTrainerResult(isCorrect),
     ]);
 
-    return { progress, levelChange };
+    return { progress: savedResult.progress, levelChange };
   }
 
   const response = await fetch("/api/practice/result", {
@@ -137,7 +146,7 @@ export async function saveVerifiedTrainerResult(
 
 export async function saveQuestionGiveUp(
   questionId: number
-): Promise<QuestionProgress> {
+): Promise<QuestionSaveResult> {
   const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
   if (session?.user) {
@@ -153,7 +162,10 @@ export async function saveQuestionGiveUp(
     });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error ?? "Unable to save result.");
-    return payload.progress as QuestionProgress;
+    return {
+      progress: payload.progress as QuestionProgress,
+      tutorRevealToken: typeof payload.tutorRevealToken === "string" ? payload.tutorRevealToken : null,
+    };
   }
 
   const storage = await getProgressStorage();
@@ -169,8 +181,9 @@ export async function saveQuestionGiveUp(
     lastCorrectAt: current.lastCorrectAt,
   };
 
-  return storage.saveQuestionProgress(
+  const progress = await storage.saveQuestionProgress(
     questionId,
     updated
   );
+  return { progress, tutorRevealToken: null };
 }
