@@ -3,8 +3,8 @@ import test from "node:test";
 
 import { formatTutorGuidance, getTutorGuidance } from "../lib/tutorGuidance.ts";
 
-test("returns curriculum guidance for the five evaluation questions", () => {
-  for (const questionId of [10008, 10014, 10021, 10023, 10030]) {
+test("returns curriculum guidance for the evaluation questions", () => {
+  for (const questionId of [10007, 10008, 10014, 10021, 10022, 10023, 10030, 10043]) {
     assert.ok(getTutorGuidance(questionId));
   }
 });
