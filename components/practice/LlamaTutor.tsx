@@ -26,6 +26,7 @@ export default function LlamaTutor({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [messagesRemaining, setMessagesRemaining] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const draftRef = useRef<HTMLTextAreaElement | null>(null);
@@ -50,6 +51,7 @@ export default function LlamaTutor({
       setDraft("");
       setError(null);
       setErrorCode(null);
+      setMessagesRemaining(null);
       setLoading(false);
     }
 
@@ -75,12 +77,27 @@ export default function LlamaTutor({
     if (!open) return;
 
     draftRef.current?.focus();
+    const controller = new AbortController();
+    void fetch("/api/tutor", { signal: controller.signal, cache: "no-store" })
+      .then(async (response) => ({ response, data: await response.json() as { messagesRemaining?: number } }))
+      .then(({ response, data }) => {
+        if (!response.ok || typeof data.messagesRemaining !== "number") return;
+        setMessagesRemaining(data.messagesRemaining);
+        if (data.messagesRemaining === 0) {
+          setError("I've used all 15 messages for today. Please come back tomorrow or ask ChatGPT.");
+          setErrorCode("daily_limit");
+        }
+      })
+      .catch(() => undefined);
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") closeTutor();
     }
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      controller.abort();
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [open]);
 
   async function sendTutorRequest(message: string, history: ChatMessage[], signal: AbortSignal) {
@@ -96,6 +113,7 @@ export default function LlamaTutor({
         error?: string;
         code?: string;
         retryAfterMs?: number;
+        messagesRemaining?: number;
       };
 
       if (response.status === 429 && data.code === "busy") {
@@ -113,6 +131,7 @@ export default function LlamaTutor({
         throw new TutorRequestError(
           data.error ?? "I couldn't connect right now. Please wait a moment and try again.",
           data.code ?? null,
+          data.messagesRemaining,
         );
       }
       return data;
@@ -137,11 +156,13 @@ export default function LlamaTutor({
     try {
       const data = await sendTutorRequest(message, history, controller.signal);
       setMessages((current) => [...current, { role: "assistant", content: data.message! }]);
+      if (typeof data.messagesRemaining === "number") setMessagesRemaining(data.messagesRemaining);
     } catch (caught) {
       if (caught instanceof DOMException && caught.name === "AbortError") return;
       const requestError = caught instanceof TutorRequestError ? caught : null;
       setError(requestError?.message ?? "I couldn't connect right now. Please wait a moment and try again.");
       setErrorCode(requestError?.code ?? "unavailable");
+      if (typeof requestError?.messagesRemaining === "number") setMessagesRemaining(requestError.messagesRemaining);
     } finally {
       if (abortRef.current === controller) abortRef.current = null;
       setLoading(false);
@@ -155,6 +176,7 @@ export default function LlamaTutor({
     setDraft("");
     setError(null);
     setErrorCode(null);
+    setMessagesRemaining(null);
     setLoading(false);
     window.requestAnimationFrame(() => launcherRef.current?.focus());
   }
@@ -212,19 +234,20 @@ export default function LlamaTutor({
                     void handleSend();
                   }
                 }}
-                disabled={loading}
+                disabled={loading || resting}
                 rows={2}
                 maxLength={MAX_MESSAGE_LENGTH}
                 aria-label="Message Llama Tutor"
                 placeholder="Ask for a hint..."
                 className="min-h-12 flex-1 resize-none rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100"
               />
-              <button type="button" onClick={() => void handleSend()} disabled={!draft.trim() || loading} className="grid h-12 w-12 place-items-center rounded-lg bg-slate-950 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Send message">
+              <button type="button" onClick={() => void handleSend()} disabled={!draft.trim() || loading || resting} className="grid h-12 w-12 place-items-center rounded-lg bg-slate-950 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Send message">
                 <Send size={19} />
               </button>
             </div>
             <div className="mt-2 flex justify-between text-xs text-slate-500">
               <span>{draft.length}/{MAX_MESSAGE_LENGTH}</span>
+              <span>{messagesRemaining === null ? "Checking daily limit..." : `${messagesRemaining} request${messagesRemaining === 1 ? "" : "s"} left today`}</span>
             </div>
           </footer>
         </section>
@@ -238,7 +261,7 @@ export default function LlamaTutor({
 }
 
 class TutorRequestError extends Error {
-  constructor(message: string, readonly code: string | null) {
+  constructor(message: string, readonly code: string | null, readonly messagesRemaining?: number) {
     super(message);
   }
 }

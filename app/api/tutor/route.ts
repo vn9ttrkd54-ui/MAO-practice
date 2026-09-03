@@ -39,6 +39,44 @@ function validHistory(value: unknown): value is TutorHistoryMessage[] {
       && item.content.length <= TUTOR_MAX_HISTORY_LENGTH);
 }
 
+function currentEasternDate() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
+export async function GET() {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Sign in to use the Llama Tutor.", code: "authentication" }, { status: 401 });
+    }
+
+    const admin = createAdminClient();
+    const { data, error } = await admin
+      .from("ai_tutor_daily_usage")
+      .select("messages_used")
+      .eq("user_id", user.id)
+      .eq("usage_date", currentEasternDate())
+      .maybeSingle();
+    if (error) throw error;
+
+    const messagesUsed = Math.max(0, data?.messages_used ?? 0);
+    return NextResponse.json(
+      { messagesRemaining: Math.max(0, TUTOR_DAILY_MESSAGE_LIMIT - messagesUsed) },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  } catch {
+    return NextResponse.json({ error: "Unable to check tutor usage." }, { status: 503 });
+  }
+}
+
 export async function POST(request: Request) {
   let requestId: string | null = null;
   let admin: ReturnType<typeof createAdminClient> | null = null;
