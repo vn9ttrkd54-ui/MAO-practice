@@ -27,6 +27,8 @@ export default function LlamaTutor({
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
+  const draftRef = useRef<HTMLTextAreaElement | null>(null);
+  const launcherRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     function clearTemporaryChat() {
@@ -56,6 +58,18 @@ export default function LlamaTutor({
     transcriptRef.current?.scrollTo({ top: transcriptRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    draftRef.current?.focus();
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") closeTutor();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
   async function sendTutorRequest(message: string, history: ChatMessage[], signal: AbortSignal) {
     while (!signal.aborted) {
       const response = await fetch("/api/tutor", {
@@ -83,7 +97,7 @@ export default function LlamaTutor({
       }
 
       if (!response.ok || !data.message) {
-        throw new TutorRequestError(data.error ?? "The Llama Tutor is unavailable right now.");
+        throw new TutorRequestError(data.error ?? "I couldn't connect right now. Please wait a moment and try again.");
       }
       return data;
     }
@@ -109,7 +123,7 @@ export default function LlamaTutor({
     } catch (caught) {
       if (caught instanceof DOMException && caught.name === "AbortError") return;
       const requestError = caught instanceof TutorRequestError ? caught : null;
-      setError(requestError?.message ?? "The Llama Tutor is unavailable right now.");
+      setError(requestError?.message ?? "I couldn't connect right now. Please wait a moment and try again.");
     } finally {
       if (abortRef.current === controller) abortRef.current = null;
       setLoading(false);
@@ -123,6 +137,7 @@ export default function LlamaTutor({
     setDraft("");
     setError(null);
     setLoading(false);
+    window.requestAnimationFrame(() => launcherRef.current?.focus());
   }
 
   return (
@@ -142,7 +157,7 @@ export default function LlamaTutor({
             </button>
           </header>
 
-          <div ref={transcriptRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-slate-50 p-4" aria-live="polite">
+          <div ref={transcriptRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-slate-50 p-4" aria-live="polite" aria-busy={loading}>
             {messages.length === 0 ? (
               <div className="rounded-lg border border-blue-100 bg-blue-50 p-3 text-sm leading-6 text-slate-700">
                 Tell me where you’re stuck. I’ll help with the next step without giving away the answer.
@@ -160,12 +175,13 @@ export default function LlamaTutor({
                 <span className="h-2 w-2 animate-bounce rounded-full bg-blue-600" />
               </div>
             ) : null}
-            {error ? <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
+            {error ? <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
           </div>
 
           <footer className="border-t border-slate-200 bg-white p-3">
             <div className="flex items-end gap-2">
               <textarea
+                ref={draftRef}
                 value={draft}
                 onChange={(event) => setDraft(event.target.value.slice(0, MAX_MESSAGE_LENGTH))}
                 onKeyDown={(event) => {
@@ -177,6 +193,7 @@ export default function LlamaTutor({
                 disabled={loading}
                 rows={2}
                 maxLength={MAX_MESSAGE_LENGTH}
+                aria-label="Message Llama Tutor"
                 placeholder="Ask for a hint..."
                 className="min-h-12 flex-1 resize-none rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100"
               />
@@ -191,7 +208,7 @@ export default function LlamaTutor({
         </section>
       ) : null}
 
-      <button type="button" onClick={() => setOpen(true)} className={`ml-auto grid h-16 w-16 place-items-center overflow-hidden rounded-full border-2 border-slate-950 bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl ${open ? "invisible" : ""}`} aria-label="Open Llama Tutor" title="Llama Tutor">
+      <button ref={launcherRef} type="button" onClick={() => setOpen(true)} className={`ml-auto grid h-16 w-16 place-items-center overflow-hidden rounded-full border-2 border-slate-950 bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl ${open ? "invisible" : ""}`} aria-label="Open Llama Tutor" title="Llama Tutor">
         <Image src="/llama-tutor.png" alt="Llama Tutor" width={64} height={64} className="h-full w-full object-cover object-top" priority />
       </button>
     </aside>

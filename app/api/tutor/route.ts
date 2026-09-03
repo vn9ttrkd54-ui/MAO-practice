@@ -99,7 +99,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "The Llama Tutor is resting until tomorrow.", code: "daily_limit", messagesRemaining: 0 }, { status: 429 });
     }
     if (reservation.status === "pool_exhausted") {
-      return NextResponse.json({ error: "The Llama Tutor is resting for now.", code: "pool_exhausted" }, { status: 503 });
+      return NextResponse.json({ error: "The shared tutor budget is unavailable right now. Please try again later.", code: "pool_exhausted" }, { status: 503 });
     }
     if (reservation.status !== "reserved") {
       throw new Error("Unable to reserve a tutor request.");
@@ -139,6 +139,6 @@ export async function POST(request: Request) {
     if (error instanceof RequestBodyError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
     }
-    return NextResponse.json({ error: "The Llama Tutor is unavailable right now." }, { status: 503 });
+    return NextResponse.json({ error: "I couldn't connect right now. Please wait a moment and try again.", code: "unavailable" }, { status: 503 });
   }
 }

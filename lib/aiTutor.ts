@@ -11,7 +11,10 @@ export const TUTOR_MAX_HISTORY_MESSAGES = 6;
 export const TUTOR_MAX_HISTORY_LENGTH = 900;
 export const TUTOR_MAX_OUTPUT_TOKENS = 1200;
 export const TUTOR_TOKEN_RESERVATION = 5000;
-export const TUTOR_DAILY_MESSAGE_LIMIT = 1_000_000_000;
+const configuredDailyLimit = Number.parseInt(process.env.TUTOR_DAILY_MESSAGE_LIMIT ?? "", 10);
+export const TUTOR_DAILY_MESSAGE_LIMIT = Number.isSafeInteger(configuredDailyLimit) && configuredDailyLimit > 0
+  ? configuredDailyLimit
+  : 1_000_000_000;
 export const TUTOR_PROMPT_VERSION = "1.7";
 
 const TUTOR_SAFETY_FALLBACK = "I can't give the final answer before you submit or give up. After that, I can explain the complete solution. For now, share your current work and I'll help with the next step.";
