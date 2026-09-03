@@ -81,16 +81,30 @@ body {
   75% { transform: translateX(2px); }
 }
 
+@keyframes tutor-sleep {
+  0%, 100% { transform: translateY(1px) scale(.96); }
+  50% { transform: translateY(2px) scale(.94); }
+}
+
+@keyframes tutor-sleep-symbols {
+  0% { opacity: 0; transform: translateY(2px); }
+  40%, 80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-5px); }
+}
+
 .tutor-mascot { transform-origin: 50% 80%; }
 .tutor-mascot--idle { animation: tutor-idle 3s ease-in-out infinite; }
 .tutor-mascot--listening { animation: tutor-listen 2.2s ease-in-out infinite; }
 .tutor-mascot--thinking { animation: tutor-think .7s ease-in-out infinite; }
 .tutor-mascot--ready { transform: scale(1.03); }
 .tutor-mascot--error { animation: tutor-error .3s ease-in-out 2; filter: saturate(.55); }
+.tutor-mascot--sleeping { animation: tutor-sleep 2.4s ease-in-out infinite; filter: saturate(.65); }
+.tutor-sleep-symbols { position: absolute; right: 2px; top: 0; color: #1d4ed8; font-size: 9px; font-weight: 700; line-height: 1; animation: tutor-sleep-symbols 1.8s ease-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .route-transition,
-  .tutor-mascot {
+  .tutor-mascot,
+  .tutor-sleep-symbols {
     animation: none;
   }
 }

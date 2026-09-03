@@ -52,10 +52,15 @@ export async function POST(request: Request) {
     const question = questions.find((item) => item.id === body.questionId);
     const message = body.message?.trim() ?? "";
     const history = body.history ?? [];
+    if (message.length > TUTOR_MAX_MESSAGE_LENGTH) {
+      return NextResponse.json({
+        error: "That is too much for one llama-sized message. Please shorten it, or ask ChatGPT if you need to send the whole thing.",
+        code: "message_too_long",
+      }, { status: 400 });
+    }
     if (
       !question
       || !message
-      || message.length > TUTOR_MAX_MESSAGE_LENGTH
       || !validHistory(history)
       || (body.revealToken !== undefined && body.revealToken !== null
         && (typeof body.revealToken !== "string" || body.revealToken.length > 256))
@@ -99,7 +104,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "The Llama Tutor is resting until tomorrow.", code: "daily_limit", messagesRemaining: 0 }, { status: 429 });
     }
     if (reservation.status === "pool_exhausted") {
-      return NextResponse.json({ error: "The shared tutor budget is unavailable right now. Please try again later.", code: "pool_exhausted" }, { status: 503 });
+      return NextResponse.json({
+        error: "I've used all my tokens for this month. Please ask ChatGPT until my supply is refilled.",
+        code: "pool_exhausted",
+      }, { status: 503 });
     }
     if (reservation.status !== "reserved") {
       throw new Error("Unable to reserve a tutor request.");
@@ -138,6 +146,12 @@ export async function POST(request: Request) {
     }
     if (error instanceof RequestBodyError) {
       return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+    if (error instanceof TutorProviderError && error.code === "response_too_long") {
+      return NextResponse.json({
+        error: "That answer needs more tokens than I can safely use in one reply. Ask me a smaller question, or use ChatGPT for the full version.",
+        code: "response_too_long",
+      }, { status: 503 });
     }
     return NextResponse.json({ error: "I couldn't connect right now. Please wait a moment and try again.", code: "unavailable" }, { status: 503 });
   }

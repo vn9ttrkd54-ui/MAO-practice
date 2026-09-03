@@ -25,13 +25,17 @@ export default function LlamaTutor({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const draftRef = useRef<HTMLTextAreaElement | null>(null);
   const launcherRef = useRef<HTMLButtonElement | null>(null);
-  const tutorState = error ? "error" : loading ? "thinking" : messages.length > 0 ? "ready" : "listening";
-  const tutorStatus = error
-    ? "Needs a moment"
+  const resting = errorCode === "daily_limit" || errorCode === "pool_exhausted";
+  const tutorState = resting ? "sleeping" : error ? "error" : loading ? "thinking" : messages.length > 0 ? "ready" : "listening";
+  const tutorStatus = resting
+    ? "Resting for now"
+    : error
+      ? "Needs a moment"
     : loading
       ? "Thinking it through"
       : messages.length > 0
@@ -45,6 +49,7 @@ export default function LlamaTutor({
       setMessages([]);
       setDraft("");
       setError(null);
+      setErrorCode(null);
       setLoading(false);
     }
 
@@ -105,7 +110,10 @@ export default function LlamaTutor({
       }
 
       if (!response.ok || !data.message) {
-        throw new TutorRequestError(data.error ?? "I couldn't connect right now. Please wait a moment and try again.");
+        throw new TutorRequestError(
+          data.error ?? "I couldn't connect right now. Please wait a moment and try again.",
+          data.code ?? null,
+        );
       }
       return data;
     }
@@ -121,6 +129,7 @@ export default function LlamaTutor({
     setMessages((current) => [...current, userMessage]);
     setDraft("");
     setError(null);
+    setErrorCode(null);
     setLoading(true);
     const controller = new AbortController();
     abortRef.current = controller;
@@ -132,6 +141,7 @@ export default function LlamaTutor({
       if (caught instanceof DOMException && caught.name === "AbortError") return;
       const requestError = caught instanceof TutorRequestError ? caught : null;
       setError(requestError?.message ?? "I couldn't connect right now. Please wait a moment and try again.");
+      setErrorCode(requestError?.code ?? "unavailable");
     } finally {
       if (abortRef.current === controller) abortRef.current = null;
       setLoading(false);
@@ -144,6 +154,7 @@ export default function LlamaTutor({
     setMessages([]);
     setDraft("");
     setError(null);
+    setErrorCode(null);
     setLoading(false);
     window.requestAnimationFrame(() => launcherRef.current?.focus());
   }
@@ -154,8 +165,9 @@ export default function LlamaTutor({
         <section className="flex h-[min(620px,calc(100vh-10rem))] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-xl border border-slate-300 bg-white shadow-2xl" aria-label="Llama Tutor">
           <header className="flex items-center justify-between border-b border-slate-200 bg-slate-950 px-4 py-3 text-white">
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white">
+              <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white">
                 <Image src="/llama-tutor.png" alt="" width={42} height={42} className={`tutor-mascot tutor-mascot--${tutorState} h-full w-full object-cover object-top`} />
+                {resting ? <span aria-hidden="true" className="tutor-sleep-symbols">z z</span> : null}
               </span>
               <div>
                 <h2 className="font-bold">Llama Tutor</h2>
@@ -225,4 +237,8 @@ export default function LlamaTutor({
   );
 }
 
-class TutorRequestError extends Error {}
+class TutorRequestError extends Error {
+  constructor(message: string, readonly code: string | null) {
+    super(message);
+  }
+}

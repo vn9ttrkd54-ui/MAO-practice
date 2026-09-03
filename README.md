@@ -23,11 +23,11 @@ The desktop Question Bank tutor requires:
 1. Apply `supabase/migrations/021_ai_tutor_foundation.sql` to the linked Supabase project.
 2. Add `OPENAI_API_KEY` as a server-only environment variable locally and in Vercel.
 3. Optionally set `OPENAI_TUTOR_MODEL`; it defaults to `gpt-5-mini`.
-4. Optionally set `TUTOR_DAILY_MESSAGE_LIMIT` to a positive whole number. When it is omitted, the daily cap remains effectively disabled for testing while the shared budget and rate limits stay active.
+4. Optionally set `TUTOR_DAILY_MESSAGE_LIMIT` to a positive whole number. It defaults to 15 messages per user per day.
 
 The migration starts with a shared pool of 1,000,000 tokens and keeps 25,000 tokens in reserve. Change `token_limit` or reset `tokens_used` in the single `ai_tutor_budget` row when intentionally adjusting the pool. Never expose the OpenAI key through a `NEXT_PUBLIC_` variable.
 
-Before a production launch, set `TUTOR_DAILY_MESSAGE_LIMIT` to the desired per-user cap in Vercel and verify the shared budget row. Tutor conversations are temporary and are cleared when the tutor closes, the page changes, or the tab is hidden.
+Before a production launch, verify the daily limit and shared budget row. Tutor conversations are temporary and are cleared when the tutor closes, the page changes, or the tab is hidden.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
