@@ -29,6 +29,14 @@ export default function LlamaTutor({
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const draftRef = useRef<HTMLTextAreaElement | null>(null);
   const launcherRef = useRef<HTMLButtonElement | null>(null);
+  const tutorState = error ? "error" : loading ? "thinking" : messages.length > 0 ? "ready" : "listening";
+  const tutorStatus = error
+    ? "Needs a moment"
+    : loading
+      ? "Thinking it through"
+      : messages.length > 0
+        ? "Ready for your next step"
+        : "Ask about this question";
 
   useEffect(() => {
     function clearTemporaryChat() {
@@ -143,13 +151,15 @@ export default function LlamaTutor({
   return (
     <aside className="fixed bottom-6 right-6 z-40 hidden lg:block">
       {open ? (
-        <section className="mb-3 flex h-[min(620px,calc(100vh-7rem))] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-xl border border-slate-300 bg-white shadow-2xl" aria-label="Llama Tutor">
+        <section className="flex h-[min(620px,calc(100vh-10rem))] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-xl border border-slate-300 bg-white shadow-2xl" aria-label="Llama Tutor">
           <header className="flex items-center justify-between border-b border-slate-200 bg-slate-950 px-4 py-3 text-white">
             <div className="flex items-center gap-3">
-              <Image src="/llama-tutor.png" alt="" width={42} height={42} className="h-10 w-10 rounded-full bg-white object-cover object-top" />
+              <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white">
+                <Image src="/llama-tutor.png" alt="" width={42} height={42} className={`tutor-mascot tutor-mascot--${tutorState} h-full w-full object-cover object-top`} />
+              </span>
               <div>
                 <h2 className="font-bold">Llama Tutor</h2>
-                <p className="text-xs text-slate-300">Ask about this question</p>
+                <p className="text-xs text-slate-300">{tutorStatus}</p>
               </div>
             </div>
             <button type="button" onClick={closeTutor} className="rounded-md p-2 hover:bg-white/10" aria-label="Close tutor">
@@ -208,8 +218,8 @@ export default function LlamaTutor({
         </section>
       ) : null}
 
-      <button ref={launcherRef} type="button" onClick={() => setOpen(true)} className={`ml-auto grid h-16 w-16 place-items-center overflow-hidden rounded-full border-2 border-slate-950 bg-white shadow-xl transition hover:-translate-y-1 hover:shadow-2xl ${open ? "invisible" : ""}`} aria-label="Open Llama Tutor" title="Llama Tutor">
-        <Image src="/llama-tutor.png" alt="Llama Tutor" width={64} height={64} className="h-full w-full object-cover object-top" priority />
+      <button ref={launcherRef} type="button" onClick={() => setOpen(true)} className={`ml-auto h-16 w-16 place-items-center overflow-hidden rounded-full border-2 border-slate-950 bg-white shadow-xl transition-shadow hover:shadow-2xl ${open ? "hidden" : "grid"}`} aria-label="Open Llama Tutor" title="Llama Tutor">
+        <Image src="/llama-tutor.png" alt="Llama Tutor" width={64} height={64} className="tutor-mascot tutor-mascot--idle h-full w-full object-cover object-top" priority />
       </button>
     </aside>
   );
