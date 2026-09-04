@@ -547,7 +547,16 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
 
   const transitionDueAt = data.intermission_ends_at ?? data.hard_ends_at ?? data.ends_at;
   let advancedToNextQuestion = false;
-  if (Date.now() >= new Date(transitionDueAt).getTime()) {
+  let transitionNeeded = Date.now() >= new Date(transitionDueAt).getTime();
+  if (!transitionNeeded) {
+    const { data: recoveryNeeded, error: recoveryError } = await admin.rpc(
+      "multiplayer_round_transition_needed",
+      { p_room_id: roomId },
+    );
+    if (recoveryError) throw new Error(`Unable to check the round: ${recoveryError.message}`);
+    transitionNeeded = recoveryNeeded === true;
+  }
+  if (transitionNeeded) {
     const { data: transition, error: transitionError } = await admin.rpc(
       "advance_multiplayer_round_state",
       { p_room_id: roomId },

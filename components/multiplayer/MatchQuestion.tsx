@@ -143,7 +143,6 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     if (!selected || isSubmitting) return;
     setIsSubmitting(true);
     setError(null);
-    setShowLeaderboard(true);
     try {
       const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, {
         method: "POST",
@@ -162,7 +161,13 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
         return;
       }
       const submittedRound = body as MultiplayerRoundState;
-      if (submittedRound.questionNumber >= questionNumber.current) setRound(submittedRound);
+      if (submittedRound.questionNumber >= questionNumber.current) {
+        setRound(submittedRound);
+        setShowLeaderboard(true);
+      }
+    } catch {
+      setError("Your answer was not submitted. Please try again.");
+      setShowLeaderboard(false);
     } finally {
       setIsSubmitting(false);
     }
