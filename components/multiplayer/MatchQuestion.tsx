@@ -18,6 +18,10 @@ function SpectatorList({ round }: { round: MultiplayerRoundState }) {
 export default function MatchQuestion({ round: initialRound }: { round: MultiplayerRoundState }) {
   const router = useRouter();
   const [round, setRound] = useState(initialRound);
+  const [displayEndsAt, setDisplayEndsAt] = useState(() => Math.min(
+    initialRound.questionEndsAt,
+    Date.now() + initialRound.questionDurationSeconds * 1000,
+  ));
   const [now, setNow] = useState<number | null>(null);
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +31,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const questionNumber = useRef(initialRound.questionNumber);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
   const submitted = currentPlayer?.hasSubmittedCurrentQuestion ?? false;
-  const secondsLeft = now === null ? null : Math.max(0, Math.ceil((round.questionEndsAt - now) / 1000));
+  const secondsLeft = now === null ? null : Math.max(0, Math.ceil((displayEndsAt - now) / 1000));
   const intermissionLeft = now === null || !round.intermissionEndsAt ? null : Math.max(0, Math.ceil((round.intermissionEndsAt - now) / 1000));
 
   useEffect(() => {
@@ -50,6 +54,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           if (nextRound.questionNumber >= questionNumber.current) {
             if (nextRound.questionNumber > questionNumber.current) {
               questionNumber.current = nextRound.questionNumber;
+              setDisplayEndsAt(Math.min(
+                nextRound.questionEndsAt,
+                Date.now() + nextRound.questionDurationSeconds * 1000,
+              ));
               setSelected(null);
               setShowLeaderboard(false);
               setIsSubmitting(false);
@@ -60,7 +68,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       } catch {
         if (!stopped) setError("Connection interrupted. Reconnecting…");
       } finally {
-        if (!stopped) pollTimer = window.setTimeout(pollRound, 1_500);
+        if (!stopped) pollTimer = window.setTimeout(pollRound, 750);
       }
     }
 

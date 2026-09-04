@@ -71,7 +71,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
   }
 
   const leaderboard = [...state.players].sort((a, b) => b.score - a.score);
-  const seconds = now === null ? null : Math.max(0, Math.ceil((state.questionEndsAt - now) / 1000));
+  const seconds = now === null ? null : Math.min(state.questionDurationSeconds, Math.max(0, Math.ceil((state.questionEndsAt - now) / 1000)));
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-8">
