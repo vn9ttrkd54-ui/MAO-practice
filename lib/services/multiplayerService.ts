@@ -4,6 +4,7 @@ import { createHash, randomBytes, randomInt } from "node:crypto";
 import { cookies } from "next/headers";
 
 import { questions } from "@/data/questions";
+import { calculateMultiplayerCorrectPoints } from "@/lib/multiplayerScoring";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -597,9 +598,12 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
 
   const correct = input.selectedAnswer === question.answer;
   const answerTimeMs = Math.max(0, submittedAt - new Date(matchQuestion.started_at).getTime() - QUESTION_DELIVERY_GRACE_MS);
-  const remainingMs = Math.max(0, room.seconds_per_question * 1000 - answerTimeMs);
-  const pointsEarned = correct ? 1000 + Math.round(500 * remainingMs / (room.seconds_per_question * 1000)) : 0;
-  const { error: submissionError } = await admin.from("multiplayer_submissions").insert({
+  let pointsEarned = correct ? calculateMultiplayerCorrectPoints({
+    answerTimeMs,
+    questionDurationMs: room.seconds_per_question * 1000,
+    earlierCorrectAnswers: 0,
+  }) : 0;
+  const { data: submission, error: submissionError } = await admin.from("multiplayer_submissions").insert({
     room_id: input.roomId,
     question_number: matchQuestion.question_number,
     question_id: matchQuestion.question_id,
@@ -608,10 +612,32 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
     correct,
     answer_time_ms: answerTimeMs,
     points_earned: pointsEarned,
-  });
+  }).select("id").single<{ id: string }>();
   if (submissionError) {
     if (submissionError.code === "23505") throw new Error("You already answered this question.");
     throw new Error("Unable to submit the answer right now.");
+  }
+
+  if (correct) {
+    const { data: orderedCorrect, error: orderError } = await admin.from("multiplayer_submissions")
+      .select("id")
+      .eq("room_id", input.roomId)
+      .eq("question_number", matchQuestion.question_number)
+      .eq("correct", true)
+      .order("submitted_at", { ascending: true })
+      .order("id", { ascending: true });
+    if (orderError) throw new Error("Unable to calculate the answer order.");
+    const correctOrder = Math.max(0, (orderedCorrect ?? []).findIndex((entry) => entry.id === submission.id));
+    const orderedPoints = calculateMultiplayerCorrectPoints({
+      answerTimeMs,
+      questionDurationMs: room.seconds_per_question * 1000,
+      earlierCorrectAnswers: correctOrder,
+    });
+    if (orderedPoints !== pointsEarned) {
+      const { error: pointsError } = await admin.from("multiplayer_submissions").update({ points_earned: orderedPoints }).eq("id", submission.id);
+      if (pointsError) throw new Error("Unable to save the ordered score.");
+      pointsEarned = orderedPoints;
+    }
   }
 
   const { error: playerError } = await admin.from("multiplayer_players").update({ score: lobby.currentPlayer.score + pointsEarned, has_submitted_current_question: true }).eq("room_id", input.roomId).eq("id", lobby.currentPlayer.playerId);
