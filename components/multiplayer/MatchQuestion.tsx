@@ -191,7 +191,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
     const delay = Math.max(0, boundary - Date.now() + 100);
     const boundaryTimer = window.setTimeout(() => refreshRound.current(), delay);
-    const preflightDelay = round.intermissionEndsAt && currentPlayer?.isHost
+    const preflightDelay = round.intermissionEndsAt
       ? Math.max(0, round.intermissionEndsAt - Date.now() - 4_000)
       : null;
     const preflightTimer = preflightDelay === null
@@ -201,7 +201,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       window.clearTimeout(boundaryTimer);
       if (preflightTimer !== null) window.clearTimeout(preflightTimer);
     };
-  }, [currentPlayer?.isHost, round.intermissionEndsAt, round.questionEndsAt]);
+  }, [round.intermissionEndsAt, round.questionEndsAt]);
 
   async function submitAnswer() {
     if (!selected || isSubmitting) return;
