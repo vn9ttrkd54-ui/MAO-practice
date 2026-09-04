@@ -28,8 +28,8 @@ export default function SolutionPanel({
   }
 
   return (
-    <div className="mt-10 border-t pt-8">
-      <h2 className="text-2xl font-bold">
+    <div className="mt-8 border-t pt-6 sm:mt-10 sm:pt-8">
+      <h2 className="text-xl font-bold sm:text-2xl">
         {selectedAnswer === correctAnswer
           ? "Correct!"
           : selectedAnswer === null
@@ -37,12 +37,14 @@ export default function SolutionPanel({
             : "Incorrect"}
       </h2>
 
-      <div className="mt-5 border rounded-xl p-6 bg-gray-50">
-        <h3 className="font-semibold text-xl">
+      <div className="mt-4 min-w-0 overflow-hidden rounded-lg border bg-gray-50 p-4 sm:mt-5 sm:rounded-xl sm:p-6">
+        <h3 className="text-lg font-semibold sm:text-xl">
           Solution
         </h3>
 
-        <div className="mt-3 leading-8"><MathText>{solution}</MathText></div>
+        <div className="mt-3 min-w-0 text-sm leading-7 sm:text-base sm:leading-8 [&_.katex-display]:max-w-full [&_.katex-display]:overflow-x-auto [&_.katex-display]:text-[0.84em] sm:[&_.katex-display]:text-[1em]">
+          <MathText>{solution}</MathText>
+        </div>
       </div>
 
       {questionId && division ? (

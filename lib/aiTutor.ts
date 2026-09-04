@@ -15,7 +15,7 @@ const configuredDailyLimit = Number.parseInt(process.env.TUTOR_DAILY_MESSAGE_LIM
 export const TUTOR_DAILY_MESSAGE_LIMIT = Number.isSafeInteger(configuredDailyLimit) && configuredDailyLimit > 0
   ? configuredDailyLimit
   : 15;
-export const TUTOR_PROMPT_VERSION = "1.7";
+export const TUTOR_PROMPT_VERSION = "1.8";
 
 const TUTOR_SAFETY_FALLBACK = "I can't give the final answer before you submit or give up. After that, I can explain the complete solution. For now, share your current work and I'll help with the next step.";
 
@@ -74,6 +74,7 @@ function tutorInstructions(revealed: boolean, firstMessage: boolean) {
     "Keep the response focused and normally under 180 words.",
     "Give the simplest explanation that fully answers the student's question. Do not provide multiple equivalent methods unless the student asks for alternatives or says the first explanation did not help.",
     "When curriculum-designer guidance is supplied, follow its intended teaching path. Use only the stage appropriate to the student's current work; never recite or preview the entire progression.",
+    "Read the student's latest work carefully before choosing a step. If they have already completed a step correctly, briefly acknowledge it and never ask them to repeat it. Move to the next unfinished step only. If they have already reached what may be the final answer before submitting, do not confirm whether it is correct; tell them to use the page's Submit action to check it.",
     !revealed && firstMessage
       ? "This is the first tutor response for this question. If the student asks for a hint or asks what to do next, give exactly one conceptual next step in at most two short sentences: state only one mathematical action, end by asking the student to try it, and do not preview another action. If the student instead asks a direct conceptual 'why' or 'how' question, answer only that concept concisely without advancing the problem's solution, and do not turn the explanation into an exercise unless working it out is necessary for understanding."
       : "For follow-up hints, advance by only one additional meaningful step beyond what the student has already shown or understood. If the student asks what to do next, state exactly one mathematical action, end by asking them to try that action, and do not mention what happens afterward. Do not use sequencing words such as 'then', 'next', or 'after' to preview another action. If the student explicitly asks how to perform the current step, you may demonstrate that one step but must stop immediately afterward.",

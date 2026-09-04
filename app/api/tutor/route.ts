@@ -126,7 +126,7 @@ export async function POST(request: Request) {
       token_reservation: TUTOR_TOKEN_RESERVATION,
       daily_message_limit: TUTOR_DAILY_MESSAGE_LIMIT,
       concurrent_limit: 3,
-      per_user_minute_limit: 3,
+      per_user_minute_limit: 5,
       global_minute_limit: 12,
     });
     if (reservationError) throw reservationError;
