@@ -36,16 +36,19 @@ export async function createPrivateRoomAction(formData: FormData) {
 
 export async function joinPrivateRoomAction(formData: FormData) {
   let roomId: string;
+  let destination: "lobby" | "play" | "results" = "lobby";
   try {
     const room = await joinPrivateRoom({
       code: value(formData, "code"),
       guestNickname: value(formData, "guestNickname"),
     });
     roomId = room.id;
+    if (room.status === "in-progress") destination = "play";
+    if (room.status === "completed") destination = "results";
   } catch (error) {
     errorRedirect(error);
   }
-  redirect(`/multiplayer/room/${roomId}`);
+  redirect(`/multiplayer/room/${roomId}${destination === "lobby" ? "" : `/${destination}`}`);
 }
 
 export async function startPrivateRoomAction(formData: FormData) {

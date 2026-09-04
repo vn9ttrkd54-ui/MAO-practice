@@ -241,6 +241,44 @@ export async function joinPrivateRoom(input: JoinPrivateRoomInput): Promise<Mult
   const { data: room, error } = await admin.from("multiplayer_rooms").select("*").eq("code", code).eq("visibility", "private").maybeSingle<RoomRow>();
   if (error) throw new Error("Unable to find the private room right now.");
   if (!room) throw new Error("Private room not found.");
+
+  const user = await currentUser();
+  let existingPlayerId: string | null = null;
+  if (user) {
+    const { data: existing } = await admin
+      .from("multiplayer_players")
+      .select("id")
+      .eq("room_id", room.id)
+      .eq("user_id", user.id)
+      .is("left_at", null)
+      .maybeSingle<{ id: string }>();
+    existingPlayerId = existing?.id ?? null;
+  } else {
+    const reconnectToken = (await cookies()).get(cookieName(room.id))?.value;
+    if (reconnectToken) {
+      const { data: existing } = await admin
+        .from("multiplayer_players")
+        .select("id")
+        .eq("room_id", room.id)
+        .eq("reconnect_token_hash", hashToken(reconnectToken))
+        .is("left_at", null)
+        .maybeSingle<{ id: string }>();
+      existingPlayerId = existing?.id ?? null;
+    }
+  }
+
+  if (existingPlayerId) {
+    const { error: reconnectError } = await admin
+      .from("multiplayer_players")
+      .update({ connected: true })
+      .eq("room_id", room.id)
+      .eq("id", existingPlayerId)
+      .eq("connected", false);
+    if (reconnectError) throw new Error("Unable to reconnect to the private room right now.");
+    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
+    return mapRoom(room, count ?? 0);
+  }
+
   if (room.status !== "waiting") throw new Error("That room is no longer accepting players.");
   const { count, error: countError } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
   if (countError) throw new Error(`Unable to check room capacity: ${countError.message}`);
