@@ -190,7 +190,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }
 
   if (questionStartsIn === null || questionStartsIn > 0) {
-    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">Question {round.questionNumber} starts in {questionStartsIn ?? 15}s</h1><p className="mt-3 text-gray-600">The timer will begin for everyone at the same moment.</p></div></main>;
+    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">Question {round.questionNumber} starts in {questionStartsIn ?? 15}s</h1></div></main>;
   }
 
   return (

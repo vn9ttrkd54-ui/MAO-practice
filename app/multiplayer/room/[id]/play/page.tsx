@@ -9,11 +9,12 @@ interface MatchPageProps {
 
 export default async function MatchPage({ params }: MatchPageProps) {
   const { id } = await params;
-  const access = await getMultiplayerRoom(id);
-  if (!access) notFound();
-  if (access.room.status === "waiting") redirect(`/multiplayer/room/${id}`);
-
   const round = await getMultiplayerRoundState(id);
-  if (!round) notFound();
+  if (!round) {
+    const access = await getMultiplayerRoom(id);
+    if (!access) notFound();
+    if (access.room.status === "waiting" || access.room.status === "countdown") redirect(`/multiplayer/room/${id}`);
+    notFound();
+  }
   return <MatchQuestion round={round} />;
 }

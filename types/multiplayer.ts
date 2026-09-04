@@ -64,6 +64,7 @@ export interface MultiplayerRoom {
   createdAt: number;
   startedAt: number | null;
   stateVersion: number;
+  currentQuestionNumber: number;
 }
 
 export interface MultiplayerPublicRoomPlayer {

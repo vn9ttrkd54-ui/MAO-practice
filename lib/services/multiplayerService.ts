@@ -138,6 +138,7 @@ function mapRoom(row: RoomRow, playerCount: number): MultiplayerRoom {
     createdAt: new Date(row.created_at).getTime(),
     startedAt: row.started_at ? new Date(row.started_at).getTime() : null,
     stateVersion: row.state_version,
+    currentQuestionNumber: row.current_question_number,
   };
 }
 
@@ -288,7 +289,7 @@ export async function joinPrivateRoom(input: JoinPrivateRoomInput): Promise<Mult
   return mapRoom(room, (count ?? 0) + 1);
 }
 
-export async function getMultiplayerRoom(roomId: string): Promise<MultiplayerRoomAccess | null> {
+export async function getMultiplayerRoom(roomId: string, includePlayerCount = true): Promise<MultiplayerRoomAccess | null> {
   const admin = createAdminClient();
   const user = await currentUser();
   const { data: room, error } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).maybeSingle<RoomRow>();
@@ -307,7 +308,9 @@ export async function getMultiplayerRoom(roomId: string): Promise<MultiplayerRoo
   }
   if (!player) return null;
 
-  const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null);
+  const { count } = includePlayerCount
+    ? await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null)
+    : { count: 0 };
   let displayName = player.guest_nickname ?? "Player";
   if (player.user_id) {
     const { data: profile } = await admin.from("profiles").select("username").eq("id", player.user_id).maybeSingle<{ username: string }>();
@@ -330,8 +333,7 @@ function tierForRp(rp: number): MultiplayerPlayer["rankTier"] {
 
 async function listActiveSpectators(roomId: string): Promise<MultiplayerSpectator[]> {
   const admin = createAdminClient();
-  await admin.from("multiplayer_spectators").delete().eq("room_id", roomId).lt("last_seen_at", new Date(Date.now() - 10_000).toISOString());
-  const { data, error } = await admin.from("multiplayer_spectators").select("user_id, joined_at").eq("room_id", roomId).order("joined_at");
+  const { data, error } = await admin.from("multiplayer_spectators").select("user_id, joined_at").eq("room_id", roomId).gte("last_seen_at", new Date(Date.now() - 10_000).toISOString()).order("joined_at");
   if (error) throw new Error("Unable to load spectators right now.");
   const rows = (data ?? []) as SpectatorRow[];
   if (rows.length === 0) return [];
@@ -378,7 +380,7 @@ export async function updatePrivateRoomPresence(roomId: string, connected: boole
 }
 
 export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyState | null> {
-  const access = await getMultiplayerRoom(roomId);
+  const access = await getMultiplayerRoom(roomId, false);
   if (!access) return null;
 
   const admin = createAdminClient();
@@ -534,15 +536,17 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
   if (!lobby || lobby.room.status !== "in-progress") return null;
 
   const admin = createAdminClient();
-  let { data: room } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
-  if (!room || room.status !== "in-progress") return null;
-
-  let questionResponse = await admin
-    .from("multiplayer_match_questions")
-    .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
-    .eq("room_id", roomId)
-    .eq("question_number", room.current_question_number)
-    .maybeSingle<MatchQuestionRow>();
+  let currentQuestionNumber = lobby.room.currentQuestionNumber;
+  const initialRoundLoad = await Promise.all([
+    admin.from("multiplayer_match_questions")
+      .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
+      .eq("room_id", roomId)
+      .eq("question_number", currentQuestionNumber)
+      .maybeSingle<MatchQuestionRow>(),
+    listActiveSpectators(roomId),
+  ]);
+  let questionResponse = initialRoundLoad[0];
+  const spectators = initialRoundLoad[1];
   let data = questionResponse.data;
   let error = questionResponse.error;
   if (error || !data?.ends_at) return null;
@@ -571,16 +575,14 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
     if (transition === "inactive" || transition === "preparing") return null;
     advancedToNextQuestion = transition === "advanced";
     if (transition === "advanced") {
-      const roomResponse = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
-      room = roomResponse.data;
-      if (roomResponse.error || !room || room.status !== "in-progress") return null;
+      currentQuestionNumber = data.question_number + 1;
     }
     if (transition === "advanced" || transition === "intermission") {
       questionResponse = await admin
         .from("multiplayer_match_questions")
         .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
         .eq("room_id", roomId)
-        .eq("question_number", room.current_question_number)
+        .eq("question_number", currentQuestionNumber)
         .maybeSingle<MatchQuestionRow>();
       data = questionResponse.data;
       error = questionResponse.error;
@@ -605,14 +607,14 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
       question: question.question,
       choices: question.choices,
     },
-    questionDurationSeconds: room.seconds_per_question,
+    questionDurationSeconds: lobby.room.settings.secondsPerQuestion,
     questionStartedAt: new Date(data.started_at!).getTime(),
     questionEndsAt: new Date(data.ends_at).getTime(),
     intermissionEndsAt: data.intermission_ends_at ? new Date(data.intermission_ends_at).getTime() : null,
     players: advancedToNextQuestion
       ? lobby.players.map((player) => ({ ...player, hasSubmittedCurrentQuestion: false }))
       : lobby.players,
-    spectators: await listActiveSpectators(roomId),
+    spectators,
   };
 }
 
