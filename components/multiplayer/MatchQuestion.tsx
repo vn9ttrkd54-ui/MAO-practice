@@ -136,33 +136,18 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   useEffect(() => {
     const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
     const delay = Math.max(0, boundary - Date.now() + 100);
-    const upcoming = round.upcomingQuestion;
-    const timer = window.setTimeout(() => {
-      if (upcoming && round.intermissionEndsAt) {
-        questionNumber.current = upcoming.questionNumber;
-        setDisplayEndsAt(Math.min(
-          upcoming.questionEndsAt,
-          Math.max(Date.now(), upcoming.questionStartedAt) + round.questionDurationSeconds * 1000,
-        ));
-        setSelected(null);
-        setShowLeaderboard(false);
-        setIsSubmitting(false);
-        setDeliveryReady(false);
-        setRound((current) => ({
-          ...current,
-          questionNumber: upcoming.questionNumber,
-          question: upcoming.question,
-          questionStartedAt: upcoming.questionStartedAt,
-          questionEndsAt: upcoming.questionEndsAt,
-          intermissionEndsAt: null,
-          upcomingQuestion: null,
-          players: current.players.map((player) => ({ ...player, hasSubmittedCurrentQuestion: false })),
-        }));
-      }
-      refreshRound.current();
-    }, delay);
-    return () => window.clearTimeout(timer);
-  }, [round.intermissionEndsAt, round.questionDurationSeconds, round.questionEndsAt, round.upcomingQuestion]);
+    const boundaryTimer = window.setTimeout(() => refreshRound.current(), delay);
+    const preflightDelay = round.intermissionEndsAt && currentPlayer?.isHost
+      ? Math.max(0, round.intermissionEndsAt - Date.now() - 4_000)
+      : null;
+    const preflightTimer = preflightDelay === null
+      ? null
+      : window.setTimeout(() => refreshRound.current(), preflightDelay);
+    return () => {
+      window.clearTimeout(boundaryTimer);
+      if (preflightTimer !== null) window.clearTimeout(preflightTimer);
+    };
+  }, [currentPlayer?.isHost, round.intermissionEndsAt, round.questionEndsAt]);
 
   async function submitAnswer() {
     if (!selected || isSubmitting) return;
