@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { leaveMultiplayerRoomAction, startPrivateRoomAction } from "@/app/multiplayer/actions";
 import PendingSubmitButton from "@/components/multiplayer/PendingSubmitButton";
 import { RankIcon, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import type { MultiplayerLobbyState } from "@/types/multiplayer";
 
 interface PrivateLobbyProps {
@@ -18,13 +19,20 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
   const [now, setNow] = useState<number | null>(null);
   const router = useRouter();
   const navigatingToGame = useRef(false);
+  const refreshLobby = useRef<() => void>(() => undefined);
 
   useEffect(() => {
     const endpoint = `/api/multiplayer/rooms/${lobby.room.id}/lobby`;
     let stopped = false;
-    let pollTimer: number | null = null;
+    let requestInFlight = false;
+    let refreshQueued = false;
 
     async function pollLobby() {
+      if (requestInFlight) {
+        refreshQueued = true;
+        return;
+      }
+      requestInFlight = true;
       try {
         const response = await fetch(endpoint, { cache: "no-store" });
         if (stopped) return;
@@ -41,13 +49,20 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
           return;
         }
       } catch {
-        // Keep polling; a brief network interruption should not strand the lobby.
+        // The heartbeat retries after brief network interruptions.
       } finally {
-        if (!stopped && !navigatingToGame.current) pollTimer = window.setTimeout(pollLobby, 1_000);
+        requestInFlight = false;
+        if (refreshQueued && !stopped && !navigatingToGame.current) {
+          refreshQueued = false;
+          void pollLobby();
+        }
       }
     }
 
+    refreshLobby.current = () => void pollLobby();
     void pollLobby();
+    const unsubscribe = subscribeToMultiplayerRoom(lobby.room.id, refreshLobby.current);
+    const heartbeat = window.setInterval(refreshLobby.current, 5_000);
 
     function disconnect() {
       void fetch(endpoint, { method: "DELETE", keepalive: true });
@@ -69,12 +84,21 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
     document.addEventListener("click", disconnectForOutsideLink, true);
     return () => {
       stopped = true;
-      if (pollTimer) window.clearTimeout(pollTimer);
+      refreshLobby.current = () => undefined;
+      window.clearInterval(heartbeat);
+      unsubscribe();
       window.removeEventListener("pagehide", disconnect);
       window.removeEventListener("popstate", disconnect);
       document.removeEventListener("click", disconnectForOutsideLink, true);
     };
   }, [lobby.room.id, router]);
+
+  useEffect(() => {
+    if (!lobby.room.countdownEndsAt || lobby.room.status !== "countdown") return;
+    const delay = Math.max(0, lobby.room.countdownEndsAt - Date.now() + 100);
+    const timer = window.setTimeout(() => refreshLobby.current(), delay);
+    return () => window.clearTimeout(timer);
+  }, [lobby.room.countdownEndsAt, lobby.room.status]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 250);

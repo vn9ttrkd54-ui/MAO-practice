@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import type { MultiplayerSpectator, MultiplayerSpectatorState } from "@/types/multiplayer";
 
 function Spectators({ spectators }: { spectators: MultiplayerSpectator[] }) {
@@ -32,34 +33,68 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
   const [state, setState] = useState(initialState);
   const [now, setNow] = useState<number | null>(null);
   const [ended, setEnded] = useState(false);
+  const refreshState = useRef<() => void>(() => undefined);
 
   useEffect(() => {
+    let stopped = false;
+    let requestInFlight = false;
+    let refreshQueued = false;
     const clock = window.setInterval(() => setNow(Date.now()), 250);
-    const poll = window.setInterval(async () => {
-      const response = await fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { cache: "no-store" });
-      if (!response.ok) {
-        setEnded(true);
+
+    async function loadState() {
+      if (requestInFlight) {
+        refreshQueued = true;
         return;
       }
-      const payload = await response.json() as MultiplayerSpectatorState | { completed: true };
-      if ("completed" in payload) {
-        window.clearInterval(poll);
-        router.replace(`/multiplayer/room/${state.roomId}/results`);
-        return;
+      requestInFlight = true;
+      try {
+        const response = await fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { cache: "no-store" });
+        if (stopped) return;
+        if (!response.ok) {
+          if (response.status === 404) setEnded(true);
+          return;
+        }
+        const payload = await response.json() as MultiplayerSpectatorState | { completed: true };
+        if ("completed" in payload) {
+          router.replace(`/multiplayer/room/${state.roomId}/results`);
+          return;
+        }
+        setState(payload);
+      } catch {
+        // The heartbeat retries after brief network interruptions.
+      } finally {
+        requestInFlight = false;
+        if (refreshQueued && !stopped) {
+          refreshQueued = false;
+          void loadState();
+        }
       }
-      setState(payload);
-    }, 1000);
+    }
+
+    refreshState.current = () => void loadState();
+    const unsubscribe = subscribeToMultiplayerRoom(state.roomId, refreshState.current);
+    const heartbeat = window.setInterval(refreshState.current, 5_000);
     const leave = () => {
       fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true });
     };
     window.addEventListener("pagehide", leave);
     return () => {
+      stopped = true;
+      refreshState.current = () => undefined;
       window.clearInterval(clock);
-      window.clearInterval(poll);
+      window.clearInterval(heartbeat);
+      unsubscribe();
       window.removeEventListener("pagehide", leave);
       fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true });
     };
   }, [router, state.roomId]);
+
+  useEffect(() => {
+    const boundary = state.intermissionEndsAt ?? state.questionEndsAt;
+    const delay = Math.max(0, boundary - Date.now() + 100);
+    const timer = window.setTimeout(() => refreshState.current(), delay);
+    return () => window.clearTimeout(timer);
+  }, [state.intermissionEndsAt, state.questionEndsAt]);
 
   if (ended) {
     return (

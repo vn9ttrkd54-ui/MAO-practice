@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import type { MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
 
@@ -29,6 +30,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const questionNumber = useRef(initialRound.questionNumber);
+  const refreshRound = useRef<() => void>(() => undefined);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
   const submitted = currentPlayer?.hasSubmittedCurrentQuestion ?? false;
   const secondsLeft = now === null ? null : Math.max(0, Math.ceil((displayEndsAt - now) / 1000));
@@ -36,10 +38,16 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
 
   useEffect(() => {
     let stopped = false;
-    let pollTimer: number | null = null;
+    let requestInFlight = false;
+    let refreshQueued = false;
     const clock = window.setInterval(() => setNow(Date.now()), 250);
 
     async function pollRound() {
+      if (requestInFlight) {
+        refreshQueued = true;
+        return;
+      }
+      requestInFlight = true;
       try {
         const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, { cache: "no-store" });
         if (stopped) return;
@@ -68,17 +76,33 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       } catch {
         if (!stopped) setError("Connection interrupted. Reconnecting…");
       } finally {
-        if (!stopped) pollTimer = window.setTimeout(pollRound, 750);
+        requestInFlight = false;
+        if (refreshQueued && !stopped) {
+          refreshQueued = false;
+          void pollRound();
+        }
       }
     }
 
+    refreshRound.current = () => void pollRound();
     void pollRound();
+    const unsubscribe = subscribeToMultiplayerRoom(round.roomId, refreshRound.current);
+    const recoveryPoll = window.setInterval(refreshRound.current, 7_000);
     return () => {
       stopped = true;
+      refreshRound.current = () => undefined;
       window.clearInterval(clock);
-      if (pollTimer) window.clearTimeout(pollTimer);
+      window.clearInterval(recoveryPoll);
+      unsubscribe();
     };
   }, [round.roomId, router]);
+
+  useEffect(() => {
+    const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
+    const delay = Math.max(0, boundary - Date.now() + 100);
+    const timer = window.setTimeout(() => refreshRound.current(), delay);
+    return () => window.clearTimeout(timer);
+  }, [round.intermissionEndsAt, round.questionEndsAt]);
 
   async function submitAnswer() {
     if (!selected || isSubmitting) return;

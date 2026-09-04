@@ -29,17 +29,8 @@ export function LiveRoomListRefresh() {
         },
         scheduleRefresh,
       )
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "multiplayer_players",
-        },
-        scheduleRefresh,
-      )
       .subscribe();
-    const pollTimer = window.setInterval(() => router.refresh(), 3_000);
+    const pollTimer = window.setInterval(() => router.refresh(), 10_000);
 
     return () => {
       if (refreshTimer) clearTimeout(refreshTimer);

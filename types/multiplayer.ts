@@ -63,6 +63,7 @@ export interface MultiplayerRoom {
   countdownEndsAt: number | null;
   createdAt: number;
   startedAt: number | null;
+  stateVersion: number;
 }
 
 export interface MultiplayerPublicRoomPlayer {

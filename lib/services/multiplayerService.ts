@@ -49,6 +49,7 @@ interface RoomRow {
   created_at: string;
   started_at: string | null;
   current_question_number: number;
+  state_version: number;
 }
 
 interface PlayerRow {
@@ -134,6 +135,7 @@ function mapRoom(row: RoomRow, playerCount: number): MultiplayerRoom {
     countdownEndsAt: row.countdown_ends_at ? new Date(row.countdown_ends_at).getTime() : null,
     createdAt: new Date(row.created_at).getTime(),
     startedAt: row.started_at ? new Date(row.started_at).getTime() : null,
+    stateVersion: row.state_version,
   };
 }
 
