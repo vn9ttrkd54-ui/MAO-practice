@@ -61,10 +61,19 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           return;
         }
         if (response.status === 200) {
-          const nextRound = await response.json() as MultiplayerRoundState;
+          let nextRound = await response.json() as MultiplayerRoundState;
           setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
           if (nextRound.questionNumber >= questionNumber.current) {
             if (nextRound.questionNumber > questionNumber.current) {
+              // Concurrent transition requests can briefly return player flags
+              // read from the previous question. A new round always starts clean.
+              nextRound = {
+                ...nextRound,
+                players: nextRound.players.map((player) => ({
+                  ...player,
+                  hasSubmittedCurrentQuestion: false,
+                })),
+              };
               if (nextRound.questionStartedAt > Date.now()) {
                 setPendingRound((current) => current?.questionNumber === nextRound.questionNumber ? current : nextRound);
                 return;
@@ -72,12 +81,12 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
               questionNumber.current = nextRound.questionNumber;
               setDisplayEndsAt(Math.min(
                 nextRound.questionEndsAt,
-                Math.max(Date.now(), nextRound.questionStartedAt) + nextRound.questionDurationSeconds * 1000,
+                nextRound.questionStartedAt + nextRound.questionDurationSeconds * 1000,
               ));
               setSelected(null);
               setShowLeaderboard(false);
               setIsSubmitting(false);
-              setDeliveryReady(false);
+              setDeliveryReady(true);
             }
             setRound(nextRound);
           }
