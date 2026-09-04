@@ -535,32 +535,47 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
   let { data: room } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
   if (!room || room.status !== "in-progress") return null;
 
-  const { data: transition, error: transitionError } = await admin.rpc(
-    "advance_multiplayer_round_state",
-    { p_room_id: roomId },
-  );
-  if (transitionError) throw new Error(`Unable to synchronize the round: ${transitionError.message}`);
-  if (transition === "completed") {
-    await finalizeCompletedMatch(roomId);
-    return null;
-  }
-  if (transition === "inactive" || transition === "preparing") return null;
-  const advancedToNextQuestion = transition === "advanced";
-  if (advancedToNextQuestion) {
-    const response = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
-    room = response.data;
-    if (response.error || !room || room.status !== "in-progress") return null;
-  }
-
-  const questionResponse = await admin
+  let questionResponse = await admin
     .from("multiplayer_match_questions")
     .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
     .eq("room_id", roomId)
     .eq("question_number", room.current_question_number)
     .maybeSingle<MatchQuestionRow>();
-  const data = questionResponse.data;
-  const error = questionResponse.error;
+  let data = questionResponse.data;
+  let error = questionResponse.error;
   if (error || !data?.ends_at) return null;
+
+  const transitionDueAt = data.intermission_ends_at ?? data.hard_ends_at ?? data.ends_at;
+  let advancedToNextQuestion = false;
+  if (Date.now() >= new Date(transitionDueAt).getTime()) {
+    const { data: transition, error: transitionError } = await admin.rpc(
+      "advance_multiplayer_round_state",
+      { p_room_id: roomId },
+    );
+    if (transitionError) throw new Error(`Unable to synchronize the round: ${transitionError.message}`);
+    if (transition === "completed") {
+      await finalizeCompletedMatch(roomId);
+      return null;
+    }
+    if (transition === "inactive" || transition === "preparing") return null;
+    advancedToNextQuestion = transition === "advanced";
+    if (transition === "advanced") {
+      const roomResponse = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
+      room = roomResponse.data;
+      if (roomResponse.error || !room || room.status !== "in-progress") return null;
+    }
+    if (transition === "advanced" || transition === "intermission") {
+      questionResponse = await admin
+        .from("multiplayer_match_questions")
+        .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
+        .eq("room_id", roomId)
+        .eq("question_number", room.current_question_number)
+        .maybeSingle<MatchQuestionRow>();
+      data = questionResponse.data;
+      error = questionResponse.error;
+      if (error || !data?.ends_at) return null;
+    }
+  }
 
   const question = questions.find((entry) => entry.id === data.question_id);
   if (!question || !data.ends_at) return null;
@@ -747,8 +762,24 @@ interface SubmissionRow {
 
 async function finalizeCompletedMatch(roomId: string): Promise<void> {
   const admin = createAdminClient();
-  const { count } = await admin.from("multiplayer_match_results").select("player_id", { count: "exact", head: true }).eq("room_id", roomId);
-  if ((count ?? 0) > 0) return;
+  const { data: claim, error: claimError } = await admin.rpc(
+    "claim_multiplayer_result_finalization",
+    { p_room_id: roomId },
+  );
+  if (claimError) throw new Error(`Unable to prepare multiplayer results: ${claimError.message}`);
+  if (claim === "ready" || claim === "inactive") return;
+  if (claim === "waiting") {
+    for (let attempt = 0; attempt < 50; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      const { data: finalization } = await admin
+        .from("multiplayer_rooms")
+        .select("results_finalized_at")
+        .eq("id", roomId)
+        .single<{ results_finalized_at: string | null }>();
+      if (finalization?.results_finalized_at) return;
+    }
+    return;
+  }
 
   const [{ data: room }, playersResponse, submissionsResponse, matchQuestionsResponse] = await Promise.all([
     admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>(),
@@ -822,7 +853,11 @@ async function finalizeCompletedMatch(roomId: string): Promise<void> {
 
   const { error: insertError } = await admin.from("multiplayer_match_results").insert(resultRows);
   if (insertError) {
-    if (insertError.code === "23505") return;
+    if (insertError.code === "23505") {
+      await admin.from("multiplayer_rooms").update({ results_finalized_at: new Date().toISOString() }).eq("id", roomId);
+      return;
+    }
+    await admin.from("multiplayer_rooms").update({ finalization_started_at: null }).eq("id", roomId);
     throw new Error(`Unable to finalize multiplayer results: ${insertError.message}`);
   }
 
@@ -836,6 +871,7 @@ async function finalizeCompletedMatch(roomId: string): Promise<void> {
       ranked_wins: profile.ranked_wins + (result.placement === 1 ? 1 : 0),
     }).eq("user_id", result.user_id)];
   }));
+  await admin.from("multiplayer_rooms").update({ results_finalized_at: new Date().toISOString() }).eq("id", roomId);
 }
 
 export async function getMultiplayerMatchResult(roomId: string): Promise<MultiplayerMatchResult | null> {
