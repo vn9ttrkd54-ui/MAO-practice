@@ -39,9 +39,11 @@ export function LiveRoomListRefresh() {
         scheduleRefresh,
       )
       .subscribe();
+    const pollTimer = window.setInterval(() => router.refresh(), 3_000);
 
     return () => {
       if (refreshTimer) clearTimeout(refreshTimer);
+      window.clearInterval(pollTimer);
       void supabase.removeChannel(channel);
     };
   }, [router]);

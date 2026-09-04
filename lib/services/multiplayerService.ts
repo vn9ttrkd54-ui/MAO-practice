@@ -318,7 +318,19 @@ export async function updatePrivateRoomPresence(roomId: string, connected: boole
   }
 
   const { data, error } = await query.select("id");
-  return !error && (data?.length ?? 0) === 1;
+  const updated = !error && (data?.length ?? 0) === 1;
+
+  if (updated && !connected) {
+    const [{ data: room }, { count }] = await Promise.all([
+      admin.from("multiplayer_rooms").select("visibility, status").eq("id", roomId).maybeSingle<{ visibility: "public" | "private"; status: RoomRow["status"] }>(),
+      admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null),
+    ]);
+    if (room?.visibility === "public" && room.status === "countdown" && (count ?? 0) < 2) {
+      await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown");
+    }
+  }
+
+  return updated;
 }
 
 export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyState | null> {
@@ -922,10 +934,19 @@ export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   if (!["waiting", "countdown"].includes(room.status)) throw new Error("That public room has already started.");
 
   const { data: existing } = await admin.from("multiplayer_players").select("id").eq("room_id", roomId).eq("user_id", user.id).is("left_at", null).maybeSingle();
-  const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null);
-  if (!existing && (count ?? 0) >= room.capacity) throw new Error("That public room is full.");
-  if (!existing) await addPlayer(room);
-  const playerCount = (count ?? 0) + (existing ? 0 : 1);
+  const { count: activeCount } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null);
+  if (!existing && (activeCount ?? 0) >= room.capacity) throw new Error("That public room is full.");
+
+  if (existing) {
+    const { error: reconnectError } = await admin.from("multiplayer_players").update({ connected: true }).eq("id", existing.id);
+    if (reconnectError) throw new Error("Unable to reconnect to that public room.");
+  } else {
+    await addPlayer(room);
+  }
+
+  const { count: refreshedCount, error: countError } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null);
+  if (countError) throw new Error("Unable to check the active players in that room.");
+  const playerCount = refreshedCount ?? 0;
 
   let updatedRoom = room;
   if (playerCount >= 2 && room.status === "waiting") {
@@ -948,7 +969,7 @@ export async function leaveMultiplayerRoom(roomId: string): Promise<void> {
     const { error } = await admin.from("multiplayer_players").delete().eq("room_id", roomId).eq("id", access.currentPlayer.playerId);
     if (error) throw new Error("Unable to leave the room right now.");
     if (access.room.visibility === "public" && access.room.status === "countdown") {
-      const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null);
+      const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null);
       if ((count ?? 0) < 2) await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown");
     }
   }

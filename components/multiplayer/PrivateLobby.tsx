@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { leaveMultiplayerRoomAction, startPrivateRoomAction } from "@/app/multiplayer/actions";
@@ -17,9 +17,9 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
   const [lobby, setLobby] = useState(initialLobby);
   const [now, setNow] = useState<number | null>(null);
   const router = useRouter();
+  const navigatingToGame = useRef(false);
 
   useEffect(() => {
-    if (!["waiting", "countdown"].includes(lobby.room.status)) return;
     const endpoint = `/api/multiplayer/rooms/${lobby.room.id}/lobby`;
     const timer = window.setInterval(async () => {
       const response = await fetch(endpoint, { cache: "no-store" });
@@ -27,6 +27,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
         const nextLobby = await response.json() as MultiplayerLobbyState;
         setLobby(nextLobby);
         if (nextLobby.room.status === "in-progress") {
+          navigatingToGame.current = true;
           router.replace(`/multiplayer/room/${nextLobby.room.id}/play`);
         }
       } else if (response.status === 404) {
@@ -38,12 +39,27 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
       void fetch(endpoint, { method: "DELETE", keepalive: true });
     }
 
+    function disconnectForOutsideLink(event: MouseEvent) {
+      if (navigatingToGame.current || !(event.target instanceof Element)) return;
+      const link = event.target.closest("a[href]");
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const destination = new URL(link.href, window.location.href);
+      const roomPath = `/multiplayer/room/${lobby.room.id}`;
+      if (destination.origin === window.location.origin && !destination.pathname.startsWith(roomPath)) {
+        disconnect();
+      }
+    }
+
     window.addEventListener("pagehide", disconnect);
+    window.addEventListener("popstate", disconnect);
+    document.addEventListener("click", disconnectForOutsideLink, true);
     return () => {
       window.clearInterval(timer);
       window.removeEventListener("pagehide", disconnect);
+      window.removeEventListener("popstate", disconnect);
+      document.removeEventListener("click", disconnectForOutsideLink, true);
     };
-  }, [lobby.room.id, lobby.room.status, router]);
+  }, [lobby.room.id, router]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 250);
