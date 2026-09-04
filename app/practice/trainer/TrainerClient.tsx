@@ -26,6 +26,12 @@ import {
   calculateTrainerStats,
   getNextTrainerQuestion,
 } from "@/lib/trainer";
+import {
+  applyAdaptiveTrainerResult,
+  createAdaptiveTrainerState,
+  isTrainerChallengeQuestion,
+  type AdaptiveTrainerState,
+} from "@/lib/trainerAdaptive";
 
 import {
   saveVerifiedTrainerResult,
@@ -80,6 +86,12 @@ export default function TrainerClient() {
   ] = useState<AnswerChoice | null>(null);
 
   const [submitted, setSubmitted] =
+    useState(false);
+
+  const [adaptiveState, setAdaptiveState] =
+    useState<AdaptiveTrainerState | null>(null);
+
+  const [currentIsChallenge, setCurrentIsChallenge] =
     useState(false);
 
   const [isSaving, setIsSaving] =
@@ -211,6 +223,8 @@ export default function TrainerClient() {
       }
 
       setCurrentQuestion(firstQuestion);
+      setAdaptiveState(createAdaptiveTrainerState(firstQuestion.difficulty));
+      setCurrentIsChallenge(false);
       setSelectedAnswer(null);
       setSubmitted(false);
       setResults([]);
@@ -290,6 +304,10 @@ export default function TrainerClient() {
         ...currentResults,
         newResult,
       ]);
+      setAdaptiveState((current) => current
+        ? applyAdaptiveTrainerResult(current, newResult.result, currentIsChallenge)
+        : current
+      );
 
       setQuestionFinishedAt(answeredAt);
       setNow(answeredAt);
@@ -344,6 +362,10 @@ export default function TrainerClient() {
         ...currentResults,
         newResult,
       ]);
+      setAdaptiveState((current) => current
+        ? applyAdaptiveTrainerResult(current, newResult.result, currentIsChallenge)
+        : current
+      );
 
       setSelectedAnswer(null);
       setQuestionFinishedAt(answeredAt);
@@ -366,11 +388,16 @@ export default function TrainerClient() {
     setIsSaving(true);
 
     try {
+      const nextQuestionNumber = results.length + 1;
+      const forceChallenge = isTrainerChallengeQuestion(nextQuestionNumber);
       const nextQuestion =
         await getNextTrainerQuestion({
           division,
           previousQuestionId:
             currentQuestion.id,
+          targetDifficulty: adaptiveState?.difficulty,
+          sessionResults: results,
+          forceChallenge,
         });
 
       if (!nextQuestion) {
@@ -381,6 +408,7 @@ export default function TrainerClient() {
       }
 
       setCurrentQuestion(nextQuestion);
+      setCurrentIsChallenge(forceChallenge);
       setSelectedAnswer(null);
       setSubmitted(false);
       const startedAt = Date.now();
@@ -450,6 +478,8 @@ export default function TrainerClient() {
     setShowEndDialog(false);
     setSessionStarted(false);
     setCurrentQuestion(null);
+    setAdaptiveState(null);
+    setCurrentIsChallenge(false);
     setSessionStartedAt(null);
     setSessionEndedAt(null);
     setQuestionFinishedAt(null);
