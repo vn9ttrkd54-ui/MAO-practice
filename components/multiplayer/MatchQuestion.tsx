@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import MathText from "@/components/math/MathText";
@@ -23,53 +23,82 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const questionNumber = useRef(initialRound.questionNumber);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
   const submitted = currentPlayer?.hasSubmittedCurrentQuestion ?? false;
   const secondsLeft = now === null ? null : Math.max(0, Math.ceil((round.questionEndsAt - now) / 1000));
   const intermissionLeft = now === null || !round.intermissionEndsAt ? null : Math.max(0, Math.ceil((round.intermissionEndsAt - now) / 1000));
 
   useEffect(() => {
+    let stopped = false;
+    let pollTimer: number | null = null;
     const clock = window.setInterval(() => setNow(Date.now()), 250);
-    const poll = window.setInterval(async () => {
-      const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, { cache: "no-store" });
-      if (response.status === 204) {
-        setFinished(true);
-        router.replace(`/multiplayer/room/${round.roomId}/results`);
-      } else if (response.ok) {
-        const nextRound = await response.json() as MultiplayerRoundState;
-        setRound((current) => {
-          if (current.questionNumber !== nextRound.questionNumber) {
-            setSelected(null);
-            setShowLeaderboard(false);
+
+    async function pollRound() {
+      try {
+        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, { cache: "no-store" });
+        if (stopped) return;
+        if (response.status === 204) {
+          setFinished(true);
+          router.replace(`/multiplayer/room/${round.roomId}/results`);
+          return;
+        }
+        if (response.status === 200) {
+          const nextRound = await response.json() as MultiplayerRoundState;
+          setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
+          if (nextRound.questionNumber >= questionNumber.current) {
+            if (nextRound.questionNumber > questionNumber.current) {
+              questionNumber.current = nextRound.questionNumber;
+              setSelected(null);
+              setShowLeaderboard(false);
+              setIsSubmitting(false);
+            }
+            setRound(nextRound);
           }
-          return nextRound;
-        });
+        }
+      } catch {
+        if (!stopped) setError("Connection interrupted. Reconnecting…");
+      } finally {
+        if (!stopped) pollTimer = window.setTimeout(pollRound, 1_500);
       }
-    }, 1000);
-    return () => { window.clearInterval(clock); window.clearInterval(poll); };
+    }
+
+    void pollRound();
+    return () => {
+      stopped = true;
+      window.clearInterval(clock);
+      if (pollTimer) window.clearTimeout(pollTimer);
+    };
   }, [round.roomId, router]);
 
   async function submitAnswer() {
-    if (!selected) return;
+    if (!selected || isSubmitting) return;
+    setIsSubmitting(true);
     setError(null);
     setShowLeaderboard(true);
-    const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionId: round.question.questionId, selectedAnswer: selected }),
-    });
-    if (response.status === 204) {
-      setFinished(true);
-      router.replace(`/multiplayer/room/${round.roomId}/results`);
-      return;
+    try {
+      const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionId: round.question.questionId, selectedAnswer: selected }),
+      });
+      if (response.status === 204) {
+        setFinished(true);
+        router.replace(`/multiplayer/room/${round.roomId}/results`);
+        return;
+      }
+      const body = await response.json() as MultiplayerRoundState | { error: string };
+      if (!response.ok) {
+        setError("error" in body ? body.error : "Unable to submit answer.");
+        setShowLeaderboard(false);
+        return;
+      }
+      const submittedRound = body as MultiplayerRoundState;
+      if (submittedRound.questionNumber >= questionNumber.current) setRound(submittedRound);
+    } finally {
+      setIsSubmitting(false);
     }
-    const body = await response.json() as MultiplayerRoundState | { error: string };
-    if (!response.ok) {
-      setError("error" in body ? body.error : "Unable to submit answer.");
-      setShowLeaderboard(false);
-      return;
-    }
-    setRound(body as MultiplayerRoundState);
   }
 
   if (finished) {
@@ -89,7 +118,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
         <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
-        <button onClick={submitAnswer} disabled={!selected || submitted || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{submitted ? "Answer submitted" : "Submit Answer"}</button>
+        <button onClick={submitAnswer} disabled={!selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
       </section>
       <SpectatorList round={round} />
       </div>

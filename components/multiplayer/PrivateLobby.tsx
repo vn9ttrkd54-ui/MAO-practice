@@ -21,19 +21,33 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
 
   useEffect(() => {
     const endpoint = `/api/multiplayer/rooms/${lobby.room.id}/lobby`;
-    const timer = window.setInterval(async () => {
-      const response = await fetch(endpoint, { cache: "no-store" });
-      if (response.ok) {
-        const nextLobby = await response.json() as MultiplayerLobbyState;
-        setLobby(nextLobby);
-        if (nextLobby.room.status === "in-progress") {
-          navigatingToGame.current = true;
-          router.replace(`/multiplayer/room/${nextLobby.room.id}/play`);
+    let stopped = false;
+    let pollTimer: number | null = null;
+
+    async function pollLobby() {
+      try {
+        const response = await fetch(endpoint, { cache: "no-store" });
+        if (stopped) return;
+        if (response.ok) {
+          const nextLobby = await response.json() as MultiplayerLobbyState;
+          setLobby(nextLobby);
+          if (nextLobby.room.status === "in-progress") {
+            navigatingToGame.current = true;
+            router.replace(`/multiplayer/room/${nextLobby.room.id}/play`);
+            return;
+          }
+        } else if (response.status === 404) {
+          router.replace("/multiplayer");
+          return;
         }
-      } else if (response.status === 404) {
-        router.replace("/multiplayer");
+      } catch {
+        // Keep polling; a brief network interruption should not strand the lobby.
+      } finally {
+        if (!stopped && !navigatingToGame.current) pollTimer = window.setTimeout(pollLobby, 1_000);
       }
-    }, 2000);
+    }
+
+    void pollLobby();
 
     function disconnect() {
       void fetch(endpoint, { method: "DELETE", keepalive: true });
@@ -54,7 +68,8 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
     window.addEventListener("popstate", disconnect);
     document.addEventListener("click", disconnectForOutsideLink, true);
     return () => {
-      window.clearInterval(timer);
+      stopped = true;
+      if (pollTimer) window.clearTimeout(pollTimer);
       window.removeEventListener("pagehide", disconnect);
       window.removeEventListener("popstate", disconnect);
       document.removeEventListener("click", disconnectForOutsideLink, true);

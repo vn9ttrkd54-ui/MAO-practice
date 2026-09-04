@@ -338,21 +338,25 @@ export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyS
   if (!access) return null;
 
   const admin = createAdminClient();
-  await updatePrivateRoomPresence(roomId, true);
-  await admin
-    .from("multiplayer_players")
-    .update({ connected: false })
-    .eq("room_id", roomId)
-    .eq("connected", true)
-    .lt("updated_at", new Date(Date.now() - 10_000).toISOString());
+  const waitingForPlayers = access.room.status === "waiting";
+  const inLobby = waitingForPlayers || access.room.status === "countdown";
+  if (inLobby) await updatePrivateRoomPresence(roomId, true);
+  if (waitingForPlayers) {
+    await admin
+      .from("multiplayer_players")
+      .update({ connected: false })
+      .eq("room_id", roomId)
+      .eq("connected", true)
+      .lt("updated_at", new Date(Date.now() - 10_000).toISOString());
+  }
 
-  const { data, error } = await admin
+  let playersQuery = admin
     .from("multiplayer_players")
     .select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question")
     .eq("room_id", roomId)
-    .eq("connected", true)
-    .is("left_at", null)
-    .order("joined_at", { ascending: true });
+    .is("left_at", null);
+  if (inLobby) playersQuery = playersQuery.eq("connected", true);
+  const { data, error } = await playersQuery.order("joined_at", { ascending: true });
   if (error) throw new Error("Unable to load the lobby right now.");
 
   const rows = (data ?? []) as PlayerRow[];
@@ -398,6 +402,29 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
   const selectedQuestions = randomizedQuestions.slice(0, lobby.room.settings.questionCount);
   const startedAt = new Date();
   const firstQuestionEndsAt = new Date(startedAt.getTime() + lobby.room.settings.secondsPerQuestion * 1000);
+
+  const { data: claimedRoom, error: claimError } = await admin.from("multiplayer_rooms")
+    .update({ started_at: startedAt.toISOString() })
+    .eq("id", roomId)
+    .eq("status", expectedStatus)
+    .is("started_at", null)
+    .select("*")
+    .maybeSingle<RoomRow>();
+  if (claimError) throw new Error("Unable to reserve the room start.");
+  if (!claimedRoom) {
+    const { data: existingRoom } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
+    if (!existingRoom) throw new Error("The room is no longer available.");
+    return mapRoom(existingRoom, lobby.players.length);
+  }
+
+  if (lobby.room.visibility === "public") {
+    await admin.from("multiplayer_players")
+      .update({ left_at: startedAt.toISOString() })
+      .eq("room_id", roomId)
+      .eq("connected", false)
+      .is("left_at", null);
+  }
+
   const { error: questionsError } = await admin.from("multiplayer_match_questions").insert(
     selectedQuestions.map((question, index) => ({
       room_id: roomId,
@@ -409,21 +436,18 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
     }))
   );
   if (questionsError) {
-    if (questionsError.code === "23505") {
-      const { data: existingRoom } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
-      if (existingRoom?.status === "in-progress") return mapRoom(existingRoom, lobby.players.length);
-    }
+    await admin.from("multiplayer_rooms").update({ started_at: null }).eq("id", roomId).eq("status", expectedStatus);
     throw new Error(`Unable to prepare match questions: ${questionsError.message}`);
   }
 
   const { data, error } = await admin.from("multiplayer_rooms").update({
     status: "in-progress",
-    started_at: startedAt.toISOString(),
     current_question_number: 1,
     mode: lobby.players.length === 1 ? "unranked" : lobby.room.settings.mode,
   }).eq("id", roomId).eq("status", expectedStatus).select("*").single<RoomRow>();
   if (error) {
     await admin.from("multiplayer_match_questions").delete().eq("room_id", roomId);
+    await admin.from("multiplayer_rooms").update({ started_at: null }).eq("id", roomId).eq("status", expectedStatus);
     throw new Error("Unable to start the room right now.");
   }
 
@@ -479,11 +503,11 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
 
   const now = Date.now();
   if (!data.intermission_ends_at) {
-    const [{ count: submissionCount }, { count: activePlayerCount }] = await Promise.all([
+    const [{ count: submissionCount }, { count: matchPlayerCount }] = await Promise.all([
       admin.from("multiplayer_submissions").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("question_number", data.question_number),
-      admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null),
+      admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).is("left_at", null),
     ]);
-    if (now >= new Date(data.ends_at).getTime() || ((activePlayerCount ?? 0) > 0 && (submissionCount ?? 0) >= (activePlayerCount ?? 0))) {
+    if (now >= new Date(data.ends_at).getTime() || ((matchPlayerCount ?? 0) > 0 && (submissionCount ?? 0) >= (matchPlayerCount ?? 0))) {
       if (data.question_number >= room.question_count) {
         await admin.from("multiplayer_rooms").update({ status: "completed", completed_at: new Date(now).toISOString() }).eq("id", roomId).eq("status", "in-progress");
         await finalizeCompletedMatch(roomId);
@@ -501,6 +525,7 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
   }
 
   if (data.intermission_ends_at && now >= new Date(data.intermission_ends_at).getTime()) {
+    const previousQuestionNumber = data.question_number;
     const nextQuestionNumber = data.question_number + 1;
     const nextResponse = await admin.from("multiplayer_match_questions").update({
       started_at: new Date(now).toISOString(),
@@ -511,12 +536,15 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
       if (existingNext.error || !existingNext.data?.ends_at) return null;
       data = existingNext.data;
     } else {
-      await Promise.all([
-        admin.from("multiplayer_rooms").update({ current_question_number: nextQuestionNumber }).eq("id", roomId),
-        admin.from("multiplayer_players").update({ has_submitted_current_question: false }).eq("room_id", roomId).is("left_at", null),
-      ]);
       data = nextResponse.data;
     }
+
+    await admin.from("multiplayer_rooms")
+      .update({ current_question_number: nextQuestionNumber })
+      .eq("id", roomId)
+      .eq("status", "in-progress")
+      .eq("current_question_number", previousQuestionNumber);
+    await admin.from("multiplayer_players").update({ has_submitted_current_question: false }).eq("room_id", roomId).is("left_at", null);
   }
 
   const question = questions.find((entry) => entry.id === data.question_id);
@@ -583,12 +611,12 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
   const { error: playerError } = await admin.from("multiplayer_players").update({ score: lobby.currentPlayer.score + pointsEarned, has_submitted_current_question: true }).eq("room_id", input.roomId).eq("id", lobby.currentPlayer.playerId);
   if (playerError) throw new Error("Unable to update the score right now.");
 
-  const [{ count: submissionCount }, { count: activePlayerCount }] = await Promise.all([
+  const [{ count: submissionCount }, { count: matchPlayerCount }] = await Promise.all([
     admin.from("multiplayer_submissions").select("id", { count: "exact", head: true }).eq("room_id", input.roomId).eq("question_number", matchQuestion.question_number),
-    admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", input.roomId).eq("connected", true).is("left_at", null),
+    admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", input.roomId).is("left_at", null),
   ]);
   let intermissionEndsAt: string | null = null;
-  if ((activePlayerCount ?? 0) > 0 && (submissionCount ?? 0) >= (activePlayerCount ?? 0)) {
+  if ((matchPlayerCount ?? 0) > 0 && (submissionCount ?? 0) >= (matchPlayerCount ?? 0)) {
     if (matchQuestion.question_number >= room.question_count) {
       await admin.from("multiplayer_rooms").update({ status: "completed", completed_at: new Date().toISOString() }).eq("id", input.roomId).eq("status", "in-progress");
       await finalizeCompletedMatch(input.roomId);
@@ -715,7 +743,10 @@ async function finalizeCompletedMatch(roomId: string): Promise<void> {
   });
 
   const { error: insertError } = await admin.from("multiplayer_match_results").insert(resultRows);
-  if (insertError) return;
+  if (insertError) {
+    if (insertError.code === "23505") return;
+    throw new Error(`Unable to finalize multiplayer results: ${insertError.message}`);
+  }
 
   await Promise.all(resultRows.flatMap((result) => {
     if (!result.user_id || result.new_rp === null) return [];
@@ -833,7 +864,6 @@ export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHi
 
 export async function listPublicRooms(): Promise<MultiplayerPublicRoom[]> {
   const admin = createAdminClient();
-  await admin.from("multiplayer_players").update({ connected: false }).eq("connected", true).lt("updated_at", new Date(Date.now() - 10_000).toISOString());
   const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").in("status", ["waiting", "countdown"]).order("division").order("question_count");
   if (error) throw new Error("Unable to load public rooms right now.");
   const rooms = (data ?? []) as RoomRow[];
@@ -894,7 +924,6 @@ function multiplayerRoomHasNotExpired(room: RoomRow): boolean {
 
 export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> {
   const admin = createAdminClient();
-  await admin.from("multiplayer_players").update({ connected: false }).eq("connected", true).lt("updated_at", new Date(Date.now() - 10_000).toISOString());
   const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").eq("status", "in-progress").order("started_at", { ascending: false }).limit(20);
   if (error) throw new Error("Unable to load ongoing public matches right now.");
   const rooms = await Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
@@ -902,7 +931,7 @@ export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> {
       await admin.from("multiplayer_rooms").update({ status: "cancelled" }).eq("id", room.id).eq("status", "in-progress");
       return null;
     }
-    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).eq("connected", true).is("left_at", null);
+    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
     return (count ?? 0) > 0 ? mapRoom(room, count ?? 0) : null;
   }));
   return rooms.filter((room): room is MultiplayerRoom => room !== null);
@@ -933,11 +962,14 @@ export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   if (error || !room) throw new Error("Public room not found.");
   if (!["waiting", "countdown"].includes(room.status)) throw new Error("That public room has already started.");
 
-  const { data: existing } = await admin.from("multiplayer_players").select("id").eq("room_id", roomId).eq("user_id", user.id).is("left_at", null).maybeSingle();
+  const { data: existing } = await admin.from("multiplayer_players").select("id, connected").eq("room_id", roomId).eq("user_id", user.id).is("left_at", null).maybeSingle<{ id: string; connected: boolean }>();
   const { count: activeCount } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null);
   if (!existing && (activeCount ?? 0) >= room.capacity) throw new Error("That public room is full.");
 
   if (existing) {
+    if (existing.connected) {
+      throw new Error("This account is already connected to that game. Return to its original tab.");
+    }
     const { error: reconnectError } = await admin.from("multiplayer_players").update({ connected: true }).eq("id", existing.id);
     if (reconnectError) throw new Error("Unable to reconnect to that public room.");
   } else {

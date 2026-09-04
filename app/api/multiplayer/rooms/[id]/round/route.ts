@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getMultiplayerRoundState, submitMultiplayerAnswer } from "@/lib/services/multiplayerService";
+import { getMultiplayerRoom, getMultiplayerRoundState, submitMultiplayerAnswer } from "@/lib/services/multiplayerService";
 import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 import type { AnswerChoice } from "@/types/question";
 
@@ -11,7 +11,10 @@ interface RoundRouteContext {
 export async function GET(_request: Request, { params }: RoundRouteContext) {
   const { id } = await params;
   const round = await getMultiplayerRoundState(id);
-  return round ? NextResponse.json(round, { headers: { "Cache-Control": "no-store" } }) : new NextResponse(null, { status: 204 });
+  if (round) return NextResponse.json(round, { headers: { "Cache-Control": "no-store" } });
+  const access = await getMultiplayerRoom(id);
+  if (access?.room.status === "completed") return new NextResponse(null, { status: 204 });
+  return NextResponse.json({ status: "preparing" }, { status: 202, headers: { "Cache-Control": "no-store" } });
 }
 
 export async function POST(request: Request, { params }: RoundRouteContext) {
