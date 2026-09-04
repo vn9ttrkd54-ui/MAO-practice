@@ -33,6 +33,7 @@ const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
 const ALLOWED_TIMES = new Set([30, 60, 90, 120]);
 const QUESTION_HARD_DEADLINE_GRACE_MS = 5_000;
+const FIRST_QUESTION_READY_MS = 15_000;
 
 interface RoomRow {
   id: string;
@@ -443,11 +444,12 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
     [randomizedQuestions[index], randomizedQuestions[swapIndex]] = [randomizedQuestions[swapIndex], randomizedQuestions[index]];
   }
   const selectedQuestions = randomizedQuestions.slice(0, lobby.room.settings.questionCount);
-  const startedAt = new Date();
-  const firstQuestionEndsAt = new Date(startedAt.getTime() + lobby.room.settings.secondsPerQuestion * 1000 + QUESTION_HARD_DEADLINE_GRACE_MS);
+  const roomStartedAt = new Date();
+  const firstQuestionStartedAt = new Date(roomStartedAt.getTime() + FIRST_QUESTION_READY_MS);
+  const firstQuestionEndsAt = new Date(firstQuestionStartedAt.getTime() + lobby.room.settings.secondsPerQuestion * 1000 + QUESTION_HARD_DEADLINE_GRACE_MS);
 
   const { data: claimedRoom, error: claimError } = await admin.from("multiplayer_rooms")
-    .update({ started_at: startedAt.toISOString() })
+    .update({ started_at: roomStartedAt.toISOString() })
     .eq("id", roomId)
     .eq("status", expectedStatus)
     .is("started_at", null)
@@ -462,7 +464,7 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
 
   if (lobby.room.visibility === "public") {
     await admin.from("multiplayer_players")
-      .update({ left_at: startedAt.toISOString() })
+      .update({ left_at: roomStartedAt.toISOString() })
       .eq("room_id", roomId)
       .eq("connected", false)
       .is("left_at", null);
@@ -474,7 +476,7 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
       question_number: index + 1,
       question_id: question.id,
       difficulty: question.difficulty,
-      started_at: index === 0 ? startedAt.toISOString() : null,
+      started_at: index === 0 ? firstQuestionStartedAt.toISOString() : null,
       ends_at: index === 0 ? firstQuestionEndsAt.toISOString() : null,
       hard_ends_at: index === 0 ? firstQuestionEndsAt.toISOString() : null,
     }))
@@ -651,13 +653,14 @@ export async function acknowledgeMultiplayerQuestionDelivery(
   }
 
   const deliveryTime = new Date(deliveredAt).getTime();
+  const solvingStartedAt = Math.max(deliveryTime, new Date(matchQuestion.started_at).getTime());
   const hardEndsAt = new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime();
   return {
     questionNumber,
     deliveredAt: deliveryTime,
     personalEndsAt: Math.min(
       hardEndsAt,
-      deliveryTime + access.room.settings.secondsPerQuestion * 1000,
+      solvingStartedAt + access.room.settings.secondsPerQuestion * 1000,
     ),
     hardEndsAt,
   };
@@ -676,6 +679,8 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
   if (matchQuestion.question_id !== input.questionId) throw new Error("That question is no longer active.");
 
   const submittedAt = Date.now();
+  const questionStartedAt = new Date(matchQuestion.started_at).getTime();
+  if (submittedAt < questionStartedAt) throw new Error("This question has not started yet.");
   const hardEndsAt = new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime();
   const { data: delivery } = await admin
     .from("multiplayer_question_deliveries")
@@ -685,8 +690,8 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
     .eq("player_id", lobby.currentPlayer.playerId)
     .maybeSingle<{ delivered_at: string }>();
   const solvingStartedAt = delivery?.delivered_at
-    ? new Date(delivery.delivered_at).getTime()
-    : new Date(matchQuestion.started_at).getTime();
+    ? Math.max(new Date(delivery.delivered_at).getTime(), questionStartedAt)
+    : questionStartedAt;
   const personalEndsAt = Math.min(
     hardEndsAt,
     solvingStartedAt + room.seconds_per_question * 1000,

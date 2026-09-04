@@ -21,7 +21,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [round, setRound] = useState(initialRound);
   const [displayEndsAt, setDisplayEndsAt] = useState(() => Math.min(
     initialRound.questionEndsAt,
-    Date.now() + initialRound.questionDurationSeconds * 1000,
+    Math.max(Date.now(), initialRound.questionStartedAt) + initialRound.questionDurationSeconds * 1000,
   ));
   const [now, setNow] = useState<number | null>(null);
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
@@ -36,6 +36,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const submitted = currentPlayer?.hasSubmittedCurrentQuestion ?? false;
   const secondsLeft = now === null ? null : Math.max(0, Math.ceil((displayEndsAt - now) / 1000));
   const intermissionLeft = now === null || !round.intermissionEndsAt ? null : Math.max(0, Math.ceil((round.intermissionEndsAt - now) / 1000));
+  const questionStartsIn = now === null ? null : Math.max(0, Math.ceil((round.questionStartedAt - now) / 1000));
 
   useEffect(() => {
     let stopped = false;
@@ -65,7 +66,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
               questionNumber.current = nextRound.questionNumber;
               setDisplayEndsAt(Math.min(
                 nextRound.questionEndsAt,
-                Date.now() + nextRound.questionDurationSeconds * 1000,
+                Math.max(Date.now(), nextRound.questionStartedAt) + nextRound.questionDurationSeconds * 1000,
               ));
               setSelected(null);
               setShowLeaderboard(false);
@@ -185,6 +186,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
     return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 5}s` : "Waiting for the other players…"}</p></header><div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+  }
+
+  if (questionStartsIn === null || questionStartsIn > 0) {
+    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">Question {round.questionNumber} starts in {questionStartsIn ?? 15}s</h1><p className="mt-3 text-gray-600">The timer will begin for everyone at the same moment.</p></div></main>;
   }
 
   return (
