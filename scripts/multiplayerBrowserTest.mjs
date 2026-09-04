@@ -61,11 +61,21 @@ async function runPlayer(player) {
       if (questionNumber > lastQuestion) {
         lastQuestion = questionNumber;
         const timer = await page.getByText(/^\d+s$/).first().textContent().catch(() => "unknown");
-        player.questionLoads.push({ questionNumber, timer, atMs: Date.now() - startedAt });
+        const revealedAt = Date.now();
         console.log(`[${elapsed()}] ${name} loaded question ${questionNumber} at ${timer}`);
 
         const answer = page.getByRole("button", { name: /^A(?:\.|\s)/ }).first();
         await answer.waitFor({ state: "visible", timeout: 15_000 });
+        await answer.waitFor({ state: "attached", timeout: 15_000 });
+        await page.waitForFunction(
+          (button) => button instanceof HTMLButtonElement && !button.disabled,
+          await answer.elementHandle(),
+          { timeout: 15_000 },
+        );
+        const enabledDelayMs = Date.now() - revealedAt;
+        const enabledTimer = await page.getByText(/^\d+s$/).first().textContent().catch(() => "unknown");
+        player.questionLoads.push({ questionNumber, timer, enabledTimer, enabledDelayMs, atMs: revealedAt - startedAt });
+        console.log(`[${elapsed()}] ${name} enabled question ${questionNumber} after ${enabledDelayMs}ms at ${enabledTimer}`);
         await answer.click();
         const submissionResponse = page.waitForResponse((response) =>
           response.request().method() === "POST"
@@ -108,7 +118,11 @@ try {
     const loads = players.flatMap((player) => player.questionLoads.filter((load) => load.questionNumber === questionNumber));
     const timers = loads.map((load) => Number.parseInt(load.timer, 10)).filter(Number.isFinite);
     const timerRange = timers.length > 0 ? `${Math.min(...timers)}s-${Math.max(...timers)}s` : "unknown";
-    console.log(`Question ${questionNumber}: ${loads.length}/${playerCount} loaded; timer range ${timerRange}`);
+    const enabledDelays = loads.map((load) => load.enabledDelayMs).filter(Number.isFinite);
+    const enabledDelayRange = enabledDelays.length > 0
+      ? `${Math.min(...enabledDelays)}ms-${Math.max(...enabledDelays)}ms`
+      : "unknown";
+    console.log(`Question ${questionNumber}: ${loads.length}/${playerCount} loaded; timer range ${timerRange}; enable delay ${enabledDelayRange}`);
   }
   if (failures.length > 0) {
     console.error(`Failures (${failures.length}):`);

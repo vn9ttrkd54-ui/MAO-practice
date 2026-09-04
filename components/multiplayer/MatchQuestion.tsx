@@ -175,7 +175,9 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       setSelected(null);
       setShowLeaderboard(false);
       setIsSubmitting(false);
-      setDeliveryReady(receipt !== null);
+      // The server can safely accept an answer even if the idempotent delivery
+      // receipt is still finishing, so reveal the question and controls together.
+      setDeliveryReady(true);
       setRound(pendingRound);
       setPendingRound(null);
     }, revealDelay);

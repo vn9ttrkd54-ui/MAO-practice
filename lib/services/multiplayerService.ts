@@ -683,7 +683,10 @@ export async function acknowledgeMultiplayerQuestionDelivery(
   }
 
   const deliveryTime = new Date(deliveredAt).getTime();
-  const solvingStartedAt = Math.max(deliveryTime, new Date(matchQuestion.started_at).getTime());
+  const questionStartedAt = new Date(matchQuestion.started_at).getTime();
+  const solvingStartedAt = deliveryTime <= questionStartedAt + 5_000
+    ? questionStartedAt
+    : deliveryTime;
   const hardEndsAt = new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime();
   return {
     questionNumber,
@@ -719,8 +722,9 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
     .eq("question_number", matchQuestion.question_number)
     .eq("player_id", lobby.currentPlayer.playerId)
     .maybeSingle<{ delivered_at: string }>();
-  const solvingStartedAt = delivery?.delivered_at
-    ? Math.max(new Date(delivery.delivered_at).getTime(), questionStartedAt)
+  const deliveryTime = delivery?.delivered_at ? new Date(delivery.delivered_at).getTime() : null;
+  const solvingStartedAt = deliveryTime !== null && deliveryTime > questionStartedAt + 5_000
+    ? deliveryTime
     : questionStartedAt;
   const personalEndsAt = Math.min(
     hardEndsAt,
