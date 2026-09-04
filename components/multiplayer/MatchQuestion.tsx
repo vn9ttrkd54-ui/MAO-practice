@@ -154,17 +154,20 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
         router.replace(`/multiplayer/room/${round.roomId}/results`);
         return;
       }
-      const body = await response.json() as MultiplayerRoundState | { error: string };
+      const body = await response.json() as { accepted?: boolean; error?: string };
       if (!response.ok) {
-        setError("error" in body ? body.error : "Unable to submit answer.");
+        setError(body.error ?? "Unable to submit answer.");
         setShowLeaderboard(false);
         return;
       }
-      const submittedRound = body as MultiplayerRoundState;
-      if (submittedRound.questionNumber >= questionNumber.current) {
-        setRound(submittedRound);
-        setShowLeaderboard(true);
-      }
+      setRound((current) => ({
+        ...current,
+        players: current.players.map((player) => player.playerId === current.currentPlayerId
+          ? { ...player, hasSubmittedCurrentQuestion: true }
+          : player),
+      }));
+      setShowLeaderboard(true);
+      refreshRound.current();
     } catch {
       setError("Your answer was not submitted. Please try again.");
       setShowLeaderboard(false);

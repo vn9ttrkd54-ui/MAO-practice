@@ -67,14 +67,16 @@ async function runPlayer(player) {
         const answer = page.getByRole("button", { name: /^A(?:\.|\s)/ }).first();
         await answer.waitFor({ state: "visible", timeout: 15_000 });
         await answer.click();
+        const submissionResponse = page.waitForResponse((response) =>
+          response.request().method() === "POST"
+            && response.url().includes(`/api/multiplayer/rooms/`)
+            && response.url().endsWith("/round"),
+        { timeout: 30_000 });
         await page.getByRole("button", { name: "Submit Answer" }).click();
-        await page.getByRole("heading", { name: "Live leaderboard" }).waitFor({
-          state: "visible",
-          timeout: 20_000,
-        });
-        const submissionError = page.getByRole("alert");
-        if (await submissionError.isVisible().catch(() => false)) {
-          throw new Error(`Question ${questionNumber} submission failed: ${await submissionError.textContent()}`);
+        const response = await submissionResponse;
+        if (!response.ok()) {
+          const responseText = await response.text().catch(() => "No response details");
+          throw new Error(`Question ${questionNumber} submission returned HTTP ${response.status()}: ${responseText}`);
         }
         console.log(`[${elapsed()}] ${name} submitted question ${questionNumber}`);
       }

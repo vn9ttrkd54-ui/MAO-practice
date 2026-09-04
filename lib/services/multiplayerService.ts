@@ -663,7 +663,7 @@ export async function acknowledgeMultiplayerQuestionDelivery(
   };
 }
 
-export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission): Promise<MultiplayerRoundState | null> {
+export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission): Promise<"accepted" | "completed"> {
   if (!["A", "B", "C", "D", "E"].includes(input.selectedAnswer)) throw new Error("Choose a valid answer.");
   const lobby = await getPrivateLobby(input.roomId);
   if (!lobby || lobby.room.status !== "in-progress") throw new Error("This match is not accepting answers.");
@@ -754,12 +754,11 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
     );
     if (transitionError) throw new Error(`Unable to synchronize the round: ${transitionError.message}`);
     if (transition === "completed") {
-      await finalizeCompletedMatch(input.roomId);
-      return null;
+      return "completed";
     }
   }
 
-  return getMultiplayerRoundState(input.roomId);
+  return "accepted";
 }
 
 interface FinalPlayerRow extends PlayerRow {
