@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
-import type { MultiplayerRoundState } from "@/types/multiplayer";
+import type { MultiplayerDeliveryReceipt, MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
 
 const labels: AnswerChoice[] = ["A", "B", "C", "D", "E"];
@@ -29,6 +29,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [finished, setFinished] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deliveryReady, setDeliveryReady] = useState(false);
   const questionNumber = useRef(initialRound.questionNumber);
   const refreshRound = useRef<() => void>(() => undefined);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
@@ -69,6 +70,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
               setSelected(null);
               setShowLeaderboard(false);
               setIsSubmitting(false);
+              setDeliveryReady(false);
             }
             setRound(nextRound);
           }
@@ -98,6 +100,39 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }, [round.roomId, router]);
 
   useEffect(() => {
+    let stopped = false;
+    let retryTimer: number | null = null;
+    const deliveredQuestionNumber = round.questionNumber;
+
+    async function acknowledgeDelivery() {
+      try {
+        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/delivery`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionNumber: deliveredQuestionNumber }),
+        });
+        if (!response.ok) throw new Error("Delivery acknowledgement failed.");
+        const receipt = await response.json() as MultiplayerDeliveryReceipt;
+        if (stopped || receipt.questionNumber !== questionNumber.current) return;
+        setDisplayEndsAt(receipt.personalEndsAt);
+        setDeliveryReady(true);
+        setError((current) => current === "Synchronizing your question timer…" ? null : current);
+      } catch {
+        if (!stopped) {
+          setError("Synchronizing your question timer…");
+          retryTimer = window.setTimeout(acknowledgeDelivery, 1_500);
+        }
+      }
+    }
+
+    void acknowledgeDelivery();
+    return () => {
+      stopped = true;
+      if (retryTimer) window.clearTimeout(retryTimer);
+    };
+  }, [round.questionNumber, round.roomId]);
+
+  useEffect(() => {
     const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
     const delay = Math.max(0, boundary - Date.now() + 100);
     const timer = window.setTimeout(() => refreshRound.current(), delay);
@@ -105,7 +140,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }, [round.intermissionEndsAt, round.questionEndsAt]);
 
   async function submitAnswer() {
-    if (!selected || isSubmitting) return;
+    if (!selected || isSubmitting || !deliveryReady) return;
     setIsSubmitting(true);
     setError(null);
     setShowLeaderboard(true);
@@ -138,9 +173,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }
 
   const inIntermission = round.intermissionEndsAt !== null;
-  if (inIntermission || submitted || showLeaderboard) {
+  const personalTimeExpired = deliveryReady && secondsLeft === 0;
+  if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">Answer submitted</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 5}s` : "Waiting for the other players…"}</p></header><div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 5}s` : "Waiting for the other players…"}</p></header><div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
   return (
@@ -148,9 +184,9 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       <header className="flex items-center justify-between gap-4"><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
-        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
+        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={!deliveryReady || submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
-        <button onClick={submitAnswer} disabled={!selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
+        <button onClick={submitAnswer} disabled={!deliveryReady || !selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : deliveryReady ? "Submit Answer" : "Starting timer…"}</button>
       </section>
       <SpectatorList round={round} />
       </div>

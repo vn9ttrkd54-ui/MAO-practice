@@ -93,6 +93,7 @@ export interface MultiplayerRoundState {
   totalQuestions: number;
   question: MultiplayerQuestion;
   questionDurationSeconds: number;
+  questionStartedAt: number;
   questionEndsAt: number;
   intermissionEndsAt: number | null;
   players: MultiplayerPlayer[];
@@ -105,10 +106,18 @@ export interface MultiplayerSpectatorState {
   totalQuestions: number;
   question: MultiplayerQuestion;
   questionDurationSeconds: number;
+  questionStartedAt: number;
   questionEndsAt: number;
   intermissionEndsAt: number | null;
   players: MultiplayerPlayer[];
   spectators: MultiplayerSpectator[];
+}
+
+export interface MultiplayerDeliveryReceipt {
+  questionNumber: number;
+  deliveredAt: number;
+  personalEndsAt: number;
+  hardEndsAt: number;
 }
 
 export interface MultiplayerAnswerSubmission {

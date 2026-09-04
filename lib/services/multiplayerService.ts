@@ -12,6 +12,7 @@ import type {
   CreatePrivateRoomInput,
   JoinPrivateRoomInput,
   MultiplayerAnswerSubmission,
+  MultiplayerDeliveryReceipt,
   MultiplayerMatchResult,
   MultiplayerLobbyState,
   MultiplayerMatchHistoryEntry,
@@ -32,7 +33,7 @@ const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
 const ALLOWED_TIMES = new Set([30, 60, 90, 120]);
 const INTERMISSION_DURATION_MS = 5_000;
-const QUESTION_DELIVERY_GRACE_MS = 10_000;
+const QUESTION_HARD_DEADLINE_GRACE_MS = 5_000;
 
 interface RoomRow {
   id: string;
@@ -69,6 +70,7 @@ interface MatchQuestionRow {
   difficulty: number;
   started_at: string | null;
   ends_at: string | null;
+  hard_ends_at: string | null;
   intermission_ends_at: string | null;
 }
 
@@ -405,7 +407,7 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
   }
   const selectedQuestions = randomizedQuestions.slice(0, lobby.room.settings.questionCount);
   const startedAt = new Date();
-  const firstQuestionEndsAt = new Date(startedAt.getTime() + lobby.room.settings.secondsPerQuestion * 1000 + QUESTION_DELIVERY_GRACE_MS);
+  const firstQuestionEndsAt = new Date(startedAt.getTime() + lobby.room.settings.secondsPerQuestion * 1000 + QUESTION_HARD_DEADLINE_GRACE_MS);
 
   const { data: claimedRoom, error: claimError } = await admin.from("multiplayer_rooms")
     .update({ started_at: startedAt.toISOString() })
@@ -437,6 +439,7 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
       difficulty: question.difficulty,
       started_at: index === 0 ? startedAt.toISOString() : null,
       ends_at: index === 0 ? firstQuestionEndsAt.toISOString() : null,
+      hard_ends_at: index === 0 ? firstQuestionEndsAt.toISOString() : null,
     }))
   );
   if (questionsError) {
@@ -497,7 +500,7 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
 
   const questionResponse = await admin
     .from("multiplayer_match_questions")
-    .select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at")
+    .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
     .eq("room_id", roomId)
     .eq("question_number", room.current_question_number)
     .maybeSingle<MatchQuestionRow>();
@@ -518,7 +521,7 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
         await finalizeCompletedMatch(roomId);
         return null;
       }
-      const response = await admin.from("multiplayer_match_questions").update({ intermission_ends_at: new Date(now + INTERMISSION_DURATION_MS).toISOString() }).eq("room_id", roomId).eq("question_number", data.question_number).select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").single<MatchQuestionRow>();
+      const response = await admin.from("multiplayer_match_questions").update({ intermission_ends_at: new Date(now + INTERMISSION_DURATION_MS).toISOString() }).eq("room_id", roomId).eq("question_number", data.question_number).select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at").single<MatchQuestionRow>();
       if (!response.error) data = response.data;
     }
   }
@@ -532,12 +535,15 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
   if (data.intermission_ends_at && now >= new Date(data.intermission_ends_at).getTime()) {
     const previousQuestionNumber = data.question_number;
     const nextQuestionNumber = data.question_number + 1;
+    const nextQuestionStartedAt = new Date(now);
+    const nextQuestionEndsAt = new Date(now + room.seconds_per_question * 1000 + QUESTION_HARD_DEADLINE_GRACE_MS);
     const nextResponse = await admin.from("multiplayer_match_questions").update({
-      started_at: new Date(now).toISOString(),
-      ends_at: new Date(now + room.seconds_per_question * 1000 + QUESTION_DELIVERY_GRACE_MS).toISOString(),
-    }).eq("room_id", roomId).eq("question_number", nextQuestionNumber).is("started_at", null).select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").single<MatchQuestionRow>();
+      started_at: nextQuestionStartedAt.toISOString(),
+      ends_at: nextQuestionEndsAt.toISOString(),
+      hard_ends_at: nextQuestionEndsAt.toISOString(),
+    }).eq("room_id", roomId).eq("question_number", nextQuestionNumber).is("started_at", null).select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at").single<MatchQuestionRow>();
     if (nextResponse.error) {
-      const existingNext = await admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId).eq("question_number", nextQuestionNumber).not("started_at", "is", null).maybeSingle<MatchQuestionRow>();
+      const existingNext = await admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at").eq("room_id", roomId).eq("question_number", nextQuestionNumber).not("started_at", "is", null).maybeSingle<MatchQuestionRow>();
       if (existingNext.error || !existingNext.data?.ends_at) return null;
       data = existingNext.data;
     } else {
@@ -571,12 +577,62 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
       choices: question.choices,
     },
     questionDurationSeconds: room.seconds_per_question,
+    questionStartedAt: new Date(data.started_at!).getTime(),
     questionEndsAt: new Date(data.ends_at).getTime(),
     intermissionEndsAt: data.intermission_ends_at ? new Date(data.intermission_ends_at).getTime() : null,
     players: advancedToNextQuestion
       ? lobby.players.map((player) => ({ ...player, hasSubmittedCurrentQuestion: false }))
       : lobby.players,
     spectators: await listActiveSpectators(roomId),
+  };
+}
+
+export async function acknowledgeMultiplayerQuestionDelivery(
+  roomId: string,
+  questionNumber: number,
+): Promise<MultiplayerDeliveryReceipt> {
+  if (!Number.isInteger(questionNumber) || questionNumber < 1 || questionNumber > 30) {
+    throw new Error("Choose a valid question.");
+  }
+
+  const access = await getMultiplayerRoom(roomId);
+  if (!access || access.room.status !== "in-progress") {
+    throw new Error("This match is not active.");
+  }
+
+  const admin = createAdminClient();
+  const { data: matchQuestion, error: questionError } = await admin
+    .from("multiplayer_match_questions")
+    .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
+    .eq("room_id", roomId)
+    .eq("question_number", questionNumber)
+    .single<MatchQuestionRow>();
+  if (questionError || !matchQuestion.started_at || !matchQuestion.ends_at) {
+    throw new Error("This question is unavailable.");
+  }
+
+  const { data: deliveredAt, error: deliveryError } = await admin.rpc(
+    "acknowledge_multiplayer_question_delivery",
+    {
+      p_room_id: roomId,
+      p_question_number: questionNumber,
+      p_player_id: access.currentPlayer.playerId,
+    },
+  );
+  if (deliveryError || typeof deliveredAt !== "string") {
+    throw new Error("Unable to start your question timer.");
+  }
+
+  const deliveryTime = new Date(deliveredAt).getTime();
+  const hardEndsAt = new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime();
+  return {
+    questionNumber,
+    deliveredAt: deliveryTime,
+    personalEndsAt: Math.min(
+      hardEndsAt,
+      deliveryTime + access.room.settings.secondsPerQuestion * 1000,
+    ),
+    hardEndsAt,
   };
 }
 
@@ -588,18 +644,32 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
   const admin = createAdminClient();
   const { data: room } = await admin.from("multiplayer_rooms").select("*").eq("id", input.roomId).single<RoomRow>();
   if (!room) throw new Error("Unable to load the active room.");
-  const { data: matchQuestion, error: questionError } = await admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", input.roomId).eq("question_number", room.current_question_number).single<MatchQuestionRow>();
+  const { data: matchQuestion, error: questionError } = await admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at").eq("room_id", input.roomId).eq("question_number", room.current_question_number).single<MatchQuestionRow>();
   if (questionError || !matchQuestion.started_at || !matchQuestion.ends_at || matchQuestion.intermission_ends_at) throw new Error("This question is closed.");
   if (matchQuestion.question_id !== input.questionId) throw new Error("That question is no longer active.");
 
   const submittedAt = Date.now();
-  const endsAt = new Date(matchQuestion.ends_at).getTime();
-  if (submittedAt > endsAt) throw new Error("Time has expired for this question.");
+  const hardEndsAt = new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime();
+  const { data: delivery } = await admin
+    .from("multiplayer_question_deliveries")
+    .select("delivered_at")
+    .eq("room_id", input.roomId)
+    .eq("question_number", matchQuestion.question_number)
+    .eq("player_id", lobby.currentPlayer.playerId)
+    .maybeSingle<{ delivered_at: string }>();
+  const solvingStartedAt = delivery?.delivered_at
+    ? new Date(delivery.delivered_at).getTime()
+    : new Date(matchQuestion.started_at).getTime();
+  const personalEndsAt = Math.min(
+    hardEndsAt,
+    solvingStartedAt + room.seconds_per_question * 1000,
+  );
+  if (submittedAt > personalEndsAt) throw new Error("Time has expired for this question.");
   const question = questions.find((entry) => entry.id === matchQuestion.question_id);
   if (!question) throw new Error("Unable to load the active question.");
 
   const correct = input.selectedAnswer === question.answer;
-  const answerTimeMs = Math.max(0, submittedAt - new Date(matchQuestion.started_at).getTime() - QUESTION_DELIVERY_GRACE_MS);
+  const answerTimeMs = Math.max(0, submittedAt - solvingStartedAt);
   let pointsEarned = correct ? calculateMultiplayerCorrectPoints({
     answerTimeMs,
     questionDurationMs: room.seconds_per_question * 1000,
@@ -681,7 +751,8 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
       choices: question.choices,
     },
     questionDurationSeconds: room.seconds_per_question,
-    questionEndsAt: endsAt,
+    questionStartedAt: new Date(matchQuestion.started_at).getTime(),
+    questionEndsAt: hardEndsAt,
     intermissionEndsAt: intermissionEndsAt ? new Date(intermissionEndsAt).getTime() : null,
     players: updatedPlayers,
     spectators: await listActiveSpectators(input.roomId),
@@ -1055,13 +1126,13 @@ export async function spectatePublicMatch(roomId: string): Promise<MultiplayerSp
   const { error: spectatorError } = await admin.from("multiplayer_spectators").upsert({ room_id: roomId, user_id: user.id, last_seen_at: new Date().toISOString() }, { onConflict: "room_id,user_id" });
   if (spectatorError) throw new Error(`Unable to spectate this match: ${spectatorError.message}`);
   const [questionResponse, players, spectators] = await Promise.all([
-    admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId).eq("question_number", room.current_question_number).maybeSingle<MatchQuestionRow>(),
+    admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at").eq("room_id", roomId).eq("question_number", room.current_question_number).maybeSingle<MatchQuestionRow>(),
     getPublicMatchPlayers(roomId), listActiveSpectators(roomId),
   ]);
   const matchQuestion = questionResponse.data;
   const question = matchQuestion ? questions.find((entry) => entry.id === matchQuestion.question_id) : null;
-  if (!matchQuestion?.ends_at || !question) throw new Error("The current question is unavailable.");
-  return { roomId, questionNumber: matchQuestion.question_number, totalQuestions: room.question_count, question: { questionId: question.id, number: matchQuestion.question_number, division: question.division, topic: question.topic, difficulty: matchQuestion.difficulty, question: question.question, choices: question.choices }, questionDurationSeconds: room.seconds_per_question, questionEndsAt: new Date(matchQuestion.ends_at).getTime(), intermissionEndsAt: matchQuestion.intermission_ends_at ? new Date(matchQuestion.intermission_ends_at).getTime() : null, players, spectators };
+  if (!matchQuestion?.started_at || !matchQuestion.ends_at || !question) throw new Error("The current question is unavailable.");
+  return { roomId, questionNumber: matchQuestion.question_number, totalQuestions: room.question_count, question: { questionId: question.id, number: matchQuestion.question_number, division: question.division, topic: question.topic, difficulty: matchQuestion.difficulty, question: question.question, choices: question.choices }, questionDurationSeconds: room.seconds_per_question, questionStartedAt: new Date(matchQuestion.started_at).getTime(), questionEndsAt: new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime(), intermissionEndsAt: matchQuestion.intermission_ends_at ? new Date(matchQuestion.intermission_ends_at).getTime() : null, players, spectators };
 }
 
 async function getPublicMatchPlayers(roomId: string): Promise<MultiplayerPlayer[]> {
