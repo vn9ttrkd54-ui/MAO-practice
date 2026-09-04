@@ -742,14 +742,21 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
   const { error: playerError } = await admin.from("multiplayer_players").update({ score: lobby.currentPlayer.score + pointsEarned, has_submitted_current_question: true }).eq("room_id", input.roomId).eq("id", lobby.currentPlayer.playerId);
   if (playerError) throw new Error("Unable to update the score right now.");
 
-  const { data: transition, error: transitionError } = await admin.rpc(
-    "advance_multiplayer_round_state",
+  const { data: transitionNeeded, error: transitionCheckError } = await admin.rpc(
+    "multiplayer_round_transition_needed",
     { p_room_id: input.roomId },
   );
-  if (transitionError) throw new Error(`Unable to synchronize the round: ${transitionError.message}`);
-  if (transition === "completed") {
-    await finalizeCompletedMatch(input.roomId);
-    return null;
+  if (transitionCheckError) throw new Error(`Unable to check the round: ${transitionCheckError.message}`);
+  if (transitionNeeded === true) {
+    const { data: transition, error: transitionError } = await admin.rpc(
+      "advance_multiplayer_round_state",
+      { p_room_id: input.roomId },
+    );
+    if (transitionError) throw new Error(`Unable to synchronize the round: ${transitionError.message}`);
+    if (transition === "completed") {
+      await finalizeCompletedMatch(input.roomId);
+      return null;
+    }
   }
 
   return getMultiplayerRoundState(input.roomId);
