@@ -16,6 +16,7 @@ import type {
   MultiplayerMatchHistoryEntry,
   MultiplayerPlayer,
   MultiplayerProfile,
+  MultiplayerPublicRoom,
   MultiplayerRatingLeaderboardEntry,
   MultiplayerRoom,
   MultiplayerRoomAccess,
@@ -818,14 +819,58 @@ export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHi
   });
 }
 
-export async function listPublicRooms(): Promise<MultiplayerRoom[]> {
+export async function listPublicRooms(): Promise<MultiplayerPublicRoom[]> {
   const admin = createAdminClient();
+  await admin.from("multiplayer_players").update({ connected: false }).eq("connected", true).lt("updated_at", new Date(Date.now() - 10_000).toISOString());
   const { data, error } = await admin.from("multiplayer_rooms").select("*").eq("visibility", "public").in("status", ["waiting", "countdown"]).order("division").order("question_count");
   if (error) throw new Error("Unable to load public rooms right now.");
-  return Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
-    const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).eq("connected", true).is("left_at", null);
-    return mapRoom(room, count ?? 0);
-  }));
+  const rooms = (data ?? []) as RoomRow[];
+  if (rooms.length === 0) return [];
+
+  const roomIds = rooms.map((room) => room.id);
+  const { data: playerData, error: playerError } = await admin
+    .from("multiplayer_players")
+    .select("id, room_id, user_id, guest_nickname")
+    .in("room_id", roomIds)
+    .eq("connected", true)
+    .is("left_at", null)
+    .order("joined_at", { ascending: true });
+  if (playerError) throw new Error("Unable to load players in public rooms.");
+
+  const playerRows = (playerData ?? []) as Array<{
+    id: string;
+    room_id: string;
+    user_id: string | null;
+    guest_nickname: string | null;
+  }>;
+  const userIds = [...new Set(playerRows.flatMap((player) => player.user_id ? [player.user_id] : []))];
+  const [namesResponse, ratingsResponse] = userIds.length > 0
+    ? await Promise.all([
+        admin.from("profiles").select("id, username").in("id", userIds),
+        admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", userIds),
+      ])
+    : [{ data: [], error: null }, { data: [], error: null }];
+  if (namesResponse.error || ratingsResponse.error) throw new Error("Unable to load public room player profiles.");
+
+  const names = new Map((namesResponse.data ?? []).map((profile) => [profile.id, profile.username]));
+  const ratings = new Map((ratingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
+
+  return rooms.map((room) => {
+    const players = playerRows
+      .filter((player) => player.room_id === room.id)
+      .map((player) => {
+        const displayName = player.user_id
+          ? names.get(player.user_id) ?? "Player"
+          : player.guest_nickname ?? "Guest";
+        const rp = player.user_id ? ratings.get(player.user_id) ?? 0 : null;
+        return {
+          playerId: player.id,
+          displayName,
+          rankTier: rp === null ? null : tierForRp(rp),
+        };
+      });
+    return { ...mapRoom(room, players.length), players };
+  });
 }
 
 function multiplayerRoomHasNotExpired(room: RoomRow): boolean {

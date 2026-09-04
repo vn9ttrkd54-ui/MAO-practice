@@ -29,6 +29,15 @@ export function LiveRoomListRefresh() {
         },
         scheduleRefresh,
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "multiplayer_players",
+        },
+        scheduleRefresh,
+      )
       .subscribe();
 
     return () => {

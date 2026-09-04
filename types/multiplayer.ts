@@ -65,6 +65,16 @@ export interface MultiplayerRoom {
   startedAt: number | null;
 }
 
+export interface MultiplayerPublicRoomPlayer {
+  playerId: string;
+  displayName: string;
+  rankTier: MultiplayerRankTier | null;
+}
+
+export interface MultiplayerPublicRoom extends MultiplayerRoom {
+  players: MultiplayerPublicRoomPlayer[];
+}
+
 export interface MultiplayerQuestion {
   questionId: number;
   number: number;
