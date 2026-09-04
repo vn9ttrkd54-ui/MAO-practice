@@ -593,6 +593,33 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
   const question = questions.find((entry) => entry.id === data.question_id);
   if (!question || !data.ends_at) return null;
 
+  let upcomingQuestion: MultiplayerRoundState["upcomingQuestion"] = null;
+  if (data.intermission_ends_at && data.question_number < lobby.room.settings.questionCount) {
+    const { data: upcoming } = await admin
+      .from("multiplayer_match_questions")
+      .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
+      .eq("room_id", roomId)
+      .eq("question_number", data.question_number + 1)
+      .maybeSingle<MatchQuestionRow>();
+    const upcomingSource = upcoming ? questions.find((entry) => entry.id === upcoming.question_id) : null;
+    if (upcoming?.started_at && upcoming.ends_at && upcomingSource) {
+      upcomingQuestion = {
+        questionNumber: upcoming.question_number,
+        question: {
+          questionId: upcomingSource.id,
+          number: upcoming.question_number,
+          division: upcomingSource.division,
+          topic: upcomingSource.topic,
+          difficulty: upcoming.difficulty,
+          question: upcomingSource.question,
+          choices: upcomingSource.choices,
+        },
+        questionStartedAt: new Date(upcoming.started_at).getTime(),
+        questionEndsAt: new Date(upcoming.ends_at).getTime(),
+      };
+    }
+  }
+
   return {
     roomId,
     currentPlayerId: lobby.currentPlayer.playerId,
@@ -615,6 +642,7 @@ export async function getMultiplayerRoundState(roomId: string): Promise<Multipla
       ? lobby.players.map((player) => ({ ...player, hasSubmittedCurrentQuestion: false }))
       : lobby.players,
     spectators,
+    upcomingQuestion,
   };
 }
 

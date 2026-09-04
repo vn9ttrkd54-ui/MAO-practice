@@ -99,6 +99,12 @@ export interface MultiplayerRoundState {
   intermissionEndsAt: number | null;
   players: MultiplayerPlayer[];
   spectators: MultiplayerSpectator[];
+  upcomingQuestion: {
+    questionNumber: number;
+    question: MultiplayerQuestion;
+    questionStartedAt: number;
+    questionEndsAt: number;
+  } | null;
 }
 
 export interface MultiplayerSpectatorState {

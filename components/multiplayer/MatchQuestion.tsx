@@ -136,9 +136,33 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   useEffect(() => {
     const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
     const delay = Math.max(0, boundary - Date.now() + 100);
-    const timer = window.setTimeout(() => refreshRound.current(), delay);
+    const upcoming = round.upcomingQuestion;
+    const timer = window.setTimeout(() => {
+      if (upcoming && round.intermissionEndsAt) {
+        questionNumber.current = upcoming.questionNumber;
+        setDisplayEndsAt(Math.min(
+          upcoming.questionEndsAt,
+          Math.max(Date.now(), upcoming.questionStartedAt) + round.questionDurationSeconds * 1000,
+        ));
+        setSelected(null);
+        setShowLeaderboard(false);
+        setIsSubmitting(false);
+        setDeliveryReady(false);
+        setRound((current) => ({
+          ...current,
+          questionNumber: upcoming.questionNumber,
+          question: upcoming.question,
+          questionStartedAt: upcoming.questionStartedAt,
+          questionEndsAt: upcoming.questionEndsAt,
+          intermissionEndsAt: null,
+          upcomingQuestion: null,
+          players: current.players.map((player) => ({ ...player, hasSubmittedCurrentQuestion: false })),
+        }));
+      }
+      refreshRound.current();
+    }, delay);
     return () => window.clearTimeout(timer);
-  }, [round.intermissionEndsAt, round.questionEndsAt]);
+  }, [round.intermissionEndsAt, round.questionDurationSeconds, round.questionEndsAt, round.upcomingQuestion]);
 
   async function submitAnswer() {
     if (!selected || isSubmitting) return;
@@ -198,9 +222,9 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       <header className="flex items-center justify-between gap-4"><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
-        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
+        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={!deliveryReady || submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
-        <button onClick={submitAnswer} disabled={!selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
+        <button onClick={submitAnswer} disabled={!deliveryReady || !selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
       </section>
       <SpectatorList round={round} />
       </div>
