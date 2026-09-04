@@ -30,6 +30,8 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deliveryReady, setDeliveryReady] = useState(false);
+  const [pendingRound, setPendingRound] = useState<MultiplayerRoundState | null>(null);
+  const pendingDelivery = useRef<MultiplayerDeliveryReceipt | null>(null);
   const questionNumber = useRef(initialRound.questionNumber);
   const refreshRound = useRef<() => void>(() => undefined);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
@@ -63,6 +65,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
           if (nextRound.questionNumber >= questionNumber.current) {
             if (nextRound.questionNumber > questionNumber.current) {
+              if (nextRound.questionStartedAt > Date.now()) {
+                setPendingRound((current) => current?.questionNumber === nextRound.questionNumber ? current : nextRound);
+                return;
+              }
               questionNumber.current = nextRound.questionNumber;
               setDisplayEndsAt(Math.min(
                 nextRound.questionEndsAt,
@@ -132,6 +138,54 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       if (retryTimer) window.clearTimeout(retryTimer);
     };
   }, [round.questionNumber, round.roomId]);
+
+  useEffect(() => {
+    if (!pendingRound) return;
+    let stopped = false;
+    let retryTimer: number | null = null;
+    pendingDelivery.current = null;
+
+    async function acknowledgePendingDelivery() {
+      try {
+        const response = await fetch(`/api/multiplayer/rooms/${pendingRound!.roomId}/delivery`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionNumber: pendingRound!.questionNumber }),
+        });
+        if (!response.ok) throw new Error("Pending delivery acknowledgement failed.");
+        const receipt = await response.json() as MultiplayerDeliveryReceipt;
+        if (!stopped) pendingDelivery.current = receipt;
+      } catch {
+        if (!stopped) retryTimer = window.setTimeout(acknowledgePendingDelivery, 500);
+      }
+    }
+
+    void acknowledgePendingDelivery();
+    const revealDelay = Math.max(0, pendingRound.questionStartedAt - Date.now());
+    const revealTimer = window.setTimeout(() => {
+      if (stopped) return;
+      const receipt = pendingDelivery.current?.questionNumber === pendingRound.questionNumber
+        ? pendingDelivery.current
+        : null;
+      questionNumber.current = pendingRound.questionNumber;
+      setDisplayEndsAt(receipt?.personalEndsAt ?? Math.min(
+        pendingRound.questionEndsAt,
+        pendingRound.questionStartedAt + pendingRound.questionDurationSeconds * 1000,
+      ));
+      setSelected(null);
+      setShowLeaderboard(false);
+      setIsSubmitting(false);
+      setDeliveryReady(receipt !== null);
+      setRound(pendingRound);
+      setPendingRound(null);
+    }, revealDelay);
+
+    return () => {
+      stopped = true;
+      window.clearTimeout(revealTimer);
+      if (retryTimer !== null) window.clearTimeout(retryTimer);
+    };
+  }, [pendingRound]);
 
   useEffect(() => {
     const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
