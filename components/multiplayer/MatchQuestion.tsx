@@ -63,6 +63,25 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
         if (response.status === 200) {
           let nextRound = await response.json() as MultiplayerRoundState;
           setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
+          const upcoming = nextRound.upcomingQuestion;
+          if (upcoming && upcoming.questionNumber > questionNumber.current) {
+            const preloadedRound: MultiplayerRoundState = {
+              ...nextRound,
+              questionNumber: upcoming.questionNumber,
+              question: upcoming.question,
+              questionStartedAt: upcoming.questionStartedAt,
+              questionEndsAt: upcoming.questionEndsAt,
+              intermissionEndsAt: null,
+              players: nextRound.players.map((player) => ({
+                ...player,
+                hasSubmittedCurrentQuestion: false,
+              })),
+              upcomingQuestion: null,
+            };
+            setPendingRound((current) => current?.questionNumber === upcoming.questionNumber
+              ? current
+              : preloadedRound);
+          }
           if (nextRound.questionNumber >= questionNumber.current) {
             if (nextRound.questionNumber > questionNumber.current) {
               // Concurrent transition requests can briefly return player flags
