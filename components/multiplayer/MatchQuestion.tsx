@@ -37,7 +37,11 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
   const submitted = currentPlayer?.hasSubmittedCurrentQuestion ?? false;
   const secondsLeft = now === null ? null : Math.max(0, Math.ceil((displayEndsAt - now) / 1000));
-  const intermissionLeft = now === null || !round.intermissionEndsAt ? null : Math.max(0, Math.ceil((round.intermissionEndsAt - now) / 1000));
+  const effectiveIntermissionEndsAt = round.intermissionEndsAt
+    ?? (pendingRound?.questionNumber === round.questionNumber + 1 ? pendingRound.questionStartedAt : null);
+  const intermissionLeft = now === null || !effectiveIntermissionEndsAt
+    ? null
+    : Math.max(0, Math.ceil((effectiveIntermissionEndsAt - now) / 1000));
   const questionStartsIn = now === null ? null : Math.max(0, Math.ceil((round.questionStartedAt - now) / 1000));
 
   useEffect(() => {
@@ -275,7 +279,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><h1 className="text-3xl font-bold">Match complete</h1><p className="mt-3 text-gray-600">Loading final results and question review…</p></div></main>;
   }
 
-  const inIntermission = round.intermissionEndsAt !== null;
+  const inIntermission = effectiveIntermissionEndsAt !== null;
   const personalTimeExpired = deliveryReady && secondsLeft === 0;
   if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
