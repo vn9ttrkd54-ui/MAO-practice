@@ -1513,4 +1513,588 @@ Adding and simplifying yields
   
   
   
+
+{
+   id: 20091,
+   number: 89,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 1,
+   methods: ["Trigonometric Identities"],
+   question: String.raw`Simplify \sec^2 x + \csc^2 x.`,
+   choices: [String.raw`\sec^2 x\csc^2 x`, String.raw`\tan^2 x+\cot^2 x`, String.raw`\tan^2 x+\cot^2 x+1`, "1", "NOTA"],
+   answer: "A",
+   solution: String.raw`\[\sec^2 x+\csc^2 x=\frac{1}{\cos^2 x}+\frac{1}{\sin^2 x}=\frac{\sin^2 x+\cos^2 x}{\cos^2 x\sin^2 x}=\frac{1}{\cos^2 x\sin^2 x}=\boxed{\sec^2 x\csc^2 x}.\]`,
+},
+
+
+
+
+{
+   id: 20092,
+   number: 90,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Let A be the length of the period of y=\sin x. Let B be the length of the period of y=\tan x. Find the value of A-2B.`,
+   choices: [String.raw`-2\pi`, String.raw`-\pi`, "0", String.raw`\pi`, "NOTA"],
+   answer: "C",
+   solution: String.raw`The period of \sin x is A=2\pi and the period of \tan x is B=\pi.
+\[A-2B=2\pi-2\pi=\boxed{0}.\]`,
+},
+
+
+
+
+{
+   id: 20093,
+   number: 91,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`A right triangle has a hypotenuse of length 2 and an angle with measure \dfrac{\pi}{7}. Which of the following is \textbf{not} one of the side lengths of the triangle?`,
+   choices: [String.raw`2\tan\dfrac{\pi}{7}`, String.raw`2\cos\dfrac{\pi}{7}`, String.raw`2\sin\dfrac{\pi}{7}`, "2", "NOTA"],
+   answer: "A",
+   solution: String.raw`In a right triangle with hypotenuse 2 and an angle \pi/7:
+the two legs are 2\sin(\pi/7) (opposite) and 2\cos(\pi/7) (adjacent), and the hypotenuse is 2. These correspond to choices C, B, and D.
+2\tan(\pi/7) is not a side length of this triangle, so the answer is \boxed{A}.`,
+},
+
+
+
+
+{
+   id: 20094,
+   number: 92,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Solve for all x on the interval \left[-\dfrac{\pi}{2},\dfrac{\pi}{2}\right]: (\tan x)^2-3=0.`,
+   choices: [String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{3}`, String.raw`-\dfrac{\pi}{6},\,\dfrac{\pi}{6}`, String.raw`-\dfrac{\pi}{3},\,\dfrac{\pi}{3}`, "NOTA"],
+   answer: "D",
+   solution: String.raw`Rearrange: \tan^2 x=3, so \tan x=\pm\sqrt{3}.
+On [-\pi/2,\,\pi/2]: \tan x=\sqrt{3}\Rightarrow x=\pi/3 and \tan x=-\sqrt{3}\Rightarrow x=-\pi/3.
+The solutions are \boxed{x=-\dfrac{\pi}{3},\,\dfrac{\pi}{3}}.`,
+},
+
+
+
+
+{
+   id: 20095,
+   number: 93,
+   division: "Alpha",
+   topic: "Parametric",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Of the following pairs of parametric equations, how many lie completely on the line x+y=1 when graphed on the xy-plane?
+I.\quad x(t)=\sin^2 t,\quad y(t)=\cos^2 t
+II.\quad x(t)=-\tan^2 t,\quad y(t)=\sec^2 t
+III.\quad x(t)=\csc^2 t,\quad y(t)=\sec^2 t
+IV.\quad x(t)=\csc^2 t,\quad y(t)=-\cot^2 t`,
+   choices: ["0", "1", "2", "3", "NOTA"],
+   answer: "D",
+   solution: String.raw`Check each pair by computing x(t)+y(t):
+I: \sin^2 t+\cos^2 t=1 \checkmark \quad (Pythagorean identity).
+II: -\tan^2 t+\sec^2 t=1 \checkmark \quad (since \sec^2 t-\tan^2 t=1).
+III: \csc^2 t+\sec^2 t\neq 1 in general (both terms are \geq 1). \times
+IV: \csc^2 t-\cot^2 t=1 \checkmark \quad (since \csc^2 t-\cot^2 t=1).
+Three pairs (I, II, IV) lie on the line x+y=1. Answer: \boxed{3}.`,
+},
+
+
+
+
+{
+   id: 20096,
+   number: 94,
+   division: "Alpha",
+   topic: "Logs and Exponents",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Which of the following conditions regarding two real-valued variables, x and y, does \textbf{not} necessarily imply x^y=1?`,
+   choices: [String.raw`\(x=1\)`, String.raw`\(y=0,\ x\neq 0\)`, String.raw`\(x=-1\), \(y\) is an even integer`, String.raw`\(x=-1\), \(y\) is an odd integer`, "NOTA"],
+   answer: "D",
+   solution: String.raw`A) 1^y=1 for all y. Always implies x^y=1.
+B) x^0=1 for all x\neq 0. Always implies x^y=1.
+C) (-1)^{\text{even}}=1. Always implies x^y=1.
+D) (-1)^{\text{odd}}=-1\neq 1. Does \textbf{not} imply x^y=1.
+The answer is \boxed{D}.`,
+},
+
+
+
+
+{
+   id: 20097,
+   number: 95,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Given f(x)=2\tan^{-1}x, find the range of f(x).`,
+   choices: [String.raw`\left(-\dfrac{\pi}{2},\dfrac{\pi}{2}\right)`, String.raw`\left[-\dfrac{\pi}{2},\dfrac{\pi}{2}\right]`, String.raw`(-\pi,\pi)`, String.raw`[-\pi,\pi]`, "NOTA"],
+   answer: "C",
+   solution: String.raw`The range of \tan^{-1}x is \left(-\dfrac{\pi}{2},\dfrac{\pi}{2}\right) (open interval, since \pm\pi/2 are not achieved).
+Multiplying by 2: the range of f(x)=2\tan^{-1}x is \boxed{(-\pi,\pi)}.`,
+},
+
+
+
+
+{
+   id: 20098,
+   number: 96,
+   division: "Alpha",
+   topic: "Conic Sections",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Let (a,b) be the center of the conic given by the equation x^2-4y+6=-y^2-10x+8. Find the value of a-b.`,
+   choices: [String.raw`-14`, String.raw`-7`, String.raw`7`, String.raw`14`, "NOTA"],
+   answer: "B",
+   solution: String.raw`Rearrange: x^2+10x+y^2-4y=2.
+Complete the square: (x+5)^2-25+(y-2)^2-4=2, so (x+5)^2+(y-2)^2=31.
+The center is (-5,2), giving a-b=-5-2=\boxed{-7}.`,
+},
+
+
+
+
+{
+   id: 20099,
+   number: 97,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`The following four functions have various symmetries. Let S have an initial value of 0. Add 1 to S for each function symmetric with respect to the x-axis. Add 2 to S for each function symmetric with respect to the y-axis. Add 3 to S for each function symmetric with respect to the origin. Compute S.
+I.\quad a(x)=x\sin x
+II.\quad b(x)=|x|\cos x+x^3
+III.\quad c(x)=0 if x\geq 0;\ c(x)=1 if x<0
+IV.\quad d(x)=[x]+c(x), where c(x) is defined above and [x] denotes the greatest integer \leq x`,
+   choices: ["2", "3", "4", "5", "NOTA"],
+   answer: "A",
+   solution: String.raw`I. \(a(-x)=(-x)\sin(-x)=x\sin x=a(x)\), so \(a\) is even and has y-axis symmetry. Add 2.
+II. \(b(-x)=|x|\cos x-x^3\), which is neither \(b(x)\) nor \(-b(x)\). Add 0.
+III. The piecewise function \(c\) has none of the listed symmetries. Add 0.
+IV. The function \(d\) is not odd at integer inputs: \(d(1)=1\), while \(d(-1)=[-1]+1=0\neq-d(1)\). It also has none of the listed symmetries. Add 0.
+Therefore \(S=2+0+0+0=\boxed{2}\).`,
+},
+
+
+
+
+{
+   id: 20100,
+   number: 98,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 2,
+   methods: ["Trigonometric Identities"],
+   question: String.raw`Compute the value of \cos(36^{\circ})+2\cos^2(72^{\circ}).`,
+   choices: ["-1", "0", String.raw`\sin 18^{\circ}`, "1", "NOTA"],
+   answer: "D",
+   solution: String.raw`Note \cos(72^{\circ})=\sin(18^{\circ}), so 2\cos^2(72^{\circ})=2\sin^2(18^{\circ}).
+By the double-angle identity: \cos(36^{\circ})=1-2\sin^2(18^{\circ}).
+\[\cos(36^{\circ})+2\cos^2(72^{\circ})=1-2\sin^2(18^{\circ})+2\sin^2(18^{\circ})=\boxed{1}.\]`,
+},
+
+
+
+
+{
+   id: 20101,
+   number: 99,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 4,
+   methods: [],
+   question: String.raw`Find the number of solutions to the equation \sin x=\sin(1000x) on the interval (0,\pi).`,
+   choices: ["998", "999", "1000", "1001", "NOTA"],
+   answer: "B",
+   solution: String.raw`Use \(\sin A=\sin B\), which holds when \(A=B+2k\pi\) or \(A=\pi-B+2k\pi\).
+
+First, \(x=1000x+2k\pi\), so \(x=\frac{2m\pi}{999}\). The values in \((0,\pi)\) correspond to \(m=1,2,\ldots,499\), giving 499 solutions.
+
+Second, \(x=\pi-1000x+2k\pi\), so \(x=\frac{(2k+1)\pi}{1001}\). The values in \((0,\pi)\) correspond to \(k=0,1,\ldots,499\), giving 500 solutions.
+
+The two families do not overlap, so the total number of solutions is \(499+500=\boxed{999}\).`,
+},
+
+
+
+
+{
+   id: 20102,
+   number: 100,
+   division: "Alpha",
+   topic: "Conic Sections",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Consider the equation x^2+kxy+y^2=25. The value of k may be any real number. As k ranges from 0 to \infty, which of the following conic sections will the graph of the equation above \textbf{never} be?
+\textit{(Note: "Ellipse" refers to a non-circular ellipse.)}`,
+   choices: ["ellipse", "parabola", "hyperbola", "circle", "NOTA"],
+   answer: "B",
+   solution: String.raw`For \(Ax^2+Bxy+Cy^2=25\), the discriminant is \(B^2-4AC=k^2-4\).
+At \(k=0\), the graph is the circle \(x^2+y^2=25\).
+For \(0<k<2\), a rotation diagonalizes the positive-definite quadratic form, producing a non-circular ellipse.
+At \(k=2\), the equation becomes \((x+y)^2=25\), which is a degenerate pair of parallel lines, not a parabola.
+For \(k>2\), the quadratic form is indefinite, producing a hyperbola.
+Therefore the graph is never a parabola, so the answer is \(\boxed{\text{parabola}}\).`,
+},
+
+
+
+
+{
+   id: 20103,
+   number: 101,
+   division: "Alpha",
+   topic: "Polynomials",
+   difficulty: 4,
+   methods: [],
+   question: String.raw`A fourth-degree polynomial f(x) with leading coefficient 1 has the property that f(k)=k for k=1,2,3,4. Compute f(5).`,
+   choices: ["5", "19", "24", "29", "NOTA"],
+   answer: "D",
+   solution: String.raw`The polynomial f(x)-x has roots 1,2,3,4 and leading coefficient 1, so:
+\[f(x)-x=(x-1)(x-2)(x-3)(x-4)\implies f(x)=x+(x-1)(x-2)(x-3)(x-4).\]
+\[f(5)=5+(4)(3)(2)(1)=5+24=\boxed{29}.\]`,
+},
+
+
+
+
+{
+   id: 20104,
+   number: 102,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 3,
+   methods: ["Law of Cosines"],
+   question: String.raw`A triangle ABC has a right angle at B. Points D and E lie on \overline{AC} such that AD=DE=EC. Given BD^2+BE^2=15, find AC^2.`,
+   choices: ["25", "26", "27", "28", "NOTA"],
+   answer: "C",
+   solution: String.raw`Let AB=c, BC=a, AC=b, BD=d, BE=e. Since D and E trisect AC: AD=DE=EC=b/3.
+Apply the Law of Cosines in \triangle ABD (noting \cos\angle CAB=c/b, so b\cos A=c):
+\[d^2=\tfrac{b^2}{9}+c^2-2\cdot\tfrac{b}{3}\cdot c\cdot\tfrac{c}{b}=\tfrac{b^2}{9}+\tfrac{c^2}{3}.\]
+Similarly in \triangle CBE (noting b\cos C=a):
+\[e^2=\tfrac{b^2}{9}+\tfrac{a^2}{3}.\]
+Adding: d^2+e^2=\dfrac{2b^2}{9}+\dfrac{a^2+c^2}{3}=\dfrac{2b^2}{9}+\dfrac{b^2}{3}=\dfrac{5b^2}{9}=15.
+\[b^2=27,\quad AC^2=\boxed{27}.\]`,
+},
+
+
+
+
+{
+   id: 20105,
+   number: 103,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 3,
+   methods: ["Double Angle"],
+   question: String.raw`In an isosceles triangle, the length of the base is 2 and the lengths of the legs are 3. Find the sine of the vertex angle.`,
+   choices: [String.raw`\dfrac{2\sqrt{2}}{9}`, String.raw`\dfrac{1}{3}`, String.raw`\dfrac{4\sqrt{2}}{9}`, String.raw`\dfrac{2}{3}`, "NOTA"],
+   answer: "C",
+   solution: String.raw`Let the vertex angle be 2\theta. The altitude to the base bisects it, creating a right triangle with hypotenuse 3 and opposite side 1 (half the base).
+\[\sin\theta=\frac{1}{3},\quad \cos\theta=\frac{\sqrt{9-1}}{3}=\frac{2\sqrt{2}}{3}.\]
+\[\sin(2\theta)=2\sin\theta\cos\theta=2\cdot\frac{1}{3}\cdot\frac{2\sqrt{2}}{3}=\boxed{\frac{4\sqrt{2}}{9}}.\]`,
+},
+
+
+
+
+{
+   id: 20106,
+   number: 104,
+   division: "Alpha",
+   topic: "Limits",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`The function f(x) is a rational function, and the function g(x) is a cubic polynomial such that f(x)=\dfrac{g(x)}{x^2-1}. As x\to 1, f(x)\to 5. As x\to -1, f(x)\to 9. Find the value of g(0).`,
+   choices: [String.raw`-7`, String.raw`-3`, String.raw`3`, String.raw`7`, "NOTA"],
+   answer: "A",
+   solution: String.raw`Since the limits of f(x) are finite at x=\pm 1, (x-1) and (x+1) must both divide g(x).
+Write g(x)=(ax+b)(x-1)(x+1)=(ax+b)(x^2-1).
+Then f(x)=ax+b (for x\neq\pm 1). The limits give: a+b=5 and -a+b=9.
+Solving: b=7, a=-2.
+\[g(0)=(a\cdot 0+b)(0-1)(0+1)=b\cdot(-1)=-7.\quad\boxed{g(0)=-7}.\]`,
+},
+
+
+
+
+{
+   id: 20107,
+   number: 105,
+   division: "Alpha",
+   topic: "Conic Sections",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Two stakes are nailed into the ground, 8 meters apart. The ends of a 10-meter-long inextensible rope are tied to these stakes. A robot is tied to the rope such that the robot may move along the rope but remains attached to it, and may move in any direction not restricted by the rope. Find the area (in square meters) of the region in which the robot may travel.`,
+   choices: [String.raw`15\pi`, String.raw`16\pi`, String.raw`60\pi`, String.raw`80\pi`, "NOTA"],
+   answer: "A",
+   solution: String.raw`The constraint (sum of distances \leq 10) describes the interior of an ellipse with foci at the stakes.
+The major axis has length 2a=10\Rightarrow a=5. The distance between foci is 2c=8\Rightarrow c=4.
+\[b^2=a^2-c^2=25-16=9\Rightarrow b=3.\]
+Area of ellipse =\pi ab=\pi(5)(3)=\boxed{15\pi} square meters.`,
+},
+
+
+
+
+{
+   id: 20108,
+   number: 106,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 5,
+   methods: ["Trigonometric Identities"],
+   question: String.raw`Find a value for \theta that satisfies the given equation:
+\[\tan\theta=\frac{\tan\!\left(\dfrac{5\pi}{36}\right)-1}{\tan\!\left(\dfrac{\pi}{9}\right)-1}.\]`,
+   choices: [String.raw`\dfrac{\pi}{36}`, String.raw`\dfrac{2\pi}{9}`, String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{4}`, "NOTA"],
+   answer: "B",
+   solution: String.raw`Using \tan(\pi/4)=1 and the addition formula \tan(\pi/9+5\pi/36)=\tan(\pi/4)=1:
+\[1=\frac{\tan(\pi/9)+\tan(5\pi/36)}{1-\tan(\pi/9)\tan(5\pi/36)}.\]
+This gives \tan(5\pi/36)=\dfrac{1-\tan(\pi/9)}{1+\tan(\pi/9)}. Substituting:
+\[\tan\theta=\frac{\dfrac{1-\tan(\pi/9)}{1+\tan(\pi/9)}-1}{\tan(\pi/9)-1}=\frac{-2\tan(\pi/9)}{(1+\tan(\pi/9))(\tan(\pi/9)-1)}=\frac{2\tan(\pi/9)}{1-\tan^2(\pi/9)}=\tan\!\left(\frac{2\pi}{9}\right).\]
+Therefore \theta=\boxed{\dfrac{2\pi}{9}}.`,
+},
+
+
+
+
+{
+   id: 20109,
+   number: 107,
+   division: "Alpha",
+   topic: "Conic Sections",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Find the sum of the slopes of the asymptotes of the hyperbola given by 5x^2-10x-4y^2+16y-31=0.`,
+   choices: [String.raw`\dfrac{\sqrt{5}}{2}`, String.raw`\dfrac{5}{4}`, String.raw`\sqrt{5}`, String.raw`\dfrac{5}{2}`, "NOTA"],
+   answer: "E",
+   solution: String.raw`Complete the square: 5(x-1)^2-4(y-2)^2=20, i.e., \dfrac{(x-1)^2}{4}-\dfrac{(y-2)^2}{5}=1.
+This is a horizontal hyperbola with a^2=4, b^2=5.
+Asymptotes: y-2=\pm\dfrac{\sqrt{5}}{2}(x-1), with slopes +\dfrac{\sqrt{5}}{2} and -\dfrac{\sqrt{5}}{2}.
+Sum of slopes =\dfrac{\sqrt{5}}{2}+\left(-\dfrac{\sqrt{5}}{2}\right)=0.
+Since 0 is not among choices A--D, the answer is \boxed{\text{NOTA}}.`,
+},
+
+
+
+
+{
+   id: 20110,
+   number: 108,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Let x and y be measures of acute angles such that \sin(3x-y)-\cos(2x+2y)=2. Find the value of x.`,
+   choices: [String.raw`\dfrac{\pi}{12}`, String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{4}`, String.raw`\dfrac{\pi}{3}`, "NOTA"],
+   answer: "C",
+   solution: String.raw`For the sum of a sine and a negative cosine to equal 2 (the maximum possible), we need:
+\sin(3x-y)=1 and \cos(2x+2y)=-1.
+So 3x-y=\pi/2 and 2x+2y=\pi\Rightarrow x+y=\pi/2.
+From x+y=\pi/2: y=\pi/2-x. Substituting: 3x-(\pi/2-x)=\pi/2\Rightarrow 4x=\pi\Rightarrow x=\pi/4.
+Verify: x=y=\pi/4 (both acute). \boxed{x=\pi/4}.`,
+},
+
+
+
+
+{
+   id: 20111,
+   number: 109,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`A radioactive substance has a half-life of 24 years. A sample of this substance decays over a period of k years to 75\% of its original amount. Compute the value of k.`,
+   choices: [String.raw`48-24\log_2 3`, "12", "18", "48", "NOTA"],
+   answer: "A",
+   solution: String.raw`The decay model: A(t)=A_0\left(\dfrac{1}{2}\right)^{t/24}. Set A(k)=\dfrac{3}{4}A_0:
+\[\left(\frac{1}{2}\right)^{k/24}=\frac{3}{4}\implies \frac{k}{24}\ln\!\frac{1}{2}=\ln\frac{3}{4}.\]
+\[\frac{k}{24}(-\ln 2)=\ln 3-2\ln 2\implies k=\frac{24(2\ln 2-\ln 3)}{\ln 2}=48-\frac{24\ln 3}{\ln 2}=\boxed{48-24\log_2 3}.\]`,
+},
+
+
+
+
+{
+   id: 20112,
+   number: 110,
+   division: "Alpha",
+   topic: "Geometry",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Consider a circle with radius 3, inside which two radii are drawn to form a sector with central angle \dfrac{\pi}{3}. A second circle is drawn such that it is tangent to both radii and internally tangent to the first circle. Find the radius of the second circle.`,
+   choices: ["1", String.raw`\dfrac{3\sqrt{3}-3}{2}`, String.raw`\dfrac{2\sqrt{3}}{3}`, String.raw`\sqrt{3}`, "NOTA"],
+   answer: "A",
+   solution: String.raw`Let r be the radius and x the distance from the large circle's center to the small circle's center.
+Internal tangency: x+r=3.
+The sector has half-angle \pi/6. The small circle is tangent to both radii, so \sin(\pi/6)=r/x\Rightarrow 1/2=r/x\Rightarrow x=2r.
+Substituting: 2r+r=3\Rightarrow r=\boxed{1}.`,
+},
+
+
+
+
+{
+   id: 20113,
+   number: 111,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 5,
+   methods: ["Trigonometry"],
+   question: String.raw`Let f(x)=2x and g(x)=\dfrac{x}{4-x^2}. Given h^1(x)=4g(f(x)) and h^n(x)=h\!\left(h^{n-1}(x)\right), find h^{100}(\sqrt{3}).`,
+   choices: [String.raw`-\sqrt{3}`, String.raw`-\dfrac{\sqrt{3}}{3}`, String.raw`\dfrac{\sqrt{3}}{3}`, String.raw`\sqrt{3}`, "NOTA"],
+   answer: "D",
+   solution: String.raw`Compute h(x)=4g(f(x))=4\cdot\dfrac{2x}{4-(2x)^2}=\dfrac{8x}{4-4x^2}=\dfrac{2x}{1-x^2}.
+This is the double-angle formula for tangent: \dfrac{2\tan\theta}{1-\tan^2\theta}=\tan(2\theta).
+Setting x=\tan\theta: h(\tan\theta)=\tan(2\theta), so h^n(\tan\theta)=\tan(2^n\theta).
+Since \sqrt{3}=\tan(\pi/3): h^{100}(\sqrt{3})=\tan\!\left(\dfrac{2^{100}\pi}{3}\right).
+Now 2^{100}\bmod 3: since 2\equiv -1\pmod{3}, 2^{100}\equiv(-1)^{100}=1\pmod{3}.
+So \dfrac{2^{100}\pi}{3}=k\pi+\dfrac{\pi}{3} for some integer k, and \tan\!\left(k\pi+\dfrac{\pi}{3}\right)=\tan\!\left(\dfrac{\pi}{3}\right)=\boxed{\sqrt{3}}.`,
+},
+
+
+
+
+{
+   id: 20114,
+   number: 112,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Find all real solutions for x: \sin^2 x=\cos^2 x.`,
+   choices: [String.raw`\dfrac{\pi}{4}+2k\pi, where k is an integer`, String.raw`\dfrac{\pi}{4}+k\pi, where k is an integer`, String.raw`\dfrac{\pi}{4}+\dfrac{k\pi}{2}, where k is an integer`, String.raw`\dfrac{\pi}{4},\dfrac{3\pi}{4},\dfrac{5\pi}{4},\ldots`, "NOTA"],
+   answer: "C",
+   solution: String.raw`\sin^2 x=\cos^2 x\Rightarrow\sin^2 x-\cos^2 x=0\Rightarrow-\cos(2x)=0\Rightarrow\cos(2x)=0.
+So 2x=\dfrac{\pi}{2}+k\pi\Rightarrow x=\dfrac{\pi}{4}+\dfrac{k\pi}{2} for integer k.
+The answer is \boxed{C}.`,
+},
+
+
+
+
+{
+   id: 20115,
+   number: 113,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`A sinusoidal function has a vertical shift of magnitude 3 and amplitude of 5. Which of the following could \textbf{not} be this function?`,
+   choices: [String.raw`f(x)=5\sin x-3`, String.raw`f(x)=-5\cos(3x-\pi)+3`, String.raw`f(x)=10\sin x\cos x+3`, String.raw`f(x)=5\cos x-3`, "NOTA"],
+   answer: "E",
+   solution: String.raw`A) \(5\sin x-3\): amplitude 5 and vertical shift \(-3\). \(\checkmark\)
+B) \(-5\cos(3x-\pi)+3\): amplitude 5 and vertical shift \(+3\). \(\checkmark\)
+C) \(10\sin x\cos x+3=5\sin(2x)+3\): amplitude 5 and vertical shift \(+3\). \(\checkmark\)
+D) \(5\cos x-3\): amplitude 5 and vertical shift \(-3\). \(\checkmark\)
+All four choices qualify, so the answer is \(\boxed{\text{NOTA}}\).`,
+},
+
+
+
+
+{
+   id: 20116,
+   number: 114,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Let \Delta be an operator such that \Delta(f(x))=f(x+1)-f(x). Furthermore, \Delta^1(f(x))=\Delta(f(x)) and for n\geq 2, \Delta^n(f(x))=\Delta(\Delta^{n-1}(f(x))).
+Let g(x)=\Delta(x^3)+\Delta((x-1)^3). Compute g(1).`,
+   choices: ["2", "7", "8", "9", "NOTA"],
+   answer: "C",
+   solution: String.raw`\Delta(x^3)=(x+1)^3-x^3=3x^2+3x+1.
+\Delta((x-1)^3)=x^3-(x-1)^3=3x^2-3x+1.
+g(x)=\Delta(x^3)+\Delta((x-1)^3)=(x+1)^3-(x-1)^3.
+g(1)=2^3-0^3=8-0=\boxed{8}.`,
+},
+
+
+
+
+{
+   id: 20117,
+   number: 115,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Let \Delta be an operator such that \Delta(f(x))=f(x+1)-f(x). Furthermore, \Delta^1(f(x))=\Delta(f(x)) and for n\geq 2, \Delta^n(f(x))=\Delta(\Delta^{n-1}(f(x))).
+Given that f(x) is a polynomial and \Delta^k(f(x))=c, where c is a non-zero constant, find the degree of f(x).`,
+   choices: [String.raw`c`, String.raw`k-1`, String.raw`k`, String.raw`k+1`, "NOTA"],
+   answer: "C",
+   solution: String.raw`Each application of \Delta reduces the degree of a polynomial by exactly 1: if f has degree n, then \Delta(f) has degree n-1.
+After k applications, the degree has been reduced to 0 (a non-zero constant c).
+Therefore f(x) has degree \boxed{k}.`,
+},
+
+
+
+
+{
+   id: 20118,
+   number: 116,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Which of the following functions is \textbf{not} monotonic on its domain?`,
+   choices: [String.raw`a(x)=x^3,\quad x\in(-\infty,\infty)`, String.raw`b(x)=\sin(2x),\quad x\in\left(-\dfrac{\pi}{4},\dfrac{\pi}{4}\right)`, String.raw`c(x)=\arctan(x),\quad x\in(-\infty,\infty)`, String.raw`d(x)=\ln(x^2),\quad x\in(0,\infty)`, "NOTA"],
+   answer: "E",
+   solution: String.raw`A) x^3 is strictly increasing on all of \mathbb{R}. Monotonic.
+B) \sin(2x) on (-\pi/4,\pi/4): the argument 2x\in(-\pi/2,\pi/2), where \sin is strictly increasing. Monotonic.
+C) \arctan(x) is strictly increasing on all of \mathbb{R}. Monotonic.
+D) On (0,\infty): \ln(x^2)=2\ln x, which is strictly increasing. Monotonic.
+All four functions are monotonic, so the answer is \boxed{\text{NOTA}}.`,
+},
+
+
+
+
+{
+   id: 20119,
+   number: 117,
+   division: "Alpha",
+   topic: "Matrices",
+   difficulty: 2,
+   methods: ["Determinant"],
+   question: String.raw`For the 3\times 3 matrix \begin{pmatrix}A&B&C\\D&E&F\\G&H&I\end{pmatrix}, Jack says the determinant equals AEI+BFG+CDH-(CEG+BDI+AFH). Jim says the determinant equals A\begin{vmatrix}E&F\\H&I\end{vmatrix}-B\begin{vmatrix}D&F\\G&I\end{vmatrix}+C\begin{vmatrix}D&E\\G&H\end{vmatrix}. Who is correct?`,
+   choices: ["Jack", "Jim", "neither", "both", "NOTA"],
+   answer: "D",
+   solution: String.raw`Jack's formula is the Sarrus' rule (diagonal method) for a 3\times 3 determinant: correct.
+Jim's formula is cofactor expansion along the first row: also correct.
+Expanding Jim's expression yields exactly Jack's expression.
+Both methods are valid. Answer: \boxed{\text{both}}.`,
+},
+
+
+
+
+{
+   id: 20120,
+   number: 118,
+   division: "Alpha",
+   topic: "Conic Sections",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Identify the following non-degenerate conic section: x^2+xy+y^2+x+y=0.
+\textit{(Note: "Ellipse" refers to a non-circular ellipse.)}`,
+   choices: ["circle", "ellipse", "parabola", "hyperbola", "NOTA"],
+   answer: "B",
+   solution: String.raw`For the general conic \(Ax^2+Bxy+Cy^2+Dx+Ey+F=0\), the discriminant is \(B^2-4AC\).
+Here \(A=1\), \(B=1\), and \(C=1\), so \(B^2-4AC=1-4=-3<0\). The quadratic part is positive definite, and the equation has real points, such as \((0,0)\). Thus the graph is an ellipse or a circle.
+Because the \(xy\)-term is nonzero, the conic is rotated and is not a circle. Therefore it is a \(\boxed{\text{non-circular ellipse}}\).`,
+},
+
 ];
