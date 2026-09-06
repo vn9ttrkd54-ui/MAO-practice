@@ -28,9 +28,9 @@ export function PublicRoomPresence({ room }: { room: MultiplayerPublicRoom }) {
   const remainingPlayers = room.players.length - visiblePlayers.length;
 
   return (
-    <div className="mt-3 flex min-h-8 items-center justify-between gap-3">
+    <div className="mt-3 flex min-h-8 flex-wrap items-center justify-between gap-3">
       <p className="flex items-center gap-2 text-xs text-gray-500">
-        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${occupied ? "bg-green-600" : "bg-gray-400"}`} aria-hidden="true" />
+        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${occupied ? "bg-blue-500 ring-4 ring-blue-50" : "bg-slate-300"}`} aria-hidden="true" />
         {room.status === "countdown" && room.countdownEndsAt
           ? <RoomCountdown endsAt={room.countdownEndsAt} />
           : occupied ? "Players waiting" : "Empty room"}
