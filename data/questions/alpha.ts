@@ -2097,4 +2097,540 @@ Here \(A=1\), \(B=1\), and \(C=1\), so \(B^2-4AC=1-4=-3<0\). The quadratic part 
 Because the \(xy\)-term is nonzero, the conic is rotated and is not a circle. Therefore it is a \(\boxed{\text{non-circular ellipse}}\).`,
 },
 
+
+{
+   id: 20121,
+   number: 119,
+   division: "Alpha",
+   topic: "Conic Sections",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Find the length of the chord of the hyperbola \dfrac{x^2}{16}-\dfrac{y^2}{36}=1 cut by the vertical line passing through a focus.`,
+   choices: ["9", "12", String.raw`9\sqrt{2}`, "18", "NOTA"],
+   answer: "D",
+   solution: String.raw`For \dfrac{x^2}{16}-\dfrac{y^2}{36}=1, we have a^2=16, b^2=36, so c^2=16+36=52 and the foci are at (\pm 2\sqrt{13},\,0).
+Substituting x=2\sqrt{13} into the hyperbola equation:
+\[\frac{52}{16}-\frac{y^2}{36}=1 \implies \frac{y^2}{36}=\frac{52}{16}-1=\frac{36}{16} \implies y^2=81 \implies y=\pm 9.\]
+The chord has length 9-(-9)=\boxed{18}.`,
+},
+
+
+
+
+{
+   id: 20122,
+   number: 120,
+   division: "Alpha",
+   topic: "Matrices",
+   difficulty: 2,
+   methods: ["Determinant"],
+   question: String.raw`Find \det\begin{pmatrix}2004&2005&2006\\2003&2004&2005\\2002&2003&2004\end{pmatrix}.`,
+   choices: ["1", "0", "-1", "2", "NOTA"],
+   answer: "B",
+   solution: String.raw`Subtract row 2 from row 1 and row 3 from row 2:
+\[R_1\leftarrow R_1-R_2:\;(1,1,1),\quad R_2\leftarrow R_2-R_3:\;(1,1,1).\]
+Now rows 1 and 2 are identical, so \det=\boxed{0}.`,
+},
+
+
+
+
+{
+   id: 20123,
+   number: 121,
+   division: "Alpha",
+   topic: "Matrices",
+   difficulty: 1,
+   methods: ["Matrix Multiplication"],
+   question: String.raw`Compute \begin{bmatrix}\sin x & \cos x\end{bmatrix}\begin{bmatrix}\sin x\\\cos x\end{bmatrix}.`,
+   choices: [String.raw`[0]`, String.raw`[\sin x\cos x]`, String.raw`[1]`, String.raw`[2]`, "NOTA"],
+   answer: "C",
+   solution: String.raw`Multiplying a 1\times 2 matrix by a 2\times 1 matrix gives a 1\times 1 matrix:
+\[\begin{bmatrix}\sin x & \cos x\end{bmatrix}\begin{bmatrix}\sin x\\\cos x\end{bmatrix}=[\sin^2 x+\cos^2 x]=\boxed{[1]}.\]`,
+},
+
+
+
+
+{
+   id: 20124,
+   number: 122,
+   division: "Alpha",
+   topic: "Polar",
+   difficulty: 2,
+   methods: ["Law of Cosines"],
+   question: String.raw`Find the distance between the polar points \left(4,\,\dfrac{5\pi}{3}\right) and \left(-\sqrt{2},\,\dfrac{5\pi}{4}\right).`,
+   choices: [String.raw`\sqrt{6+4\sqrt{3}}`, String.raw`\sqrt{12+4\sqrt{3}}`, String.raw`\sqrt{14+4\sqrt{3}}`, String.raw`\sqrt{16+4\sqrt{3}}`, "NOTA"],
+   answer: "C",
+   solution: String.raw`Convert to rectangular coordinates.
+Point 1: r=4, \theta=\frac{5\pi}{3}: x=4\cos\!\frac{5\pi}{3}=4\cdot\frac{1}{2}=2, y=4\sin\!\frac{5\pi}{3}=4\cdot\!\left(-\frac{\sqrt{3}}{2}\right)=-2\sqrt{3}. So P_1=(2,-2\sqrt{3}).
+Point 2: r=-\sqrt{2}, \theta=\frac{5\pi}{4}: x=(-\sqrt{2})\cos\!\frac{5\pi}{4}=(-\sqrt{2})\!\left(-\frac{\sqrt{2}}{2}\right)=1, y=(-\sqrt{2})\sin\!\frac{5\pi}{4}=(-\sqrt{2})\!\left(-\frac{\sqrt{2}}{2}\right)=1. So P_2=(1,1).
+\[d=\sqrt{(2-1)^2+(-2\sqrt{3}-1)^2}=\sqrt{1+(4\cdot 3+4\sqrt{3}+1)}=\boxed{\sqrt{14+4\sqrt{3}}}.\]`,
+},
+
+
+
+
+{
+   id: 20125,
+   number: 123,
+   division: "Alpha",
+   topic: "Matrices",
+   difficulty: 2,
+   methods: ["Determinant", "Logarithms"],
+   question: String.raw`Find \det\begin{pmatrix}\log_2 6 & 1\\\ln e & \log_{36} 16\end{pmatrix}.`,
+   choices: ["0", "1", "2", String.raw`\log_2 6`, "NOTA"],
+   answer: "B",
+   solution: String.raw`Note \ln e=1 and \log_{36}16=\dfrac{\log 16}{\log 36}=\dfrac{4\log 2}{2\log 6}=\dfrac{2}{\log_2 6}.
+\[\det=(\log_2 6)\cdot\frac{2}{\log_2 6}-1\cdot 1=2-1=\boxed{1}.\]`,
+},
+
+
+
+
+{
+   id: 20126,
+   number: 124,
+   division: "Alpha",
+   topic: "Sequences and Series",
+   difficulty: 5,
+   methods: ["Rationalization", "Telescoping"],
+   question: String.raw`Evaluate \displaystyle\sum_{k=4}^{120}\frac{1}{k\sqrt{k+1}+(k+1)\sqrt{k}}.`,
+   choices: [String.raw`\dfrac{9}{22}`, String.raw`\dfrac{7}{20}`, String.raw`\dfrac{1}{2}`, String.raw`\dfrac{1}{11}`, "NOTA"],
+   answer: "A",
+   solution: String.raw`Factor the denominator: k\sqrt{k+1}+(k+1)\sqrt{k}=\sqrt{k}\,\sqrt{k+1}\!\left(\sqrt{k}+\sqrt{k+1}\right).
+Rationalize by multiplying by \dfrac{\sqrt{k+1}-\sqrt{k}}{\sqrt{k+1}-\sqrt{k}}:
+\[\frac{1}{k\sqrt{k+1}+(k+1)\sqrt{k}}=\frac{\sqrt{k+1}-\sqrt{k}}{\sqrt{k}\,\sqrt{k+1}\cdot 1}=\frac{1}{\sqrt{k}}-\frac{1}{\sqrt{k+1}}.\]
+The sum telescopes:
+\[\sum_{k=4}^{120}\!\left(\frac{1}{\sqrt{k}}-\frac{1}{\sqrt{k+1}}\right)=\frac{1}{\sqrt{4}}-\frac{1}{\sqrt{121}}=\frac{1}{2}-\frac{1}{11}=\boxed{\frac{9}{22}}.\]`,
+},
+
+
+
+
+{
+   id: 20127,
+   number: 125,
+   division: "Alpha",
+   topic: "Polar",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Express -1+\sqrt{3}\,i in polar form.`,
+   choices: [String.raw`2\!\left(\cos\dfrac{\pi}{3}+i\sin\dfrac{\pi}{3}\right)`, String.raw`2\!\left(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\right)`, String.raw`\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}`, String.raw`2\!\left(\cos\dfrac{4\pi}{3}+i\sin\dfrac{4\pi}{3}\right)`, "NOTA"],
+   answer: "B",
+   solution: String.raw`The modulus is r=\sqrt{(-1)^2+(\sqrt{3})^2}=\sqrt{4}=2.
+The argument: the point (-1,\sqrt{3}) is in quadrant II, so
+\theta=\pi-\arctan\!\left(\dfrac{\sqrt{3}}{1}\right)=\pi-\dfrac{\pi}{3}=\dfrac{2\pi}{3}.
+Thus -1+\sqrt{3}\,i=\boxed{2\!\left(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\right)}.`,
+},
+
+
+
+
+{
+   id: 20128,
+   number: 126,
+   division: "Alpha",
+   topic: "Sequences and Series",
+   difficulty: 4,
+   methods: ["Logarithms"],
+   question: String.raw`Evaluate \displaystyle\sum_{n=1}^{45}\log\!\left(2^{2n-1}\cdot\tan(2n-1)^{\circ}\right).`,
+   choices: ["2025", String.raw`45\log 2`, String.raw`900\log 2`, String.raw`2025\log 2`, "NOTA"],
+   answer: "D",
+   solution: String.raw`Split using log rules: \sum_{n=1}^{45}(2n-1)\log 2+\sum_{n=1}^{45}\log\tan(2n-1)^{\circ}.
+The angles (2n-1)^{\circ} for n=1,\ldots,45 are 1^{\circ},3^{\circ},\ldots,89^{\circ}. Since \tan\theta\cdot\tan(90^{\circ}-\theta)=1, the product of all these tangents equals 1, so \sum_{n=1}^{45}\log\tan(2n-1)^{\circ}=0.
+The sum of exponents: \sum_{n=1}^{45}(2n-1)=45^2=2025.
+Therefore the total is \boxed{2025\log 2}.`,
+},
+
+
+
+
+{
+   id: 20129,
+   number: 127,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Find \dfrac{1}{\cos 45^{\circ}}+\dfrac{1}{\sin 45^{\circ}}.`,
+   choices: [String.raw`\sqrt{2}`, String.raw`\sqrt{2}+1`, "2", String.raw`2\sqrt{2}`, "NOTA"],
+   answer: "D",
+   solution: String.raw`\cos 45^{\circ}=\sin 45^{\circ}=\dfrac{\sqrt{2}}{2}, so
+\[\frac{1}{\cos 45^{\circ}}+\frac{1}{\sin 45^{\circ}}=\frac{2}{\sqrt{2}}+\frac{2}{\sqrt{2}}=\sqrt{2}+\sqrt{2}=\boxed{2\sqrt{2}}.\]`,
+},
+
+
+
+
+{
+   id: 20130,
+   number: 128,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 2,
+   methods: ["Trigonometric Identities"],
+   question: String.raw`Find the smallest positive solution (in degrees) to \dfrac{1}{1+\sin 2x}+\dfrac{1}{1-\sin 2x}=\dfrac{8}{3}.`,
+   choices: [String.raw`15^{\circ}`, String.raw`22.5^{\circ}`, String.raw`30^{\circ}`, String.raw`45^{\circ}`, "NOTA"],
+   answer: "A",
+   solution: String.raw`Combine the fractions:
+\[\frac{(1-\sin 2x)+(1+\sin 2x)}{(1+\sin 2x)(1-\sin 2x)}=\frac{2}{1-\sin^2 2x}=\frac{2}{\cos^2 2x}=\frac{8}{3}.\]
+So \cos^2 2x=\dfrac{3}{4}, giving \cos 2x=\pm\dfrac{\sqrt{3}}{2}.
+The smallest positive x: 2x=30^{\circ}\Rightarrow x=\boxed{15^{\circ}}.`,
+},
+
+
+
+
+{
+   id: 20131,
+   number: 129,
+   division: "Alpha",
+   topic: "Conic Sections",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`If (5-2m)x^2+(m-1)y^2-4x+6y+2m=0 is a circle, find its radius.`,
+   choices: [String.raw`\sqrt{3}`, "3", "2", "9", "NOTA"],
+   answer: "B",
+   solution: String.raw`For a circle the coefficients of x^2 and y^2 must be equal:
+\[5-2m=m-1\implies 6=3m\implies m=2.\]
+The equation becomes x^2+y^2-4x+6y+4=0, i.e., (x-2)^2+(y+3)^2=4+9-4=9.
+The radius is r=\sqrt{9}=\boxed{3}.`,
+},
+
+
+
+
+{
+   id: 20132,
+   number: 130,
+   division: "Alpha",
+   topic: "Functions",
+   difficulty: 2,
+   methods: ["Even Functions"],
+   question: String.raw`If f(x)=\dfrac{3x^2+(a-2)x+3}{1-x^2} is an even function, find a^2\cdot f(a).`,
+   choices: ["-20", "-16", "12", "20", "NOTA"],
+   answer: "A",
+   solution: String.raw`An even function satisfies f(-x)=f(x). The numerator 3x^2+(a-2)x+3 must be even, so its odd part must vanish: a-2=0\Rightarrow a=2.
+\[f(x)=\frac{3x^2+3}{1-x^2}=\frac{3(x^2+1)}{1-x^2}.\]
+\[f(2)=\frac{3(4+1)}{1-4}=\frac{15}{-3}=-5.\]
+\[a^2\cdot f(a)=4\cdot(-5)=\boxed{-20}.\]`,
+},
+
+
+
+
+{
+   id: 20133,
+   number: 131,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 3,
+   methods: ["Trigonometric Identities"],
+   question: String.raw`If a+b=\dfrac{\pi}{3}, evaluate (\sin a-\sin b)^2+(\cos a+\cos b)^2.`,
+   choices: ["1", "2", String.raw`\sqrt{3}`, "3", "NOTA"],
+   answer: "D",
+   solution: String.raw`Expand:
+\[(\sin a-\sin b)^2+(\cos a+\cos b)^2\]
+\[=\sin^2 a-2\sin a\sin b+\sin^2 b+\cos^2 a+2\cos a\cos b+\cos^2 b\]
+\[=1+1+2(\cos a\cos b-\sin a\sin b)=2+2\cos(a+b).\]
+With a+b=\dfrac{\pi}{3}: 2+2\cos\dfrac{\pi}{3}=2+2\cdot\dfrac{1}{2}=\boxed{3}.`,
+},
+
+
+
+
+{
+   id: 20134,
+   number: 132,
+   division: "Alpha",
+   topic: "Polynomials",
+   difficulty: 3,
+   methods: ["Vieta's Formulas"],
+   question: String.raw`The roots of x^3+4ax^2+bx+2-3a=0 satisfy \sum x_n=\prod(2x_n). Find a.`,
+   choices: [String.raw`-\dfrac{4}{7}`, String.raw`\dfrac{2}{7}`, String.raw`\dfrac{4}{7}`, String.raw`\dfrac{8}{7}`, "NOTA"],
+   answer: "C",
+   solution: String.raw`By Vieta's formulas for x^3+4ax^2+bx+(2-3a)=0:
+\sum x_n=-4a and \prod x_n=-(2-3a)=3a-2.
+The condition \sum x_n=\prod(2x_n)=8\prod x_n gives:
+\[-4a=8(3a-2)\implies -4a=24a-16\implies 16=28a\implies a=\boxed{\frac{4}{7}}.\]`,
+},
+
+
+
+
+{
+   id: 20135,
+   number: 133,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 2,
+   methods: ["Trigonometric Identities"],
+   question: String.raw`If \sin 25^{\circ}=a, find \sin 40^{\circ} in terms of a.`,
+   choices: [String.raw`2a^2-1`, String.raw`2a\sqrt{1-a^2}`, String.raw`1-2a^2`, String.raw`a\sqrt{1-a^2}`, "NOTA"],
+   answer: "C",
+   solution: String.raw`\sin 40^{\circ}=\cos 50^{\circ}=\cos(2\cdot 25^{\circ})=1-2\sin^2 25^{\circ}=\boxed{1-2a^2}.`,
+},
+
+
+
+
+{
+   id: 20136,
+   number: 134,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Which of the following has the greatest value: \sin 250^{\circ}, \cos 300^{\circ}, \tan 100^{\circ}, \cot 260^{\circ}, \tan 80^{\circ}?`,
+   choices: [String.raw`\tan 80^{\circ}`, String.raw`\cos 300^{\circ}`, String.raw`\cot 260^{\circ}`, String.raw`\tan 100^{\circ}`, String.raw`\sin 250^{\circ}`],
+   answer: "A",
+   solution: String.raw`Evaluate each approximately:
+\sin 250^{\circ}=-\cos 20^{\circ}\approx -0.94 (negative).
+\cos 300^{\circ}=\cos(-60^{\circ})=0.5.
+\tan 100^{\circ}=-\tan 80^{\circ}\approx -5.67 (negative).
+\cot 260^{\circ}=\tan 10^{\circ}\approx 0.18.
+\tan 80^{\circ}\approx 5.67.
+The greatest value is \boxed{\tan 80^{\circ}}.`,
+},
+
+
+
+
+{
+   id: 20137,
+   number: 135,
+   division: "Alpha",
+   topic: "Probability",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Esha and Harshitha are 2 of 12 people chosen to stand in a row of 7. What is the probability that both are chosen \textit{and} are standing adjacent to each other?`,
+   choices: [String.raw`\dfrac{1}{22}`, String.raw`\dfrac{2}{11}`, String.raw`\dfrac{1}{11}`, String.raw`\dfrac{3}{22}`, "NOTA"],
+   answer: "C",
+   solution: String.raw`Total arrangements of 7 from 12: P(12,7)=12!/5!=3{,}991{,}680.
+Favorable: choose one of the 6 adjacent position pairs for Esha and Harshitha, arrange them within that pair in 2 orders, and fill the remaining 5 positions with an ordered selection from the other 10 people in P(10,5)=10!/5!=30{,}240 ways.
+\[P=\frac{2\cdot 6\cdot P(10,5)}{P(12,7)}=\frac{2\cdot 6\cdot 30240}{3991680}=\frac{362880}{3991680}=\boxed{\frac{1}{11}}.\]`,
+},
+
+
+
+
+{
+   id: 20138,
+   number: 136,
+   division: "Alpha",
+   topic: "Limits",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Evaluate \displaystyle\lim_{x\to 1}\frac{x^4-4x^3+6x^2-4x+1}{x-1}.`,
+   choices: ["4", "0", "1", "-4", "NOTA"],
+   answer: "B",
+   solution: String.raw`Recognize the numerator: x^4-4x^3+6x^2-4x+1=(x-1)^4.
+\[\lim_{x\to 1}\frac{(x-1)^4}{x-1}=\lim_{x\to 1}(x-1)^3=0^3=\boxed{0}.\]`,
+},
+
+
+
+
+{
+   id: 20139,
+   number: 137,
+   division: "Alpha",
+   topic: "Limits",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Evaluate \displaystyle\lim_{x\to 1}\left(\frac{x^3-1}{x-1}\right)^{\!\frac{x^2-1}{x-1}}.`,
+   choices: ["3", "1", "6", "9", "NOTA"],
+   answer: "D",
+   solution: String.raw`As x\to 1:
+\[\frac{x^3-1}{x-1}=x^2+x+1\to 3,\qquad \frac{x^2-1}{x-1}=x+1\to 2.\]
+Therefore \displaystyle\lim_{x\to 1}\left(x^2+x+1\right)^{x+1}=3^2=\boxed{9}.`,
+},
+
+
+
+
+{
+   id: 20140,
+   number: 138,
+   division: "Alpha",
+   topic: "Polynomials",
+   difficulty: 3,
+   methods: ["Synthetic Division"],
+   question: String.raw`P(x)=3x^4+6x^3+5x^2+8x-4 is divided by (x+2), yielding quotient Q(x). Find the sum of the coefficients of Q(3x-1).`,
+   choices: ["56", "14", "28", "32", "NOTA"],
+   answer: "D",
+   solution: String.raw`Q(x)=3x^3+5x-2 via synthetic division. The sum of coefficients of a polynomial f equals f(1). For Q(3x-1), substitute x=1: Q(3\cdot 1-1)=Q(2).
+\[Q(2)=3(2^3)+5(2)-2=24+10-2=\boxed{32}.\]`,
+},
+
+
+
+
+{
+   id: 20141,
+   number: 139,
+   division: "Alpha",
+   topic: "Polynomials",
+   difficulty: 3,
+   methods: ["Remainder Theorem"],
+   question: String.raw`A polynomial P(x) satisfies P(3)=2 and P(-3)=8. Find the remainder when P(x) is divided by x^2-9.`,
+   choices: [String.raw`5+x`, String.raw`x-5`, String.raw`5-x`, String.raw`x+5`, "NOTA"],
+   answer: "C",
+   solution: String.raw`The remainder R(x)=ax+b satisfies R(3)=P(3) and R(-3)=P(-3):
+\[3a+b=2\quad\text{and}\quad -3a+b=8.\]
+Adding: 2b=10\Rightarrow b=5. Subtracting: 6a=-6\Rightarrow a=-1.
+R(x)=-x+5=\boxed{5-x}.`,
+},
+
+
+
+
+{
+   id: 20142,
+   number: 140,
+   division: "Alpha",
+   topic: "Simplification",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`Which of the following is a possible value of \left(\dfrac{x^3-y^3}{xy}+3y-3x\right)\cdot\dfrac{x+y}{\dfrac{y}{x}+\dfrac{x}{y}-2}+y^2, where x\neq y, x,y\neq 0, and x is a positive integer.`,
+   choices: ["3", "16", "22", "30", "NOTA"],
+   answer: "B",
+   solution: String.raw`Factor the first factor's bracket: \dfrac{x^3-y^3}{xy}+3(y-x)=\dfrac{(x-y)(x^2+xy+y^2)-3xy(x-y)}{xy}=\dfrac{(x-y)^3}{xy}.
+The denominator of the second factor: \dfrac{y}{x}+\dfrac{x}{y}-2=\dfrac{x^2+y^2-2xy}{xy}=\dfrac{(x-y)^2}{xy}.
+Multiplying:
+\[\frac{(x-y)^3}{xy}\cdot\frac{(x+y)\cdot xy}{(x-y)^2}=(x-y)(x+y)=x^2-y^2.\]
+Adding y^2: x^2-y^2+y^2=x^2.
+Since x is a positive integer, x^2 is a perfect square. The only perfect square among the choices is \boxed{16} (with x=4).`,
+},
+
+
+
+
+{
+   id: 20143,
+   number: 141,
+   division: "Alpha",
+   topic: "Simplification",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`Given b=a+c, simplify \left(1+\dfrac{a^2-b^2-c^2}{2bc}\right)\div\dfrac{a+b-c}{2bc}.`,
+   choices: ["0", "1", String.raw`2c`, String.raw`2bc`, "NOTA"],
+   answer: "A",
+   solution: String.raw`Combine the numerator: 1+\dfrac{a^2-b^2-c^2}{2bc}=\dfrac{2bc+a^2-b^2-c^2}{2bc}=\dfrac{a^2-(b-c)^2}{2bc}=\dfrac{(a-b+c)(a+b-c)}{2bc}.
+With b=a+c: a-b+c=a-(a+c)+c=0.
+So the numerator equals 0, and the entire expression is \boxed{0}.`,
+},
+
+
+
+
+{
+   id: 20144,
+   number: 142,
+   division: "Alpha",
+   topic: "Logarithms",
+   difficulty: 3,
+   methods: [],
+   question: String.raw`If \log_3 5=a, find \log_{75} 45.`,
+   choices: [String.raw`\dfrac{1+a}{a+2}`, String.raw`\dfrac{2+a}{2a+1}`, String.raw`\dfrac{a+2}{a+1}`, String.raw`\dfrac{2a+1}{a+2}`, "NOTA"],
+   answer: "B",
+   solution: String.raw`Express everything in terms of \log 3. Let \log 3=1 (unit) and \log 5=a.
+\log 45=\log(9\cdot 5)=2+a and \log 75=\log(25\cdot 3)=2a+1.
+\[\log_{75}45=\frac{\log 45}{\log 75}=\boxed{\frac{2+a}{2a+1}}.\]`,
+},
+
+
+
+
+{
+   id: 20145,
+   number: 143,
+   division: "Alpha",
+   topic: "Complex Numbers",
+   difficulty: 2,
+   methods: ["De Moivre's Theorem", "Rationalization"],
+   question: String.raw`Evaluate \left(\dfrac{1-i}{1+i}\right)^{12}.`,
+   choices: ["-1", String.raw`i`, "1", String.raw`-i`, "NOTA"],
+   answer: "C",
+   solution: String.raw`Simplify the base: \dfrac{1-i}{1+i}=\dfrac{(1-i)^2}{(1+i)(1-i)}=\dfrac{1-2i+i^2}{2}=\dfrac{-2i}{2}=-i.
+\[\left(-i\right)^{12}=\left((-i)^4\right)^3=\left(i^4\right)^3=1^3=\boxed{1}.\]`,
+},
+
+
+
+
+{
+   id: 20146,
+   number: 144,
+   division: "Alpha",
+   topic: "Complex Numbers",
+   difficulty: 2,
+   methods: [],
+   question: String.raw`If \dfrac{1-i}{z}=\dfrac{1+i}{z+i}, find |z|.`,
+   choices: [String.raw`\dfrac{\sqrt{2}}{2}`, String.raw`\sqrt{2}`, "1", String.raw`\dfrac{1}{2}`, "NOTA"],
+   answer: "A",
+   solution: String.raw`Cross-multiply: (1-i)(z+i)=(1+i)z.
+\[(1-i)z+(1-i)i=(1+i)z \implies (1-i)i=(1+i)z-(1-i)z=2iz.\]
+(1-i)i=i-i^2=i+1=1+i, so 2iz=1+i\Rightarrow z=\dfrac{1+i}{2i}=\dfrac{(1+i)(-i)}{2}=\dfrac{-i+1}{2}=\dfrac{1-i}{2}.
+\[|z|=\frac{|1-i|}{2}=\frac{\sqrt{2}}{2}=\boxed{\frac{\sqrt{2}}{2}}.\]`,
+},
+
+
+
+
+{
+   id: 20147,
+   number: 145,
+   division: "Alpha",
+   topic: "Trigonometry",
+   difficulty: 3,
+   methods: ["Trigonometric Identities"],
+   question: String.raw`Find T=\arcsin\!\dfrac{1}{\sqrt{10}}+\arcsin\!\dfrac{3}{\sqrt{10}}.`,
+   choices: [String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{4}`, String.raw`\dfrac{\pi}{3}`, String.raw`\dfrac{\pi}{2}`, "NOTA"],
+   answer: "D",
+   solution: String.raw`Let \alpha=\arcsin\!\dfrac{1}{\sqrt{10}} and \beta=\arcsin\!\dfrac{3}{\sqrt{10}}.
+Then \sin\alpha=\dfrac{1}{\sqrt{10}} and \cos\alpha=\dfrac{3}{\sqrt{10}} (first quadrant).
+But \cos\alpha=\dfrac{3}{\sqrt{10}}=\sin\beta, so \alpha+\beta=\dfrac{\pi}{2}.
+Therefore T=\boxed{\dfrac{\pi}{2}}.`,
+},
+
+
+
+
+{
+   id: 20148,
+   number: 146,
+   division: "Alpha",
+   topic: "Vectors",
+   difficulty: 1,
+   methods: [],
+   question: String.raw`Find the magnitude of the vector \langle -1,\,3,\,4\rangle.`,
+   choices: [String.raw`\sqrt{14}`, String.raw`\sqrt{24}`, String.raw`\sqrt{26}`, String.raw`\sqrt{30}`, "NOTA"],
+   answer: "C",
+   solution: String.raw`\[|\langle -1,3,4\rangle|=\sqrt{(-1)^2+3^2+4^2}=\sqrt{1+9+16}=\boxed{\sqrt{26}}.\]`,
+},
+
+
+
+
+{
+   id: 20149,
+   number: 147,
+   division: "Alpha",
+   topic: "Vectors",
+   difficulty: 2,
+   methods: ["Cross Product"],
+   question: String.raw`Find a unit vector in the direction of \langle 1,-2,1\rangle\times\langle -2,1,2\rangle.`,
+   choices: [String.raw`\dfrac{\sqrt{2}}{10}\langle 5,4,3\rangle`, String.raw`\dfrac{1}{5\sqrt{2}}\langle 5,4,3\rangle`, String.raw`\dfrac{1}{\sqrt{50}}\langle -5,-4,3\rangle`, String.raw`\dfrac{1}{\sqrt{50}}\langle -5,4,-3\rangle`, "NOTA"],
+   answer: "E",
+   solution: String.raw`Compute the cross product:
+\[\langle 1,-2,1\rangle\times\langle -2,1,2\rangle=\begin{vmatrix}\mathbf{i}&\mathbf{j}&\mathbf{k}\\1&-2&1\\-2&1&2\end{vmatrix}\]
+\[=\mathbf{i}[(-2)(2)-(1)(1)]-\mathbf{j}[(1)(2)-(1)(-2)]+\mathbf{k}[(1)(1)-(-2)(-2)]\]
+\[=\mathbf{i}(-4-1)-\mathbf{j}(2+2)+\mathbf{k}(1-4)=\langle -5,-4,-3\rangle.\]
+Magnitude: \sqrt{25+16+9}=\sqrt{50}=5\sqrt{2}.
+Unit vector: \dfrac{1}{5\sqrt{2}}\langle -5,-4,-3\rangle=\dfrac{\sqrt{2}}{10}\langle -5,-4,-3\rangle.
+This does not match any of choices A--D, so the answer is \boxed{\text{NOTA}}.`,
+},
+
 ];
