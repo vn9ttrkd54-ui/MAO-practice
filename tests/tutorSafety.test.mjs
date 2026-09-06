@@ -8,6 +8,18 @@ const question = {
   choices: ["6", "8", "10", "18", "NOTA"],
 };
 
+test("allows the arcsine misconception explanation while still blocking its final choice", () => {
+  const trig = {
+    answer: "B",
+    choices: [String.raw`\(-\frac{3\pi}{10}\)`, String.raw`\(\frac{4\pi}{7}\)`,
+      String.raw`\(\frac{2\pi}{5}\)`, String.raw`\(\frac{5\pi}{11}\)`, "NOTA"],
+  };
+  const explanation = String.raw`You are right that sine repeats, so many angles have the same sine. The mistake is assuming arcsine returns all of them: it is defined to return just one principal angle in \([-\pi/2,\pi/2]\). That restriction makes its output unique.`;
+  assert.equal(revealsFinalAnswer(explanation, trig), false);
+  assert.equal(revealsFinalAnswer("The correct choice is B.", trig), true);
+  assert.equal(revealsFinalAnswer(String.raw`Therefore the answer is \(\frac{4\pi}{7}\).`, trig), true);
+});
+
 test("blocks the observed numeric answer leak", () => {
   const response = String.raw`You found \(x=-1\) and \(x=3\). Thus the answer is \(\boxed{10}\).`;
   assert.equal(revealsFinalAnswer(response, question), true);

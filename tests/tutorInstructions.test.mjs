@@ -33,6 +33,24 @@ test("metadata requests use stored fields without demanding work or revealing so
 });
 
 // Prompt-contract checks, not live-model evaluations.
+test("off-topic requests stay brief and excessive repetition is explicitly declined", () => {
+  for (const revealed of [true, false]) {
+    const prompt = tutorInstructions(revealed, false);
+    assert.match(prompt, /one-sentence boundary/);
+    assert.match(prompt, /Do not provide off-topic advice, recovery instructions, checklists/);
+    assert.match(prompt, /Explicitly and briefly decline that part rather than silently ignoring it/);
+    assert.match(prompt, /Ordinary requests to repeat or rephrase a short explanation are fine/);
+  }
+});
+
+test("misconceptions receive direct reasoning feedback without disclosing choices", () => {
+  const prompt = tutorInstructions(false, true);
+  assert.match(prompt, /Verbal reasoning counts as shown work/);
+  assert.match(prompt, /pinpoint the unsupported inference or incorrect assumption/);
+  assert.match(prompt, /If the logic is sound, say so/);
+  assert.match(prompt, /without naming, evaluating, or eliminating the supplied answer choices/);
+  assert.match(prompt, /sine having infinitely many preimages does not make arcsine ambiguous/);
+});
 test("ordinary help and equivalent wording are covered on first and follow-up turns", () => {
   for (const firstMessage of [true, false]) {
     const prompt = tutorInstructions(false, firstMessage);

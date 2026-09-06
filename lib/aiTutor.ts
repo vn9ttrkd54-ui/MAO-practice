@@ -16,7 +16,7 @@ const configuredDailyLimit = Number.parseInt(process.env.TUTOR_DAILY_MESSAGE_LIM
 export const TUTOR_DAILY_MESSAGE_LIMIT = Number.isSafeInteger(configuredDailyLimit) && configuredDailyLimit > 0
   ? configuredDailyLimit
   : 15;
-export const TUTOR_PROMPT_VERSION = "2.2";
+export const TUTOR_PROMPT_VERSION = "2.3";
 
 const TUTOR_SAFETY_FALLBACK = "I can't give the final answer before you submit or give up. After that, I can explain the complete solution. For now, share your current work and I'll help with the next step.";
 
