@@ -1,6 +1,36 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import { tutorInstructions } from "../lib/tutorInstructions.ts";
+
+test("calculator-free rules cover hints and revealed solutions, including exact angle comparisons", () => {
+  for (const revealed of [true, false]) {
+    for (const firstMessage of [true, false]) {
+      const prompt = tutorInstructions(revealed, firstMessage);
+      assert.match(prompt, /All questions are calculator-free/);
+      assert.match(prompt, /Every hint, worked step, solution, and explanation/);
+      assert.match(prompt, /Never recommend a calculator/);
+      assert.match(prompt, /do not substitute 3.1416 for pi/);
+      assert.match(prompt, /manageable hand estimate, bound, or hand-arithmetic method/);
+      assert.match(prompt, /adapt it into a calculator-free explanation/);
+    }
+  }
+});
+
+test("metadata requests use stored fields without demanding work or revealing solutions", () => {
+  for (const revealed of [true, false]) {
+    const prompt = tutorInstructions(revealed, true);
+    assert.match(prompt, /Report the stored difficulty as N\/5 and the stored topic/);
+    assert.match(prompt, /name the listed method or methods/);
+    assert.match(prompt, /clearly label any inferred approach as a suggestion/);
+    assert.match(prompt, /Metadata questions do not require shown work/);
+    assert.match(prompt, /without working through the solution or revealing the answer/);
+  }
+  const source = readFileSync(new URL("../lib/aiTutor.ts", import.meta.url), "utf8");
+  assert.ok(source.includes("question.methods.join"));
+  assert.ok(source.includes("Topic: ${question.topic}"));
+  assert.ok(source.includes("Difficulty: ${question.difficulty}/5"));
+});
 
 // Prompt-contract checks, not live-model evaluations.
 test("ordinary help and equivalent wording are covered on first and follow-up turns", () => {
