@@ -9,9 +9,10 @@ interface RoundRouteContext {
 }
 
 export async function GET(_request: Request, { params }: RoundRouteContext) {
+  const serverReceivedAt = Date.now();
   const { id } = await params;
   const round = await getMultiplayerRoundState(id);
-  if (round) return NextResponse.json(round, { headers: { "Cache-Control": "no-store" } });
+  if (round) return NextResponse.json({ ...round, serverReceivedAt, serverSentAt: Date.now() }, { headers: { "Cache-Control": "no-store" } });
   const access = await getMultiplayerRoom(id);
   if (access?.room.status === "completed") return new NextResponse(null, { status: 204 });
   return NextResponse.json({ status: "preparing" }, { status: 202, headers: { "Cache-Control": "no-store" } });

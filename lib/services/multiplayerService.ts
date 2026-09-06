@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 
 import { questions } from "@/data/questions";
 import { RequestBodyError } from "@/lib/security/request";
+import { FIRST_QUESTION_READY_MS } from "@/lib/multiplayerTiming";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -33,7 +34,6 @@ const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
 const ALLOWED_TIMES = new Set([30, 60, 90, 120]);
 const QUESTION_HARD_DEADLINE_GRACE_MS = 5_000;
-const FIRST_QUESTION_READY_MS = 15_000;
 
 interface RoomRow {
   id: string;

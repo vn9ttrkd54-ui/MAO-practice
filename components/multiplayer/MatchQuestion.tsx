@@ -7,7 +7,8 @@ import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { sendMultiplayerAnswer, SubmissionRejectedError } from "@/lib/multiplayerSubmission";
-import type { MultiplayerDeliveryReceipt, MultiplayerRoundState } from "@/types/multiplayer";
+import { FIRST_QUESTION_READY_MS, MultiplayerClock, questionDisplayDeadline } from "@/lib/multiplayerTiming";
+import type { MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
 
 const labels: AnswerChoice[] = ["A", "B", "C", "D", "E"];
@@ -20,10 +21,9 @@ function SpectatorList({ round }: { round: MultiplayerRoundState }) {
 export default function MatchQuestion({ round: initialRound }: { round: MultiplayerRoundState }) {
   const router = useRouter();
   const [round, setRound] = useState(initialRound);
-  const [displayEndsAt, setDisplayEndsAt] = useState(() => Math.min(
-    initialRound.questionEndsAt,
-    Math.max(Date.now(), initialRound.questionStartedAt) + initialRound.questionDurationSeconds * 1000,
-  ));
+  const displayEndsAt = questionDisplayDeadline(round);
+  const [serverClock] = useState(() => new MultiplayerClock(Date.now(), performance.now()));
+  const [clockRevision, setClockRevision] = useState(0);
   const [now, setNow] = useState<number | null>(null);
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,9 +33,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const submissionsInFlight = useRef(new Set<number>());
   const currentSubmission = outbox.find((entry) => entry.questionId === round.question.questionId);
   const isSubmitting = currentSubmission?.status === "pending";
-  const [deliveryReady, setDeliveryReady] = useState(false);
   const [pendingRound, setPendingRound] = useState<MultiplayerRoundState | null>(null);
-  const pendingDelivery = useRef<MultiplayerDeliveryReceipt | null>(null);
   const questionNumber = useRef(initialRound.questionNumber);
   const refreshRound = useRef<() => void>(() => undefined);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
@@ -52,7 +50,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     let stopped = false;
     let requestInFlight = false;
     let refreshQueued = false;
-    const clock = window.setInterval(() => setNow(Date.now()), 250);
+    const clock = window.setInterval(() => setNow(serverClock.now(performance.now())), 250);
 
     async function pollRound() {
       if (requestInFlight) {
@@ -61,7 +59,8 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       }
       requestInFlight = true;
       try {
-        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, { cache: "no-store" });
+        const sentTick = performance.now();
+        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, { cache: "no-store", signal: AbortSignal.timeout(8_000) });
         if (stopped) return;
         if (response.status === 204) {
           setFinished(true);
@@ -69,7 +68,12 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           return;
         }
         if (response.status === 200) {
-          let nextRound = await response.json() as MultiplayerRoundState;
+          let nextRound = await response.json() as MultiplayerRoundState & { serverReceivedAt: number; serverSentAt: number };
+          if (stopped) return;
+          if (serverClock.synchronize(sentTick, performance.now(), nextRound.serverReceivedAt, nextRound.serverSentAt)) {
+            setNow(serverClock.now(performance.now()));
+            setClockRevision((value) => value + 1);
+          }
           setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
           const upcoming = nextRound.upcomingQuestion;
           if (upcoming && upcoming.questionNumber > questionNumber.current) {
@@ -101,18 +105,14 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
                   hasSubmittedCurrentQuestion: false,
                 })),
               };
-              if (nextRound.questionStartedAt > Date.now()) {
+              if (nextRound.questionStartedAt > serverClock.now(performance.now())) {
                 setPendingRound((current) => current?.questionNumber === nextRound.questionNumber ? current : nextRound);
                 return;
               }
               questionNumber.current = nextRound.questionNumber;
-              setDisplayEndsAt(Math.min(
-                nextRound.questionEndsAt,
-                nextRound.questionStartedAt + nextRound.questionDurationSeconds * 1000,
-              ));
+              setPendingRound(null);
               setSelected(null);
               setShowLeaderboard(false);
-              setDeliveryReady(true);
             }
             setRound(nextRound);
           }
@@ -132,36 +132,42 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     void pollRound();
     const unsubscribe = subscribeToMultiplayerRoom(round.roomId, refreshRound.current);
     const recoveryPoll = window.setInterval(refreshRound.current, 7_000);
+    const recover = () => {
+      setNow(serverClock.now(performance.now()));
+      refreshRound.current();
+    };
+    window.addEventListener("online", recover);
+    window.addEventListener("focus", recover);
     return () => {
       stopped = true;
       refreshRound.current = () => undefined;
       window.clearInterval(clock);
       window.clearInterval(recoveryPoll);
+      window.removeEventListener("online", recover);
+      window.removeEventListener("focus", recover);
       unsubscribe();
     };
-  }, [round.roomId, router]);
+  }, [round.roomId, router, serverClock]);
 
   useEffect(() => {
     let stopped = false;
     let retryTimer: number | null = null;
     const deliveredQuestionNumber = round.questionNumber;
+    let attempts = 0;
 
     async function acknowledgeDelivery() {
+      attempts += 1;
       try {
         const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/delivery`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ questionNumber: deliveredQuestionNumber }),
+          signal: AbortSignal.timeout(5_000),
         });
         if (!response.ok) throw new Error("Delivery acknowledgement failed.");
-        const receipt = await response.json() as MultiplayerDeliveryReceipt;
-        if (stopped || receipt.questionNumber !== questionNumber.current) return;
-        setDisplayEndsAt(receipt.personalEndsAt);
-        setDeliveryReady(true);
-        setError((current) => current === "Synchronizing your question timer…" ? null : current);
+        // Receipt timing never changes the visible deadline or answer controls.
       } catch {
-        if (!stopped) {
-          setError("Synchronizing your question timer…");
+        if (!stopped && attempts < 3) {
           retryTimer = window.setTimeout(acknowledgeDelivery, 1_500);
         }
       }
@@ -178,40 +184,34 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     if (!pendingRound) return;
     let stopped = false;
     let retryTimer: number | null = null;
-    pendingDelivery.current = null;
+    let attempts = 0;
 
     async function acknowledgePendingDelivery() {
+      attempts += 1;
       try {
         const response = await fetch(`/api/multiplayer/rooms/${pendingRound!.roomId}/delivery`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ questionNumber: pendingRound!.questionNumber }),
+          signal: AbortSignal.timeout(5_000),
         });
         if (!response.ok) throw new Error("Pending delivery acknowledgement failed.");
-        const receipt = await response.json() as MultiplayerDeliveryReceipt;
-        if (!stopped) pendingDelivery.current = receipt;
+        // Preload acknowledgement is independent of local reveal.
       } catch {
-        if (!stopped) retryTimer = window.setTimeout(acknowledgePendingDelivery, 500);
+        if (!stopped && attempts < 3) retryTimer = window.setTimeout(acknowledgePendingDelivery, 1_500);
       }
     }
 
     void acknowledgePendingDelivery();
-    const revealDelay = Math.max(0, pendingRound.questionStartedAt - Date.now());
+    const revealDelay = Math.max(0, pendingRound.questionStartedAt - serverClock.now(performance.now()));
     const revealTimer = window.setTimeout(() => {
-      if (stopped) return;
-      const receipt = pendingDelivery.current?.questionNumber === pendingRound.questionNumber
-        ? pendingDelivery.current
-        : null;
+      if (stopped || pendingRound.questionNumber <= questionNumber.current) return;
       questionNumber.current = pendingRound.questionNumber;
-      setDisplayEndsAt(receipt?.personalEndsAt ?? Math.min(
-        pendingRound.questionEndsAt,
-        pendingRound.questionStartedAt + pendingRound.questionDurationSeconds * 1000,
-      ));
+      setNow(serverClock.now(performance.now()));
       setSelected(null);
       setShowLeaderboard(false);
       // The server can safely accept an answer even if the idempotent delivery
       // receipt is still finishing, so reveal the question and controls together.
-      setDeliveryReady(true);
       setRound(pendingRound);
       setPendingRound(null);
     }, revealDelay);
@@ -221,14 +221,14 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       window.clearTimeout(revealTimer);
       if (retryTimer !== null) window.clearTimeout(retryTimer);
     };
-  }, [pendingRound]);
+  }, [pendingRound, serverClock, clockRevision]);
 
   useEffect(() => {
     const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
-    const delay = Math.max(0, boundary - Date.now() + 100);
+    const delay = Math.max(0, boundary - serverClock.now(performance.now()) + 100);
     const boundaryTimer = window.setTimeout(() => refreshRound.current(), delay);
     const preflightDelay = round.intermissionEndsAt
-      ? Math.max(0, round.intermissionEndsAt - Date.now() - 4_000)
+      ? Math.max(0, round.intermissionEndsAt - serverClock.now(performance.now()) - 4_000)
       : null;
     const preflightTimer = preflightDelay === null
       ? null
@@ -237,7 +237,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       window.clearTimeout(boundaryTimer);
       if (preflightTimer !== null) window.clearTimeout(preflightTimer);
     };
-  }, [round.intermissionEndsAt, round.questionEndsAt]);
+  }, [round.intermissionEndsAt, round.questionEndsAt, serverClock, clockRevision]);
 
   async function submitAnswer() {
     if ((!selected && !currentSubmission) || isSubmitting) return;
@@ -289,14 +289,14 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }
 
   const inIntermission = effectiveIntermissionEndsAt !== null;
-  const personalTimeExpired = deliveryReady && secondsLeft === 0;
+  const personalTimeExpired = secondsLeft === 0;
   if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
     return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 5}s` : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
   if (questionStartsIn === null || questionStartsIn > 0) {
-    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">Question {round.questionNumber} starts in {questionStartsIn ?? 15}s</h1></div></main>;
+    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">Question {round.questionNumber} starts in {questionStartsIn ?? FIRST_QUESTION_READY_MS / 1000}s</h1></div></main>;
   }
 
   return (
@@ -305,9 +305,9 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
         {submissionNotice}
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
-        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={!deliveryReady || submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
+        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
-        <button onClick={submitAnswer} disabled={!deliveryReady || !selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
+        <button onClick={submitAnswer} disabled={!selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
       </section>
       <SpectatorList round={round} />
       </div>
