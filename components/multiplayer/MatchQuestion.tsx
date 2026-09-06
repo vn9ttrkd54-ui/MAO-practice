@@ -8,11 +8,20 @@ import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/compon
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { sendMultiplayerAnswer, SubmissionRejectedError } from "@/lib/multiplayerSubmission";
 import { acceptRoundSnapshot, restoreMultiplayerAnswers } from "@/lib/multiplayerRecovery";
-import { FIRST_QUESTION_READY_MS, MultiplayerClock, questionDisplayDeadline } from "@/lib/multiplayerTiming";
+import { countdownSeconds, MultiplayerClock, questionDisplayDeadline } from "@/lib/multiplayerTiming";
 import type { MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
 
 const labels: AnswerChoice[] = ["A", "B", "C", "D", "E"];
+
+function preloadedRound(round: MultiplayerRoundState): MultiplayerRoundState | null {
+  const upcoming = round.upcomingQuestion;
+  if (!upcoming) return null;
+  return {
+    ...round, ...upcoming, intermissionEndsAt: null, upcomingQuestion: null,
+    players: round.players.map(player => ({ ...player, hasSubmittedCurrentQuestion: false })),
+  };
+}
 
 function SpectatorList({ round }: { round: MultiplayerRoundState }) {
   if (round.spectators.length === 0) return null;
@@ -38,7 +47,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const outboxKey = `multiplayer-answers:${round.roomId}:${round.currentPlayerId}`;
   const currentSubmission = outbox.find((entry) => entry.questionId === round.question.questionId);
   const isSubmitting = currentSubmission?.status === "pending";
-  const [pendingRound, setPendingRound] = useState<MultiplayerRoundState | null>(null);
+  const [pendingRound, setPendingRound] = useState<MultiplayerRoundState | null>(() => preloadedRound(initialRound));
   const questionNumber = useRef(initialRound.questionNumber);
   const refreshRound = useRef<() => void>(() => undefined);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
@@ -46,10 +55,33 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const secondsLeft = now === null ? null : Math.max(0, Math.ceil((displayEndsAt - now) / 1000));
   const effectiveIntermissionEndsAt = round.intermissionEndsAt
     ?? (pendingRound?.questionNumber === round.questionNumber + 1 ? pendingRound.questionStartedAt : null);
-  const intermissionLeft = now === null || !effectiveIntermissionEndsAt
-    ? null
-    : Math.max(0, Math.ceil((effectiveIntermissionEndsAt - now) / 1000));
-  const questionStartsIn = now === null ? null : Math.max(0, Math.ceil((round.questionStartedAt - now) / 1000));
+  const intermissionLeft = countdownSeconds(effectiveIntermissionEndsAt ?? 0, now, round.questionNumber + 1);
+  const questionStartsIn = countdownSeconds(round.questionStartedAt, now, round.questionNumber);
+  const preparingNext = Boolean(round.upcomingQuestion?.preparing || pendingRound?.preparing);
+  const readyQuestion = pendingRound?.preparing ? pendingRound.questionNumber
+    : round.upcomingQuestion?.preparing ? round.upcomingQuestion.questionNumber
+    : round.preparing ? round.questionNumber : null;
+
+  // One idempotent acknowledgement after the question payload reaches React.
+  // This never controls scoring time or waits at the reveal boundary.
+  useEffect(() => {
+    if (readyQuestion === null) return;
+    let stopped = false;
+    let retryTimer: number | undefined;
+    async function acknowledge() {
+      try {
+        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/ready`, {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionNumber: readyQuestion }), signal: AbortSignal.timeout(5_000),
+        });
+        if (!response.ok && response.status >= 500) throw new Error("Retry readiness");
+      } catch {
+        if (!stopped) retryTimer = window.setTimeout(() => void acknowledge(), 1500 + Math.random() * 500);
+      }
+    }
+    void acknowledge();
+    return () => { stopped = true; window.clearTimeout(retryTimer); };
+  }, [readyQuestion, round.roomId]);
 
   useEffect(() => {
     let stopped = false;
@@ -86,28 +118,13 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
           const upcoming = nextRound.upcomingQuestion;
           if (upcoming && upcoming.questionNumber > questionNumber.current) {
-            const preloadedRound: MultiplayerRoundState = {
-              ...nextRound,
-              questionNumber: upcoming.questionNumber,
-              question: upcoming.question,
-              questionStartedAt: upcoming.questionStartedAt,
-              questionEndsAt: upcoming.questionEndsAt,
-              intermissionEndsAt: null,
-              players: nextRound.players.map((player) => ({
-                ...player,
-                hasSubmittedCurrentQuestion: false,
-              })),
-              upcomingQuestion: null,
-            };
-            setPendingRound((current) => current?.questionNumber === upcoming.questionNumber
-              ? current
-              : preloadedRound);
+            setPendingRound(preloadedRound(nextRound));
           }
           if (nextRound.questionNumber >= questionNumber.current) {
             if (nextRound.questionNumber > questionNumber.current) {
               // The database snapshot includes flags for this exact question.
-              if (nextRound.questionStartedAt > serverClock.now(performance.now())) {
-                setPendingRound((current) => current?.questionNumber === nextRound.questionNumber ? current : nextRound);
+              if (nextRound.preparing || nextRound.questionStartedAt > serverClock.now(performance.now())) {
+                setPendingRound(nextRound);
                 return;
               }
               questionNumber.current = nextRound.questionNumber;
@@ -167,7 +184,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   // HTTP acknowledgements never own reveal or countdown. Re-arm only this local
   // timer on a clock correction; no network request is scheduled at a boundary.
   useEffect(() => {
-    if (!pendingRound) return;
+    if (!pendingRound || pendingRound.preparing || !pendingRound.questionStartedAt) return;
     const revealTimer = window.setTimeout(() => {
       if (pendingRound.questionNumber <= questionNumber.current) return;
       questionNumber.current = pendingRound.questionNumber;
@@ -246,15 +263,15 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><h1 className="text-3xl font-bold">Match complete</h1><p className="mt-3 text-gray-600">Loading final results and question review…</p></div></main>;
   }
 
-  const inIntermission = effectiveIntermissionEndsAt !== null;
-  const personalTimeExpired = secondsLeft === 0;
+  const inIntermission = preparingNext || Boolean(effectiveIntermissionEndsAt);
+  const personalTimeExpired = !round.preparing && secondsLeft === 0;
   if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 5}s` : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? (intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`) : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
-  if (questionStartsIn === null || questionStartsIn > 0) {
-    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">Question {round.questionNumber} starts in {questionStartsIn ?? FIRST_QUESTION_READY_MS / 1000}s</h1></div></main>;
+  if (round.preparing || questionStartsIn === null || questionStartsIn > 0) {
+    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">{round.preparing || questionStartsIn === null ? "Preparing…" : `Question ${round.questionNumber} starts in ${questionStartsIn}s`}</h1>{round.preparing ? <p className="mt-3 text-gray-600">Waiting for players to load the question…</p> : null}</div></main>;
   }
 
   return (

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
+import { countdownSeconds } from "@/lib/multiplayerTiming";
 import type { MultiplayerSpectator, MultiplayerSpectatorState } from "@/types/multiplayer";
 
 function Spectators({ spectators }: { spectators: MultiplayerSpectator[] }) {
@@ -91,6 +92,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
 
   useEffect(() => {
     const boundary = state.intermissionEndsAt ?? state.questionEndsAt;
+    if (!boundary) return;
     const delay = Math.max(0, boundary - Date.now() + 100);
     const timer = window.setTimeout(() => refreshState.current(), delay);
     return () => window.clearTimeout(timer);
@@ -111,6 +113,8 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
     state.questionStartedAt + state.questionDurationSeconds * 1000,
   );
   const seconds = now === null ? null : Math.max(0, Math.ceil((spectatorEndsAt - now) / 1000));
+  const preparing = !state.questionStartedAt || now === null || now < state.questionStartedAt;
+  const countdown = countdownSeconds(state.questionStartedAt, now, state.questionNumber);
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-8">
@@ -119,12 +123,13 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
           <p className="text-sm font-semibold text-blue-600">Live spectator view</p>
           <h1 className="text-2xl font-bold">Question {state.questionNumber} of {state.totalQuestions}</h1>
         </div>
-        <div className="rounded-xl bg-gray-100 px-4 py-2 text-xl font-bold tabular-nums">{seconds}s</div>
+        <div className="rounded-xl bg-gray-100 px-4 py-2 text-xl font-bold tabular-nums">{preparing ? (countdown === null ? "Preparing…" : `Starts in ${countdown}s`) : `${seconds}s`}</div>
       </header>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_18rem]">
         <div className="space-y-4">
           <section className="rounded-2xl border bg-white p-6 shadow-sm">
+            {preparing ? <p>Waiting for the shared question start…</p> : <>
             <div className="text-lg font-semibold leading-8"><MathText>{state.question.question}</MathText></div>
             <div className="mt-5 grid gap-2">
               {state.question.choices.map((choice, index) => (
@@ -135,6 +140,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
               ))}
             </div>
             <p className="mt-4 text-xs text-gray-500">Spectators cannot submit answers.</p>
+            </>}
           </section>
 
           <section>

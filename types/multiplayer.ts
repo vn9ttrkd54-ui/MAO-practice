@@ -88,6 +88,7 @@ export interface MultiplayerQuestion {
 }
 
 export interface MultiplayerRoundState {
+  preparing?: boolean;
   stateVersion: number;
   roomId: string;
   currentPlayerId: string;
@@ -101,6 +102,7 @@ export interface MultiplayerRoundState {
   players: MultiplayerPlayer[];
   spectators: MultiplayerSpectator[];
   upcomingQuestion: {
+    preparing?: boolean;
     questionNumber: number;
     question: MultiplayerQuestion;
     questionStartedAt: number;

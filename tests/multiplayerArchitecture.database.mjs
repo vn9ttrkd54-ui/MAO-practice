@@ -87,7 +87,61 @@ try {
   for (const signature of ['read_multiplayer_snapshot(uuid,uuid,bigint)','tick_multiplayer_rooms()','finalize_multiplayer_match(uuid)']) {
     assert.equal((await db.query("select has_function_privilege('anon',$1,'EXECUTE') allowed",[signature])).rows[0].allowed,false);
   }
-  console.log('PASS: actual migrations, preserved intermission, versioned snapshots, immediate staged answers, browser-independent finalization, rollback, worker retry, rating parity, duplicate recovery, and permissions.');
+  await db.exec(await migration("036_multiplayer_readiness_countdown"));
+  const readyRoom='00000000-0000-0000-0000-000000000030';
+  const readyPlayers=['00000000-0000-0000-0000-000000000031','00000000-0000-0000-0000-000000000032'];
+  await db.query(`insert into multiplayer_rooms(id,code,visibility,mode,division,question_count,seconds_per_question,status,capacity,started_at,current_question_number)
+    values($1,'READYROM','private','unranked','Alpha',2,60,'in-progress',30,clock_timestamp(),1)`,[readyRoom]);
+  for (const id of readyPlayers) await db.query("insert into multiplayer_players(id,room_id,guest_nickname,reconnect_token_hash) values($1,$2,$3,$4)",[id,readyRoom,"Ready "+id.slice(-2),id]);
+  await db.query(`insert into multiplayer_match_questions(room_id,question_number,question_id,difficulty,preparation_deadline_at)
+    values($1,1,301,2,clock_timestamp()+interval '15 seconds'),($1,2,302,2,null)`,[readyRoom]);
+  const ready = (player,q) => db.query("select acknowledge_multiplayer_question_ready($1,$2,$3)",[readyRoom,player,q]);
+  const snap = async () => (await db.query("select read_multiplayer_snapshot($1,$2) s",[readyRoom,readyPlayers[0]])).rows[0].s;
+  const answerReady = (player,q) => db.query("select accept_multiplayer_answer($1,$2,$3,'A',true)",[readyRoom,player,q]);
+  const initialVersion=(await snap()).stateVersion;
+  await ready(readyPlayers[0],1);
+  assert.equal((await snap()).question.started_at,null);
+  assert.equal((await snap()).stateVersion,initialVersion,"readiness alone must not broadcast");
+  await assert.rejects(ready(readyPlayers[0],2),/not preparing/);
+  await assert.rejects(ready(player,1),/not in an active room/);
+  await assert.rejects(answerReady(readyPlayers[0],301),/closed/);
+  await ready(readyPlayers[1],1);
+  let s=await snap();
+  const scheduled=s.question.started_at;
+  const lead=new Date(scheduled).getTime()-Date.now();
+  assert.ok(lead>14500 && lead<=15500,"first countdown gets 5s announcement + 10s");
+  await ready(readyPlayers[0],1);
+  assert.equal((await snap()).question.started_at,scheduled,"retry cannot restart countdown");
+  await assert.rejects(answerReady(readyPlayers[0],301),/not started/);
+  await db.query("update multiplayer_match_questions set started_at=clock_timestamp()-interval '1 second' where room_id=$1 and question_number=1",[readyRoom]);
+  await answerReady(readyPlayers[0],301);
+  await answerReady(readyPlayers[1],301);
+  s=await snap();
+  assert.ok(s.question.round_finished_at);
+  assert.equal(s.question.intermission_ends_at,null);
+  assert.equal(s.upcoming.started_at,null);
+  assert.ok(s.upcoming.preparation_deadline_at);
+  await ready(readyPlayers[0],2);
+  assert.equal((await snap()).upcoming.started_at,null);
+  // A missing player's acknowledgement must not hold the room forever.
+  await db.query("update multiplayer_match_questions set preparation_deadline_at=clock_timestamp()-interval '1 second' where room_id=$1 and question_number=2",[readyRoom]);
+  await db.exec("select tick_multiplayer_rooms()");
+  s=await snap();
+  assert.equal(s.upcoming.started_at,s.question.intermission_ends_at);
+  const laterLead=new Date(s.upcoming.started_at).getTime()-Date.now();
+  assert.ok(laterLead>9500 && laterLead<=10500,"later countdown gets 5s announcement + 5s");
+  await assert.rejects(answerReady(readyPlayers[0],302),/closed/);
+  await db.query("update multiplayer_match_questions set intermission_ends_at=clock_timestamp()-interval '1 second' where room_id=$1 and question_number=1",[readyRoom]);
+  await db.query("update multiplayer_match_questions set started_at=clock_timestamp()-interval '1 second' where room_id=$1 and question_number=2",[readyRoom]);
+  await answerReady(readyPlayers[0],302);
+  await answerReady(readyPlayers[1],302);
+  await db.exec("select tick_multiplayer_rooms()");
+  assert.equal((await db.query("select count(*)::int n from multiplayer_match_results where room_id=$1",[readyRoom])).rows[0].n,2);
+  assert.equal((await db.query("select count(*)::int n from multiplayer_worker_errors")).rows[0].n,0);
+  for (const signature of ['schedule_ready_multiplayer_question(uuid,integer)','acknowledge_multiplayer_question_ready(uuid,uuid,integer)']) {
+    assert.equal((await db.query("select has_function_privilege('anon',$1,'EXECUTE') allowed",[signature])).rows[0].allowed,false);
+  }
+  console.log('PASS: migrations, snapshots, finalization, rollback, readiness barrier, shared 10/5s schedules, timeout, duplicate readiness, early-answer rejection, and permissions.');
 } catch (error) {
   console.error(error.message, error.where ?? "", error.detail ?? "");
   process.exitCode = 1;

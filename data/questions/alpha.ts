@@ -960,7 +960,7 @@ Adding and simplifying yields
   },
   {
      id: 20061,
-     number: 1,
+     number: 60,
      division: "Alpha",
      topic: "Functions",
      difficulty: 1,
@@ -977,7 +977,7 @@ Adding and simplifying yields
   
   {
      id: 20062,
-     number: 2,
+     number: 61,
      division: "Alpha",
      topic: "Functions",
      difficulty: 1,
@@ -994,7 +994,7 @@ Adding and simplifying yields
   
   {
      id: 20063,
-     number: 3,
+     number: 62,
      division: "Alpha",
      topic: "Probability",
      difficulty: 1,
@@ -1012,7 +1012,7 @@ Adding and simplifying yields
   
   {
      id: 20064,
-     number: 4,
+     number: 63,
      division: "Alpha",
      topic: "Vectors",
      difficulty: 1,
@@ -1030,7 +1030,7 @@ Adding and simplifying yields
   
   {
      id: 20065,
-     number: 5,
+     number: 64,
      division: "Alpha",
      topic: "Parametric",
      difficulty: 3,
@@ -1050,7 +1050,7 @@ Adding and simplifying yields
   
   {
      id: 20066,
-     number: 6,
+     number: 65,
      division: "Alpha",
      topic: "Conic Sections",
      difficulty: 2,
@@ -1068,7 +1068,7 @@ Adding and simplifying yields
   
   {
      id: 20067,
-     number: 7,
+     number: 66,
      division: "Alpha",
      topic: "Polar",
      difficulty: 1,
@@ -1088,7 +1088,7 @@ Adding and simplifying yields
   
   {
      id: 20068,
-     number: 8,
+     number: 67,
      division: "Alpha",
      topic: "Sequences",
      difficulty: 2,
@@ -1106,7 +1106,7 @@ Adding and simplifying yields
   
   {
      id: 20069,
-     number: 9,
+     number: 68,
      division: "Alpha",
      topic: "Probability",
      difficulty: 2,
@@ -1124,7 +1124,7 @@ Adding and simplifying yields
   
   {
      id: 20070,
-     number: 10,
+     number: 69,
      division: "Alpha",
      topic: "Series",
      difficulty: 1,
@@ -1142,7 +1142,7 @@ Adding and simplifying yields
   
   {
      id: 20071,
-     number: 11,
+     number: 70,
      division: "Alpha",
      topic: "Limits",
      difficulty: 2,
@@ -1166,7 +1166,7 @@ Adding and simplifying yields
   
   {
      id: 20072,
-     number: 12,
+     number: 71,
      division: "Alpha",
      topic: "Statistics",
      difficulty: 1,
@@ -1183,7 +1183,7 @@ Adding and simplifying yields
   
   {
      id: 20073,
-     number: 13,
+     number: 72,
      division: "Alpha",
      topic: "Limits",
      difficulty: 2,
@@ -1202,7 +1202,7 @@ Adding and simplifying yields
   
   {
      id: 20074,
-     number: 14,
+     number: 73,
      division: "Alpha",
      topic: "Binomial Expansion",
      difficulty: 2,
@@ -1220,7 +1220,7 @@ Adding and simplifying yields
   
   {
      id: 20075,
-     number: 15,
+     number: 74,
      division: "Alpha",
      topic: "Trigonometry",
      difficulty: 2,
@@ -1238,7 +1238,7 @@ Adding and simplifying yields
   
   {
      id: 20076,
-     number: 16,
+     number: 75,
      division: "Alpha",
      topic: "Vectors",
      difficulty: 3,
@@ -1257,7 +1257,7 @@ Adding and simplifying yields
   
   {
      id: 20077,
-     number: 17,
+     number: 76,
      division: "Alpha",
      topic: "Polar",
      difficulty: 2,
@@ -1275,7 +1275,7 @@ Adding and simplifying yields
   
   {
      id: 20078,
-     number: 18,
+     number: 77,
      division: "Alpha",
      topic: "Derivatives",
      difficulty: 3,
@@ -1294,7 +1294,7 @@ Adding and simplifying yields
   
   {
      id: 20079,
-     number: 19,
+     number: 78,
      division: "Alpha",
      topic: "Series",
      difficulty: 2,
@@ -1314,7 +1314,7 @@ Adding and simplifying yields
   
   {
      id: 20080,
-     number: 20,
+     number: 79,
      division: "Alpha",
      topic: "Parametric",
      difficulty: 3,
@@ -1333,7 +1333,7 @@ Adding and simplifying yields
   
   {
      id: 20081,
-     number: 21,
+     number: 80,
      division: "Alpha",
      topic: "Vectors",
      difficulty: 2,
@@ -1353,7 +1353,7 @@ Adding and simplifying yields
   
   {
      id: 20083,
-     number: 23,
+     number: 81,
      division: "Alpha",
      topic: "Polar",
      difficulty: 2,
@@ -1372,7 +1372,7 @@ Adding and simplifying yields
   
   {
      id: 20084,
-     number: 24,
+     number: 82,
      division: "Alpha",
      topic: "Polar",
      difficulty: 3,
@@ -1392,7 +1392,7 @@ Adding and simplifying yields
   
   {
      id: 20085,
-     number: 25,
+     number: 83,
      division: "Alpha",
      topic: "Series",
      difficulty: 4,
@@ -1412,7 +1412,7 @@ Adding and simplifying yields
   
   {
      id: 20086,
-     number: 26,
+     number: 84,
      division: "Alpha",
      topic: "Conic Sections",
      difficulty: 5,
@@ -1433,7 +1433,7 @@ Adding and simplifying yields
   
   {
      id: 20087,
-     number: 27,
+     number: 85,
      division: "Alpha",
      topic: "Sequences",
      difficulty: 2,
@@ -1451,7 +1451,7 @@ Adding and simplifying yields
   
   {
      id: 20088,
-     number: 28,
+     number: 86,
      division: "Alpha",
      topic: "Probability",
      difficulty: 2,
@@ -1468,7 +1468,7 @@ Adding and simplifying yields
   
   {
      id: 20089,
-     number: 29,
+     number: 87,
      division: "Alpha",
      topic: "Complex Numbers",
      difficulty: 5,
@@ -1490,7 +1490,7 @@ Adding and simplifying yields
   
   {
      id: 20090,
-     number: 30,
+     number: 88,
      division: "Alpha",
      topic: "Trigonometry",
      difficulty: 4,
