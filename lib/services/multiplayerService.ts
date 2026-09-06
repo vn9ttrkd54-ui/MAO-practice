@@ -531,121 +531,46 @@ export async function beginPublicRoomIfReady(roomId: string): Promise<Multiplaye
   return prepareRoomMatch(lobby, "countdown");
 }
 
-export async function getMultiplayerRoundState(roomId: string): Promise<MultiplayerRoundState | null> {
-  const lobby = await getPrivateLobby(roomId);
-  if (!lobby || lobby.room.status !== "in-progress") return null;
-
+export function getMultiplayerRoundState(roomId: string): Promise<MultiplayerRoundState | null>;
+export function getMultiplayerRoundState(roomId: string, knownVersion: number): Promise<MultiplayerRoundState | { unchanged: true } | null>;
+export async function getMultiplayerRoundState(roomId: string, knownVersion = -1): Promise<MultiplayerRoundState | { unchanged: true } | null> {
+  const access = await getMultiplayerRoom(roomId, false);
+  if (!access) return null;
   const admin = createAdminClient();
-  let currentQuestionNumber = lobby.room.currentQuestionNumber;
-  const initialRoundLoad = await Promise.all([
-    admin.from("multiplayer_match_questions")
-      .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
-      .eq("room_id", roomId)
-      .eq("question_number", currentQuestionNumber)
-      .maybeSingle<MatchQuestionRow>(),
-    listActiveSpectators(roomId),
-  ]);
-  let questionResponse = initialRoundLoad[0];
-  const spectators = initialRoundLoad[1];
-  let data = questionResponse.data;
-  let error = questionResponse.error;
-  if (error || !data?.ends_at) return null;
-
-  const transitionDueAt = data.intermission_ends_at ?? data.hard_ends_at ?? data.ends_at;
-  let advancedToNextQuestion = false;
-  let transitionNeeded = Date.now() >= new Date(transitionDueAt).getTime();
-  if (!transitionNeeded) {
-    const { data: recoveryNeeded, error: recoveryError } = await admin.rpc(
-      "multiplayer_round_transition_needed",
-      { p_room_id: roomId },
-    );
-    if (recoveryError) throw new Error(`Unable to check the round: ${recoveryError.message}`);
-    transitionNeeded = recoveryNeeded === true;
-  }
-  if (transitionNeeded) {
-    const { data: transition, error: transitionError } = await admin.rpc(
-      "advance_multiplayer_round_state",
-      { p_room_id: roomId },
-    );
-    if (transitionError) throw new Error(`Unable to synchronize the round: ${transitionError.message}`);
-    if (transition === "completed") {
-      await finalizeCompletedMatch(roomId);
-      return null;
-    }
-    if (transition === "inactive" || transition === "preparing") return null;
-    advancedToNextQuestion = transition === "advanced";
-    if (transition === "advanced") {
-      currentQuestionNumber = data.question_number + 1;
-    }
-    if (transition === "advanced" || transition === "intermission") {
-      questionResponse = await admin
-        .from("multiplayer_match_questions")
-        .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
-        .eq("room_id", roomId)
-        .eq("question_number", currentQuestionNumber)
-        .maybeSingle<MatchQuestionRow>();
-      data = questionResponse.data;
-      error = questionResponse.error;
-      if (error || !data?.ends_at) return null;
-    }
-  }
-
-  const question = questions.find((entry) => entry.id === data.question_id);
-  if (!question || !data.ends_at) return null;
-
-  let upcomingQuestion: MultiplayerRoundState["upcomingQuestion"] = null;
-  if (data.intermission_ends_at && data.question_number < lobby.room.settings.questionCount) {
-    const { data: upcoming } = await admin
-      .from("multiplayer_match_questions")
-      .select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at")
-      .eq("room_id", roomId)
-      .eq("question_number", data.question_number + 1)
-      .maybeSingle<MatchQuestionRow>();
-    const upcomingSource = upcoming ? questions.find((entry) => entry.id === upcoming.question_id) : null;
-    if (upcoming?.started_at && upcoming.ends_at && upcomingSource) {
-      upcomingQuestion = {
-        questionNumber: upcoming.question_number,
-        question: {
-          questionId: upcomingSource.id,
-          number: upcoming.question_number,
-          division: upcomingSource.division,
-          topic: upcomingSource.topic,
-          difficulty: upcoming.difficulty,
-          question: upcomingSource.question,
-          choices: upcomingSource.choices,
-        },
-        questionStartedAt: new Date(upcoming.started_at).getTime(),
-        questionEndsAt: new Date(upcoming.ends_at).getTime(),
-      };
-    }
-  }
-
+  const { data, error } = await admin.rpc("read_multiplayer_snapshot", {
+    p_room_id: roomId, p_player_id: access.currentPlayer.playerId, p_known_version: knownVersion,
+  });
+  if (error) throw new Error("Unable to read multiplayer state.");
+  if (!data || data.status !== "in-progress") return null;
+  if (data.unchanged) return { unchanged: true };
+  const q = data.question as MatchQuestionRow | null;
+  if (!q?.started_at || !q.ends_at) return null;
+  const presentQuestion = (row: MatchQuestionRow) => {
+    const source = questions.find((entry) => entry.id === row.question_id);
+    if (!source) throw new Error("Question unavailable.");
+    return { questionId: source.id, number: row.question_number, division: source.division,
+      topic: source.topic, difficulty: row.difficulty, question: source.question, choices: source.choices };
+  };
+  const upcoming = data.upcoming as MatchQuestionRow | null;
+  const players = (data.players as Array<PlayerRow & { display_name: string; rp: number | null }>).map((row) => {
+    const player = mapPlayer(row, row.display_name);
+    player.rp = row.user_id ? row.rp ?? 0 : null;
+    player.rankTier = player.rp === null ? null : tierForRp(player.rp);
+    return player;
+  });
   return {
-    roomId,
-    currentPlayerId: lobby.currentPlayer.playerId,
-    questionNumber: data.question_number,
-    totalQuestions: lobby.room.settings.questionCount,
-    question: {
-      questionId: question.id,
-      number: data.question_number,
-      division: question.division,
-      topic: question.topic,
-      difficulty: data.difficulty,
-      question: question.question,
-      choices: question.choices,
-    },
-    questionDurationSeconds: lobby.room.settings.secondsPerQuestion,
-    questionStartedAt: new Date(data.started_at!).getTime(),
-    questionEndsAt: new Date(data.ends_at).getTime(),
-    intermissionEndsAt: data.intermission_ends_at ? new Date(data.intermission_ends_at).getTime() : null,
-    players: advancedToNextQuestion
-      ? lobby.players.map((player) => ({ ...player, hasSubmittedCurrentQuestion: false }))
-      : lobby.players,
-    spectators,
-    upcomingQuestion,
+    roomId, stateVersion: data.stateVersion, currentPlayerId: access.currentPlayer.playerId,
+    questionNumber: q.question_number, totalQuestions: data.totalQuestions,
+    question: presentQuestion(q), questionDurationSeconds: data.questionDurationSeconds,
+    questionStartedAt: new Date(q.started_at).getTime(), questionEndsAt: new Date(q.ends_at).getTime(),
+    intermissionEndsAt: q.intermission_ends_at ? new Date(q.intermission_ends_at).getTime() : null,
+    players, spectators: await listActiveSpectators(roomId),
+    upcomingQuestion: upcoming?.started_at && upcoming.ends_at ? {
+      questionNumber: upcoming.question_number, question: presentQuestion(upcoming),
+      questionStartedAt: new Date(upcoming.started_at).getTime(), questionEndsAt: new Date(upcoming.ends_at).getTime(),
+    } : null,
   };
 }
-
 export async function acknowledgeMultiplayerQuestionDelivery(
   roomId: string,
   questionNumber: number,
@@ -719,28 +644,9 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
     if (error.code === "P0001") throw new RequestBodyError(error.message, 409);
     throw new Error("Unable to confirm your answer right now.");
   }
-  // Progression failure must never turn a committed answer into a failed submission.
-  // Existing round GET recovery also advances the room if this best-effort check fails.
-  try {
-    const { data: needed, error: checkError } = await admin.rpc(
-      "multiplayer_round_transition_needed", { p_room_id: input.roomId },
-    );
-    if (checkError) throw checkError;
-    if (needed === true) {
-      const { error: advanceError } = await admin.rpc(
-        "advance_multiplayer_round_state", { p_room_id: input.roomId },
-      );
-      if (advanceError) throw advanceError;
-    }
-  } catch {
-    console.warn("Multiplayer answer accepted; round progression deferred to recovery.");
-  }
+  // Acceptance and early completion are committed by one database call.
   return "accepted";
 }
-interface FinalPlayerRow extends PlayerRow {
-  joined_at: string;
-}
-
 interface SubmissionRow {
   player_id: string;
   question_number: number;
@@ -752,119 +658,9 @@ interface SubmissionRow {
 }
 
 async function finalizeCompletedMatch(roomId: string): Promise<void> {
-  const admin = createAdminClient();
-  const { data: claim, error: claimError } = await admin.rpc(
-    "claim_multiplayer_result_finalization",
-    { p_room_id: roomId },
-  );
-  if (claimError) throw new Error(`Unable to prepare multiplayer results: ${claimError.message}`);
-  if (claim === "ready" || claim === "inactive") return;
-  if (claim === "waiting") {
-    for (let attempt = 0; attempt < 50; attempt += 1) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      const { data: finalization } = await admin
-        .from("multiplayer_rooms")
-        .select("results_finalized_at")
-        .eq("id", roomId)
-        .single<{ results_finalized_at: string | null }>();
-      if (finalization?.results_finalized_at) return;
-    }
-    return;
-  }
-
-  const [{ data: room }, playersResponse, submissionsResponse, matchQuestionsResponse] = await Promise.all([
-    admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>(),
-    admin.from("multiplayer_players").select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question, joined_at").eq("room_id", roomId).is("left_at", null),
-    admin.from("multiplayer_submissions").select("player_id, question_number, question_id, selected_answer, correct, answer_time_ms, points_earned").eq("room_id", roomId),
-    admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId),
-  ]);
-  if (!room || room.status !== "completed") return;
-
-  const players = (playersResponse.data ?? []) as FinalPlayerRow[];
-  const submissions = (submissionsResponse.data ?? []) as SubmissionRow[];
-  const matchQuestions = (matchQuestionsResponse.data ?? []) as MatchQuestionRow[];
-  const userIds = players.flatMap((player) => player.user_id ? [player.user_id] : []);
-  const { data: profiles } = userIds.length > 0
-    ? await admin.from("multiplayer_profiles").select("user_id, rp, ranked_matches_played, ranked_wins").in("user_id", userIds)
-    : { data: [] };
-  const profileByUser = new Map((profiles ?? []).map((profile) => [profile.user_id, profile]));
-  const totalDifficulty = matchQuestions.reduce((sum, question) => sum + question.difficulty, 0) || 1;
-
-  const metrics = players.map((player) => {
-    const playerSubmissions = submissions.filter((submission) => submission.player_id === player.id);
-    const correctDifficulty = playerSubmissions.filter((submission) => submission.correct).reduce((sum, submission) => sum + (matchQuestions.find((question) => question.question_number === submission.question_number)?.difficulty ?? 0), 0);
-    const weightedAccuracy = correctDifficulty / totalDifficulty;
-    const normalizedScore = player.score / Math.max(1, room.question_count * 1500);
-    const performance = Math.min(1, Math.max(0, 0.7 * weightedAccuracy + 0.3 * normalizedScore));
-    const totalTime = playerSubmissions.reduce((sum, submission) => sum + submission.answer_time_ms, 0);
-    return { player, performance, totalTime, profile: player.user_id ? profileByUser.get(player.user_id) : undefined };
-  }).sort((a, b) => b.player.score - a.player.score || a.totalTime - b.totalTime || new Date(a.player.joined_at).getTime() - new Date(b.player.joined_at).getTime());
-
-  const signedRps = metrics.flatMap((metric) => metric.profile ? [metric.profile.rp] : []);
-  const averageSignedRp = signedRps.reduce((sum, rp) => sum + rp, 0) / Math.max(1, signedRps.length);
-  const completionFactor = Math.min(1, matchQuestions.filter((question) => question.started_at).length / room.question_count);
-  const ranked = room.mode === "ranked" && players.length > 1;
-
-  const resultRows = metrics.map((metric, index) => {
-    const placement = index + 1;
-    let previousRp: number | null = null;
-    let rpChange: number | null = null;
-    let newRp: number | null = null;
-    let opponentAdjustment: number | null = null;
-    let performanceIndex: number | null = null;
-
-    if (ranked && metric.player.user_id && metric.profile) {
-      const currentRp = metric.profile.rp;
-      previousRp = currentRp;
-      const opponents = metrics.filter((opponent) => opponent.player.id !== metric.player.id);
-      const contributions = opponents.map((opponent) => {
-        const opponentRp = opponent.profile?.rp ?? Math.max(0, averageSignedRp + (opponent.performance - 0.5) * 400);
-        const expected = 1 / (1 + 10 ** ((opponentRp - currentRp) / 400));
-        const opponentPlacement = metrics.findIndex((entry) => entry.player.id === opponent.player.id) + 1;
-        if (placement < opponentPlacement) return 40 * (1 - expected);
-        if (placement > opponentPlacement) return -16 * expected;
-        return 0;
-      });
-      const baseChange = contributions.reduce((sum, value) => sum + value, 0) / Math.max(1, contributions.length);
-      const multiplier = baseChange >= 0 ? 0.8 + 0.4 * metric.performance : 0.75 - 0.25 * metric.performance;
-      rpChange = Math.round(Math.max(-15, Math.min(40, baseChange * multiplier * completionFactor)));
-      newRp = Math.max(0, currentRp + rpChange);
-      opponentAdjustment = contributions.reduce((sum, value) => sum + value, 0) / Math.max(1, contributions.length);
-      performanceIndex = metric.performance;
-    }
-
-    return {
-      room_id: roomId, player_id: metric.player.id, user_id: metric.player.user_id,
-      placement, final_score: metric.player.score, ranked,
-      previous_rp: previousRp, rp_change: rpChange, new_rp: newRp,
-      opponent_adjustment: opponentAdjustment, performance_index: performanceIndex,
-      completion_factor: completionFactor,
-    };
-  });
-
-  const { error: insertError } = await admin.from("multiplayer_match_results").insert(resultRows);
-  if (insertError) {
-    if (insertError.code === "23505") {
-      await admin.from("multiplayer_rooms").update({ results_finalized_at: new Date().toISOString() }).eq("id", roomId);
-      return;
-    }
-    await admin.from("multiplayer_rooms").update({ finalization_started_at: null }).eq("id", roomId);
-    throw new Error(`Unable to finalize multiplayer results: ${insertError.message}`);
-  }
-
-  await Promise.all(resultRows.flatMap((result) => {
-    if (!result.user_id || result.new_rp === null) return [];
-    const profile = profileByUser.get(result.user_id);
-    if (!profile) return [];
-    return [admin.from("multiplayer_profiles").update({
-      rp: result.new_rp,
-      ranked_matches_played: profile.ranked_matches_played + 1,
-      ranked_wins: profile.ranked_wins + (result.placement === 1 ? 1 : 0),
-    }).eq("user_id", result.user_id)];
-  }));
-  await admin.from("multiplayer_rooms").update({ results_finalized_at: new Date().toISOString() }).eq("id", roomId);
+  const { error } = await createAdminClient().rpc("finalize_multiplayer_match", { p_room_id: roomId });
+  if (error) throw new Error("Results are still being prepared. Please retry.");
 }
-
 export async function getMultiplayerMatchResult(roomId: string): Promise<MultiplayerMatchResult | null> {
   const access = await getMultiplayerRoom(roomId);
   const admin = createAdminClient();

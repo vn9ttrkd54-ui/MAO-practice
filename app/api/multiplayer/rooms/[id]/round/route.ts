@@ -11,7 +11,9 @@ interface RoundRouteContext {
 export async function GET(_request: Request, { params }: RoundRouteContext) {
   const serverReceivedAt = Date.now();
   const { id } = await params;
-  const round = await getMultiplayerRoundState(id);
+  const rawVersion = new URL(_request.url).searchParams.get("version");
+  const version = rawVersion === null ? -1 : Number(rawVersion);
+  const round = await getMultiplayerRoundState(id, Number.isSafeInteger(version) ? version : -1);
   if (round) return NextResponse.json({ ...round, serverReceivedAt, serverSentAt: Date.now() }, { headers: { "Cache-Control": "no-store" } });
   const access = await getMultiplayerRoom(id);
   if (access?.room.status === "completed") return new NextResponse(null, { status: 204 });

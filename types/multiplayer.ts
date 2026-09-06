@@ -88,6 +88,7 @@ export interface MultiplayerQuestion {
 }
 
 export interface MultiplayerRoundState {
+  stateVersion: number;
   roomId: string;
   currentPlayerId: string;
   questionNumber: number;

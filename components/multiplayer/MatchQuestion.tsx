@@ -7,6 +7,7 @@ import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { sendMultiplayerAnswer, SubmissionRejectedError } from "@/lib/multiplayerSubmission";
+import { acceptRoundSnapshot, restoreMultiplayerAnswers } from "@/lib/multiplayerRecovery";
 import { FIRST_QUESTION_READY_MS, MultiplayerClock, questionDisplayDeadline } from "@/lib/multiplayerTiming";
 import type { MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
@@ -24,6 +25,8 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const displayEndsAt = questionDisplayDeadline(round);
   const [serverClock] = useState(() => new MultiplayerClock(Date.now(), performance.now()));
   const [clockRevision, setClockRevision] = useState(0);
+  const stateVersion = useRef(initialRound.stateVersion);
+  const lastConfirmedQuestion = useRef<number | null>(null);
   const [now, setNow] = useState<number | null>(null);
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +34,8 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [outbox, setOutbox] = useState<Array<{ questionId: number; questionNumber: number; selectedAnswer: AnswerChoice; status: "pending" | "failed"; message?: string }>>([]);
   const submissionsInFlight = useRef(new Set<number>());
+  const [outboxLoaded, setOutboxLoaded] = useState(false);
+  const outboxKey = `multiplayer-answers:${round.roomId}:${round.currentPlayerId}`;
   const currentSubmission = outbox.find((entry) => entry.questionId === round.question.questionId);
   const isSubmitting = currentSubmission?.status === "pending";
   const [pendingRound, setPendingRound] = useState<MultiplayerRoundState | null>(null);
@@ -60,7 +65,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       requestInFlight = true;
       try {
         const sentTick = performance.now();
-        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, { cache: "no-store", signal: AbortSignal.timeout(8_000) });
+        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round?version=${stateVersion.current}`, { cache: "no-store", signal: AbortSignal.timeout(8_000) });
         if (stopped) return;
         if (response.status === 204) {
           setFinished(true);
@@ -68,12 +73,16 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           return;
         }
         if (response.status === 200) {
-          let nextRound = await response.json() as MultiplayerRoundState & { serverReceivedAt: number; serverSentAt: number };
+          const payload = await response.json();
+          const nextRound = payload as MultiplayerRoundState & { serverReceivedAt: number; serverSentAt: number };
           if (stopped) return;
           if (serverClock.synchronize(sentTick, performance.now(), nextRound.serverReceivedAt, nextRound.serverSentAt)) {
             setNow(serverClock.now(performance.now()));
             setClockRevision((value) => value + 1);
           }
+          if (payload.unchanged) return;
+          if (!acceptRoundSnapshot(nextRound.stateVersion, nextRound.questionNumber, stateVersion.current, questionNumber.current)) return;
+          stateVersion.current = nextRound.stateVersion;
           setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
           const upcoming = nextRound.upcomingQuestion;
           if (upcoming && upcoming.questionNumber > questionNumber.current) {
@@ -96,15 +105,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           }
           if (nextRound.questionNumber >= questionNumber.current) {
             if (nextRound.questionNumber > questionNumber.current) {
-              // Concurrent transition requests can briefly return player flags
-              // read from the previous question. A new round always starts clean.
-              nextRound = {
-                ...nextRound,
-                players: nextRound.players.map((player) => ({
-                  ...player,
-                  hasSubmittedCurrentQuestion: false,
-                })),
-              };
+              // The database snapshot includes flags for this exact question.
               if (nextRound.questionStartedAt > serverClock.now(performance.now())) {
                 setPendingRound((current) => current?.questionNumber === nextRound.questionNumber ? current : nextRound);
                 return;
@@ -113,6 +114,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
               setPendingRound(null);
               setSelected(null);
               setShowLeaderboard(false);
+            }
+            if (lastConfirmedQuestion.current === nextRound.question.questionId) {
+              nextRound.players = nextRound.players.map((player) => player.playerId === nextRound.currentPlayerId
+                ? { ...player, hasSubmittedCurrentQuestion: true } : player);
             }
             setRound(nextRound);
           }
@@ -130,8 +135,17 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
 
     refreshRound.current = () => void pollRound();
     void pollRound();
-    const unsubscribe = subscribeToMultiplayerRoom(round.roomId, refreshRound.current);
-    const recoveryPoll = window.setInterval(refreshRound.current, 7_000);
+    let eventTimer: number | null = null;
+    const unsubscribe = subscribeToMultiplayerRoom(round.roomId, (event) => {
+      if (event && event.stateVersion <= stateVersion.current) return;
+      // Broadcasts are hints, not authority: only authenticated snapshots change state.
+      if (eventTimer !== null) return;
+      eventTimer = window.setTimeout(() => {
+        eventTimer = null;
+        refreshRound.current();
+      }, 50 + Math.random() * 200);
+    });
+    const recoveryPoll = window.setInterval(refreshRound.current, 15_000 + Math.random() * 3_000);
     const recover = () => {
       setNow(serverClock.now(performance.now()));
       refreshRound.current();
@@ -143,101 +157,45 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       refreshRound.current = () => undefined;
       window.clearInterval(clock);
       window.clearInterval(recoveryPoll);
+      if (eventTimer !== null) window.clearTimeout(eventTimer);
       window.removeEventListener("online", recover);
       window.removeEventListener("focus", recover);
       unsubscribe();
     };
   }, [round.roomId, router, serverClock]);
 
-  useEffect(() => {
-    let stopped = false;
-    let retryTimer: number | null = null;
-    const deliveredQuestionNumber = round.questionNumber;
-    let attempts = 0;
-
-    async function acknowledgeDelivery() {
-      attempts += 1;
-      try {
-        const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/delivery`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionNumber: deliveredQuestionNumber }),
-          signal: AbortSignal.timeout(5_000),
-        });
-        if (!response.ok) throw new Error("Delivery acknowledgement failed.");
-        // Receipt timing never changes the visible deadline or answer controls.
-      } catch {
-        if (!stopped && attempts < 3) {
-          retryTimer = window.setTimeout(acknowledgeDelivery, 1_500);
-        }
-      }
-    }
-
-    void acknowledgeDelivery();
-    return () => {
-      stopped = true;
-      if (retryTimer) window.clearTimeout(retryTimer);
-    };
-  }, [round.questionNumber, round.roomId]);
-
+  // HTTP acknowledgements never own reveal or countdown. Re-arm only this local
+  // timer on a clock correction; no network request is scheduled at a boundary.
   useEffect(() => {
     if (!pendingRound) return;
-    let stopped = false;
-    let retryTimer: number | null = null;
-    let attempts = 0;
-
-    async function acknowledgePendingDelivery() {
-      attempts += 1;
-      try {
-        const response = await fetch(`/api/multiplayer/rooms/${pendingRound!.roomId}/delivery`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionNumber: pendingRound!.questionNumber }),
-          signal: AbortSignal.timeout(5_000),
-        });
-        if (!response.ok) throw new Error("Pending delivery acknowledgement failed.");
-        // Preload acknowledgement is independent of local reveal.
-      } catch {
-        if (!stopped && attempts < 3) retryTimer = window.setTimeout(acknowledgePendingDelivery, 1_500);
-      }
-    }
-
-    void acknowledgePendingDelivery();
-    const revealDelay = Math.max(0, pendingRound.questionStartedAt - serverClock.now(performance.now()));
     const revealTimer = window.setTimeout(() => {
-      if (stopped || pendingRound.questionNumber <= questionNumber.current) return;
+      if (pendingRound.questionNumber <= questionNumber.current) return;
       questionNumber.current = pendingRound.questionNumber;
       setNow(serverClock.now(performance.now()));
       setSelected(null);
       setShowLeaderboard(false);
-      // The server can safely accept an answer even if the idempotent delivery
-      // receipt is still finishing, so reveal the question and controls together.
       setRound(pendingRound);
       setPendingRound(null);
-    }, revealDelay);
-
-    return () => {
-      stopped = true;
-      window.clearTimeout(revealTimer);
-      if (retryTimer !== null) window.clearTimeout(retryTimer);
-    };
+    }, Math.max(0, pendingRound.questionStartedAt - serverClock.now(performance.now())));
+    return () => window.clearTimeout(revealTimer);
   }, [pendingRound, serverClock, clockRevision]);
 
   useEffect(() => {
-    const boundary = round.intermissionEndsAt ?? round.questionEndsAt;
-    const delay = Math.max(0, boundary - serverClock.now(performance.now()) + 100);
-    const boundaryTimer = window.setTimeout(() => refreshRound.current(), delay);
-    const preflightDelay = round.intermissionEndsAt
-      ? Math.max(0, round.intermissionEndsAt - serverClock.now(performance.now()) - 4_000)
-      : null;
-    const preflightTimer = preflightDelay === null
-      ? null
-      : window.setTimeout(() => refreshRound.current(), preflightDelay);
-    return () => {
-      window.clearTimeout(boundaryTimer);
-      if (preflightTimer !== null) window.clearTimeout(preflightTimer);
-    };
-  }, [round.intermissionEndsAt, round.questionEndsAt, serverClock, clockRevision]);
+    const timer = window.setTimeout(() => {
+      try {
+        const restored = restoreMultiplayerAnswers(sessionStorage.getItem(outboxKey));
+        setOutbox((current) => [...current, ...restored.filter((entry) => !current.some((item) => item.questionId === entry.questionId))
+          .map((entry) => ({ ...entry, status: "failed" as const, message: "Saved answer awaiting confirmation." }))]);
+      } catch { /* Storage may be disabled; in-memory recovery remains available. */ }
+      setOutboxLoaded(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [outboxKey]);
+
+  useEffect(() => {
+    if (!outboxLoaded) return;
+    try { sessionStorage.setItem(outboxKey, JSON.stringify(outbox)); } catch { /* Optional persistence. */ }
+  }, [outbox, outboxKey, outboxLoaded]);
 
   async function submitAnswer() {
     if ((!selected && !currentSubmission) || isSubmitting) return;
@@ -256,6 +214,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     setOutbox((current) => [...current.filter((entry) => entry.questionId !== answer.questionId), { ...answer, status: "pending" }]);
     try {
       await sendMultiplayerAnswer({ roomId: round.roomId, questionId: answer.questionId, selectedAnswer: answer.selectedAnswer });
+      lastConfirmedQuestion.current = answer.questionId;
       setOutbox((current) => current.filter((entry) => entry.questionId !== answer.questionId));
       setRound((current) => current.question.questionId !== answer.questionId ? current : ({
         ...current,
@@ -264,7 +223,6 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           : player),
       }));
       if (questionNumber.current === answer.questionNumber) setShowLeaderboard(true);
-      refreshRound.current();
     } catch (failure) {
       const message = failure instanceof Error ? failure.message : "Unable to confirm answer.";
       setOutbox((current) => current.map((entry) => entry.questionId === answer.questionId

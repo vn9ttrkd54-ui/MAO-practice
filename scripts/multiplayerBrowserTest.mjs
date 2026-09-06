@@ -29,8 +29,16 @@ async function joinPlayer(index) {
   const page = await context.newPage();
   const name = `LoadTest${String(index + 1).padStart(2, "0")}`;
   page.on("pageerror", (error) => failures.push(`${name}: page error: ${error.message}`));
+  const acceptedQuestions = new Set();
+  const transientFailures = [];
   page.on("response", (response) => {
-    if (response.status() >= 500) failures.push(`${name}: HTTP ${response.status()} from ${response.url()}`);
+    if (response.request().method() === "POST" && response.url().endsWith("/round")) {
+      if (response.ok()) {
+        try { acceptedQuestions.add(response.request().postDataJSON().questionId); } catch {}
+      } else if (response.status() < 500 && response.status() !== 429) {
+        failures.push(`${name}: submission rejected: HTTP ${response.status()}`);
+      } else transientFailures.push(response.status());
+    } else if (response.status() >= 500) transientFailures.push(response.status());
   });
 
   await page.goto(`${baseUrl}/multiplayer`, { waitUntil: "domcontentloaded", timeout: joinTimeoutMs });
@@ -38,7 +46,7 @@ async function joinPlayer(index) {
   await page.getByLabel("Guest nickname").fill(name);
   await page.getByRole("button", { name: "Join Room" }).click();
   await page.waitForURL(/\/multiplayer\/room\//, { timeout: joinTimeoutMs });
-  players.push({ context, page, name, questionLoads: [] });
+  players.push({ context, page, name, questionLoads: [], countdowns: new Map(), acceptedQuestions, transientFailures });
   console.log(`[${elapsed()}] ${name} joined`);
 }
 
@@ -50,15 +58,28 @@ async function runPlayer(player) {
   while (Date.now() < deadline) {
     const results = page.getByRole("heading", { name: /You placed|Final results/ });
     if (await results.isVisible().catch(() => false)) {
+      const expected = player.questionLoads.length;
+      if (player.acceptedQuestions.size < expected) failures.push(`${name}: only ${player.acceptedQuestions.size}/${expected} answers confirmed`);
+      for (const [question, numbers] of player.countdowns) {
+        console.log(`[${elapsed()}] ${name} intermission after ${question}: ${[...numbers].join(", ")}`);
+      }
+      console.log(`[${elapsed()}] ${name} transient HTTP failures recovered/observed: ${player.transientFailures.length}`);
       console.log(`[${elapsed()}] ${name} reached final results`);
       return;
     }
 
+    const countdown = (await page.getByText(/^Next question in \d+s$/).allTextContents())[0] ?? null;
+    if (countdown) {
+      const seconds = Number(countdown.match(/(\d+)s/)[1]);
+      if (!player.countdowns.has(lastQuestion)) player.countdowns.set(lastQuestion, new Set());
+      player.countdowns.get(lastQuestion).add(seconds);
+    }
     const heading = page.getByRole("heading", { name: /Question \d+ of \d+/ });
     if (await heading.isVisible().catch(() => false)) {
       const text = await heading.textContent();
       const questionNumber = Number(text?.match(/Question (\d+)/)?.[1] ?? 0);
       if (questionNumber > lastQuestion) {
+        if (questionNumber > lastQuestion + 1) failures.push(`${name}: skipped from question ${lastQuestion} to ${questionNumber}`);
         lastQuestion = questionNumber;
         const timer = await page.getByText(/^\d+s$/).first().textContent().catch(() => "unknown");
         const revealedAt = Date.now();
@@ -77,17 +98,9 @@ async function runPlayer(player) {
         player.questionLoads.push({ questionNumber, timer, enabledTimer, enabledDelayMs, atMs: revealedAt - startedAt });
         console.log(`[${elapsed()}] ${name} enabled question ${questionNumber} after ${enabledDelayMs}ms at ${enabledTimer}`);
         await answer.click();
-        const submissionResponse = page.waitForResponse((response) =>
-          response.request().method() === "POST"
-            && response.url().includes(`/api/multiplayer/rooms/`)
-            && response.url().endsWith("/round"),
-        { timeout: 30_000 });
         await page.getByRole("button", { name: "Submit Answer" }).click();
-        const response = await submissionResponse;
-        if (!response.ok()) {
-          const responseText = await response.text().catch(() => "No response details");
-          throw new Error(`Question ${questionNumber} submission returned HTTP ${response.status()}: ${responseText}`);
-        }
+        // Keep observing countdowns and later rounds while the app retries.
+        // A single aborted attempt is not the outcome of a submission.
         console.log(`[${elapsed()}] ${name} submitted question ${questionNumber}`);
       }
     }
