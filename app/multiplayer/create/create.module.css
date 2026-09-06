@@ -1,0 +1,67 @@
+.page { color: #172033; }
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  border-color: #d7e0ee;
+  background: radial-gradient(ellipse at top right, #eaf1ff, transparent 55%), #fff;
+  box-shadow: 0 4px 8px -6px #14234124, 0 20px 45px -28px #14234155;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #a5b4fc, #eff4ff);
+}
+
+.headingIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 20px;
+  color: #2563eb;
+  border: 1px solid #d8e5ff;
+  border-radius: 15px;
+  background: #edf3ff;
+}
+
+.roomDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 18px;
+  font-size: 12px;
+  color: #526783;
+}
+
+.roomDetails span, .label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.label svg { color: #597bb4; }
+
+.form {
+  border-top: 1px solid #e3eaf5;
+  padding-top: 24px;
+}
+
+.field {
+  display: block;
+  min-height: 48px;
+  border-color: #ccd7e8;
+  background-color: #f8faff;
+  color: #172033;
+  font-size: 16px;
+}
+
+.field:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  background-color: #fff;
+}

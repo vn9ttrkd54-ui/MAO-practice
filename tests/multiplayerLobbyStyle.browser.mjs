@@ -25,6 +25,7 @@ const services = {
 };
 const style = fs.readFileSync(path.join(root, "app/multiplayer/lobby.module.css"), "utf8");
 const rankStyle = fs.readFileSync(path.join(root, "components/multiplayer/rankTheme.module.css"), "utf8");
+const createStyle = fs.readFileSync(path.join(root, "app/multiplayer/create/create.module.css"), "utf8");
 function load(relative) {
   const filename = path.join(root, relative);
   const code = ts.transpileModule(fs.readFileSync(filename, "utf8"), { compilerOptions: {
@@ -32,9 +33,9 @@ function load(relative) {
   }}).outputText;
   const loadedModule = { exports: {} };
   function resolve(name) {
-    if (name.endsWith(".module.css")) return Object.fromEntries([...(name.includes("rankTheme") ? rankStyle : style).matchAll(/\.([A-Za-z][A-Za-z0-9]*)/g)].map(m => [m[1], m[1]]));
+    if (name.endsWith(".module.css")) return Object.fromEntries([...(name.includes("rankTheme") ? rankStyle : name.includes("create.module") ? createStyle : style).matchAll(/\.([A-Za-z][A-Za-z0-9]*)/g)].map(m => [m[1], m[1]]));
     if (name === "next/link") return function MockLink({ href, children, ...props }) { return React.createElement("a", { href, ...props }, children); };
-    if (name === "@/app/multiplayer/actions") return { joinPrivateRoomAction: "/test-join", joinPublicRoomAction: "/test-public", spectatePublicRoomAction: "/test-spectate" };
+    if (name === "@/app/multiplayer/actions") return { createPrivateRoomAction: "/test-create", joinPrivateRoomAction: "/test-join", joinPublicRoomAction: "/test-public", spectatePublicRoomAction: "/test-spectate" };
     if (name.includes("LiveRoomListRefresh")) return { LiveRoomListRefresh: () => null };
     if (name.includes("PendingSubmitButton")) return function MockSubmitButton({ children, ...props }) { delete props.pendingText; return React.createElement("button", { type: "submit", ...props }, children); };
     if (name === "@/lib/services/multiplayerService") return services;
@@ -68,4 +69,20 @@ try {
     await page.close();
   }
   console.log("PASS: actual lobby markup with empty/occupied fixtures, blue state, preserved rank surfaces, join actions, and no card/page overflow at desktop/tablet/mobile sizes.");
+  const createHtml = renderToStaticMarkup(await load("app/multiplayer/create/page.tsx").default({ searchParams: Promise.resolve({}) }));
+  for (const width of [1280, 390]) {
+    const page = await browser.newPage({ viewport: { width, height: 1000 } });
+    await page.setContent(`<style>${css}\n${rankStyle}\n${createStyle}</style>${createHtml}`);
+    assert.deepEqual(await page.locator('[name="division"] option').allTextContents(), ["Mu", "Alpha", "Theta"]);
+    assert.equal(await page.getByLabel("Questions", { exact: true }).inputValue(), "5");
+    assert.equal(await page.getByLabel("Time per question", { exact: true }).inputValue(), "60");
+    assert.equal(await page.getByLabel("Rating mode", { exact: true }).inputValue(), "unranked");
+    for (const field of await page.locator("input, select").all()) assert.ok((await field.boundingBox()).height >= 44);
+    await page.getByRole("button", { name: "Create Room", exact: true }).click({ trial: true });
+    assert.equal(await page.locator("form").getAttribute("action"), "/test-create");
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    if (process.env.CREATE_SCREENSHOT && width === 1280) await page.screenshot({ path: process.env.CREATE_SCREENSHOT, fullPage: true });
+    await page.close();
+  }
+  console.log("PASS: create-room settings, division order, consistent control heights, submit action, and desktop/mobile layout.");
 } finally { await browser.close(); }
