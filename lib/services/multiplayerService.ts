@@ -4,7 +4,7 @@ import { createHash, randomBytes, randomInt } from "node:crypto";
 import { cookies } from "next/headers";
 
 import { questions } from "@/data/questions";
-import { calculateMultiplayerCorrectPoints } from "@/lib/multiplayerScoring";
+import { RequestBodyError } from "@/lib/security/request";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -699,107 +699,44 @@ export async function acknowledgeMultiplayerQuestionDelivery(
   };
 }
 
-export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission): Promise<"accepted" | "completed"> {
-  if (!["A", "B", "C", "D", "E"].includes(input.selectedAnswer)) throw new Error("Choose a valid answer.");
-  const lobby = await getPrivateLobby(input.roomId);
-  if (!lobby || lobby.room.status !== "in-progress") throw new Error("This match is not accepting answers.");
-
+export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission): Promise<"accepted"> {
+  if (!["A", "B", "C", "D", "E"].includes(input.selectedAnswer)) {
+    throw new RequestBodyError("Choose a valid answer.", 400);
+  }
+  const access = await getMultiplayerRoom(input.roomId, false);
+  if (!access) throw new RequestBodyError("Player is not in this room.", 403);
+  const question = questions.find((entry) => entry.id === input.questionId);
+  if (!question) throw new RequestBodyError("Unknown question.", 400);
   const admin = createAdminClient();
-  const { data: room } = await admin.from("multiplayer_rooms").select("*").eq("id", input.roomId).single<RoomRow>();
-  if (!room) throw new Error("Unable to load the active room.");
-  const { data: matchQuestion, error: questionError } = await admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at").eq("room_id", input.roomId).eq("question_number", room.current_question_number).single<MatchQuestionRow>();
-  if (questionError || !matchQuestion.started_at || !matchQuestion.ends_at || matchQuestion.intermission_ends_at) throw new Error("This question is closed.");
-  if (matchQuestion.question_id !== input.questionId) throw new Error("That question is no longer active.");
-
-  const submittedAt = Date.now();
-  const questionStartedAt = new Date(matchQuestion.started_at).getTime();
-  if (submittedAt < questionStartedAt) throw new Error("This question has not started yet.");
-  const hardEndsAt = new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime();
-  const { data: delivery } = await admin
-    .from("multiplayer_question_deliveries")
-    .select("delivered_at")
-    .eq("room_id", input.roomId)
-    .eq("question_number", matchQuestion.question_number)
-    .eq("player_id", lobby.currentPlayer.playerId)
-    .maybeSingle<{ delivered_at: string }>();
-  const deliveryTime = delivery?.delivered_at ? new Date(delivery.delivered_at).getTime() : null;
-  const solvingStartedAt = deliveryTime !== null && deliveryTime > questionStartedAt + 5_000
-    ? deliveryTime
-    : questionStartedAt;
-  const personalEndsAt = Math.min(
-    hardEndsAt,
-    solvingStartedAt + room.seconds_per_question * 1000,
-  );
-  if (submittedAt > personalEndsAt) throw new Error("Time has expired for this question.");
-  const question = questions.find((entry) => entry.id === matchQuestion.question_id);
-  if (!question) throw new Error("Unable to load the active question.");
-
-  const correct = input.selectedAnswer === question.answer;
-  const answerTimeMs = Math.max(0, submittedAt - solvingStartedAt);
-  let pointsEarned = correct ? calculateMultiplayerCorrectPoints({
-    answerTimeMs,
-    questionDurationMs: room.seconds_per_question * 1000,
-    earlierCorrectAnswers: 0,
-  }) : 0;
-  const { data: submission, error: submissionError } = await admin.from("multiplayer_submissions").insert({
-    room_id: input.roomId,
-    question_number: matchQuestion.question_number,
-    question_id: matchQuestion.question_id,
-    player_id: lobby.currentPlayer.playerId,
-    selected_answer: input.selectedAnswer,
-    correct,
-    answer_time_ms: answerTimeMs,
-    points_earned: pointsEarned,
-  }).select("id").single<{ id: string }>();
-  if (submissionError) {
-    if (submissionError.code === "23505") throw new Error("You already answered this question.");
-    throw new Error("Unable to submit the answer right now.");
+  const { error } = await admin.rpc("accept_multiplayer_answer", {
+    p_room_id: input.roomId,
+    p_player_id: access.currentPlayer.playerId,
+    p_question_id: input.questionId,
+    p_selected_answer: input.selectedAnswer,
+    p_correct: input.selectedAnswer === question.answer,
+  });
+  if (error) {
+    if (error.code === "P0001") throw new RequestBodyError(error.message, 409);
+    throw new Error("Unable to confirm your answer right now.");
   }
-
-  if (correct) {
-    const { data: orderedCorrect, error: orderError } = await admin.from("multiplayer_submissions")
-      .select("id")
-      .eq("room_id", input.roomId)
-      .eq("question_number", matchQuestion.question_number)
-      .eq("correct", true)
-      .order("submitted_at", { ascending: true })
-      .order("id", { ascending: true });
-    if (orderError) throw new Error("Unable to calculate the answer order.");
-    const correctOrder = Math.max(0, (orderedCorrect ?? []).findIndex((entry) => entry.id === submission.id));
-    const orderedPoints = calculateMultiplayerCorrectPoints({
-      answerTimeMs,
-      questionDurationMs: room.seconds_per_question * 1000,
-      earlierCorrectAnswers: correctOrder,
-    });
-    if (orderedPoints !== pointsEarned) {
-      const { error: pointsError } = await admin.from("multiplayer_submissions").update({ points_earned: orderedPoints }).eq("id", submission.id);
-      if (pointsError) throw new Error("Unable to save the ordered score.");
-      pointsEarned = orderedPoints;
-    }
-  }
-
-  const { error: playerError } = await admin.from("multiplayer_players").update({ score: lobby.currentPlayer.score + pointsEarned, has_submitted_current_question: true }).eq("room_id", input.roomId).eq("id", lobby.currentPlayer.playerId);
-  if (playerError) throw new Error("Unable to update the score right now.");
-
-  const { data: transitionNeeded, error: transitionCheckError } = await admin.rpc(
-    "multiplayer_round_transition_needed",
-    { p_room_id: input.roomId },
-  );
-  if (transitionCheckError) throw new Error(`Unable to check the round: ${transitionCheckError.message}`);
-  if (transitionNeeded === true) {
-    const { data: transition, error: transitionError } = await admin.rpc(
-      "advance_multiplayer_round_state",
-      { p_room_id: input.roomId },
+  // Progression failure must never turn a committed answer into a failed submission.
+  // Existing round GET recovery also advances the room if this best-effort check fails.
+  try {
+    const { data: needed, error: checkError } = await admin.rpc(
+      "multiplayer_round_transition_needed", { p_room_id: input.roomId },
     );
-    if (transitionError) throw new Error(`Unable to synchronize the round: ${transitionError.message}`);
-    if (transition === "completed") {
-      return "completed";
+    if (checkError) throw checkError;
+    if (needed === true) {
+      const { error: advanceError } = await admin.rpc(
+        "advance_multiplayer_round_state", { p_room_id: input.roomId },
+      );
+      if (advanceError) throw advanceError;
     }
+  } catch {
+    console.warn("Multiplayer answer accepted; round progression deferred to recovery.");
   }
-
   return "accepted";
 }
-
 interface FinalPlayerRow extends PlayerRow {
   joined_at: string;
 }

@@ -23,12 +23,10 @@ export async function POST(request: Request, { params }: RoundRouteContext) {
     const { id } = await params;
     const body = await readJsonBody<{ questionId?: number; selectedAnswer?: AnswerChoice }>(request, 2_048);
     if (!body.questionId || !body.selectedAnswer) return NextResponse.json({ error: "Choose an answer." }, { status: 400 });
-    const result = await submitMultiplayerAnswer({ roomId: id, questionId: body.questionId, selectedAnswer: body.selectedAnswer });
-    return result === "completed"
-      ? new NextResponse(null, { status: 204 })
-      : NextResponse.json({ accepted: true });
+    await submitMultiplayerAnswer({ roomId: id, questionId: body.questionId, selectedAnswer: body.selectedAnswer });
+    return NextResponse.json({ accepted: true });
   } catch (error) {
-    const status = error instanceof RequestBodyError ? error.status : 400;
+    const status = error instanceof RequestBodyError ? error.status : 503;
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to submit answer." }, { status });
   }
 }

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
+import { sendMultiplayerAnswer, SubmissionRejectedError } from "@/lib/multiplayerSubmission";
 import type { MultiplayerDeliveryReceipt, MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
 
@@ -28,7 +29,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [outbox, setOutbox] = useState<Array<{ questionId: number; questionNumber: number; selectedAnswer: AnswerChoice; status: "pending" | "failed"; message?: string }>>([]);
+  const submissionsInFlight = useRef(new Set<number>());
+  const currentSubmission = outbox.find((entry) => entry.questionId === round.question.questionId);
+  const isSubmitting = currentSubmission?.status === "pending";
   const [deliveryReady, setDeliveryReady] = useState(false);
   const [pendingRound, setPendingRound] = useState<MultiplayerRoundState | null>(null);
   const pendingDelivery = useRef<MultiplayerDeliveryReceipt | null>(null);
@@ -108,7 +112,6 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
               ));
               setSelected(null);
               setShowLeaderboard(false);
-              setIsSubmitting(false);
               setDeliveryReady(true);
             }
             setRound(nextRound);
@@ -206,7 +209,6 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       ));
       setSelected(null);
       setShowLeaderboard(false);
-      setIsSubmitting(false);
       // The server can safely accept an answer even if the idempotent delivery
       // receipt is still finishing, so reveal the question and controls together.
       setDeliveryReady(true);
@@ -238,42 +240,49 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }, [round.intermissionEndsAt, round.questionEndsAt]);
 
   async function submitAnswer() {
-    if (!selected || isSubmitting) return;
-    setIsSubmitting(true);
+    if ((!selected && !currentSubmission) || isSubmitting) return;
     setError(null);
     setShowLeaderboard(true);
+    await submitSavedAnswer(currentSubmission ?? {
+      questionId: round.question.questionId,
+      questionNumber: round.questionNumber,
+      selectedAnswer: selected!,
+    });
+  }
+
+  async function submitSavedAnswer(answer: { questionId: number; questionNumber: number; selectedAnswer: AnswerChoice }) {
+    if (submissionsInFlight.current.has(answer.questionId)) return;
+    submissionsInFlight.current.add(answer.questionId);
+    setOutbox((current) => [...current.filter((entry) => entry.questionId !== answer.questionId), { ...answer, status: "pending" }]);
     try {
-      const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ questionId: round.question.questionId, selectedAnswer: selected }),
-      });
-      if (response.status === 204) {
-        setFinished(true);
-        router.replace(`/multiplayer/room/${round.roomId}/results`);
-        return;
-      }
-      const body = await response.json() as { accepted?: boolean; error?: string };
-      if (!response.ok) {
-        setError(body.error ?? "Unable to submit answer.");
-        setShowLeaderboard(false);
-        return;
-      }
-      setRound((current) => ({
+      await sendMultiplayerAnswer({ roomId: round.roomId, questionId: answer.questionId, selectedAnswer: answer.selectedAnswer });
+      setOutbox((current) => current.filter((entry) => entry.questionId !== answer.questionId));
+      setRound((current) => current.question.questionId !== answer.questionId ? current : ({
         ...current,
         players: current.players.map((player) => player.playerId === current.currentPlayerId
           ? { ...player, hasSubmittedCurrentQuestion: true }
           : player),
       }));
-      setShowLeaderboard(true);
+      if (questionNumber.current === answer.questionNumber) setShowLeaderboard(true);
       refreshRound.current();
-    } catch {
-      setError("Your answer was not submitted. Please try again.");
-      setShowLeaderboard(false);
+    } catch (failure) {
+      const message = failure instanceof Error ? failure.message : "Unable to confirm answer.";
+      setOutbox((current) => current.map((entry) => entry.questionId === answer.questionId
+        ? { ...entry, status: "failed", message } : entry));
+      if (failure instanceof SubmissionRejectedError) refreshRound.current();
     } finally {
-      setIsSubmitting(false);
+      submissionsInFlight.current.delete(answer.questionId);
     }
   }
+
+  const submissionNotice = outbox.length === 0 ? null : (
+    <div className="my-4 space-y-2" aria-live="polite">
+      {outbox.map((entry) => <div key={entry.questionId} className="rounded-xl border bg-gray-50 p-3 text-sm">
+        <p>Question {entry.questionNumber}, answer {entry.selectedAnswer}: {entry.status === "pending" ? "Confirming your answer…" : entry.message}</p>
+        {entry.status === "failed" ? <button className="mt-2 font-semibold text-blue-600" onClick={() => void submitSavedAnswer(entry)}>Retry saved answer</button> : null}
+      </div>)}
+    </div>
+  );
 
   if (finished) {
     return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><h1 className="text-3xl font-bold">Match complete</h1><p className="mt-3 text-gray-600">Loading final results and question review…</p></div></main>;
@@ -283,7 +292,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const personalTimeExpired = deliveryReady && secondsLeft === 0;
   if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 5}s` : "Waiting for the other players…"}</p></header><div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? `Next question in ${intermissionLeft ?? 5}s` : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
   if (questionStartsIn === null || questionStartsIn > 0) {
@@ -294,6 +303,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     <main className="mx-auto max-w-6xl px-6 py-8 sm:px-8">
       <header className="flex items-center justify-between gap-4"><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
+        {submissionNotice}
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
         <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={!deliveryReady || submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
