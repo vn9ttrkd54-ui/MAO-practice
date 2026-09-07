@@ -1,3 +1,5 @@
+import { ShieldCheck, Users, ArrowUpRight } from "lucide-react";
+import styles from "@/components/settings/settings.module.css";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -51,10 +53,10 @@ export default async function AdminFeedbackPage() {
   });
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10 sm:px-8">
+    <main className={`${styles.page} mx-auto max-w-5xl px-6 py-10 sm:px-8`}>
       <Link href="/dashboard" className="text-sm font-semibold text-blue-600">← Dashboard</Link>
-      <div className="mt-5"><p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">Admin</p><h1 className="mt-2 text-4xl font-bold">Admin tools</h1></div>
-      <Link href="/admin/users" className="mt-6 inline-flex rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 font-semibold text-blue-700">Users & statistics →</Link>
+      <div className={`${styles.hero} mt-5`}><div className={styles.icon}><ShieldCheck size={25} aria-hidden="true" /></div><p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">Admin</p><h1 className="mt-2 text-4xl font-bold">Admin tools</h1><p className="mt-3 text-sm text-slate-500">Review feedback and explore your community’s activity.</p></div>
+      <Link href="/admin/users" className={`${styles.toolLink} mt-6`}><span className="flex items-center gap-4"><Users size={26} aria-hidden="true" /><span><span className="block font-bold">Users & statistics</span><span className="mt-1 block text-sm text-blue-100">Browse accounts, ranks, and activity</span></span></span><ArrowUpRight size={22} aria-hidden="true" /></Link>
       {hasOwnerAccess(ownProfile.role) ? <AdminAccountRecovery /> : null}
       <div className="mt-9 flex flex-wrap items-end justify-between gap-4"><h2 className="text-3xl font-bold">Feedback inbox</h2><p className="rounded-full bg-violet-100 px-4 py-2 text-sm font-bold text-violet-800">{requests.length} open</p></div>
       <AdminFeedbackList initialRequests={requests} />

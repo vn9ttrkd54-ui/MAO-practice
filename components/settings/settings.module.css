@@ -1,0 +1,25 @@
+.page { position:relative; isolation:isolate; min-height:calc(100svh - 81px); color:#172033; }
+.page::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(ellipse at 12% 0%,#e7efff,transparent 55%),linear-gradient(135deg,#f1f5f9,#e7edf5); }
+.hero { position:relative; border:1px solid #d6e2f4; border-radius:24px; background:radial-gradient(ellipse at top right,#dfeaff,transparent 65%),#fff; padding:28px; box-shadow:0 18px 40px -28px #234a8455; overflow:hidden; }
+.hero::before { content:""; position:absolute; inset:0 0 auto; height:3px; background:linear-gradient(90deg,#2563eb,#a5b4fc,#eef4ff); }
+.icon { display:grid; place-items:center; width:48px; height:48px; margin-bottom:18px; border:1px solid #cfddf6; border-radius:15px; background:#edf3ff; color:#2563eb; }
+.card { border-color:#dce4ef; box-shadow:0 12px 32px -25px #233c6255; }
+.card h2 { display:flex; align-items:center; gap:10px; }
+.card h2 svg { color:#517aba; flex-shrink:0; }
+.page input:not([type=checkbox]),.page textarea,.page select { border-color:#cbd7e6; background:#f8faff; transition:border-color .15s,box-shadow .15s; }
+.page input:not([type=checkbox]):focus-visible,.page textarea:focus-visible,.page select:focus-visible { outline:2px solid #2563eb; outline-offset:2px; background:#fff; }
+.page button { transition:background-color .15s,box-shadow .15s; }
+.page button:focus-visible,.page a:focus-visible { outline:2px solid #2563eb; outline-offset:4px; }
+.page button:disabled { cursor:not-allowed; }
+.primary { background:#2563eb; box-shadow:0 5px 12px -5px #2563eb66; }
+.primary:hover:not(:disabled) { background:#1d4ed8; }
+.divider { border-top:1px solid #dce5f1; padding-top:24px; }
+.divider button { background:#2563eb; box-shadow:0 5px 12px -5px #2563eb66; }
+.divider button:hover:not(:disabled) { background:#1d4ed8; }
+.toolLink { display:flex; align-items:center; justify-content:space-between; gap:20px; background:linear-gradient(120deg,#1d4ed8,#25447b); color:#fff; border:1px solid #365fa5; border-radius:18px; padding:22px; box-shadow:0 14px 28px -20px #1e40af99; }
+.toolLink:hover { background:linear-gradient(120deg,#1e40af,#1e365f); }
+.recovery { border-color:#dce0f5; background:linear-gradient(130deg,#fff,#f2f1ff); }
+.danger { border-top:3px solid #dc7777; }
+.danger input { background:#fff !important; }
+@media(max-width:480px) { .hero { padding:22px; } .toolLink { padding:18px; } }
+@media(prefers-reduced-motion:reduce) { .page input,.page textarea,.page select,.page button { transition:none; } }

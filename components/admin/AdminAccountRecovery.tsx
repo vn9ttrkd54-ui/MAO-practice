@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "@/components/settings/settings.module.css";
 import { useState } from "react";
 
 export default function AdminAccountRecovery() {
@@ -27,7 +28,7 @@ export default function AdminAccountRecovery() {
   }
 
   return (
-    <section className="mt-7 rounded-2xl border border-violet-200 bg-violet-50 p-6 shadow-sm">
+    <section className={`${styles.recovery} ${styles.card} mt-7 rounded-2xl border p-6 shadow-sm`}>
       <p className="text-sm font-bold uppercase tracking-[0.16em] text-violet-700">Assisted recovery</p>
       <h2 className="mt-2 text-2xl font-bold">Help an email-less user reset their password</h2>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Only use this after verifying the person&apos;s identity outside the website. The generated link is temporary and lets the user choose their own password; you never see it.</p>
