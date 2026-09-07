@@ -1,3 +1,4 @@
+import styles from "./challenge.module.css";
 import type {
   ChallengeLeaderboardEntry,
   ChallengeUserStatistics,
@@ -19,7 +20,7 @@ export default function ChallengePersonalStats({
   ];
 
   return (
-    <section className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-5 shadow-[0_12px_30px_rgba(17,24,39,0.16)]">
+    <section className={`${styles.panel} rounded-2xl border p-5`}>
       <div className="border-b border-slate-300 pb-4">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">

@@ -1,0 +1,19 @@
+.page { background:radial-gradient(ellipse at 10% 0%,#e4edff,transparent 60%),linear-gradient(135deg,#f1f5f9,#e7edf5); color:#172033; }
+.hero { position:relative; isolation:isolate; background:radial-gradient(ellipse at top right,#4c86f555,transparent 60%),linear-gradient(120deg,#234d98,#142640); border-color:#365f9a; box-shadow:0 22px 45px -30px #15326099; }
+.hero::after { content:"Σ"; position:absolute; right:5%; top:-75px; z-index:-1; font-size:300px; font-weight:700; color:#ffffff06; pointer-events:none; }
+.panel { border-color:#d7e2f1; background:radial-gradient(ellipse at top right,#f0f5ff,transparent 60%),#fff; box-shadow:0 18px 38px -29px #203b6677; }
+.panel dl > div { border-color:#e0e8f3; background:linear-gradient(140deg,#fff,#f3f7fe); }
+.panel dd { font-variant-numeric:tabular-nums; }
+.panel ol { border-color:#e1e8f3; }
+.panel li { border-color:#e1e8f3; border-radius:10px; padding-left:8px; padding-right:8px; }
+.panel li:first-child { background:linear-gradient(110deg,#fff8e4,#fffdf7); }
+.panel li:nth-child(2) { background:#f3f6fc; }
+.panel li:nth-child(3) { background:#fff8f2; }
+.page select { border-color:#cbdaf0; background:#f5f8ff; }
+.page select:focus-visible,.page button:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
+.choice { background:#f8faff; border-color:#dce5f1; min-height:54px; }
+.choice:hover:not(:disabled) { background:#edf4ff; border-color:#8dabdf; }
+.selected { background:#eaf2ff; border-color:#2563eb; box-shadow:0 0 0 1px #2563eb; }
+.submit { background:#2563eb; box-shadow:0 8px 16px -10px #2563eb99; }
+.submit:hover:not(:disabled) { background:#1d4ed8; }
+@media(prefers-reduced-motion:reduce) { .page button { transition:none; } }

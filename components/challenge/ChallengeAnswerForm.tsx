@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./challenge.module.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -74,7 +75,7 @@ export default function ChallengeAnswerForm({
               disabled={completed || isSubmitting}
               onClick={() => setSelectedAnswer(choice)}
               className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition ${
-                selected ? "border-blue-500 bg-blue-50" : "hover:bg-gray-50"
+                selected ? styles.selected : styles.choice
               } disabled:cursor-not-allowed`}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 font-bold">
@@ -90,7 +91,7 @@ export default function ChallengeAnswerForm({
         type="button"
         disabled={!selectedAnswer || completed || isSubmitting}
         onClick={() => void handleSubmit()}
-        className="mt-5 w-full rounded-xl bg-black px-6 py-3 font-semibold text-white shadow-md transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className={`${styles.submit} mt-5 w-full rounded-xl px-6 py-3 font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50`}
       >
         {completed ? "Answer Submitted" : isSubmitting ? "Submitting..." : "Submit Answer"}
       </button>

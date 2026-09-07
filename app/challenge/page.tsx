@@ -1,3 +1,4 @@
+import styles from "@/components/challenge/challenge.module.css";
 import ChallengeDivisionSelect from "@/components/challenge/ChallengeDivisionSelect";
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
 import ChallengeLeaderboard from "@/components/challenge/ChallengeLeaderboard";
@@ -42,11 +43,10 @@ export default async function ChallengePage({ searchParams }: { searchParams: Pr
       : null;
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-9 sm:px-8">
+    <main className={`${styles.page} min-h-[calc(100vh-4rem)] px-5 py-9 sm:px-8`}>
       <div className="mx-auto max-w-7xl">
         <header
-          className="mb-8 min-h-36 overflow-hidden rounded-3xl border-2 border-[#111827] px-8 py-7 text-white shadow-lg sm:px-10"
-          style={{ background: "linear-gradient(120deg, #2563eb 0%, #1d4ed8 48%, #111827 100%)" }}
+          className={`${styles.hero} mb-8 min-h-36 overflow-hidden rounded-3xl border px-8 py-7 text-white sm:px-10`}
         >
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-100">
             Daily competition
@@ -58,7 +58,7 @@ export default async function ChallengePage({ searchParams }: { searchParams: Pr
         </header>
 
         <div className="challenge-layout">
-          <section className="rounded-3xl border-2 border-[#111827] bg-[#f8fafc] p-6 shadow-[0_12px_30px_rgba(17,24,39,0.16)] sm:p-7">
+          <section className={`${styles.panel} rounded-3xl border p-6 sm:p-7`}>
             <ChallengeDivisionSelect division={division} />
             {!dailyChallenge ? (
               <div className="flex min-h-96 flex-col items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-12 text-center">
