@@ -64,12 +64,6 @@ export default function FeedbackForm({
 
   return (
     <div>
-      {kind === "question_report" && questionId ? (
-        <p className="mb-4 rounded-xl bg-slate-100 px-4 py-3 text-sm text-slate-600">
-          Linked to {division} question ID {questionId}
-        </p>
-      ) : null}
-
       <label htmlFor={messageId} className="font-semibold">
         {kind === "question_report"
           ? "Explain what is wrong or what should change"
