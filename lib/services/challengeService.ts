@@ -14,7 +14,7 @@ import type {
   DailyChallenge,
   SubmitChallengeInput,
 } from "@/types/challenge";
-import type { AnswerChoice } from "@/types/question";
+import type { AnswerChoice, Division } from "@/types/question";
 
 interface DailyChallengeRow {
   challenge_date: string;
@@ -81,7 +81,7 @@ export function getCurrentChallengeDate(now = new Date()): string {
 }
 
 export async function getChallengeByDate(
-  date: string
+  date: string, division: Division = "Mu"
 ): Promise<DailyChallenge | null> {
   const challengeDate = validateChallengeDate(date);
   const supabase = await createClient();
@@ -89,6 +89,7 @@ export async function getChallengeByDate(
     .from("daily_challenges")
     .select("challenge_date, question_id")
     .eq("challenge_date", challengeDate)
+    .eq("division", division)
     .maybeSingle<DailyChallengeRow>();
 
   if (error) {
@@ -99,15 +100,17 @@ export async function getChallengeByDate(
   if (!data) return null;
 
   const questionId = data.question_id as ChallengeQuestionId;
+  const question = requireChallengeQuestionById(questionId);
+  if (question.division !== division) throw new Error("The daily question's division does not match its assignment.");
   return {
     date: data.challenge_date,
     questionId,
-    question: requireChallengeQuestionById(questionId),
+    question,
   };
 }
 
-export async function getTodayChallenge(): Promise<DailyChallenge | null> {
-  return getChallengeByDate(getCurrentChallengeDate());
+export async function getTodayChallenge(division: Division = "Mu"): Promise<DailyChallenge | null> {
+  return getChallengeByDate(getCurrentChallengeDate(), division);
 }
 
 export async function getTodayChallengeQuestion(): Promise<
@@ -116,21 +119,22 @@ export async function getTodayChallengeQuestion(): Promise<
   return (await getTodayChallenge())?.question ?? null;
 }
 
-export async function getUserChallengeAttempt(): Promise<
+export async function getUserChallengeAttempt(questionId?: ChallengeQuestionId): Promise<
   ChallengeAttempt | null
 > {
   const supabase = await createClient();
   const { data: authData } = await supabase.auth.getUser();
   if (!authData.user) return null;
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("challenge_attempts")
     .select(
       "id, user_id, challenge_date, question_id, selected_answer, correct, submitted_at"
     )
     .eq("user_id", authData.user.id)
-    .eq("challenge_date", getCurrentChallengeDate())
-    .maybeSingle<ChallengeAttemptRow>();
+    .eq("challenge_date", getCurrentChallengeDate());
+  if (questionId) query = query.eq("question_id", questionId);
+  const { data, error } = await query.order("submitted_at", { ascending: false }).limit(1).maybeSingle<ChallengeAttemptRow>();
 
   if (error) {
     throw new Error(`Unable to load your Challenge attempt: ${error.message}`);
@@ -149,7 +153,8 @@ export async function submitChallenge(
     throw new Error("Select a valid answer choice.");
   }
 
-  const dailyChallenge = await getChallengeByDate(today);
+  const requestedQuestion = requireChallengeQuestionById(input.questionId);
+  const dailyChallenge = await getChallengeByDate(today, requestedQuestion.division);
   if (!dailyChallenge || dailyChallenge.questionId !== input.questionId) {
     throw new Error("Today's Challenge assignment has changed. Refresh the page.");
   }
@@ -178,7 +183,7 @@ export async function submitChallenge(
   });
 
   if (error?.code === "23505") {
-    throw new Error("You have already submitted today's Challenge.");
+    throw new Error("You have already submitted this division’s Challenge today.");
   }
   if (error) {
     throw new Error("Unable to submit the Challenge right now.");
@@ -301,16 +306,15 @@ export async function hasCompletedToday(): Promise<boolean> {
   return (await getUserChallengeAttempt()) !== null;
 }
 
-export async function getChallengeOverview(): Promise<ChallengeOverview> {
+export async function getChallengeOverview(division: Division = "Mu"): Promise<ChallengeOverview> {
+  const dailyChallenge = await getTodayChallenge(division);
   const [
-    dailyChallenge,
     attempt,
     statistics,
     leaderboard,
     userLeaderboardEntry,
   ] = await Promise.all([
-    getTodayChallenge(),
-    getUserChallengeAttempt(),
+    dailyChallenge ? getUserChallengeAttempt(dailyChallenge.questionId) : Promise.resolve(null),
     getChallengeStatistics(),
     getChallengeLeaderboard(),
     getUserLeaderboardPosition(),

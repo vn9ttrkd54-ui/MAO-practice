@@ -1,3 +1,4 @@
+import ChallengeDivisionSelect from "@/components/challenge/ChallengeDivisionSelect";
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
 import ChallengeLeaderboard from "@/components/challenge/ChallengeLeaderboard";
 import ChallengePersonalStats from "@/components/challenge/ChallengePersonalStats";
@@ -16,14 +17,16 @@ function formatChallengeDate(date: string): string {
   }).format(new Date(`${date}T00:00:00Z`));
 }
 
-export default async function ChallengePage() {
+export default async function ChallengePage({ searchParams }: { searchParams: Promise<{ division?: string }> }) {
+  const params = await searchParams;
+  const division = params.division === "Alpha" || params.division === "Theta" ? params.division : "Mu";
   const {
     dailyChallenge,
     attempt: existingAttempt,
     leaderboard,
     statistics,
     userLeaderboardEntry: userPosition,
-  } = await getChallengeOverview();
+  } = await getChallengeOverview(division);
 
   const initialResult: ChallengeSubmissionResult | null =
     dailyChallenge && existingAttempt
@@ -56,6 +59,7 @@ export default async function ChallengePage() {
 
         <div className="challenge-layout">
           <section className="rounded-3xl border-2 border-[#111827] bg-[#f8fafc] p-6 shadow-[0_12px_30px_rgba(17,24,39,0.16)] sm:p-7">
+            <ChallengeDivisionSelect division={division} />
             {!dailyChallenge ? (
               <div className="flex min-h-96 flex-col items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 py-12 text-center">
                 <span className="text-4xl" aria-hidden="true">📅</span>
@@ -63,7 +67,7 @@ export default async function ChallengePage() {
                   Daily Challenge
                 </p>
                 <h2 className="mt-2 text-2xl font-bold">
-                  Today&apos;s question has not been scheduled yet.
+                  Today&apos;s {division} question has not been scheduled yet.
                 </h2>
                 <p className="mx-auto mt-3 max-w-xl text-slate-600">
                   Check back soon. A new official Challenge will appear here once
@@ -105,6 +109,7 @@ export default async function ChallengePage() {
                 </div>
 
                 <ChallengeAnswerForm
+                  key={`${dailyChallenge.date}-${dailyChallenge.questionId}`}
                   challengeDate={dailyChallenge.date}
                   questionId={dailyChallenge.questionId}
                   choices={dailyChallenge.question.choices}

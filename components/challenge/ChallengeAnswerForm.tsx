@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { submitDailyChallenge } from "@/app/challenge/actions";
@@ -25,6 +26,7 @@ export default function ChallengeAnswerForm({
   choices,
   initialResult,
 }: ChallengeAnswerFormProps) {
+  const router = useRouter();
   const [selectedAnswer, setSelectedAnswer] = useState<AnswerChoice | null>(
     initialResult?.selectedAnswer ?? null
   );
@@ -48,6 +50,7 @@ export default function ChallengeAnswerForm({
           selectedAnswer,
         })
       );
+      router.refresh();
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
@@ -132,7 +135,7 @@ export default function ChallengeAnswerForm({
 
           <p className="mt-6 text-sm font-medium text-gray-600">
             {result.saved
-              ? "Your attempt and streak were saved. Come back tomorrow!"
+              ? "Your attempt was saved. One correct answer across today’s divisions earns your streak; extra attempts won’t add another day or erase earned credit."
               : "This guest attempt was not saved. Sign in to build a streak."}
           </p>
         </section>
