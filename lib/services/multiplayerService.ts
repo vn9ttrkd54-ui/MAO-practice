@@ -734,10 +734,8 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
       pointsEarned: submission?.points_earned ?? 0, solution: question.solution,
     };
   });
-  const viewerUserId = access?.currentPlayer.userId ?? null;
-  const viewerCurrentRp = viewerUserId ? finalRatingByUser.get(viewerUserId) : undefined;
-  const displayedNewRp = viewerCurrentRp ?? result?.new_rp ?? 0;
-  const displayedPreviousRp = Math.max(0, displayedNewRp - (result?.rp_change ?? 0));
+  const displayedNewRp = result?.new_rp ?? 0;
+  const displayedPreviousRp = result?.previous_rp ?? 0;
 
   return {
     roomId, viewerMode: spectatorMode ? "spectator" : "player",
@@ -746,7 +744,7 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
     ranked: spectatorMode ? false : result.ranked,
     ratingChange: spectatorMode || result.previous_rp === null ? null : {
       previousRp: displayedPreviousRp,
-      change: result.rp_change,
+      change: displayedNewRp - displayedPreviousRp,
       newRp: displayedNewRp,
       previousTier: tierForRp(displayedPreviousRp)!,
       newTier: tierForRp(displayedNewRp)!,
@@ -760,7 +758,7 @@ export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHi
   const user = await currentUser();
   if (!user) return [];
   const admin = createAdminClient();
-  const { data, error } = await admin.from("multiplayer_match_results").select("room_id, placement, final_score, ranked, rp_change, finalized_at").eq("user_id", user.id).order("finalized_at", { ascending: false }).limit(10);
+  const { data, error } = await admin.from("multiplayer_match_results").select("room_id, placement, final_score, ranked, previous_rp, new_rp, finalized_at").eq("user_id", user.id).order("finalized_at", { ascending: false }).limit(10);
   if (error) throw new Error("Unable to load recent matches right now.");
   const results = data ?? [];
   if (results.length === 0) return [];
@@ -771,7 +769,7 @@ export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHi
   return results.flatMap((result) => {
     const room = roomById.get(result.room_id);
     if (!room) return [];
-    return [{ roomId: result.room_id, division: room.division, questionCount: room.question_count, placement: result.placement, score: result.final_score, ranked: result.ranked, rpChange: result.rp_change, completedAt: new Date(result.finalized_at).getTime() } as MultiplayerMatchHistoryEntry];
+    return [{ roomId: result.room_id, division: room.division, questionCount: room.question_count, placement: result.placement, score: result.final_score, ranked: result.ranked, rpChange: result.previous_rp === null || result.new_rp === null ? null : result.new_rp - result.previous_rp, completedAt: new Date(result.finalized_at).getTime() } as MultiplayerMatchHistoryEntry];
   });
 }
 

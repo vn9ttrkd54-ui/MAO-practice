@@ -141,6 +141,60 @@ try {
   for (const signature of ['schedule_ready_multiplayer_question(uuid,integer)','acknowledge_multiplayer_question_ready(uuid,uuid,integer)']) {
     assert.equal((await db.query("select has_function_privilege('anon',$1,'EXECUTE') allowed",[signature])).rows[0].allowed,false);
   }
+await db.exec(await migration("037_multiplayer_balanced_rp"));
+  let fixtureNumber = 100;
+  async function ratedMatch(entries, count = 5, mode = 'ranked') {
+    const uid = () => '00000000-0000-0000-0000-' + String(++fixtureNumber).padStart(12,'0');
+    const id = uid();
+    await db.query(`insert into multiplayer_rooms(id,code,visibility,mode,division,question_count,seconds_per_question,status,capacity,started_at,completed_at,current_question_number)
+      values($1,$2,'private',$3,'Mu',$4,60,'completed',30,clock_timestamp(),clock_timestamp(),$4)`,
+      [id, 'T'+String(fixtureNumber).padStart(7,'0'), mode, count]);
+    await db.query(`insert into multiplayer_match_questions(room_id,question_number,question_id,difficulty,started_at,ends_at)
+      select $1,n,1000+n,1,clock_timestamp(),clock_timestamp() from generate_series(1,$2::int) n`,[id,count]);
+    for (const entry of entries) {
+      entry.id = uid();
+      if (!entry.guest) {
+        await db.query("insert into auth.users values($1)",[entry.id]);
+        await db.query("insert into multiplayer_profiles(user_id,rp) values($1,$2)",[entry.id,entry.rp]);
+      }
+      await db.query(`insert into multiplayer_players(id,room_id,user_id,guest_nickname,reconnect_token_hash,score)
+        values($1,$2,$3,$4,$5,$6)`,[entry.id,id,entry.guest?null:entry.id,entry.guest?'Guest'+fixtureNumber:null,entry.guest?entry.id:null,entry.score]);
+      if (entry.score > 0) {
+        await db.query(`insert into multiplayer_submissions(room_id,player_id,question_number,question_id,selected_answer,correct,answer_time_ms,points_earned)
+          select $1,$2,n,1000+n,'A',n<=3,$3,case when n<=3 then 1000 else 0 end from generate_series(1,$4::int) n`,[id,entry.id,entry.time??1000,count]);
+      }
+    }
+    await db.query("select finalize_multiplayer_match($1)",[id]);
+    const rows = (await db.query("select * from multiplayer_match_results where room_id=$1 order by final_score desc,player_id",[id])).rows;
+    const before = (await db.query("select rp,ranked_matches_played,ranked_wins from multiplayer_profiles order by user_id")).rows;
+    await db.query("select finalize_multiplayer_match($1)",[id]);
+    assert.deepEqual((await db.query("select rp,ranked_matches_played,ranked_wins from multiplayer_profiles order by user_id")).rows,before);
+    return rows;
+  }
+  const equal = await ratedMatch([{rp:1000,score:5000},{rp:1000,score:4000}]);
+  assert.deepEqual(equal.map(r=>r.rp_change),[20,-12]);
+  const favored = await ratedMatch([{rp:1400,score:5000},{rp:1000,score:4000}]);
+  assert.ok(favored[0].rp_change>0 && favored[0].rp_change<=4);
+  const upset = await ratedMatch([{rp:1000,score:5000},{rp:1400,score:4000}]);
+  assert.ok(upset[0].rp_change>equal[0].rp_change);
+  assert.ok(upset[1].rp_change<equal[1].rp_change);
+  const floor = await ratedMatch([{rp:0,score:5000},{rp:0,score:4000}]);
+  assert.equal(floor[1].rp_change,0);
+  assert.ok(floor.every(r=>r.new_rp-r.previous_rp===r.rp_change));
+  const zero = await ratedMatch([{rp:1000,score:0},{rp:500,score:0}]);
+  assert.ok(zero.every(r=>r.rp_change===0));
+  for (const row of zero) assert.equal((await db.query("select ranked_wins from multiplayer_profiles where user_id=$1",[row.user_id])).rows[0].ranked_wins,0);
+  const tied = await ratedMatch([{rp:1000,score:5000},{rp:500,score:5000}]);
+  assert.ok(tied.every(r=>r.rp_change===0));
+  for (const row of tied) assert.equal((await db.query("select ranked_wins from multiplayer_profiles where user_id=$1",[row.user_id])).rows[0].ranked_wins,0);
+  const guests = await ratedMatch([{rp:1000,score:5000},{guest:true,score:4000}]);
+  assert.ok(guests.every(r=>!r.ranked && r.rp_change===null));
+  const mixed = await ratedMatch([{guest:true,score:7000},{rp:1000,score:5000},{rp:1000,score:4000},{guest:true,score:0}]);
+  assert.deepEqual(mixed.filter(r=>r.user_id).map(r=>r.rp_change),[20,-12]);
+  assert.ok(mixed.filter(r=>!r.user_id).every(r=>r.rp_change===null));
+  const casual = await ratedMatch([{rp:1000,score:5000},{rp:1000,score:4000}],5,'unranked');
+  assert.ok(casual.every(r=>r.rp_change===null));
+  console.log('PASS: RP +20/-12, stronger/weaker opponents, floor, zero-score and exact ties, guests, unranked games, and idempotence.');
   console.log('PASS: migrations, snapshots, finalization, rollback, readiness barrier, shared 10/5s schedules, timeout, duplicate readiness, early-answer rejection, and permissions.');
 } catch (error) {
   console.error(error.message, error.where ?? "", error.detail ?? "");
