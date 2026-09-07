@@ -18,7 +18,7 @@ const compiler=bundledWebpack.webpack({ mode:"development",entry:fixture("multip
     "@/lib/multiplayerRealtime":fixture("realtime.ts"),
     "@/components/math/MathText":fixture("math.tsx"),
     "@/components/multiplayer/RankTheme":fixture("rank.tsx"),"@":root,
-  }},module:{rules:[{test:/\.tsx?$/,exclude:/node_modules/,use:fixture("loader.cjs")}]},
+  }},module:{rules:[{test:/\.tsx?$/,exclude:/node_modules/,use:fixture("loader.cjs")},{test:/\.css$/,use:fixture("css.cjs")}]},
 });
 await new Promise((resolve,reject)=>compiler.run((error,stats)=>error || stats.hasErrors()
   ? reject(error ?? new Error(stats.toString())) : compiler.close(resolve)));
@@ -92,6 +92,10 @@ try {
     kind:"round_staged",questionNumber:1,intermissionEndsAt:Date.now()+5000}})));
   await page.waitForTimeout(350);
   assert.equal(await page.getByRole("heading",{name:"Question 2 of 2"}).isVisible(),true);
+  await answer.click();
+  await page.getByRole("button",{name:"Submit Answer"}).click();
+  await page.getByRole("heading",{name:"Waiting for final results"}).waitFor();
+  assert.equal(await page.getByRole("heading",{name:"Live leaderboard"}).count(),0);
   assert.equal(deliveries,0);
   assert.ok(polls<=6,`Unexpected polling burst: ${polls}`);
   assert.deepEqual(errors,[]);

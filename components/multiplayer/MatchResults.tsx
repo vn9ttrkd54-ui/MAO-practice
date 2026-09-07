@@ -1,3 +1,6 @@
+import FeedbackForm from "@/components/feedback/FeedbackForm";
+import { questions } from "@/data/questions";
+import styles from "./matchSurface.module.css";
 import Link from "next/link";
 
 import MathText from "@/components/math/MathText";
@@ -10,8 +13,8 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
   const isSpectator = result.viewerMode === "spectator";
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-8 sm:px-8">
-      <header className="text-center">
+    <main className={`${styles.page} mx-auto max-w-4xl px-6 py-8 sm:px-8`}>
+      <header className={`${styles.header} text-center`}>
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">Match complete</p>
         <h1 className="mt-2 text-4xl font-bold">{isSpectator ? "Final results" : `You placed #${result.placement}`}</h1>
         <p className="mt-2 text-lg text-gray-600">
@@ -48,7 +51,7 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
         <h2 className="text-xl font-bold">Question review</h2>
         <div className="mt-3 space-y-4">
           {result.rounds.map((round) => (
-            <article key={round.questionId} className="rounded-2xl border bg-white p-5 shadow-sm">
+            <article key={round.questionId} className={`${styles.panel} rounded-2xl border bg-white p-5 shadow-sm`}>
               <div className="flex items-center justify-between gap-4">
                 <h3 className="font-bold">Question {round.questionNumber}</h3>
                 <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isSpectator ? "bg-blue-100 text-blue-800" : round.correct ? "bg-green-100 text-green-800" : "bg-red-100 text-red-700"}`}>
@@ -66,7 +69,7 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
                   const isCorrect = label === round.correctAnswer;
                   const isSelected = !isSpectator && label === round.selectedAnswer;
                   return (
-                    <div key={label} className={`flex items-start rounded-lg border px-3 py-2 text-sm ${isCorrect ? "border-green-300 bg-green-50" : isSelected ? "border-red-300 bg-red-50" : "bg-gray-50"}`}>
+                    <div key={label} className={`flex items-start rounded-lg border px-3 py-2 text-sm ${isCorrect ? "border-green-300 bg-green-50" : isSelected ? "border-red-300 bg-red-50" : "border-slate-200 bg-slate-50"}`}>
                       <span className="mr-2 font-bold">{label}.</span>
                       <div className="min-w-0 flex-1"><MathText>{choice}</MathText></div>
                       {isCorrect ? <span className="ml-2">✓</span> : isSelected ? <span className="ml-2">(your answer)</span> : null}
@@ -81,6 +84,13 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
                   <MathText>{round.solution}</MathText>
                 </div>
               </div>
+              {(() => {
+                const question = questions.find(item => item.id === round.questionId);
+                return question ? <details className={styles.report}>
+                  <summary>Report an error · Question {round.questionNumber}</summary>
+                  <FeedbackForm kind="question_report" questionId={round.questionId} division={question.division} />
+                </details> : null;
+              })()}
             </article>
           ))}
         </div>

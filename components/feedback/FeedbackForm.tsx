@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 import type { FeedbackKind } from "@/types/feedback";
 import type { Division } from "@/types/question";
@@ -19,6 +19,7 @@ export default function FeedbackForm({
   division,
   onSubmitted,
 }: FeedbackFormProps) {
+  const messageId = useId();
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -45,6 +46,8 @@ export default function FeedbackForm({
       setSubmitted(true);
       setMessage("");
       onSubmitted?.();
+    } catch {
+      setError("Unable to submit feedback. Please check your connection and try again.");
     } finally {
       setSaving(false);
     }
@@ -67,13 +70,13 @@ export default function FeedbackForm({
         </p>
       ) : null}
 
-      <label htmlFor="feedback-message" className="font-semibold">
+      <label htmlFor={messageId} className="font-semibold">
         {kind === "question_report"
           ? "Explain what is wrong or what should change"
           : "What would you like to suggest?"}
       </label>
       <textarea
-        id="feedback-message"
+        id={messageId}
         value={message}
         onChange={(event) => setMessage(event.target.value)}
         maxLength={2000}

@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import MatchWaiting from "./MatchWaiting";
+import styles from "./matchSurface.module.css";
 import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
@@ -260,27 +262,28 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   );
 
   if (finished) {
-    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><h1 className="text-3xl font-bold">Match complete</h1><p className="mt-3 text-gray-600">Loading final results and question review…</p></div></main>;
+    return <MatchWaiting>{submissionNotice}</MatchWaiting>;
   }
 
   const inIntermission = preparingNext || Boolean(effectiveIntermissionEndsAt);
   const personalTimeExpired = !round.preparing && secondsLeft === 0;
   if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
+    if (round.questionNumber >= round.totalQuestions) return <MatchWaiting>{submissionNotice}</MatchWaiting>;
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className="mx-auto max-w-5xl px-6 py-8"><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? (intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`) : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+    return <main className={`${styles.page} mx-auto max-w-5xl px-6 py-8`}><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? (intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`) : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
   if (round.preparing || questionStartsIn === null || questionStartsIn > 0) {
-    return <main className="mx-auto max-w-3xl px-6 py-16 text-center"><div className="rounded-3xl border bg-white p-10 shadow-sm"><p className="text-sm font-semibold text-blue-600">Get ready</p><h1 className="mt-2 text-3xl font-bold">{round.preparing || questionStartsIn === null ? "Preparing…" : `Question ${round.questionNumber} starts in ${questionStartsIn}s`}</h1>{round.preparing ? <p className="mt-3 text-gray-600">Waiting for players to load the question…</p> : null}</div></main>;
+    return <MatchWaiting preparing title={round.preparing || questionStartsIn === null ? "Preparing…" : `Question ${round.questionNumber} starts in ${questionStartsIn}s`} description={round.preparing ? "Waiting for players to load the question…" : "Take a breath. Get ready for your next challenge."} />;
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-8 sm:px-8">
-      <header className="flex items-center justify-between gap-4"><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
-      <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
+    <main className={`${styles.page} mx-auto max-w-6xl px-6 py-8 sm:px-8`}>
+      <header className={`${styles.header} flex items-center justify-between gap-4`}><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
+      <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className={`${styles.panel} rounded-3xl border bg-white p-6 shadow-sm sm:p-8`}>
         {submissionNotice}
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
-        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "hover:bg-gray-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
+        <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "border-slate-200 bg-slate-50/60 hover:border-blue-300 hover:bg-blue-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
         <button onClick={submitAnswer} disabled={!selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
       </section>

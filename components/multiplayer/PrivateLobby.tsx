@@ -130,13 +130,13 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
                     <span>{player.isGuest ? "Unranked guest" : `${player.rankTier} · ${player.rp} RP`}</span>
                   </div>
                 </div>
-                <span className="h-2.5 w-2.5 rounded-full bg-green-500" aria-label="Connected" />
+                <span className="h-2.5 w-2.5 rounded-full shrink-0 bg-blue-500 ring-4 ring-blue-100/50" aria-label="Connected" />
               </li>
             ))}
           </ul>
         </section>
 
-        <aside className="rounded-2xl bg-gray-50 p-5">
+        <aside className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
           <h2 className="font-bold">Ready to play?</h2>
           <p className="mt-2 text-sm text-gray-600">{publicRoom ? (lobby.room.status === "countdown" ? `Match begins in ${countdown ?? 60}s` : "The countdown begins when a second player joins.") : isHost ? "Start whenever everyone has joined." : "Waiting for the host to start the game."}</p>
           {!publicRoom && isHost && !started ? (
@@ -147,7 +147,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
           ) : null}
           {!publicRoom && isHost && lobby.players.length === 1 && !started ? <p className="mt-3 text-xs text-gray-500">Solo games automatically become unranked.</p> : null}
           {!started ? <form action={leaveMultiplayerRoomAction} className="mt-3" onSubmit={(event) => { if (!publicRoom && isHost && !window.confirm("Close this private room for everyone?")) event.preventDefault(); }}><input type="hidden" name="roomId" value={lobby.room.id} /><PendingSubmitButton pendingText={!publicRoom && isHost ? "Closing room…" : "Leaving room…"} className="w-full rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50">{!publicRoom && isHost ? "Close Room" : "Leave Room"}</PendingSubmitButton></form> : null}
-          {started ? <div className="mt-5 rounded-lg bg-green-100 px-3 py-2 text-sm font-semibold text-green-800">Game started</div> : null}
+          {started ? <div className="mt-5 rounded-lg bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-800">Game started</div> : null}
         </aside>
       </div>
     </>

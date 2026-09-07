@@ -1,0 +1,15 @@
+.page { position:relative; isolation:isolate; min-height:calc(100svh - 81px); color:#172033; }
+.page::before { content:""; position:fixed; inset:0; z-index:-1; background:radial-gradient(ellipse at 15% 0%,#edf4fc,transparent 65%),linear-gradient(135deg,#eff3f8,#e4eaf2); pointer-events:none; }
+.panel { position:relative; border-color:#d7e0ee; background:radial-gradient(ellipse at top right,#edf3ff,transparent 55%),#fff; box-shadow:0 4px 8px -6px #14234124,0 20px 45px -28px #14234155; border-top:3px solid #739bf1; }
+.header { border:1px solid #d7e0ee; border-radius:24px; padding:24px; background:linear-gradient(120deg,#fff,#edf3ff); box-shadow:0 12px 35px -26px #14234166; }
+.icon { display:grid; place-items:center; width:56px; height:56px; margin:0 auto 24px; border:1px solid #cbdcff; border-radius:18px; background:#edf3ff; color:#2563eb; }
+.waiting { max-width:680px; margin:auto; padding:48px 24px; text-align:center; }
+.orbit { width:100px; height:100px; display:grid; place-items:center; position:relative; margin:0 auto 28px; color:#2563eb; background:#eff5ff; border-radius:50%; }
+.orbit::after { content:""; position:absolute; inset:-8px; border:2px solid #dce7fb; border-top-color:#2563eb; border-radius:50%; animation:orbit 2s linear infinite; }
+.stats > div { border:1px solid #dce5f1; background:linear-gradient(135deg,#f8faff,#edf3fc); }
+.stats dt { color:#587097; letter-spacing:.08em; }
+.report { margin-top:20px; border:1px solid #d9e3f1; border-radius:14px; padding:16px; background:#f8faff; }
+.report summary { cursor:pointer; font-weight:600; color:#375b91; }
+.report[open] summary { margin-bottom:20px; }
+@keyframes orbit { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .orbit::after { animation:none; } }

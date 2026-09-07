@@ -1,5 +1,7 @@
 "use client";
 
+import MatchWaiting from "./MatchWaiting";
+import styles from "./matchSurface.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -116,9 +118,11 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
   const preparing = !state.questionStartedAt || now === null || now < state.questionStartedAt;
   const countdown = countdownSeconds(state.questionStartedAt, now, state.questionNumber);
 
+  if (!preparing && seconds === 0 && state.questionNumber >= state.totalQuestions) return <MatchWaiting />;
+
   return (
-    <main className="mx-auto max-w-5xl px-5 py-8">
-      <header className="flex items-center justify-between">
+    <main className={`${styles.page} mx-auto max-w-5xl px-5 py-8`}>
+      <header className={`${styles.header} flex items-center justify-between`}>
         <div>
           <p className="text-sm font-semibold text-blue-600">Live spectator view</p>
           <h1 className="text-2xl font-bold">Question {state.questionNumber} of {state.totalQuestions}</h1>
@@ -128,7 +132,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_18rem]">
         <div className="space-y-4">
-          <section className="rounded-2xl border bg-white p-6 shadow-sm">
+          <section className={`${styles.panel} rounded-2xl border bg-white p-6 shadow-sm`}>
             {preparing ? <p>Waiting for the shared question start…</p> : <>
             <div className="text-lg font-semibold leading-8"><MathText>{state.question.question}</MathText></div>
             <div className="mt-5 grid gap-2">

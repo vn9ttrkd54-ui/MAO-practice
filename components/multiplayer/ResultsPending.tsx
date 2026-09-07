@@ -1,4 +1,5 @@
 "use client";
+import MatchWaiting from "./MatchWaiting";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
@@ -16,9 +17,7 @@ export default function ResultsPending({ roomId }: { roomId: string }) {
     const unsubscribe = subscribeToMultiplayerRoom(roomId, () => router.refresh());
     return () => { window.clearInterval(interval); unsubscribe(); };
   }, [roomId, router]);
-  return <main className="mx-auto max-w-xl px-6 py-16 text-center">
-    <h1 className="text-3xl font-bold">Preparing final results</h1>
-    <p className="mt-3 text-gray-600">{waitingLong ? "Results are taking longer than expected. Your saved answers are safe; try again shortly." : "Your match has finished. Results will appear shortly."}</p>
+  return <MatchWaiting description={waitingLong ? "Results are taking longer than expected. Try checking again shortly." : "Your match has finished. The podium reveal will begin as soon as results are ready."}>
     <button className="mt-5 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white" onClick={() => router.refresh()}>Check results</button>
-  </main>;
+  </MatchWaiting>;
 }
