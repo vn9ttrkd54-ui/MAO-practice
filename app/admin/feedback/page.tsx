@@ -54,6 +54,7 @@ export default async function AdminFeedbackPage() {
     <main className="mx-auto max-w-5xl px-6 py-10 sm:px-8">
       <Link href="/dashboard" className="text-sm font-semibold text-blue-600">← Dashboard</Link>
       <div className="mt-5"><p className="text-sm font-bold uppercase tracking-[0.18em] text-violet-600">Admin</p><h1 className="mt-2 text-4xl font-bold">Admin tools</h1></div>
+      <Link href="/admin/users" className="mt-6 inline-flex rounded-xl border border-blue-200 bg-blue-50 px-5 py-3 font-semibold text-blue-700">Users & statistics →</Link>
       {hasOwnerAccess(ownProfile.role) ? <AdminAccountRecovery /> : null}
       <div className="mt-9 flex flex-wrap items-end justify-between gap-4"><h2 className="text-3xl font-bold">Feedback inbox</h2><p className="rounded-full bg-violet-100 px-4 py-2 text-sm font-bold text-violet-800">{requests.length} open</p></div>
       <AdminFeedbackList initialRequests={requests} />
