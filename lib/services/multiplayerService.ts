@@ -787,6 +787,9 @@ export async function listPublicRooms(): Promise<MultiplayerPublicRoom[]> {
     .in("room_id", roomIds)
     .eq("connected", true)
     .is("left_at", null)
+    // Lobby heartbeats refresh updated_at every five seconds. A missed leave
+    // notification must not keep an abandoned seat visible indefinitely.
+    .gte("updated_at", new Date(Date.now() - 10_000).toISOString())
     .order("joined_at", { ascending: true });
   if (playerError) throw new Error("Unable to load players in public rooms.");
 
