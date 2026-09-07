@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./dashboard.module.css";
 import { useEffect, useState } from "react";
 
 import ChallengeSection from "@/components/dashboard/ChallengeSection";
@@ -97,7 +98,7 @@ export default function DashboardClient() {
   } = dashboardData;
 
   return (
-    <div className={`${rankPageClass(multiplayer.rank)} min-h-screen`}>
+    <div className={`${styles.dashboard} ${rankPageClass(multiplayer.rank)} min-h-screen`}>
       <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8 lg:py-14">
         <DashboardHeader username={username} level={level} />
 

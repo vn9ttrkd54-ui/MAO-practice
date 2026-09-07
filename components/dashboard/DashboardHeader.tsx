@@ -1,3 +1,4 @@
+import styles from "./dashboard.module.css";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -29,7 +30,7 @@ export default function DashboardHeader({
   );
 
   return (
-    <section className="overflow-hidden rounded-3xl border bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 px-6 py-8 text-white shadow-sm sm:px-8 sm:py-10">
+    <section className={`${styles.hero} overflow-hidden rounded-3xl border px-6 py-8 text-white shadow-sm sm:px-8 sm:py-10`}>
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-sm font-medium text-slate-200">
@@ -66,7 +67,7 @@ export default function DashboardHeader({
               aria-valuenow={level.progress}
             >
               <div
-                className="h-full rounded-full bg-white transition-[width] duration-500"
+                className="h-full rounded-full bg-gradient-to-r from-blue-300 to-white transition-[width] duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>

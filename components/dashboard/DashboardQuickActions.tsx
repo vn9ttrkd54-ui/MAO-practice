@@ -1,10 +1,11 @@
+import styles from "./dashboard.module.css";
 import Link from "next/link";
 import { Lightbulb, Settings, ShieldCheck } from "lucide-react";
 
 export default function DashboardQuickActions({ isAdmin }: { isAdmin: boolean }) {
   return (
     <section
-      className={`mx-auto mt-5 grid w-full gap-4 sm:grid-cols-2 ${
+      className={`${styles.quickActions} mx-auto mt-5 grid w-full gap-4 sm:grid-cols-2 ${
         isAdmin ? "max-w-6xl lg:grid-cols-3" : "max-w-4xl"
       }`}
     >

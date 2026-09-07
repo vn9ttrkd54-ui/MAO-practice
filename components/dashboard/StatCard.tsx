@@ -1,3 +1,5 @@
+import styles from "./dashboard.module.css";
+
 interface StatCardProps {
   label: string;
   value: string | number;
@@ -13,7 +15,7 @@ export default function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={`rounded-xl border p-5 text-gray-950 ${
+      className={`${styles.stat} rounded-xl border p-5 text-gray-950 ${
         muted
           ? "bg-white/70"
           : "bg-white shadow-sm"

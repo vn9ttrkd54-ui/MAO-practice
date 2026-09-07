@@ -1,0 +1,26 @@
+.dashboard { color:#172033; }
+.dashboard main { position:relative; }
+.dashboard h1 { overflow-wrap:anywhere; }
+.dashboard h2 { letter-spacing:-.025em; }
+.dashboard main > section:not(.hero):not(.quickActions) { scroll-margin-top:28px; }
+.dashboard :global(.bg-white):not(.hero a) { border-color:#d8e2ef; box-shadow:0 4px 8px -7px #172c4c22,0 18px 36px -28px #172c4c66; }
+.dashboard main > section:global(.bg-white) { background:radial-gradient(ellipse at top right,#eff5ff,transparent 55%),#fff; border-radius:24px; }
+.dashboard article:global(.bg-white) { background:linear-gradient(145deg,#fff,#f9fbff); }
+.dashboard a:focus-visible,.dashboard button:focus-visible { outline:2px solid #2563eb; outline-offset:4px; }
+.dashboard table { font-variant-numeric:tabular-nums; }
+.dashboard thead { background:#f0f5fc; }
+.dashboard th { color:#506580; }
+.dashboard td { border-color:#e4ebf4; }
+.dashboard tbody tr:hover { background:#f5f8fe; }
+.hero { position:relative; isolation:isolate; border-color:#365f9a; background:radial-gradient(ellipse at 85% 10%,#447cf377,transparent 55%),linear-gradient(120deg,#173265,#152642 65%,#111c30); box-shadow:0 24px 50px -30px #102c64aa; }
+.hero::before { content:""; position:absolute; inset:0; pointer-events:none; z-index:-1; background-image:linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px); background-size:44px 44px; mask-image:linear-gradient(90deg,transparent,#000); }
+.hero::after { content:"Σ"; position:absolute; right:3%; top:-90px; z-index:-1; font-size:420px; line-height:1.1; font-weight:700; color:#ffffff04; pointer-events:none; }
+.hero :global(.bg-white)[role=progressbar] { box-shadow:none; }
+.hero a { min-height:46px; }
+.quickActions a { border-color:#d3deed; background:linear-gradient(140deg,#fff,#f3f7fd); }
+.quickActions a:hover { border-color:#91b0ed; box-shadow:0 14px 26px -20px #234d97aa; }
+.quickActions a > span:first-child { flex-shrink:0; border:1px solid #ffffff88; }
+.stat { border-color:#dbe4f0; border-radius:16px; }
+.stat > p:nth-child(2) { font-variant-numeric:tabular-nums; letter-spacing:-.025em; }
+@media(max-width:640px) { .hero::after { font-size:310px; right:-25px; top:0; } }
+@media(prefers-reduced-motion:reduce) { .dashboard *, .dashboard *::before,.dashboard *::after { transition:none !important; animation:none !important; } }
