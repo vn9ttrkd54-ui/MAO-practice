@@ -1,0 +1,26 @@
+.stage{position:relative;isolation:isolate;overflow:hidden;min-height:640px;height:calc(100svh - 81px);background:radial-gradient(ellipse at 50% 47%,color-mix(in srgb,var(--accent) 9%,#070d19),#070d19 74%);color:#fff}
+.lights,.stars,.confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.stars{background-image:radial-gradient(circle at 18% 27%,#adcae788 1px,transparent 2px),radial-gradient(circle at 76% 43%,#adcae766 1px,transparent 2px);background-size:181px 167px,239px 251px;opacity:.35;mask-image:linear-gradient(#000,transparent)}
+.floor{position:absolute;inset:70% 0 0;background:linear-gradient(180deg,transparent,#ffffff03 35%,#00000044);pointer-events:none}
+.top{position:absolute;left:28px;right:28px;top:24px;display:flex;justify-content:space-between;gap:10px;font-size:10px;letter-spacing:2.4px;color:#9eacc2;z-index:5}
+.ghostNumber{position:absolute;inset:35px 0 auto;text-align:center;line-height:1;font-size:470px;font-weight:700;color:color-mix(in srgb,var(--accent) 4%,transparent);user-select:none;animation:ghost 2500ms both}
+.hero{position:absolute;inset:90px 20px auto;text-align:center;z-index:3;animation:reveal 2500ms ease-out both}
+.placement{font-size:12px;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin:0 0 24px}
+.medallion{position:relative;display:flex;align-items:center;justify-content:center;width:110px;height:110px;margin:auto;border:1px solid color-mix(in srgb,var(--medal) 70%,#fff);border-radius:32px;background:linear-gradient(135deg,color-mix(in srgb,var(--medal) 75%,#fff),color-mix(in srgb,var(--medal) 40%,#111827) 43%,color-mix(in srgb,var(--medal) 85%,#fff) 49%,color-mix(in srgb,var(--medal) 40%,#111827));box-shadow:0 18px 60px color-mix(in srgb,var(--medal) 16%,transparent),inset 0 1px 0 #ffffff88}
+.medallion>span{font-size:63px;font-weight:700;line-height:1;color:#fff;text-shadow:0 2px 8px #0005}
+.star{position:absolute;right:-12px;top:-17px;color:var(--medal);font-size:38px;text-shadow:0 0 24px color-mix(in srgb,var(--medal) 50%,transparent)}
+.playerName{font-size:clamp(32px,5vw,60px);line-height:1.1;letter-spacing:-1.5px;margin:23px auto 12px;max-width:900px;font-weight:600;overflow-wrap:anywhere}
+.rank{display:flex;justify-content:center;align-items:center;gap:8px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)}
+.score{font-size:27px;margin-top:21px;font-variant-numeric:tabular-nums}
+.score span{font-size:10px;letter-spacing:2px;color:#a8b8ce;text-transform:uppercase;margin-left:7px}
+.trail{position:absolute;bottom:26px;left:5%;right:5%;display:flex;justify-content:center;gap:28px;z-index:4;list-style:none;padding:0;margin:0}
+.trail li{display:flex;align-items:center;gap:9px;font-size:12px;color:#aec0db;min-width:0;max-width:30%}
+.trail li>span{font-size:11px;color:#e6eeff;border:1px solid #ffffff24;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.trail b{font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.confetti{z-index:4;overflow:hidden}
+.confetti i{position:absolute;top:67%;display:block;width:5px;height:11px;opacity:0;animation:confetti 2075ms cubic-bezier(.15,.65,.35,1) both}
+@keyframes reveal{0%{opacity:0;transform:translateY(24px) scale(.94);filter:blur(5px)}23%,86%{opacity:1;transform:none;filter:blur(0)}100%{opacity:0;transform:translateY(-12px) scale(1.02);filter:blur(3px)}}
+@keyframes ghost{from{opacity:0;scale:1.14}30%{opacity:1;scale:1}to{opacity:.6;scale:.97}}
+@keyframes confetti{0%{opacity:0;transform:translate(0,0) rotate(0)}32%{opacity:1;transform:translate(var(--mid-x),var(--mid-y)) rotate(var(--spin-mid))}100%{opacity:0;transform:translate(var(--end-x),var(--end-y)) rotate(var(--spin-end))}}
+@media(max-width:500px){.stage{min-height:620px}.top{left:18px;right:18px;font-size:8px;letter-spacing:1.3px}.hero{top:84px}.ghostNumber{font-size:410px;top:55px}.trail{left:12px;right:12px;gap:14px}.trail li{font-size:11px;gap:5px}}
+@media(prefers-reduced-motion:reduce){.hero,.ghostNumber{animation:none}.confetti{display:none}.confetti i{animation:none}}
