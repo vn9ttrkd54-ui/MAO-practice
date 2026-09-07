@@ -1,4 +1,5 @@
 import { UserPlus } from "lucide-react";
+import styles from "@/components/auth/auth.module.css";
 import { redirect } from "next/navigation";
 
 import SignupForm from "@/components/auth/SignupForm";
@@ -15,13 +16,14 @@ export default async function SignupPage() {
   }
 
   return (
-    <main className="min-h-[calc(100vh-80px)] bg-gray-50 px-6 py-12 sm:px-8">
-      <div className="mx-auto max-w-md rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white">
-          <UserPlus size={22} />
+    <main className={`${styles.page} px-6 py-12 sm:px-8 sm:py-16`}>
+      <div className={`${styles.card} mx-auto max-w-lg rounded-3xl border p-6 sm:p-8`}>
+        <div className={styles.icon}>
+          <UserPlus size={25} aria-hidden="true" />
         </div>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">Start your journey</p>
 
-        <h1 className="mt-6 text-3xl font-bold tracking-tight">
+        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
           Create your account
         </h1>
 

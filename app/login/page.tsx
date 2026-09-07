@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { LogIn } from "lucide-react";
+import styles from "@/components/auth/auth.module.css";
 
 import LoginForm from "@/components/auth/LoginForm";
 import { createClient } from "@/lib/supabase/server";
@@ -14,9 +16,10 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-6 py-12 sm:px-8">
-      <section className="rounded-3xl border bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-gray-500">
+    <main className={`${styles.page} px-6 py-12 sm:px-8 sm:py-16`}>
+      <section className={`${styles.card} mx-auto max-w-lg rounded-3xl border p-6 sm:p-8`}>
+        <div className={styles.icon}><LogIn size={25} aria-hidden="true" /></div>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">
           Welcome Back
         </p>
 

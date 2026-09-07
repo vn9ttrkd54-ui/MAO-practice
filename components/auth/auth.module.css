@@ -1,0 +1,12 @@
+.page { min-height:calc(100svh - 80px); background:radial-gradient(ellipse at 20% 0%,#dde9ff,transparent 60%),linear-gradient(135deg,#f1f5f9,#e7edf5); color:#172033; }
+.card { position:relative; overflow:hidden; border-color:#d4e0f1; background:radial-gradient(ellipse at top right,#edf3ff,transparent 60%),#fff; box-shadow:0 22px 50px -32px #17396c88; }
+.card::before { content:""; position:absolute; inset:0 0 auto; height:4px; background:linear-gradient(90deg,#2563eb,#9ab6f6,#eff4ff); }
+.icon { display:grid; place-items:center; width:54px; height:54px; margin-bottom:22px; border:1px solid #d2dff7; border-radius:17px; background:#edf3ff; color:#2563eb; }
+.card form { padding-top:24px; border-top:1px solid #e0e8f3; }
+.card input { min-height:48px; border-color:#cbd7e8; background:#f8faff; }
+.card input:focus { background:#fff; border-color:#2563eb; box-shadow:0 0 0 3px #dce8ff; }
+.card button[type=submit] { min-height:48px; background:#2563eb; box-shadow:0 8px 16px -10px #2563eb99; }
+.card button[type=submit]:hover:not(:disabled) { background:#1d4ed8; }
+.card a { color:#1d4ed8; }
+.card a:focus-visible,.card button:focus-visible { outline:2px solid #2563eb; outline-offset:4px; }
+@media(prefers-reduced-motion:reduce) { .card input,.card button { transition:none; } }
