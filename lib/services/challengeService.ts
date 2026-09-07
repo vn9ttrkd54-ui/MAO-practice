@@ -308,13 +308,14 @@ export async function hasCompletedToday(): Promise<boolean> {
 
 export async function getChallengeOverview(division: Division = "Mu"): Promise<ChallengeOverview> {
   const dailyChallenge = await getTodayChallenge(division);
+  const scheduledQuestionId = dailyChallenge?.questionId;
   const [
     attempt,
     statistics,
     leaderboard,
     userLeaderboardEntry,
   ] = await Promise.all([
-    dailyChallenge ? getUserChallengeAttempt(dailyChallenge.questionId) : Promise.resolve(null),
+    scheduledQuestionId ? getUserChallengeAttempt(scheduledQuestionId) : Promise.resolve(null),
     getChallengeStatistics(),
     getChallengeLeaderboard(),
     getUserLeaderboardPosition(),
