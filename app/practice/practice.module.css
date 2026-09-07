@@ -1,0 +1,15 @@
+.page { background:radial-gradient(ellipse at 15% 0%,#e4edff,transparent 60%),linear-gradient(135deg,#f1f5f9,#e7edf5); color:#172033; }
+.hero { position:relative; isolation:isolate; overflow:hidden; margin-bottom:32px; padding:32px; border:1px solid #d2def2; border-radius:24px; background:linear-gradient(115deg,#fff,#eaf1ff); box-shadow:0 18px 36px -30px #1c3f7866; }
+.hero::after { content:"Σ"; position:absolute; z-index:-1; right:24px; top:-65px; font-size:240px; line-height:1.3; color:#2563eb08; font-weight:700; pointer-events:none; }
+.eyebrow { display:flex; align-items:center; gap:8px; margin-bottom:18px; font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:#2563eb; }
+.card { position:relative; display:flex; flex-direction:column; overflow:hidden; border-color:#d8e2f0; box-shadow:0 16px 36px -26px #203b6655; background:radial-gradient(ellipse at top right,#f0f5ff,transparent 65%),#fff; }
+.card::before { content:""; position:absolute; inset:0 0 auto; height:3px; background:linear-gradient(90deg,#2563eb,#b4c8f8,#eff4ff); }
+.icon { display:grid; place-items:center; width:60px; height:60px; margin-bottom:26px; border:1px solid #d5e2fa; border-radius:18px; background:#edf3ff; color:#2563eb; }
+.trainer::before { background:linear-gradient(90deg,#6366f1,#c6c6fc,#f3f3ff); }
+.trainer .icon { color:#5457cb; background:#f0f0ff; border-color:#dcdcf8; }
+.features { display:flex; flex-wrap:wrap; gap:12px 18px; padding:18px 0; margin-top:auto; margin-bottom:16px; border-top:1px solid #e3eaf5; color:#5b7191; font-size:12px; }
+.features span { display:flex; align-items:center; gap:6px; }
+.button { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:48px; border-radius:12px; padding:12px 20px; background:#2563eb; color:#fff; font-weight:600; box-shadow:0 8px 16px -10px #2563ebaa; }
+.button:hover { background:#1d4ed8; }
+.button:focus-visible { outline:2px solid #2563eb; outline-offset:4px; }
+@media(max-width:480px) { .hero { padding:24px; } }
