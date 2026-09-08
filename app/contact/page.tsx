@@ -20,8 +20,6 @@ export default function ContactPage() {
       <p>Signed-in users can also use the <Link href="/suggestions/new">suggestions form</Link>. Incorrect math questions can be reported directly from the question page.</p>
       <h2>Security reports</h2>
       <p>Describe the suspected issue and steps to reproduce it. Do not access other users’ data, disrupt the service, or publicly disclose an unresolved vulnerability.</p>
-      <h2>Copyright concerns</h2>
-      <p>Identify the copyrighted work, the material you believe infringes it, where that material appears, your contact details, and a good-faith explanation of your request.</p>
     </LegalPage>
   );
 }
