@@ -14,6 +14,7 @@ export default function SignupForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,12 +43,18 @@ export default function SignupForm() {
       return;
     }
 
+    if (!acceptedLegal) {
+      setErrorMessage("Confirm that you are at least 13 and agree to the Privacy Policy and Terms.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const result = await signUp({
         username: normalizedUsername,
         password,
+        acceptedLegal,
       });
 
       if (!result.success) {
@@ -132,6 +139,22 @@ export default function SignupForm() {
           placeholder="Re-enter your password"
         />
       </div>
+
+      <label className="flex items-start gap-3 text-sm leading-6 text-gray-700">
+        <input
+          type="checkbox"
+          checked={acceptedLegal}
+          onChange={(event) => setAcceptedLegal(event.target.checked)}
+          required
+          className="mt-1 h-4 w-4 shrink-0 accent-slate-950"
+        />
+        <span>
+          I confirm that I am at least 13 years old and agree to the{" "}
+          <Link href="/terms" target="_blank" className="font-semibold text-slate-950 underline">Terms of Service</Link>
+          {" "}and acknowledge the{" "}
+          <Link href="/privacy" target="_blank" className="font-semibold text-slate-950 underline">Privacy Policy</Link>.
+        </span>
+      </label>
 
       {errorMessage ? (
         <div

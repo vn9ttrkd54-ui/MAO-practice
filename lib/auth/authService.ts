@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { LEGAL_VERSION } from "@/lib/legal";
 
 export interface AuthResult {
   success: boolean;
@@ -8,6 +9,7 @@ export interface AuthResult {
 interface SignUpInput {
   username: string;
   password: string;
+  acceptedLegal: boolean;
 }
 
 interface LoginInput {
@@ -18,7 +20,11 @@ interface LoginInput {
 export async function signUp({
   username,
   password,
+  acceptedLegal,
 }: SignUpInput): Promise<AuthResult> {
+  if (!acceptedLegal) {
+    return { success: false, error: "You must confirm your age and agree to the legal terms." };
+  }
   const supabase = createClient();
   const authenticationEmail = `${username}@users.mao-practice.local`;
 
@@ -49,6 +55,10 @@ export async function signUp({
         username,
         display_name: username,
         full_name: username,
+        age_13_or_older: true,
+        terms_accepted_at: new Date().toISOString(),
+        terms_version: LEGAL_VERSION,
+        privacy_version: LEGAL_VERSION,
       },
     },
   });
