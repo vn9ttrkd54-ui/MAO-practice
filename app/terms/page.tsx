@@ -42,7 +42,7 @@ export default function TermsPage() {
       <p>To the fullest extent permitted by law, the service is provided “as is” and “as available.” We disclaim implied warranties, including merchantability, fitness for a particular purpose, and noninfringement. We do not promise uninterrupted availability, perfect accuracy, or that every defect will be corrected. Nothing in these Terms excludes warranties or rights that cannot legally be excluded.</p>
 
       <h2>Limitation of liability</h2>
-      <p>To the fullest extent permitted by law, Mathematics Daily and its operators will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages, lost data, lost opportunities, or lost profits arising from the service. Our total liability for claims relating to the service will not exceed the greater of US $50 or the amount you paid us during the 12 months before the claim. These limits do not apply where prohibited by law.</p>
+      <p>To the fullest extent permitted by law, Mathematics Daily is not responsible for indirect or consequential losses resulting from use of the service. Nothing in these Terms limits liability that cannot legally be limited.</p>
 
       <h2>Changes and general terms</h2>
       <p>We may update these Terms and will revise the effective date. Material changes will receive additional notice when required. If one provision is unenforceable, the remaining provisions remain effective. Our failure to enforce a provision is not a waiver. You may not transfer these Terms without our permission; we may transfer them as part of a reorganization or transfer of the service.</p>

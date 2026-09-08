@@ -63,7 +63,7 @@ export default function PrivacyPage() {
       <p>To make a privacy request or ask a question, visit our <Link href="/contact">contact page</Link> or email <a href={`mailto:${LEGAL_CONTACT_EMAIL}`}>{LEGAL_CONTACT_EMAIL}</a>. We may need to verify that you control the relevant account.</p>
 
       <h2>Children’s privacy</h2>
-      <p>Mathematics Daily accounts are for people age 13 or older. We do not knowingly collect personal information from children under 13 and do not offer a parental-consent process. If you believe a child under 13 has created an account or provided personal information, contact us so we can investigate and delete it. Schools or organizations should not direct children under 13 to create accounts without first arranging a legally compliant process with us.</p>
+      <p>Mathematics Daily accounts are for people age 13 or older. We do not knowingly collect personal information from children under 13 and do not offer a parental-consent process. If you believe a child under 13 has created an account or provided personal information, contact us so we can investigate and delete it.</p>
 
       <h2>Security and international processing</h2>
       <p>We use administrative, technical, and organizational safeguards designed to protect information, but no online service can guarantee absolute security. Our providers may process information in the United States and other countries where they operate.</p>
