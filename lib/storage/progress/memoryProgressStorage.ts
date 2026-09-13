@@ -1,13 +1,15 @@
 import type { ProgressStorage } from "@/lib/storage/progress/progressStorage";
 import { createEmptyProgress } from "@/lib/storage/progress/progressStorage";
 import type { QuestionProgress } from "@/types/progress";
+import { getPracticeTiming, PRACTICE_TIMING_LIMIT } from "@/lib/practiceTiming";
 
 const progressByQuestion = new Map<number, QuestionProgress>();
 
 function cloneProgress(progress: QuestionProgress): QuestionProgress {
   return {
     ...progress,
-    times: [...progress.times],
+    timing: getPracticeTiming(progress),
+    times: progress.times.slice(-PRACTICE_TIMING_LIMIT),
   };
 }
 

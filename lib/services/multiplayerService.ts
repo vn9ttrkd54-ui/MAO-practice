@@ -621,16 +621,14 @@ export async function acknowledgeMultiplayerQuestionDelivery(
 
   const deliveryTime = new Date(deliveredAt).getTime();
   const questionStartedAt = new Date(matchQuestion.started_at).getTime();
-  const solvingStartedAt = deliveryTime <= questionStartedAt + 5_000
-    ? questionStartedAt
-    : deliveryTime;
   const hardEndsAt = new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime();
   return {
     questionNumber,
     deliveredAt: deliveryTime,
     personalEndsAt: Math.min(
       hardEndsAt,
-      solvingStartedAt + access.room.settings.secondsPerQuestion * 1000,
+      // Delivery receipts are diagnostic only, never a way to restart the clock.
+      questionStartedAt + access.room.settings.secondsPerQuestion * 1000,
     ),
     hardEndsAt,
   };

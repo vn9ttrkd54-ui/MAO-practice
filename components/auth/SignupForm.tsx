@@ -5,9 +5,9 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { signUp } from "@/lib/auth/authService";
+import { MIN_PASSWORD_LENGTH, getPasswordValidationError } from "@/lib/auth/passwordPolicy";
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
-const MIN_PASSWORD_LENGTH = 8;
 
 export default function SignupForm() {
   const router = useRouter();
@@ -31,10 +31,9 @@ export default function SignupForm() {
       return;
     }
 
-    if (password.length < MIN_PASSWORD_LENGTH) {
-      setErrorMessage(
-        `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`
-      );
+    const passwordError = getPasswordValidationError(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
       return;
     }
 
@@ -115,7 +114,7 @@ export default function SignupForm() {
           minLength={MIN_PASSWORD_LENGTH}
           required
           className="mt-2 w-full rounded-xl border px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
-          placeholder="At least 8 characters"
+          placeholder={`At least ${MIN_PASSWORD_LENGTH} characters`}
         />
       </div>
 

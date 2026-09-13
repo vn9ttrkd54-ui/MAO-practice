@@ -2,10 +2,9 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { MIN_PASSWORD_LENGTH, getPasswordValidationError } from "@/lib/auth/passwordPolicy";
 
-import { createClient } from "@/lib/supabase/client";
-
-export default function ResetPasswordForm({ browserRecovery = false }: { browserRecovery?: boolean }) {
+export default function ResetPasswordForm() {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
@@ -15,8 +14,9 @@ export default function ResetPasswordForm({ browserRecovery = false }: { browser
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+    const passwordError = getPasswordValidationError(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
     if (password !== confirmation) {
@@ -26,19 +26,6 @@ export default function ResetPasswordForm({ browserRecovery = false }: { browser
 
     setSaving(true);
     try {
-      if (browserRecovery) {
-        const supabase = createClient();
-        const { error: updateError } = await supabase.auth.updateUser({ password });
-        if (updateError) {
-          setError("Unable to reset the password. Request a new recovery email.");
-          return;
-        }
-        await supabase.auth.signOut();
-        router.replace("/login?passwordReset=success");
-        router.refresh();
-        return;
-      }
-
       const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -63,11 +50,11 @@ export default function ResetPasswordForm({ browserRecovery = false }: { browser
       {error ? <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
       <div>
         <label htmlFor="new-password" className="text-sm font-semibold">New password</label>
-        <input id="new-password" type="password" autoComplete="new-password" minLength={8} required value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3" />
+        <input id="new-password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3" />
       </div>
       <div>
         <label htmlFor="confirm-password" className="text-sm font-semibold">Confirm new password</label>
-        <input id="confirm-password" type="password" autoComplete="new-password" minLength={8} required value={confirmation} onChange={(event) => setConfirmation(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3" />
+        <input id="confirm-password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required value={confirmation} onChange={(event) => setConfirmation(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3" />
       </div>
       <button disabled={saving} className="w-full rounded-xl bg-black px-5 py-3 font-semibold text-white disabled:opacity-50">{saving ? "Updating…" : "Set new password"}</button>
     </form>

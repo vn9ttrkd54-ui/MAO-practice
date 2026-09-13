@@ -8,10 +8,18 @@ export type QuestionStatus =
   | "attempted"
   | "new";
 
+export interface PracticeTiming {
+  count: number;
+  totalSeconds: number;
+  bestSeconds: number | null;
+}
+
 export interface QuestionProgress {
   attempts: number;
   correct: number;
   times: number[];
+  /** Lifetime metrics; times is only the most recent 100 correct samples. */
+  timing?: PracticeTiming;
   lastResult: AttemptResult | null;
 
   /**

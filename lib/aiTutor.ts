@@ -25,20 +25,12 @@ export type TutorHistoryMessage = {
   content: string;
 };
 
-type OpenAIResponse = {
-  status?: "completed" | "incomplete" | "failed";
-  incomplete_details?: { reason?: string } | null;
-  output_text?: string;
-  output?: Array<{
-    type?: string;
-    content?: Array<{ type?: string; text?: string }>;
-  }>;
-  usage?: {
-    input_tokens?: number;
-    output_tokens?: number;
-    total_tokens?: number;
-  };
-  error?: { message?: string };
+export type TutorResponseParams = {
+  question: Question;
+  message: string;
+  history: TutorHistoryMessage[];
+  revealed: boolean;
+  userId: string;
 };
 
 function questionContext(question: Question, revealed: boolean) {
@@ -68,35 +60,44 @@ function questionContext(question: Question, revealed: boolean) {
 }
 
 
-function outputText(response: OpenAIResponse) {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function outputText(response: Record<string, unknown>) {
   if (typeof response.output_text === "string" && response.output_text.trim()) {
     return response.output_text.trim();
   }
 
-  return (response.output ?? [])
-    .flatMap((item) => item.content ?? [])
-    .filter((item) => item.type === "output_text" && typeof item.text === "string")
-    .map((item) => item.text?.trim())
-    .filter(Boolean)
-    .join("\n\n");
+  if (!Array.isArray(response.output)) return "";
+  const parts: string[] = [];
+  for (const item of response.output) {
+    if (!isRecord(item) || !Array.isArray(item.content)) continue;
+    for (const content of item.content) {
+      if (isRecord(content) && content.type === "output_text" && typeof content.text === "string") {
+        const text = content.text.trim();
+        if (text) parts.push(text);
+      }
+    }
+  }
+  return parts.join("\n\n");
 }
 
-export async function createTutorResponse({
+function providerApiKey() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey?.trim() || /[\r\n]/.test(apiKey)) {
+    throw new Error("Tutor provider is not configured.");
+  }
+  return apiKey;
+}
+
+function serializedTutorPayload({
   question,
   message,
   history,
   revealed,
   userId,
-}: {
-  question: Question;
-  message: string;
-  history: TutorHistoryMessage[];
-  revealed: boolean;
-  userId: string;
-}) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured.");
-
+}: TutorResponseParams) {
   const safeHistory = history.slice(-TUTOR_MAX_HISTORY_MESSAGES).map((item) => ({
     role: item.role,
     content: item.content.slice(0, TUTOR_MAX_HISTORY_LENGTH),
@@ -107,66 +108,77 @@ export async function createTutorResponse({
     { role: "user", content: message },
   ];
 
-  const response = await fetch("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: process.env.OPENAI_TUTOR_MODEL || "gpt-5-mini",
-      instructions: tutorInstructions(revealed, safeHistory.length === 0),
-      input,
-      max_output_tokens: TUTOR_MAX_OUTPUT_TOKENS,
-      reasoning: { effort: "low" },
-      store: false,
-      safety_identifier: createHash("sha256").update(userId).digest("hex").slice(0, 64),
-    }),
-    signal: AbortSignal.timeout(45_000),
+  return JSON.stringify({
+    model: process.env.OPENAI_TUTOR_MODEL || "gpt-5-mini",
+    instructions: tutorInstructions(revealed, safeHistory.length === 0),
+    input,
+    max_output_tokens: TUTOR_MAX_OUTPUT_TOKENS,
+    reasoning: { effort: "low" },
+    store: false,
+    safety_identifier: createHash("sha256").update(userId).digest("hex").slice(0, 64),
   });
-  const data = (await response.json()) as OpenAIResponse;
-  const text = outputText(data);
-  const totalTokens = Math.max(0, Math.floor(data.usage?.total_tokens ?? 0));
+}
 
-  if (process.env.NODE_ENV === "development") {
-    console.info("[tutor] OpenAI response", {
-      promptVersion: TUTOR_PROMPT_VERSION,
-      firstMessage: safeHistory.length === 0,
-      status: data.status ?? "unknown",
-      incompleteReason: data.incomplete_details?.reason ?? null,
-      inputTokens: data.usage?.input_tokens ?? 0,
-      outputTokens: data.usage?.output_tokens ?? 0,
-      totalTokens,
+export function getTutorTokenReservation(params: TutorResponseParams) {
+  // Fail before the caller reserves funds if the server lacks usable configuration.
+  providerApiKey();
+  // UTF-8 bytes conservatively cover text tokenization, including Unicode/history.
+  // Include the output cap and an allowance for provider message framing.
+  return Math.max(TUTOR_TOKEN_RESERVATION,
+    Buffer.byteLength(serializedTutorPayload(params), "utf8") + TUTOR_MAX_OUTPUT_TOKENS + 1024);
+}
+
+export async function createTutorResponse(params: TutorResponseParams): Promise<{ text: string; totalTokens: number | null }> {
+  const apiKey = providerApiKey();
+  const body = serializedTutorPayload(params);
+  let totalTokens: number | null = null;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body,
+      signal: AbortSignal.timeout(45_000),
     });
-  }
+    const data: unknown = await response.json();
+    if (!isRecord(data)) {
+      throw new TutorProviderError("The tutor returned an invalid response.", null, "provider_error");
+    }
+    // Save reliable billing data before interpreting any optional output fields.
+    const reportedTokens = isRecord(data.usage) ? data.usage.total_tokens : undefined;
+    if (typeof reportedTokens === "number" && Number.isSafeInteger(reportedTokens) && reportedTokens >= 0) {
+      totalTokens = reportedTokens;
+    }
 
-  if (data.status === "incomplete") {
-    throw new TutorProviderError(
-      `The tutor response was incomplete (${data.incomplete_details?.reason ?? "unknown reason"}).`,
-      totalTokens,
-      data.incomplete_details?.reason === "max_output_tokens" ? "response_too_long" : "provider_error",
-    );
-  }
+    if (data.status === "incomplete") {
+      const reason = isRecord(data.incomplete_details) ? data.incomplete_details.reason : undefined;
+      throw new TutorProviderError("The tutor response was incomplete.", totalTokens,
+        reason === "max_output_tokens" ? "response_too_long" : "provider_error");
+    }
+    if (!response.ok || (data.status !== undefined && data.status !== "completed")) {
+      throw new TutorProviderError("The tutor did not complete its response.", totalTokens, "provider_error");
+    }
+    const text = outputText(data);
+    if (!text) {
+      throw new TutorProviderError("The tutor did not return a response.", totalTokens, "provider_error");
+    }
 
-  if (!response.ok || !text) {
-    throw new TutorProviderError(data.error?.message ?? "The tutor did not return a response.", totalTokens, "provider_error");
+    const safetyFiltered = !params.revealed && revealsFinalAnswer(text, params.question);
+    return { text: safetyFiltered ? TUTOR_SAFETY_FALLBACK : text, totalTokens };
+  } catch (error) {
+    if (error instanceof TutorProviderError) throw error;
+    // A timeout, transport failure, or unreadable body does not establish zero cost.
+    throw new TutorProviderError("The tutor response could not be read.", totalTokens, "provider_error");
   }
-
-  const safetyFiltered = !revealed && revealsFinalAnswer(text, question);
-  if (safetyFiltered && process.env.NODE_ENV === "development") {
-    console.warn("[tutor] Replaced a response that appeared to reveal the final answer.", {
-      promptVersion: TUTOR_PROMPT_VERSION,
-      questionId: question.id,
-    });
-  }
-
-  return { text: safetyFiltered ? TUTOR_SAFETY_FALLBACK : text, totalTokens };
 }
 
 export class TutorProviderError extends Error {
   constructor(
     message: string,
-    readonly totalTokens: number,
+    readonly totalTokens: number | null,
     readonly code: "response_too_long" | "provider_error",
   ) {
     super(message);

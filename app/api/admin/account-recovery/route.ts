@@ -19,21 +19,24 @@ export async function POST(request: Request) {
   const { data: ownProfile } = await admin.from("profiles").select("role").eq("id", user.id).maybeSingle<{ role: string }>();
   if (!hasOwnerAccess(ownProfile?.role)) return NextResponse.json({ error: "Owner access required." }, { status: 403 });
 
-  let body: { username?: string; identityVerified?: boolean; currentPassword?: string };
+  let body: { username?: unknown; identityVerified?: unknown; currentPassword?: unknown };
   try {
     body = await readJsonBody<typeof body>(request, MAX_REQUEST_BYTES);
   } catch (error) {
     const status = error instanceof RequestBodyError ? error.status : 400;
     return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status });
   }
-  const username = body.username?.trim().toLowerCase() ?? "";
+  if (typeof body.username !== "string") {
+    return NextResponse.json({ error: "Enter a valid username." }, { status: 400 });
+  }
+  const username = body.username.trim().toLowerCase();
   if (!USERNAME_PATTERN.test(username)) {
     return NextResponse.json({ error: "Enter a valid username." }, { status: 400 });
   }
   if (body.identityVerified !== true) {
     return NextResponse.json({ error: "Confirm that you verified the account holder's identity in person." }, { status: 400 });
   }
-  if (!body.currentPassword || !user.email) {
+  if (typeof body.currentPassword !== "string" || !body.currentPassword || !user.email) {
     return NextResponse.json({ error: "Enter your owner password." }, { status: 400 });
   }
 

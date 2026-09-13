@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -54,6 +55,8 @@ import EndSessionDialog from "@/components/trainer/EndSessionDialog";
 import TrainerSummary from "@/components/trainer/TrainerSummary";
 import LevelUpBanner from "@/components/trainer/LevelUpBanner";
 
+import { createPracticeAttempt, type PracticeAttempt } from "@/lib/services/practiceAttemptService";
+
 const DEFAULT_LEVEL: LevelProgress = {
   level: 1,
   progress: 0,
@@ -61,6 +64,10 @@ const DEFAULT_LEVEL: LevelProgress = {
 
 export default function TrainerClient() {
   const router = useRouter();
+  const attempt = useRef<PracticeAttempt | null>(null);
+  const pending = useRef<{ answer: AnswerChoice | null; time: number; answeredAt: number } | null>(null);
+  const saveBusy = useRef(false);
+  const [hasPending, setHasPending] = useState(false);
 
   const [division, setDivision] =
     useState<Division>("Mu");
@@ -197,6 +204,16 @@ export default function TrainerClient() {
   const sessionStats =
     calculateTrainerStats(results);
 
+  const openAttempt = (question: Question) => {
+    const fresh = createPracticeAttempt(question.id, true);
+    attempt.current = fresh;
+    pending.current = null;
+    setHasPending(false);
+    void fresh.prepare().catch((error: unknown) => {
+      if (attempt.current === fresh) setStartError(error instanceof Error ? error.message : "Unable to start this attempt.");
+    });
+  };
+
   const handleStartSession = async () => {
     if (isSaving) {
       return;
@@ -222,6 +239,7 @@ export default function TrainerClient() {
         return;
       }
 
+      openAttempt(firstQuestion);
       setCurrentQuestion(firstQuestion);
       setAdaptiveState(createAdaptiveTrainerState(firstQuestion.difficulty));
       setCurrentIsChallenge(false);
@@ -252,136 +270,44 @@ export default function TrainerClient() {
     }
   };
 
-  const handleSubmit = async () => {
-    if (
-      !currentQuestion ||
-      !selectedAnswer ||
-      submitted ||
-      isSaving
-    ) {
-      return;
-    }
-
+  const handleSave = async (answer: AnswerChoice | null) => {
+    if (!currentQuestion || !attempt.current || submitted || isSaving || saveBusy.current) return;
+    saveBusy.current = true;
     const answeredAt = Date.now();
-    const timeSpent = Math.floor(
-      (answeredAt - startTime) / 1000
-    );
-
-    const isCorrect =
-      selectedAnswer === currentQuestion.answer;
-
+    pending.current ??= { answer, time: Math.floor((answeredAt - startTime) / 1000), answeredAt };
+    const original = pending.current;
+    setHasPending(true);
+    setSelectedAnswer(original.answer);
+    setQuestionFinishedAt(original.answeredAt);
     setIsSaving(true);
-
+    setStartError(null);
     try {
-      const savedResult = await saveVerifiedTrainerResult(
-        currentQuestion.id,
-        selectedAnswer,
-        timeSpent
-      );
+      const savedResult = await saveVerifiedTrainerResult(currentQuestion.id, original.answer, original.time, attempt.current);
       const levelChange = savedResult.levelChange;
-
-      setLevelProgress({
-        level: levelChange.level,
-        progress: levelChange.progress,
-      });
-
-      if (levelChange.leveledUp) {
-        setLevelUpLevel(levelChange.level);
-      }
-
+      setLevelProgress({ level: levelChange.level, progress: levelChange.progress });
+      if (levelChange.leveledUp) setLevelUpLevel(levelChange.level);
       const newResult: TrainerQuestionResult = {
         questionId: currentQuestion.id,
         questionNumber: currentQuestion.number,
-        selectedAnswer,
+        selectedAnswer: original.answer,
         correctAnswer: currentQuestion.answer,
-        result: isCorrect
-          ? "correct"
-          : "incorrect",
-        elapsedSeconds: timeSpent,
+        result: original.answer === null ? "give-up" : savedResult.isCorrect ? "correct" : "incorrect",
+        elapsedSeconds: original.time,
       };
-
-      setResults((currentResults) => [
-        ...currentResults,
-        newResult,
-      ]);
-      setAdaptiveState((current) => current
-        ? applyAdaptiveTrainerResult(current, newResult.result, currentIsChallenge)
-        : current
-      );
-
-      setQuestionFinishedAt(answeredAt);
-      setNow(answeredAt);
+      setResults((currentResults) => [...currentResults, newResult]);
+      setAdaptiveState((current) => current ? applyAdaptiveTrainerResult(current, newResult.result, currentIsChallenge) : current);
+      setNow(original.answeredAt);
       setSubmitted(true);
-    } catch {
-      setStartError(
-        "Unable to save this result. Please try again."
-      );
+    } catch (error) {
+      setStartError(error instanceof Error ? error.message : "Unable to save this result. Please retry.");
     } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleGiveUp = async () => {
-    if (
-      !currentQuestion ||
-      submitted ||
-      isSaving
-    ) {
-      return;
-    }
-
-    const answeredAt = Date.now();
-
-    setIsSaving(true);
-
-    try {
-      const savedResult = await saveVerifiedTrainerResult(
-        currentQuestion.id,
-        null,
-        Math.floor((answeredAt - startTime) / 1000)
-      );
-      const levelChange = savedResult.levelChange;
-
-      setLevelProgress({
-        level: levelChange.level,
-        progress: levelChange.progress,
-      });
-
-      const newResult: TrainerQuestionResult = {
-        questionId: currentQuestion.id,
-        questionNumber: currentQuestion.number,
-        selectedAnswer: null,
-        correctAnswer: currentQuestion.answer,
-        result: "give-up",
-        elapsedSeconds: Math.floor(
-          (answeredAt - startTime) / 1_000
-        ),
-      };
-
-      setResults((currentResults) => [
-        ...currentResults,
-        newResult,
-      ]);
-      setAdaptiveState((current) => current
-        ? applyAdaptiveTrainerResult(current, newResult.result, currentIsChallenge)
-        : current
-      );
-
-      setSelectedAnswer(null);
-      setQuestionFinishedAt(answeredAt);
-      setNow(answeredAt);
-      setSubmitted(true);
-    } catch {
-      setStartError(
-        "Unable to save this result. Please try again."
-      );
-    } finally {
+      saveBusy.current = false;
       setIsSaving(false);
     }
   };
 
   const handleNextQuestion = async () => {
-    if (!currentQuestion || isSaving) {
+    if (!currentQuestion || !submitted || isSaving || saveBusy.current) {
       return;
     }
 
@@ -407,6 +333,7 @@ export default function TrainerClient() {
         return;
       }
 
+      openAttempt(nextQuestion);
       setCurrentQuestion(nextQuestion);
       setCurrentIsChallenge(forceChallenge);
       setSelectedAnswer(null);
@@ -426,7 +353,7 @@ export default function TrainerClient() {
   };
 
   const handleEndSession = () => {
-    if (!isSaving) {
+    if (!isSaving && (!hasPending || submitted)) {
       setShowEndDialog(true);
     }
   };
@@ -474,6 +401,9 @@ export default function TrainerClient() {
   };
 
   const handleStartNewSession = () => {
+    attempt.current = null;
+    pending.current = null;
+    setHasPending(false);
     setShowSummary(false);
     setShowEndDialog(false);
     setSessionStarted(false);
@@ -583,13 +513,15 @@ export default function TrainerClient() {
           <TrainerQuestion
             question={currentQuestion}
             selectedAnswer={selectedAnswer}
-            submitted={submitted || isSaving}
+            submitted={submitted}
+            saving={isSaving}
+            answerLocked={hasPending}
             onSelectAnswer={setSelectedAnswer}
             onSubmit={() => {
-              void handleSubmit();
+              void handleSave(selectedAnswer);
             }}
             onGiveUp={() => {
-              void handleGiveUp();
+              void handleSave(null);
             }}
             onNextQuestion={() => {
               void handleNextQuestion();

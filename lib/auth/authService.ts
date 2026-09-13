@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/client";
 import { LEGAL_VERSION } from "@/lib/legal";
+import { getPasswordValidationError } from "@/lib/auth/passwordPolicy";
 
 export interface AuthResult {
   success: boolean;
@@ -25,6 +26,8 @@ export async function signUp({
   if (!acceptedLegal) {
     return { success: false, error: "You must confirm your age and agree to the legal terms." };
   }
+  const passwordError = getPasswordValidationError(password);
+  if (passwordError) return { success: false, error: passwordError };
   const supabase = createClient();
   const authenticationEmail = `${username}@users.mao-practice.local`;
 
@@ -64,6 +67,9 @@ export async function signUp({
   });
 
   if (error) {
+    if (error.code === "weak_password") {
+      return { success: false, error: "Choose a stronger, unique password. This password was rejected by the security policy." };
+    }
     const message = error.message.toLowerCase();
 
     if (

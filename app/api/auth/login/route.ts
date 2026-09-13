@@ -25,12 +25,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
     }
     const body = await readJsonBody<{
-      username?: string;
-      password?: string;
+      username?: unknown;
+      password?: unknown;
     }>(request, 8_192);
 
-    const username = body.username?.trim().toLowerCase() ?? "";
-    const password = body.password ?? "";
+    if (typeof body.username !== "string" || typeof body.password !== "string") {
+      return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: 400 });
+    }
+    const username = body.username.trim().toLowerCase();
+    const password = body.password;
 
     if (!USERNAME_PATTERN.test(username) || !password) {
       return NextResponse.json(

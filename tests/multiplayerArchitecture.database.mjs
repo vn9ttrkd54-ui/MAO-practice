@@ -88,6 +88,7 @@ try {
     assert.equal((await db.query("select has_function_privilege('anon',$1,'EXECUTE') allowed",[signature])).rows[0].allowed,false);
   }
   await db.exec(await migration("036_multiplayer_readiness_countdown"));
+  await db.exec(await migration("040_multiplayer_authoritative_scoring_clock"));
   const readyRoom='00000000-0000-0000-0000-000000000030';
   const readyPlayers=['00000000-0000-0000-0000-000000000031','00000000-0000-0000-0000-000000000032'];
   await db.query(`insert into multiplayer_rooms(id,code,visibility,mode,division,question_count,seconds_per_question,status,capacity,started_at,current_question_number)

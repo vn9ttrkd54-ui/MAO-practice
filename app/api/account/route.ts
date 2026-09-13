@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
+import { getPasswordValidationError } from "@/lib/auth/passwordPolicy";
 
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,7 +29,7 @@ export async function PATCH(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
 
-  let body: { action?: string; username?: string; email?: string; password?: string; currentPassword?: string };
+  let body: { action?: unknown; username?: unknown; email?: unknown; password?: unknown; currentPassword?: unknown };
   try {
     body = await readJsonBody<typeof body>(request, MAX_REQUEST_BYTES);
   } catch (error) {
@@ -37,9 +38,15 @@ export async function PATCH(request: Request) {
   }
 
   if (body.action === "email") {
-    const email = body.email?.trim().toLowerCase() ?? "";
+    if (typeof body.email !== "string") {
+      return NextResponse.json({ error: "Enter a valid personal email address." }, { status: 400 });
+    }
+    const email = body.email.trim().toLowerCase();
     if (!EMAIL_PATTERN.test(email) || email.endsWith(INTERNAL_EMAIL_DOMAIN)) {
       return NextResponse.json({ error: "Enter a valid personal email address." }, { status: 400 });
+    }
+    if (typeof body.currentPassword !== "string" || !body.currentPassword) {
+      return NextResponse.json({ error: "Enter your current password." }, { status: 400 });
     }
     if (!(await verifyCurrentPassword(supabase, user.email, body.currentPassword))) {
       return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });
@@ -57,7 +64,10 @@ export async function PATCH(request: Request) {
   }
 
   if (body.action === "username") {
-    const username = body.username?.trim().toLowerCase() ?? "";
+    if (typeof body.username !== "string") {
+      return NextResponse.json({ error: "Use 3–20 lowercase letters, numbers, or underscores." }, { status: 400 });
+    }
+    const username = body.username.trim().toLowerCase();
     if (!USERNAME_PATTERN.test(username)) {
       return NextResponse.json({ error: "Use 3–20 lowercase letters, numbers, or underscores." }, { status: 400 });
     }
@@ -80,13 +90,21 @@ export async function PATCH(request: Request) {
   }
 
   if (body.action === "password") {
-    const password = body.password ?? "";
-    if (password.length < 8) return NextResponse.json({ error: "Password must be at least 8 characters." }, { status: 400 });
+    const password = body.password;
+    const passwordError = getPasswordValidationError(password);
+    if (typeof password !== "string" || passwordError) return NextResponse.json({ error: passwordError }, { status: 400 });
+    if (typeof body.currentPassword !== "string" || !body.currentPassword) {
+      return NextResponse.json({ error: "Enter your current password." }, { status: 400 });
+    }
     if (!(await verifyCurrentPassword(supabase, user.email, body.currentPassword))) {
       return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });
     }
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) return NextResponse.json({ error: "Unable to change the password." }, { status: 400 });
+    // Keep the fresh sign-in above for secure-password-change compatibility,
+    // and also satisfy the provider's separate current-password requirement.
+    const { error } = await supabase.auth.updateUser({ password, current_password: body.currentPassword });
+    if (error) return NextResponse.json({ error: error.code === "weak_password"
+      ? "Choose a stronger, unique password. This password was rejected by the security policy."
+      : "Unable to change the password. Check your current password and try again." }, { status: 400 });
     return NextResponse.json({ success: true });
   }
 
@@ -98,7 +116,7 @@ export async function DELETE(request: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not signed in." }, { status: 401 });
-  let body: { confirmation?: string; currentPassword?: string };
+  let body: { confirmation?: unknown; currentPassword?: unknown };
   try {
     body = await readJsonBody<typeof body>(request, MAX_REQUEST_BYTES);
   } catch (error) {
@@ -107,6 +125,9 @@ export async function DELETE(request: Request) {
   }
   if (body.confirmation !== "DELETE") {
     return NextResponse.json({ error: "Type DELETE to confirm." }, { status: 400 });
+  }
+  if (typeof body.currentPassword !== "string" || !body.currentPassword) {
+    return NextResponse.json({ error: "Enter your current password." }, { status: 400 });
   }
   if (!(await verifyCurrentPassword(supabase, user.email, body.currentPassword))) {
     return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });

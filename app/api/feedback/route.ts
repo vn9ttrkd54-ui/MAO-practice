@@ -18,14 +18,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please sign in to submit feedback." }, { status: 401 });
   }
 
-  let body: { kind?: "question_report" | "general_suggestion"; questionId?: number; division?: Division; message?: string };
+  let body: { kind?: unknown; questionId?: unknown; division?: unknown; message?: unknown };
   try {
     body = await readJsonBody<typeof body>(request, 16_384);
   } catch (error) {
     const status = error instanceof RequestBodyError ? error.status : 400;
     return NextResponse.json({ error: status === 413 ? "Feedback is too large." : "Invalid request." }, { status });
   }
-  const message = body.message?.trim() ?? "";
+  if (typeof body.message !== "string") {
+    return NextResponse.json({ error: "Please enter between 10 and 2,000 characters." }, { status: 400 });
+  }
+  const message = body.message.trim();
 
   if (message.length < 10 || message.length > 2000) {
     return NextResponse.json(
@@ -37,6 +40,10 @@ export async function POST(request: Request) {
   let questionId: number | null = null;
   let division: Division | null = null;
 
+  if ((body.questionId !== undefined && (typeof body.questionId !== "number" || !Number.isSafeInteger(body.questionId) || body.questionId < 1))
+    || (body.division !== undefined && body.division !== "Mu" && body.division !== "Alpha" && body.division !== "Theta")) {
+    return NextResponse.json({ error: "That question could not be found." }, { status: 400 });
+  }
   if (body.kind === "question_report") {
     const question = questions.find((item) => item.id === body.questionId);
     if (!question || question.division !== body.division) {
@@ -75,6 +82,12 @@ export async function POST(request: Request) {
   });
 
   if (error) {
+    if (error.code === "P0001" && error.message === "feedback_rate_limited") {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
     return NextResponse.json(
       { error: "Unable to submit feedback right now." },
       { status: 500 }

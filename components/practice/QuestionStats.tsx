@@ -1,9 +1,13 @@
 "use client";
 
+import { getPracticeTiming } from "@/lib/practiceTiming";
+import type { PracticeTiming } from "@/types/progress";
+
 type Props = {
   attempts:number;
   correct:number;
   times:number[];
+  timing?: PracticeTiming;
 };
 
 
@@ -11,22 +15,17 @@ export default function QuestionStats({
   attempts,
   correct,
   times,
+  timing,
 }:Props){
 
 
-  const bestTime =
-    times.length > 0
-    ? Math.min(...times)
-    : null;
+  const lifetime = getPracticeTiming({ times, timing });
+  const bestTime = lifetime.bestSeconds;
 
 
   const averageTime =
-    times.length > 0
-    ? Math.round(
-        times.reduce((a,b)=>a+b,0)
-        /
-        times.length
-      )
+    lifetime.count > 0
+    ? Math.round(lifetime.totalSeconds / lifetime.count)
     : null;
 
 

@@ -12,6 +12,8 @@ type TrainerQuestionProps = {
   question: Question;
   selectedAnswer: AnswerChoice | null;
   submitted: boolean;
+  saving: boolean;
+  answerLocked: boolean;
   onSelectAnswer: (answer: AnswerChoice) => void;
   onSubmit: () => void;
   onGiveUp: () => void;
@@ -22,6 +24,8 @@ export default function TrainerQuestion({
   question,
   selectedAnswer,
   submitted,
+  saving,
+  answerLocked,
   onSelectAnswer,
   onSubmit,
   onGiveUp,
@@ -44,7 +48,7 @@ export default function TrainerQuestion({
       <MultipleChoice
         choices={question.choices}
         selectedAnswer={selectedAnswer}
-        submitted={submitted}
+        submitted={submitted || saving || answerLocked}
         onSelect={(answer) =>
           onSelectAnswer(answer as AnswerChoice)
         }
@@ -55,7 +59,7 @@ export default function TrainerQuestion({
           <button
             type="button"
             onClick={onSubmit}
-            disabled={!selectedAnswer}
+            disabled={saving || (!selectedAnswer && !answerLocked)}
             className="
               rounded-lg
               bg-gradient-to-br
@@ -72,12 +76,13 @@ export default function TrainerQuestion({
               disabled:opacity-50
             "
           >
-            Submit
+            {saving ? "Saving..." : answerLocked ? "Retry save" : "Submit"}
           </button>
 
           <button
             type="button"
             onClick={onGiveUp}
+            disabled={saving || answerLocked}
             className="
               rounded-lg
               border-2
@@ -111,6 +116,7 @@ export default function TrainerQuestion({
           <button
             type="button"
             onClick={onNextQuestion}
+            disabled={saving}
             className="
               rounded-lg
               bg-gradient-to-br

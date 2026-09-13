@@ -22,6 +22,7 @@ import {
   getPreviousQuestion,
 } from "@/lib/questions";
 import { questions } from "@/data/questions";
+import { createPracticeAttempt, type PracticeAttempt } from "@/lib/services/practiceAttemptService";
 
 import QuestionHeader from "@/components/practice/QuestionHeader";
 import QuestionStats from "@/components/practice/QuestionStats";
@@ -78,6 +79,11 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
     useState(false);
 
   const startTime = useRef(0);
+  const attempt = useRef<PracticeAttempt | null>(null);
+  const pending = useRef<{ answer: string | null; time: number } | null>(null);
+  const busy = useRef(false);
+  const [hasPending, setHasPending] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const [attemptNumber, setAttemptNumber] =
     useState(0);
@@ -91,6 +97,10 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
   useEffect(() => {
     let cancelled = false;
     startTime.current = Date.now();
+    attempt.current ??= createPracticeAttempt(question.id, false);
+    void attempt.current.prepare().catch((error: unknown) => {
+      if (!cancelled) setSaveError(error instanceof Error ? error.message : "Unable to start this attempt.");
+    });
 
     async function loadQuestionState() {
       try {
@@ -101,12 +111,12 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
           ]);
 
         if (!cancelled) {
-          setProgress(savedProgress);
+          if (!pending.current) setProgress(savedProgress);
           setBookmarked(savedBookmark);
         }
       } catch {
         if (!cancelled) {
-          setProgress(EMPTY_PROGRESS);
+          if (!pending.current) setProgress(EMPTY_PROGRESS);
           setBookmarked(false);
         }
       }
@@ -141,61 +151,44 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
     );
   };
 
-  const handleSubmit = async () => {
-    if (!selectedAnswer || isSaving) {
-      return;
-    }
-
-    const timeSpent = Math.floor(
-      (Date.now() - startTime.current) / 1000
-    );
-
-    const isCorrect =
-      selectedAnswer === question.answer;
-
+  const handleSave = async (answer: string | null) => {
+    if (submitted || busy.current || !attempt.current) return;
+    busy.current = true;
+    pending.current ??= { answer, time: answer === null ? 0 : Math.floor((Date.now() - startTime.current) / 1000) };
+    const original = pending.current;
+    setSelectedAnswer(original.answer);
+    setHasPending(true);
     setIsSaving(true);
-
+    setSaveError(null);
     try {
-      const result =
-        await saveQuestionAttempt(
-          question.id,
-          isCorrect,
-          timeSpent
-        );
-
+      const result = original.answer === null
+        ? await saveQuestionGiveUp(question.id, attempt.current)
+        : await saveQuestionAttempt(question.id, original.answer, original.time, attempt.current);
       setProgress(result.progress);
       setTutorRevealToken(result.tutorRevealToken);
       setSubmitted(true);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Unable to save this result. Please retry.");
     } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleGiveUp = async () => {
-    if (isSaving) {
-      return;
-    }
-
-    setIsSaving(true);
-
-    try {
-      const result =
-        await saveQuestionGiveUp(question.id);
-
-      setProgress(result.progress);
-      setTutorRevealToken(result.tutorRevealToken);
-      setSubmitted(true);
-      setSelectedAnswer(null);
-    } finally {
+      busy.current = false;
       setIsSaving(false);
     }
   };
 
   const handleReattempt = () => {
+    if (busy.current) return;
+    pending.current = null;
+    setHasPending(false);
+    setSaveError(null);
     setSubmitted(false);
     setSelectedAnswer(null);
     setTutorRevealToken(null);
     startTime.current = Date.now();
+    const fresh = createPracticeAttempt(question.id, false);
+    attempt.current = fresh;
+    void fresh.prepare().catch((error: unknown) => {
+      if (attempt.current === fresh) setSaveError(error instanceof Error ? error.message : "Unable to start this attempt.");
+    });
     setAttemptNumber((current) => current + 1);
   };
 
@@ -233,7 +226,7 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
       <div className="flex flex-wrap justify-between items-center gap-3 mt-6 mb-6">
         <Timer
           key={`${question.id}-${attemptNumber}`}
-          running={!submitted && !isSaving}
+          running={!submitted && !hasPending}
         />
 
         <div className="flex flex-wrap items-center gap-3">
@@ -262,19 +255,19 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
             <MultipleChoice
               choices={question.choices}
               selectedAnswer={selectedAnswer}
-              submitted={submitted || isSaving}
+              submitted={submitted || isSaving || hasPending}
               onSelect={setSelectedAnswer}
             />
 
             <div className="mt-8 flex flex-wrap gap-4">
               <button
                 disabled={
-                  !selectedAnswer ||
+                  (!selectedAnswer && !hasPending) ||
                   submitted ||
                   isSaving
                 }
                 onClick={() => {
-                  void handleSubmit();
+                  void handleSave(selectedAnswer);
                 }}
                 className="
                   rounded-lg
@@ -292,13 +285,13 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
                   disabled:opacity-50
                 "
               >
-                {isSaving ? "Saving..." : "Submit"}
+                {isSaving ? "Saving..." : hasPending ? "Retry save" : "Submit"}
               </button>
 
               <button
-                disabled={submitted || isSaving}
+                disabled={submitted || isSaving || hasPending}
                 onClick={() => {
-                  void handleGiveUp();
+                  void handleSave(null);
                 }}
                 className="
                   rounded-lg
@@ -319,6 +312,8 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
               </button>
             </div>
 
+            {saveError ? <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{saveError}</p> : null}
+
             <SolutionPanel
               submitted={submitted}
               selectedAnswer={selectedAnswer}
@@ -328,8 +323,8 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
             />
 
             <QuestionNavigation
-              previousDisabled={!previousQuestion}
-              nextDisabled={!nextQuestion}
+              previousDisabled={!previousQuestion || (hasPending && !submitted)}
+              nextDisabled={!nextQuestion || (hasPending && !submitted)}
               onPrevious={() => {
                 if (previousQuestion) {
                   goToQuestion(previousQuestion.id);
@@ -348,6 +343,7 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
           attempts={progress.attempts}
           correct={progress.correct}
           times={progress.times}
+          timing={progress.timing}
         />
       </div>
       {tutorEnabled ? <LlamaTutor questionId={question.id} revealToken={tutorRevealToken} /> : null}

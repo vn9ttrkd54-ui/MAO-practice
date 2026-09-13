@@ -5,6 +5,8 @@ import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 async function getAdminUser() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -20,14 +22,16 @@ export async function PATCH(request: Request) {
   const user = await getAdminUser();
   if (!user) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
 
-  let body: { id?: string };
+  let body: { id?: unknown };
   try {
-    body = await readJsonBody<{ id?: string }>(request, 2_048);
+    body = await readJsonBody<typeof body>(request, 2_048);
   } catch (error) {
     const status = error instanceof RequestBodyError ? error.status : 400;
     return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid request." }, { status });
   }
-  if (!body.id) return NextResponse.json({ error: "Feedback ID is required." }, { status: 400 });
+  if (typeof body.id !== "string" || !UUID_PATTERN.test(body.id)) {
+    return NextResponse.json({ error: "A valid feedback ID is required." }, { status: 400 });
+  }
 
   const admin = createAdminClient();
   const { error } = await admin.from("feedback_requests").update({

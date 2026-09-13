@@ -22,11 +22,13 @@ export function createRecoveryToken(userId: string) {
 
 export function verifyRecoveryToken(token: string | undefined, userId: string) {
   if (!token) return false;
-  const [tokenUserId, expiresAtText, suppliedSignature, extra] = token.split(".");
-  if (extra || tokenUserId !== userId || !expiresAtText || !suppliedSignature) return false;
+  const parts = token.split(".");
+  if (parts.length !== 3) return false;
+  const [tokenUserId, expiresAtText, suppliedSignature] = parts;
+  if (tokenUserId !== userId || !/^\d+$/.test(expiresAtText) || !/^[0-9a-f]{64}$/.test(suppliedSignature)) return false;
 
   const expiresAt = Number(expiresAtText);
-  if (!Number.isSafeInteger(expiresAt) || expiresAt < Math.floor(Date.now() / 1000)) return false;
+  if (!Number.isSafeInteger(expiresAt) || expiresAt <= Math.floor(Date.now() / 1000)) return false;
 
   const payload = `${tokenUserId}.${expiresAtText}`;
   const expected = Buffer.from(signature(payload), "hex");

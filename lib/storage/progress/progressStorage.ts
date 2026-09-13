@@ -13,6 +13,7 @@ export function createEmptyProgress(): QuestionProgress {
     attempts: 0,
     correct: 0,
     times: [],
+    timing: { count: 0, totalSeconds: 0, bestSeconds: null },
     lastResult: null,
     lastCorrectAt: null,
   };

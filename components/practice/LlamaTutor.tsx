@@ -84,7 +84,7 @@ export default function LlamaTutor({
         if (!response.ok || typeof data.messagesRemaining !== "number") return;
         setMessagesRemaining(data.messagesRemaining);
         if (data.messagesRemaining === 0) {
-          setError("I've used all 15 messages for today. Please come back tomorrow or ask ChatGPT.");
+          setError("Today's tutor requests are used or still processing. Check again later, or come back tomorrow.");
           setErrorCode("daily_limit");
         }
       })

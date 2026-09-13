@@ -20,12 +20,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 The desktop Question Bank tutor requires:
 
-1. Apply `supabase/migrations/021_ai_tutor_foundation.sql` to the linked Supabase project.
+1. Apply the reviewed migrations in order through `046_ai_tutor_daily_slots.sql` to the intended Supabase project. For an existing live tutor, use the [gated rollout](docs/tutor-accounting-rollout.md) and [daily-slot rollout](docs/tutor-daily-slots-rollout.md); do not replace accounting functions while old tutor requests are still running. Existing practice deployments also require the [attempt rollout](docs/practice-attempt-rollout.md) and [bounded timing rollout](docs/practice-timing-rollout.md). Recovery changes require the [recovery rollout](docs/recovery-rollout.md). Coordinate the app and database updates, not a blind migration push. After deployment, review the [non-CAPTCHA Auth settings](docs/supabase-auth-settings.md) before enabling provider password rules.
 2. Add `OPENAI_API_KEY` as a server-only environment variable locally and in Vercel.
 3. Optionally set `OPENAI_TUTOR_MODEL`; it defaults to `gpt-5-mini`.
-4. Optionally set `TUTOR_DAILY_MESSAGE_LIMIT` to a positive whole number. It defaults to 15 messages per user per day.
+4. Optionally set `TUTOR_DAILY_MESSAGE_LIMIT` to a whole number from 1 to 1,000. It defaults to 15 messages per user per day.
 
-The migration starts with a shared pool of 1,000,000 tokens and keeps 25,000 tokens in reserve. Change `token_limit` or reset `tokens_used` in the single `ai_tutor_budget` row when intentionally adjusting the pool. Never expose the OpenAI key through a `NEXT_PUBLIC_` variable.
+The initial migration starts with a shared pool of 1,000,000 tokens and keeps 25,000 tokens in reserve. Migration 041 makes `tokens_used` include both confirmed usage and conservative estimates for requests whose usage is unknown. Expired concurrency leases do not refund these estimates. Never reset `tokens_used` or delete ledger rows to refill the pool: doing so can erase outstanding spend or break later settlement. Intentionally adjust `token_limit` after checking provider usage and outstanding holds instead. The token pool is not a dollar-denominated provider billing cap. Never expose the OpenAI key through a `NEXT_PUBLIC_` variable.
+
+Migration 046 also holds a daily message slot for unresolved requests after their concurrency lease expires. Known failures release uncounted slots; uncertain outcomes keep them until resolved. The allowance shown by the tutor includes these pending slots. No paid Supabase upgrade or CAPTCHA is needed for this change.
 
 Before a production launch, verify the daily limit and shared budget row. Tutor conversations are temporary and are cleared when the tutor closes, the page changes, or the tab is hidden.
 
