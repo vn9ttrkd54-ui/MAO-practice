@@ -9,6 +9,7 @@ export default function SiteFooter() {
           <Link className="hover:text-slate-950 hover:underline" href="/privacy">Privacy</Link>
           <Link className="hover:text-slate-950 hover:underline" href="/terms">Terms</Link>
           <Link className="hover:text-slate-950 hover:underline" href="/acceptable-use">Acceptable Use</Link>
+          <Link className="hover:text-slate-950 hover:underline" href="/credits">Credits</Link>
           <Link className="hover:text-slate-950 hover:underline" href="/contact">Contact</Link>
         </nav>
       </div>

@@ -30,7 +30,7 @@ export default function TermsPage() {
       <p>Do not cheat, coordinate answers unfairly, manipulate timers or scores, automate play, exploit bugs, interfere with another player, or misrepresent results. We may correct or remove scores, ratings, or records affected by errors, abuse, or unfair play.</p>
 
       <h2>Ownership</h2>
-      <p>The service’s software, design, branding, and content owned by Mathematics Daily or used with permission are protected by intellectual-property laws. We grant you a limited, personal, nonexclusive, nontransferable, revocable right to use the service for lawful educational purposes. You may not copy, scrape, republish, sell, or reverse engineer protected parts of the service except where applicable law permits it.</p>
+      <p>The service’s software, design, and branding are protected by intellectual-property laws. We grant you a limited, personal, nonexclusive, nontransferable, revocable right to use the service for lawful educational purposes. You may not copy, scrape, republish, sell, or reverse engineer protected parts of the service except where applicable law permits it.</p>
 
       <h2>Your submissions</h2>
       <p>You keep ownership of content you submit, such as feedback. You give us a worldwide, nonexclusive, royalty-free license to host, process, reproduce, and use that content only as reasonably needed to operate, secure, support, and improve the service. Do not submit content you lack permission to share.</p>
