@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="390" viewBox="0 0 420 390">
+  <rect width="420" height="390" fill="white"/>
+  <g fill="none" stroke="#21175f" stroke-width="3" stroke-linejoin="round"><path d="M210 25L75 325H345Z"/><path d="M120 325V225H300V325"/><path d="M210 25V225" stroke-dasharray="7 7"/><path d="M202 225V217H210" stroke-width="1.5"/></g>
+  <g font-family="Georgia,serif" font-size="24" fill="#21175f" text-anchor="middle">
+    <text x="143" y="283">1</text><text x="240" y="145">1</text><path d="M227 155H253" stroke="#21175f"/><text x="240" y="181">x</text>
+    <text x="162" y="192">√2</text><path d="M143 201H181" stroke="#21175f"/><text x="162" y="222">2</text>
+    <text x="96" y="350">x√2</text><path d="M68 358H124" stroke="#21175f"/><text x="96" y="382">2</text>
+  </g>
+</svg>
