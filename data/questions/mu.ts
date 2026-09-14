@@ -1783,10 +1783,18 @@ Thus \(f(n)=\boxed{\left(\frac ne\right)^n}\) gives \(L=\lim_{n\to\infty}\frac{I
     division: "Mu",
     topic: "Improper Integrals",
     difficulty: 1,
-    methods: ["Gaussian Integral"],
-question: String.raw`For \(I_n=\int_{-\infty}^{\infty}x^{2n}e^{-x^2}\,dx\) and the appropriate choice \(f(n)=(n/e)^n\), compute \(L=\lim_{n\to\infty}\frac{I_n}{f(n)}\). You may use the relation \(L=\sqrt2 I_0\). It may be helpful to know that \(\int_{-\infty}^{\infty}e^{-x^2}\,dx=\sqrt\pi\).`,
+    methods: ["Stirling's Approximation"],
+question: String.raw`Let
+\[I_n=\int_{-\infty}^{\infty}x^{2n}e^{-x^2}\,dx
+=\frac{(2n)!}{4^n n!}\sqrt\pi.\]
+Using Stirling's approximation \(n!\sim\sqrt{2\pi n}(n/e)^n\), compute
+\[\lim_{n\to\infty}\frac{I_n}{(n/e)^n}.\]`,
     choices: [String.raw`\(\pi\sqrt2\)`, String.raw`\(\frac{\pi\sqrt2}{2}\)`, String.raw`\(\frac{\sqrt{2\pi}}2\)`, String.raw`\(\sqrt{2\pi}\)`, "NOTA"],
     answer: "D",
-solution: String.raw`Using \(L=\sqrt2 I_0\), from the preceding asymptotic relation, and the given integral \(I_0=\sqrt\pi\), we get \(L=\boxed{\sqrt{2\pi}}\).`,
+solution: String.raw`Apply Stirling's approximation to the given formula:
+\[I_n\sim\frac{\sqrt{4\pi n}(2n/e)^{2n}}{4^n\sqrt{2\pi n}(n/e)^n}\sqrt\pi
+=\sqrt{2\pi}\left(\frac ne\right)^n.\]
+Therefore
+\[\lim_{n\to\infty}\frac{I_n}{(n/e)^n}=\boxed{\sqrt{2\pi}}.\]`,
   },
 ];
