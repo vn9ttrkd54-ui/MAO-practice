@@ -675,6 +675,8 @@ The printed solution substitutes \(\theta=\pi/4\) before resolving the indetermi
 \[0,1,2,\ldots,2026,\]
 for a total of \(2027\) non-differentiable points.`,
   },
+  // 2025 FAMAT State Convention Calculus Individual Test (source confirmed by owner).
+  // Existing bank questions 148–176; preserve their established IDs and numbering.
   {
     id: 10148,
     number: 148,
@@ -1302,5 +1304,397 @@ Indeed, the sequence
 satisfies
 \[(-10)^2+(-7)^2+(-4)^2+(-1)^2+2^2+5^2+8^2+11^2+14^2=24^2.\]
 Hence the smallest possible value is \(24\).`,
+  },
+  // 2024 FAMAT State Convention — Calculus Individual Test.
+  // Original questions 1–30 map to bank questions 177–206 (IDs 10177–10206).
+  // Checked against the supplied answer key and independently derived solutions.
+  // NOTA means none of choices A–D. Ratings use the existing 1–5 bank scale;
+  // contest success rates inform, but do not determine, mathematical difficulty.
+  // Q2 adds continuity at 4 to repair the composition-limit assumption.
+  // Q20 specifies the standard upright cone/cube placement used by the key.
+  // Q27/Q29/Q30 repeat required definitions so each works independently.
+  {
+    id: 10177,
+    number: 177,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Mean Value Theorem"],
+    question: String.raw`Legosi asks Louis to find the value \(c_1\) satisfying the mean value theorem for derivatives for \(f(x)=x^2\) on \([0,1]\). Louis instead finds the value \(c_2\) satisfying the mean value theorem for integrals for the same function and interval. Find \(c_1c_2\).`,
+    choices: [String.raw`\(\frac{\sqrt3}{6}\)`, String.raw`\(\frac14\)`, String.raw`\(\frac16\)`, String.raw`\(\frac{\sqrt3}{3}\)`, "NOTA"], answer: "A",
+    solution: String.raw`For derivatives, \(2c_1=(f(1)-f(0))/(1-0)=1\), so \(c_1=1/2\). For integrals,
+\[c_2^2=\frac1{1-0}\int_0^1x^2\,dx=\frac13.\]
+Since \(c_2\in(0,1)\), \(c_2=1/\sqrt3\). Thus \(c_1c_2=\sqrt3/6\).`,
+  },
+  {
+    id: 10178,
+    number: 178,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`If \(\lim_{x\to2}f(x)=4\), \(\lim_{x\to4}f(x)=3\), and \(f\) is continuous at \(4\), compute \(\displaystyle\lim_{x\to2}[2f(x)+f(f(x))]\).`,
+    choices: ["11", "12", "10", "7", "NOTA"], answer: "A",
+    solution: String.raw`Since \(f(x)\to4\) and \(f\) is continuous at 4, \(f(f(x))\to f(4)=3\). Therefore the limit is \(2(4)+3=11\). The continuity assumption ensures this remains true even if \(f(x)=4\) near \(x=2\).`,
+  },
+  {
+    id: 10179,
+    number: 179,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Power Rule"],
+    question: String.raw`If \(f(x)=x^2+2x-\frac1x\), compute \(f'(2)\).`,
+    choices: [String.raw`\(\frac{23}{4}\)`, String.raw`\(\frac{13}{2}\)`, String.raw`\(\frac{25}{4}\)`, String.raw`\(\frac{11}{2}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Differentiating gives \(f'(x)=2x+2+x^{-2}\). Hence \(f'(2)=4+2+1/4=25/4\).`,
+  },
+  {
+    id: 10180,
+    number: 180,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Product Rule"],
+    question: String.raw`If \(f(1)=2\), \(f'(1)=3\), \(g(1)=-1\), and \(g'(1)=-2\), compute \(\left.\frac{d}{dx}[f(x)g(x)]\right|_{x=1}\).`,
+    choices: ["9", "−7", "6", "−8", "NOTA"], answer: "B",
+    solution: String.raw`The product rule gives \(f'(1)g(1)+f(1)g'(1)=3(-1)+2(-2)=-7\).`,
+  },
+  {
+    id: 10181,
+    number: 181,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Chain Rule"],
+    question: String.raw`If \(f(2)=1\), \(f(4)=2\), \(f'(2)=-1\), and \(f'(4)=-2\), compute \(\left.\frac{d}{dx}[(f(x^2))^2]\right|_{x=2}\).`,
+    choices: ["−32", "−16", "−8", "−4", "NOTA"], answer: "A",
+    solution: String.raw`Apply the chain rule twice:
+\[\frac{d}{dx}[(f(x^2))^2]=2f(x^2)f'(x^2)(2x).\]
+At \(x=2\), this is \(2(2)(-2)(4)=-32\).`,
+  },
+  {
+    id: 10182,
+    number: 182,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 1,
+    methods: ["U-Substitution"],
+    question: String.raw`If \(\int_0^1 f(x)\,dx=4\), compute \(\displaystyle\int_0^1 xf(x^2)\,dx\).`,
+    choices: ["16", "4", "8", "2", "NOTA"], answer: "D",
+    solution: String.raw`Let \(u=x^2\), so \(du=2x\,dx\). The endpoints remain 0 and 1, giving \(\frac12\int_0^1f(u)\,du=2\).`,
+  },
+  {
+    id: 10183,
+    number: 183,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 2,
+    methods: ["U-Substitution", "Integral Properties"],
+    question: String.raw`If \(\int_0^1f(x)\,dx=2\) and \(\int_0^1f(2x)\,dx=3\), compute \(\displaystyle\int_1^2f(x)\,dx\).`,
+    choices: ["4", "1", "5", "8", "NOTA"], answer: "A",
+    solution: String.raw`Substituting \(u=2x\) gives \(3=\frac12\int_0^2f(u)\,du\), so \(\int_0^2f=6\). Subtract \(\int_0^1f=2\) to obtain \(\int_1^2f=4\).`,
+  },
+  {
+    id: 10184,
+    number: 184,
+    division: "Mu",
+    topic: "Area Between Curves",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`Find the total area of all finite regions bounded by \(y=x^3-x\) and the \(x\)-axis.`,
+    choices: [String.raw`\(\frac14\)`, "0", String.raw`\(\frac32\)`, String.raw`\(\frac12\)`, "NOTA"], answer: "D",
+    solution: String.raw`The zeros are \(-1,0,1\). The two bounded regions have equal area by odd symmetry. On \((0,1)\), the graph is below the axis, so the total area is
+\[2\int_0^1(x-x^3)\,dx=2\left(\frac12-\frac14\right)=\frac12.\]`,
+  },
+  {
+    id: 10185,
+    number: 185,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 2,
+    methods: ["Implicit Differentiation"],
+    question: String.raw`Find the \(y\)-intercept of the tangent line to \(x^3+y^3=9\) at \((1,2)\).`,
+    choices: [String.raw`\(\frac94\)`, String.raw`\(-\frac14\)`, String.raw`\(\frac14\)`, String.raw`\(\frac74\)`, "NOTA"], answer: "A",
+    solution: String.raw`Implicit differentiation gives \(3x^2+3y^2y'=0\), hence \(y'=-x^2/y^2=-1/4\) at \((1,2)\). Thus \(y-2=-\frac14(x-1)\), whose \(y\)-intercept is \(9/4\).`,
+  },
+  {
+    id: 10186,
+    number: 186,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`Jack's calculus test asks him to compute \(\displaystyle\lim_{x\to3}\frac{x^2+2x-n}{x-3}\), but the constant \(n\) is smudged. Given that the limit exists and is finite, what is the value of the limit?`,
+    choices: ["8", "−2", "0", "15", "NOTA"], answer: "A",
+    solution: String.raw`A finite limit requires the numerator to vanish at 3, so \(9+6-n=0\) and \(n=15\). Then
+\[\frac{x^2+2x-15}{x-3}=\frac{(x+5)(x-3)}{x-3}=x+5\quad(x\ne3).\]
+The requested limit is 8, not the smudged constant 15.`,
+  },
+  {
+    id: 10187,
+    number: 187,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 2,
+    methods: ["First Derivative Test"],
+    question: String.raw`Legom produces \(x\) egg sandwiches, where \(0\le x\le36\), and sells each for \(\sqrt{36-x}\). How many sandwiches should she produce to maximize revenue?`,
+    choices: ["12", "24", "18", "27", "NOTA"], answer: "B",
+    solution: String.raw`Revenue is \(R=x\sqrt{36-x}\ge0\), so maximizing \(R\) is equivalent to maximizing \(R^2=36x^2-x^3\). Its derivative is \(3x(24-x)\), positive on \((0,24)\) and negative on \((24,36)\). Both endpoint revenues are zero. The maximum occurs at \(x=24\).`,
+  },
+  {
+    id: 10188,
+    number: 188,
+    division: "Mu",
+    topic: "Inequalities",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`For a set \(S\) of real numbers, \(\sup(S)\) is its least upper bound and \(\inf(S)\) is its greatest lower bound. If \(S=\{x\in\mathbb R:2<x^2<3\}\), compute \(\sup(S)\inf(S)\).`,
+    choices: [String.raw`\(\sqrt6\)`, "3", "2", String.raw`\(-\sqrt6\)`, "NOTA"], answer: "E",
+    solution: String.raw`The set is \((-\sqrt3,-\sqrt2)\cup(\sqrt2,\sqrt3)\). Its supremum is \(\sqrt3\) and its infimum is \(-\sqrt3\), even though neither endpoint belongs to the set. Their product is \(-3\), so the answer is NOTA.`,
+  },
+  {
+    id: 10189,
+    number: 189,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 2,
+    methods: ["Trig Identity"],
+    question: String.raw`Compute \(\displaystyle\lim_{x\to0}\frac{\sin x-\tan x}{x^3}\).`,
+    choices: [String.raw`\(\frac16\)`, String.raw`\(-\frac12\)`, String.raw`\(-\frac16\)`, "0", "NOTA"], answer: "B",
+    solution: String.raw`Factor using \(\sin x-\tan x=\sin x(\cos x-1)/\cos x\):
+\[\frac{\sin x-\tan x}{x^3}=\frac{\sin x}{x}\frac{\cos x-1}{x^2}\frac1{\cos x}.\]
+Since \(\cos x-1=-2\sin^2(x/2)\), the middle factor tends to \(-1/2\). The other factors tend to 1, giving \(-1/2\).`,
+  },
+  {
+    id: 10190,
+    number: 190,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Linear Approximation"],
+    question: String.raw`Collot approximates \(\sqrt n\), for a positive integer \(n\), using the tangent line to \(y=\sqrt x\) at \((25,5)\). His approximation is \(28/5\). Find \(n\).`,
+    choices: ["29", "30", "31", "28", "NOTA"], answer: "C",
+    solution: String.raw`The tangent slope is \(1/(2\sqrt{25})=1/10\), so the linear approximation is \(5+(n-25)/10\). Set this equal to \(28/5\): \((n-25)/10=3/5\), hence \(n=31\).`,
+  },
+  {
+    id: 10191,
+    number: 191,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["U-Substitution", "Partial Fractions"],
+    question: String.raw`Evaluate \(\displaystyle\int_1^9\frac{dx}{(8x+27)\sqrt{2x+7}}\).`,
+    choices: [String.raw`\(\frac12\ln\frac{63}{55}\)`, String.raw`\(\frac12\ln\frac{51}{19}\)`, String.raw`\(\frac14\ln\frac{63}{55}\)`, String.raw`\(\frac14\ln\frac{51}{19}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Let \(u=\sqrt{2x+7}\). Then \(dx=u\,du\), \(8x+27=4u^2-1\), and the bounds become 3 and 5. Thus
+\[\int_3^5\frac{du}{4u^2-1}=\frac14\left[\ln\frac{2u-1}{2u+1}\right]_3^5
+=\frac14\ln\left(\frac9{11}\frac75\right)=\frac14\ln\frac{63}{55}.\]`,
+  },
+  {
+    id: 10192,
+    number: 192,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 3,
+    methods: ["Stirling's Approximation"],
+    question: String.raw`Stirling's approximation states that \(\displaystyle\frac{n!}{\sqrt{2\pi n}(n/e)^n}\to1\) as \(n\to\infty\). Compute \(\displaystyle\lim_{n\to\infty}\frac{\sqrt[n]{n!}}n\).`,
+    choices: [String.raw`\(\frac1e\)`, "0", "1", String.raw`\(\frac12\)`, "NOTA"], answer: "A",
+    solution: String.raw`Write \(n!=r_n\sqrt{2\pi n}(n/e)^n\), where \(r_n\to1\). Then
+\[\frac{\sqrt[n]{n!}}n=r_n^{1/n}(2\pi n)^{1/(2n)}\frac1e.\]
+The first two factors tend to 1: their logarithms tend to 0. Therefore the limit is \(1/e\).`,
+  },
+  {
+    id: 10193,
+    number: 193,
+    division: "Mu",
+    topic: "Series",
+    difficulty: 3,
+    methods: ["Root Test", "Comparison Test"],
+    question: String.raw`Which of the following series converge?
+\[\text{I: }\sum_{n=1}^{10^{100}}\frac1{\sqrt n}\qquad
+\text{II: }\sum_{n=2}^{\infty}\frac{(-1)^n n}{\ln n}\]
+\[\text{III: }\sum_{n=1}^{\infty}\frac{n!}{n^n}\qquad
+\text{IV: }\sum_{n=1}^{\infty}(e^{1/n}-1).\]`,
+    choices: ["III and IV only", "I and III only", "I and IV only", "I, II, and IV only", "NOTA"], answer: "B",
+    solution: String.raw`I is a finite sum of finite terms. II diverges because its terms do not tend to zero. For III, Stirling's approximation gives \(\sqrt[n]{n!/n^n}\to1/e<1\), so the root test proves convergence. For IV, \(e^t\ge1+t\) implies \(e^{1/n}-1\ge1/n\); comparison with the harmonic series proves divergence. Thus only I and III converge.`,
+  },
+  {
+    id: 10194,
+    number: 194,
+    division: "Mu",
+    topic: "Improper Integrals",
+    difficulty: 3,
+    methods: ["Integral Properties"],
+    question: String.raw`Evaluate the improper integral \(\displaystyle\int_0^{2024\pi}\frac{dx}{\sqrt{\arccos(\cos x)}}\).`,
+    choices: [String.raw`\(2024\sqrt\pi\)`, String.raw`\(1012\sqrt\pi\)`, String.raw`\(4048\sqrt\pi\)`, String.raw`\(9096\sqrt\pi\)`, "NOTA"], answer: "C",
+    solution: String.raw`On \([0,\pi]\), \(\arccos(\cos x)=x\), giving the convergent improper integral \(\int_0^\pi x^{-1/2}\,dx=2\sqrt\pi\). On \([\pi,2\pi]\), the expression is \(2\pi-x\), giving the same integral. This pattern repeats every \(2\pi\). There are 2024 half-periods, so the total is \(2024(2\sqrt\pi)=4048\sqrt\pi\).`,
+  },
+  {
+    id: 10195,
+    number: 195,
+    division: "Mu",
+    topic: "Improper Integrals",
+    difficulty: 4,
+    methods: ["Trig Substitution"],
+    question: String.raw`Evaluate \(\displaystyle\int_0^{1/2024}\sqrt{\frac1x-2024}\,dx\).`,
+    choices: [String.raw`\(\frac{\pi\sqrt{506}}{506}\)`, String.raw`\(\frac{\pi\sqrt{506}}{4048}\)`, String.raw`\(\frac{\pi\sqrt{506}}{2024}\)`, String.raw`\(\frac{\pi\sqrt{506}}{1012}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Set \(x=\sin^2\theta/2024\), with \(0<\theta\le\pi/2\). Then the integrand is \(\sqrt{2024}\cot\theta\) and \(dx=2\sin\theta\cos\theta\,d\theta/2024\). Hence
+\[\frac2{\sqrt{2024}}\int_0^{\pi/2}\cos^2\theta\,d\theta
+=\frac{\pi}{2\sqrt{2024}}=\frac{\pi\sqrt{506}}{2024}.\]`,
+  },
+  {
+    id: 10196,
+    number: 196,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 4,
+    methods: ["First Derivative Test"],
+    question: String.raw`A cube of side length 1 is inscribed in a right circular cone with one face in the cone's base plane and the opposite four vertices on its lateral surface. The cube is centered on the cone's axis. Find the smallest possible cone volume.`,
+    choices: [String.raw`\(\frac{32\pi}{27}\)`, String.raw`\(\frac{9\pi}{8}\)`, String.raw`\(\frac{4\pi}{3}\)`, String.raw`\(\frac{25\pi}{24}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let the cone have height \(H>1\) and radius \(R\). At height 1 its cross-sectional radius equals the cube's half-diagonal \(1/\sqrt2\). Similar triangles give \(R(H-1)/H=1/\sqrt2\), so
+\[V(H)=\frac\pi3R^2H=\frac{\pi H^3}{6(H-1)^2},\qquad
+V'(H)=\frac{\pi H^2(H-3)}{6(H-1)^3}.\]
+The volume decreases for \(1<H<3\) and increases for \(H>3\), so its global minimum is \(V(3)=9\pi/8\).`,
+  },
+  {
+    id: 10197,
+    number: 197,
+    division: "Mu",
+    topic: "Riemann Sums",
+    difficulty: 4,
+    methods: ["Riemann Sums", "Partial Fractions"],
+    question: String.raw`Given \(\ln2\approx0.693\), \(\ln3\approx1.099\), and \(\ln5\approx1.609\), which choice is closest to
+\[\frac1{2000^2+2000(1000)}+\frac1{2001^2+2001(1000)}+\cdots+\frac1{2999^2+2999(1000)}?\]`,
+    choices: ["0.000287", "0.000119", "0.000283", "0.000104", "NOTA"], answer: "B",
+    solution: String.raw`Writing \(g(t)=1/(t^2+t)\), the sum is \(\frac1{1000}\) times a left Riemann sum for \(\int_2^3g(t)\,dt\). Partial fractions give
+\[\int_2^3g(t)\,dt=[\ln t-\ln(t+1)]_2^3=2\ln3-3\ln2\approx0.119.\]
+Thus the sum is near \(0.000119\). This is not an exact integral identity: since \(g\) decreases, the discretization error is at most \((g(2)-g(3))/1000^2=1/12000000\). Even allowing rounding error in the supplied logarithms (at most \(0.0000025\) after division by 1000), choice B remains closer than any other choice.`,
+  },
+  {
+    id: 10198,
+    number: 198,
+    division: "Mu",
+    topic: "Differential Equations",
+    difficulty: 4,
+    methods: ["First-Order Linear Equations", "Integration by Parts"],
+    question: String.raw`Consider \(y'+\frac{y}{x^2}=\frac1{x^3}\), where \(y(1)=3\). Compute \(y(2)\).
+Hint: find \(I(x)\) so that multiplying by it makes the left side \([yI(x)]'\), then integrate.`,
+    choices: [String.raw`\(\frac32+\sqrt e\)`, String.raw`\(\frac12+\frac3{\sqrt e}\)`, String.raw`\(\frac12+3\sqrt e\)`, String.raw`\(\frac32+\frac1{\sqrt e}\)`, "NOTA"], answer: "D",
+    solution: String.raw`An integrating factor is \(I(x)=e^{-1/x}\), since \(I'/I=1/x^2\). Then
+\[(ye^{-1/x})'=\frac{e^{-1/x}}{x^3}.\]
+With \(u=-1/x\), the right side integrates to \(\int-ue^u\,du=(1-u)e^u+C\). Thus \(y=1+1/x+Ce^{1/x}\). The initial condition gives \(C=1/e\), so \(y(2)=3/2+e^{-1/2}\).`,
+  },
+  {
+    id: 10199,
+    number: 199,
+    division: "Mu",
+    topic: "Volumes of Revolution",
+    difficulty: 3,
+    methods: ["Disk Method", "U-Substitution"],
+    question: String.raw`The surface of an egg is modeled by \(x^2+y^2=z(1-z)^{3/2}\) for \(0\le z\le1\). Compute the volume enclosed.`,
+    choices: [String.raw`\(\frac{4\pi}{35}\)`, String.raw`\(\frac{8\pi}{15}\)`, String.raw`\(\frac{4\pi}{15}\)`, String.raw`\(\frac{8\pi}{35}\)`, "NOTA"], answer: "A",
+    solution: String.raw`A cross section perpendicular to the \(z\)-axis is a disk of area \(\pi z(1-z)^{3/2}\). Substitute \(u=1-z\):
+\[V=\pi\int_0^1z(1-z)^{3/2}\,dz
+=\pi\int_0^1(u^{3/2}-u^{5/2})\,du
+=\pi\left(\frac25-\frac27\right)=\frac{4\pi}{35}.\]`,
+  },
+  {
+    id: 10200,
+    number: 200,
+    division: "Mu",
+    topic: "Applications of Integration",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`For \(0<a<1\), consider the triangle formed by the tangent line to \(y=\sqrt[3]x\) at \((a,\sqrt[3]a)\) and the coordinate axes. Find the average area of this triangle over \(0<a<1\).`,
+    choices: [String.raw`\(\frac37\)`, String.raw`\(\frac25\)`, String.raw`\(\frac27\)`, String.raw`\(\frac35\)`, "NOTA"], answer: "C",
+    solution: String.raw`The tangent line is \(y=\frac13a^{-2/3}x+\frac23a^{1/3}\), with intercepts \(-2a\) and \(\frac23a^{1/3}\). Its triangle has area \(\frac12(2a)(\frac23a^{1/3})=\frac23a^{4/3}\). The average over an interval of length 1 is
+\[\int_0^1\frac23a^{4/3}\,da=\frac23\frac37=\frac27.\]`,
+  },
+  {
+    id: 10201,
+    number: 201,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 4,
+    methods: ["Law of Cosines", "Implicit Differentiation"],
+    question: String.raw`The foot of a 7-meter ladder is fixed to the ground 5 meters from a tree's base. The ladder's top stays in contact with the tree as the tree tips away from the ladder, its base fixed. The angle \(\theta\) between the tree and the ground ray pointing toward the ladder's foot increases at 2 radians per second. Find the speed (m/s) at which the ladder's top slides along the tree when \(\theta=2\pi/3\).`,
+    choices: [String.raw`\(\frac{30\sqrt3}{11}\)`, String.raw`\(\frac{30\sqrt3}{13}\)`, String.raw`\(\frac{30\sqrt3}{7}\)`, String.raw`\(30\sqrt3\)`, "NOTA"], answer: "A",
+    solution: String.raw`Let \(c\) be the distance along the tree from its base to the ladder's top. The law of cosines gives \(49=25+c^2-10c\cos\theta\). At \(\theta=2\pi/3\), \(c^2+5c-24=0\), so \(c=3\). Differentiating with respect to time gives
+\[0=(2c-10\cos\theta)c'+10c\sin\theta\,\theta'.\]
+Substituting gives \(0=11c'+30\sqrt3\), so the sliding speed is \(|c'|=30\sqrt3/11\).`,
+  },
+  {
+    id: 10202,
+    number: 202,
+    division: "Mu",
+    topic: "Power Series",
+    difficulty: 4,
+    methods: ["Infinite Geometric Series"],
+    question: String.raw`Suppose \(\sum_{n=0}^{\infty}a_nx^n\) is the Maclaurin series of \(\frac1{x^2+x+1}\). Compute \(\displaystyle\sum_{n=0}^{\infty}\frac{a_{2n}}{2^n}\).`,
+    choices: [String.raw`\(\frac{68}{63}\)`, String.raw`\(\frac{20}{21}\)`, String.raw`\(\frac{10}{7}\)`, String.raw`\(\frac67\)`, "NOTA"], answer: "D",
+    solution: String.raw`For \(|x|<1\),
+\[\frac1{1+x+x^2}=\frac{1-x}{1-x^3}=\sum_{k=0}^{\infty}(x^{3k}-x^{3k+1}).\]
+Thus the even-index coefficients \(a_0,a_2,a_4,a_6,\ldots\) repeat \(1,0,-1\). The desired sum is
+\[1-\frac14+\frac18-\frac1{32}+\cdots
+=\left(1-\frac14\right)\sum_{k=0}^{\infty}\frac1{8^k}=\frac34\frac87=\frac67.\]`,
+  },
+  {
+    id: 10203,
+    number: 203,
+    division: "Mu",
+    topic: "Inequalities",
+    difficulty: 5,
+    methods: ["Integral Inequalities"],
+    question: String.raw`Let \(f\) range over all continuous nonnegative functions on \([0,3]\) satisfying \(\int_0^3f(x)\,dx=4\). Let \(S\) be the set of possible values of \(\int_0^3\sqrt{1+f(x)^2}\,dx\). Compute \(\sup(S)+\inf(S)\), where \(\sup\) and \(\inf\) mean least upper bound and greatest lower bound.`,
+    choices: ["10", "9", "12", "15", "NOTA"], answer: "C",
+    solution: String.raw`The tangent-line inequality for the convex function \(\sqrt{1+t^2}\) at \(t=4/3\) is
+\[\sqrt{1+t^2}\ge\frac35+\frac45t.\]
+Integrating gives a lower bound of \(9/5+16/5=5\), attained by \(f\equiv4/3\). Also \(\sqrt{1+t^2}\le1+t\) for \(t\ge0\), so every integral is at most 7.
+To approach 7, take a continuous triangular spike of width \(\varepsilon\) and height \(8/\varepsilon\), zero elsewhere. Its area is 4. Outside the spike the integrand is 1; inside it is at least \(f\). Hence the integral is at least \(3-\varepsilon+4=7-\varepsilon\). Thus \(\inf(S)=5\), \(\sup(S)=7\), and their sum is 12.`,
+  },
+  {
+    id: 10204,
+    number: 204,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["Integral Properties"],
+    question: String.raw`Evaluate \(\displaystyle\int_0^{2\pi}\frac{dx}{1+e^{\sin^3x}}\).`,
+    choices: [String.raw`\(\frac{2\pi}{3}\)`, String.raw`\(2\pi\)`, String.raw`\(\pi\)`, String.raw`\(\frac{4\pi}{3}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Let \(h(x)=1/(1+e^{\sin^3x})\). Since \(\sin(x+\pi)=-\sin x\),
+\[h(x)+h(x+\pi)=\frac1{1+e^{\sin^3x}}+\frac1{1+e^{-\sin^3x}}=1.\]
+Split the integral at \(\pi\) and shift the second half by \(\pi\). The result is \(\int_0^\pi1\,dx=\pi\).`,
+  },
+  {
+    id: 10205,
+    number: 205,
+    division: "Mu",
+    topic: "Improper Integrals",
+    difficulty: 5,
+    methods: ["Integration by Parts", "Stirling's Approximation"],
+    question: String.raw`Define \(I_n=\int_{-\infty}^{\infty}x^{2n}e^{-x^2}\,dx\) for nonnegative integers \(n\). Which function \(f(n)\) makes \(\lim_{n\to\infty}I_n/f(n)\) finite and nonzero? You may use Stirling's approximation \(n!\sim\sqrt{2\pi n}(n/e)^n\).`,
+    choices: [String.raw`\(\left(\frac{2n}e\right)^n\)`, String.raw`\(\left(\frac ne\right)^n\)`, String.raw`\(\left(\frac ne\right)^n\sqrt n\)`, String.raw`\(\left(\frac{2n}e\right)^n\sqrt n\)`, "NOTA"], answer: "B",
+    solution: String.raw`Integration by parts, with vanishing boundary terms, gives \(I_n=\frac{2n-1}{2}I_{n-1}\). Thus
+\[I_n=\frac{(2n)!}{4^n n!}I_0
+\sim\frac{\sqrt{4\pi n}(2n/e)^{2n}}{4^n\sqrt{2\pi n}(n/e)^n}I_0
+=\sqrt2\left(\frac ne\right)^n I_0.\]
+Since \(I_0\) is finite and positive, choice B gives a finite nonzero limit. Each other proposed denominator grows faster and gives zero.`,
+  },
+  {
+    id: 10206,
+    number: 206,
+    division: "Mu",
+    topic: "Improper Integrals",
+    difficulty: 5,
+    methods: ["Integration by Parts", "Stirling's Approximation", "Gaussian Integral"],
+    question: String.raw`Let \(I_n=\int_{-\infty}^{\infty}x^{2n}e^{-x^2}\,dx\). Compute
+\[L=\lim_{n\to\infty}\frac{I_n}{(n/e)^n}.\]
+You may use \(\int_{-\infty}^{\infty}e^{-x^2}\,dx=\sqrt\pi\) and Stirling's approximation \(n!\sim\sqrt{2\pi n}(n/e)^n\).`,
+    choices: [String.raw`\(\pi\sqrt2\)`, String.raw`\(\frac{\pi\sqrt2}{2}\)`, String.raw`\(\frac{\sqrt{2\pi}}2\)`, String.raw`\(\sqrt{2\pi}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Integration by parts yields \(I_n=\frac{2n-1}{2}I_{n-1}\), hence \(I_n=\frac{(2n)!}{4^n n!}\sqrt\pi\). Applying Stirling's approximation,
+\[\frac{I_n}{(n/e)^n}\sim
+\frac{\sqrt{4\pi n}(2n/e)^{2n}\sqrt\pi}
+{4^n\sqrt{2\pi n}(n/e)^n(n/e)^n}
+=\sqrt{2\pi}.\]
+Therefore \(L=\sqrt{2\pi}\).`,
   },
 ];
