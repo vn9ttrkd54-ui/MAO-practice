@@ -650,9 +650,7 @@ Thus
 =\frac{(\sqrt a-\sqrt b)(\sqrt a+\sqrt b)}{\sqrt{a+b}(\sqrt a-\sqrt b)}
 =\frac{\sqrt a+\sqrt b}{\sqrt{a+b}},\]
 and letting \(a\to b\) gives
-\[\frac{2\sqrt b}{\sqrt{2b}}=\sqrt2.\]
-
-The printed solution substitutes \(\theta=\pi/4\) before resolving the indeterminate form and then cancels \(x-y\). However, the relation \(t^2=b/a\) shows that \(x=y=\sqrt{ab}\), so its cancellation is actually a cancellation of zero in the limiting configuration. That step is invalid. The correct answer is \(\boxed{\sqrt2}\).`,
+\[\frac{2\sqrt b}{\sqrt{2b}}=\boxed{\sqrt2}.\]`,
     illustration: {
       src: "/questions/mu-146-geometry.svg",
       alt: "Two adjacent right triangles with vertical sides a and b, bases x and y, diagonals c and d, and three angles labeled theta",
@@ -1038,9 +1036,7 @@ The odd term integrates to 0 over \([-1,1]\), so
     answer: "E",
     solution: String.raw`Manny can ask for the value at a transcendental number, such as \(n=\pi\). Suppose two polynomials \(f\) and \(g\), both with non-negative integer coefficients, gave the same value there. Then
 \[f(\pi)-g(\pi)=0.\]
-But \(f-g\) is a polynomial with integer coefficients. If it were nonzero, this equation would make \(\pi\) algebraic, contradicting the fact that \(\pi\) is transcendental. Therefore \(f-g\) must be the zero polynomial and \(f=g\). One requested value is sufficient, and zero values clearly cannot identify the polynomial. The minimum is therefore 1, which is not listed, so the answer is NOTA.
-
-The printed solution obtains 2 by first requesting \(f(1)=S\) and then using \(f(S+1)\) as a base-\((S+1)\) encoding of the coefficients. That method works, but it is not minimal because the question does not require \(n\) to be an integer.`,
+But \(f-g\) is a polynomial with integer coefficients. If it were nonzero, this equation would make \(\pi\) algebraic, contradicting the fact that \(\pi\) is transcendental. Therefore \(f-g\) must be the zero polynomial and \(f=g\). One requested value is sufficient, and zero values clearly cannot identify the polynomial. The minimum is therefore 1, which is not listed, so the answer is NOTA.`,
   },
   {
     id: 10166,
@@ -1800,8 +1796,7 @@ Therefore
   // FAMAT January Statewide Calculus Individual Test.
   // Source questions 1–27 map to bank questions 207–233. Source question 28
   // was thrown out and is excluded. Source questions 29–30 map to 234–235.
-  // The published dispute corrections are incorporated in questions 222, 232,
-  // and 233 (source questions 16, 26, and 27).
+  // Questions 222, 232, and 233 use the final accepted wording and choices.
   {
     id: 10207,
     number: 207,
@@ -1827,8 +1822,8 @@ Evaluate \(\displaystyle\lim_{x\to-1}f(x)\). Select DNE if you believe the limit
     number: 208,
     division: "Mu",
     topic: "Limits",
-    difficulty: 2,
-    methods: ["Limit Properties"],
+    difficulty: 1,
+    methods: [],
     question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
 
 Determine \(\displaystyle\lim_{x\to-1}[f(x)g(x)]\). Select DNE if you believe the limit does not exist.`,
@@ -1852,8 +1847,8 @@ Therefore, \(\displaystyle\lim_{x\to-1}[f(x)g(x)]=0\).`,
     number: 209,
     division: "Mu",
     topic: "Limits",
-    difficulty: 3,
-    methods: ["Composition of Functions"],
+    difficulty: 2,
+    methods: [],
     question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
 
 Determine \(\displaystyle\lim_{x\to0^-}f(g(x))\). Select DNE if you believe the limit does not exist.`,
@@ -1872,7 +1867,7 @@ Determine \(\displaystyle\lim_{x\to0^-}f(g(x))\). Select DNE if you believe the 
     id: 10210,
     number: 210,
     division: "Mu",
-    topic: "Functions",
+    topic: "Functions Analysis",
     difficulty: 1,
     methods: [],
     question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
@@ -1894,7 +1889,7 @@ Determine the product of \(f(-1)\) and \(g(-3)\).`,
     division: "Mu",
     topic: "Limits",
     difficulty: 2,
-    methods: ["Exponential Limits"],
+    methods: [],
     question: String.raw`Evaluate \(\displaystyle\lim_{n\to\infty}\left(\frac{n+3}{n-2}\right)^n\).`,
     choices: [String.raw`\(e^{-2}\)`, String.raw`\(e^2\)`, String.raw`\(e^3\)`, String.raw`\(e^5\)`, "NOTA"],
     answer: "D",
@@ -1910,7 +1905,7 @@ For large values of \(n\), this has the same limit as \(\left(1+\frac5n\right)^n
     division: "Mu",
     topic: "Linear Approximation",
     difficulty: 3,
-    methods: ["Implicit Differentiation", "Linear Approximation"],
+    methods: ["Implicit Differentiation"],
     question: String.raw`Given the function \(f(x)\) defined by the curve \(\arctan(y)=x+\frac12y\), use the line tangent to the curve at \(f\!\left(\frac{\pi-\sqrt3}{6}\right)=\frac1{\sqrt3}\) to approximate \(f\!\left(\frac35\right)\).`,
     choices: [String.raw`\(\frac{\sqrt3}{3}+\frac{10\pi-36-10\sqrt3}{15}\)`, String.raw`\(\sqrt3+\frac{10\pi-36-10\sqrt3}{15}\)`, String.raw`\(\frac{\sqrt3}{3}+\frac{36-10\pi}{15}\)`, String.raw`\(\sqrt3+\frac{36-10\pi}{15}\)`, "NOTA"],
     answer: "D",
@@ -1925,7 +1920,7 @@ At \(y=1/\sqrt3\), this gives \(y'=4\). The tangent-line approximation is theref
     number: 213,
     division: "Mu",
     topic: "Derivatives",
-    difficulty: 3,
+    difficulty: 2,
     methods: ["Mean Value Theorem"],
     question: String.raw`Given the function
 \[f(x)=\begin{cases}x\sin(1/x),&x\ne0,\\0,&x=0,\end{cases}\]
@@ -1969,7 +1964,7 @@ Dividing the numerator and denominator by \(x\) and taking the limit gives
     division: "Mu",
     topic: "Limits",
     difficulty: 2,
-    methods: ["Special Trig Limits"],
+    methods: [],
     question: String.raw`Evaluate \(\displaystyle\lim_{x\to0}\frac{\sin^2(2x)\tan^2(3x)\sec^2(4x)}{x^4}\). If you believe the limit does not exist, select DNE.`,
     choices: ["0", "9", "18", "DNE", "NOTA"],
     answer: "E",
@@ -1984,7 +1979,7 @@ The limit is \((2^2)(3^2)(1^2)=36\), which is not an answer choice.`,
     division: "Mu",
     topic: "Rate of Change",
     difficulty: 4,
-    methods: ["Related Rates", "Similar Triangles"],
+    methods: ["Related Rates"],
     question: String.raw`A circle is inscribed inside a square which is, in turn, inscribed inside an equilateral triangle. At the moment when a side length of the square is \(6\text{ cm}\), the area of the circle is increasing at a rate of \(3\text{ cm}^2/\text{sec}\). At this instant, what is the rate at which the area of the equilateral triangle is increasing in \(\text{cm}^2/\text{sec}\)?`,
     choices: [String.raw`\(\frac{24+14\sqrt3}{\pi}\)`, String.raw`\(\frac{24+14\sqrt3}{3\pi}\)`, String.raw`\(\frac{12+7\sqrt3}{\pi}\)`, String.raw`\(\frac{48+28\sqrt3}{3\pi}\)`, "NOTA"],
     answer: "C",
@@ -2006,7 +2001,7 @@ Therefore, at \(s=6\),
     division: "Mu",
     topic: "Optimization",
     difficulty: 1,
-    methods: ["Closed Interval Method"],
+    methods: [],
     question: String.raw`Determine the x-coordinate of the point corresponding to the absolute maximum value of \(f(x)=x^3-3x^2+2\) over the domain \([-1,4]\).`,
     choices: ["−1", "0", "2", "4", "NOTA"],
     answer: "D",
@@ -2035,7 +2030,7 @@ Because \(f'(x)=3x^2-2\), we have \(f'(2)=10\). Therefore,
     division: "Mu",
     topic: "Riemann Sums",
     difficulty: 4,
-    methods: ["Riemann Sums", "Integration by Parts"],
+    methods: ["Riemann Sums"],
     question: String.raw`Evaluate
 \[\lim_{n\to\infty}\sum_{k=1}^n\frac{e^{2k/n}(n^2+kn+k^2)}{n^3}.\]`,
     choices: [String.raw`\(\frac{3e^2}{2}\)`, String.raw`\(\frac{e^2-1}{2}\)`, String.raw`\(\frac{2e^2-1}{2}\)`, String.raw`\(\frac{3e^2-1}{4}\)`, "NOTA"],
@@ -2077,9 +2072,7 @@ If the limit does not approach a finite real number, then select DNE.`,
     answer: "D",
     solution: String.raw`As \(x\to0\),
 \[\frac{\ln(1+x^2)}{\sin^2x}\to1,\]
-so the base approaches \(2\), while \(1/\tan^2x\to+\infty\). Hence the expression grows without bound and does not approach a finite real number. Therefore the answer is DNE.
-
-The original wording asked only whether the limit “exists,” which was ambiguous about an infinite limit. The corrected wording above incorporates the published resolution of that dispute.`,
+so the base approaches \(2\), while \(1/\tan^2x\to+\infty\). Hence the expression grows without bound and does not approach a finite real number. Therefore the answer is DNE.`,
   },
   {
     id: 10223,
@@ -2126,7 +2119,7 @@ we have \(f'(a)=1\) for either possible value of \(a\).`,
 \[y\ln y=x^2\ln x.\]
 Differentiate implicitly:
 \[y'(\ln y+1)=2x\ln x+x.\]
-At \(x=1\), the original equation gives \(y=1\), and then the first-derivative equation gives \(y'=1\). Differentiating once more,
+At \(x=1\), the given equation gives \(y=1\), and then the first-derivative equation gives \(y'=1\). Differentiating once more,
 \[y''(\ln y+1)+\frac{(y')^2}{y}=2\ln x+3.\]
 At \(x=1\), this becomes \(y''+1=3\), so \(y''=2\).`,
   },
@@ -2134,7 +2127,7 @@ At \(x=1\), this becomes \(y''+1=3\), so \(y''=2\).`,
     id: 10226,
     number: 226,
     division: "Mu",
-    topic: "Numerical Integration",
+    topic: "Definite Integrals",
     difficulty: 2,
     methods: ["Simpson's Rule"],
     question: String.raw`Use the composite Simpson's rule with \(n=4\) subintervals to approximate \(\displaystyle\int_{-1}^3e^x\,dx\).`,
@@ -2167,7 +2160,7 @@ The four symmetric intersection points produce slopes in opposite pairs, so thei
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 3,
-    methods: ["Symmetry", "Integration by Parts"],
+    methods: ["Integration by Parts"],
     question: String.raw`Calculate
 \[\int_{-\pi/2}^{\pi/2}(x^2\cos x)(\sin x+1)\,dx.\]`,
     choices: [String.raw`\(\frac{\pi^2-16}{4}\)`, String.raw`\(\frac{\pi^2-8}{2}\)`, String.raw`\(\frac{\pi^2-8}{4}\)`, String.raw`\(\frac{\pi^2-4}{2}\)`, "NOTA"],
@@ -2202,7 +2195,7 @@ Since \(y(0)=-1/3\), substitution gives
     number: 230,
     division: "Mu",
     topic: "Derivatives",
-    difficulty: 2,
+    difficulty: 3,
     methods: ["Chain Rule"],
     question: String.raw`Evaluate
 \[\left.\frac{d}{d\sqrt{2x+3}}(4x^3+15x^2+7x+10)\right|_{x=1}.\]`,
@@ -2244,9 +2237,7 @@ Finally let \(w=1-v\). Expanding and integrating gives
 \[h(x)=p(x)+C_1x+C_2.\]
 Because \(p\) is even, \(p(-2)=p(2)=5\). The two given values of \(h\) therefore yield
 \[3=5+2C_1+C_2,\qquad 7=5-2C_1+C_2.\]
-Subtracting gives \(-4=4C_1\), so \(C_1=-1\).
-
-The original question was thrown out because it also described \(p\) as first degree, contradicting the condition that \(p\) was even with degree greater than \(1\). The corrected wording above incorporates the published resolution.`,
+Subtracting gives \(-4=4C_1\), so \(C_1=-1\).`,
   },
   {
     id: 10233,
@@ -2254,7 +2245,7 @@ The original question was thrown out because it also described \(p\) as first de
     division: "Mu",
     topic: "Series",
     difficulty: 5,
-    methods: ["Infinite Products", "Partial Fractions"],
+    methods: ["Partial Fractions"],
     question: String.raw`Evaluate
 \[\prod_{n=1}^{\infty}\frac{\sqrt[a]{64}}{\sqrt[b]{4}},\]
 where \(a=n^2+2n\) and \(b=n^2+4n+3\).`,
@@ -2268,9 +2259,7 @@ Partial fractions give
 Therefore,
 \[\ln P=6\ln2\left(\frac34\right)-2\ln2\left(\frac5{12}\right)
 =\frac{11}{3}\ln2,\]
-so \(P=2^{11/3}\).
-
-The original choices B and C were mathematically identical. Choice C above uses the corrected exponent from the published dispute resolution.`,
+so \(P=2^{11/3}\).`,
   },
   {
     id: 10234,

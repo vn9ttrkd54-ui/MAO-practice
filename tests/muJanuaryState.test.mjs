@@ -17,7 +17,7 @@ test("January Statewide set contains 29 usable questions and excludes thrown-out
   assert.equal(new Set(muQuestions.map(q => q.id)).size, muQuestions.length);
 });
 
-test("published dispute resolutions are incorporated", () => {
+test("final accepted wording and choices are incorporated", () => {
   const get = number => questions.find(q => q.number === number);
   assert.match(get(222).question, /finite real number/);
   assert.equal(get(222).answer, "D");
