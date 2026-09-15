@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 480" role="img" aria-labelledby="title desc">
+  <title id="title">Graphs of f and g</title>
+  <desc id="desc">Piecewise graphs used for four limit and function-value questions.</desc>
+  <rect width="1100" height="480" fill="#fff"/>
+  <g stroke="#d1d5db" stroke-width="1">
+    <path d="M55 55H505M55 105H505M55 155H505M55 205H505M55 255H505M55 305H505M55 355H505"/>
+    <path d="M80 35V380M130 35V380M180 35V380M230 35V380M280 35V380M330 35V380M380 35V380M430 35V380M480 35V380"/>
+    <path d="M600 55H1050M600 105H1050M600 155H1050M600 205H1050M600 255H1050M600 305H1050M600 355H1050"/>
+    <path d="M625 35V380M675 35V380M725 35V380M775 35V380M825 35V380M875 35V380M925 35V380M975 35V380M1025 35V380"/>
+  </g>
+  <g stroke="#64748b" stroke-width="2">
+    <path d="M55 355H505M380 35V380"/>
+    <path d="M600 255H1050M925 35V380"/>
+  </g>
+  <g fill="#475569" font-family="Arial, sans-serif" font-size="15">
+    <text x="267" y="406" text-anchor="middle">f(x)</text>
+    <text x="817" y="406" text-anchor="middle">g(x)</text>
+    <text x="52" y="447">Asymptotes: x = −2, y = 2, y = 1</text>
+    <text x="600" y="447">Asymptote: x = 1</text>
+  </g>
+  <g fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round">
+    <path d="M55 253 C120 252 180 249 230 245"/>
+    <path d="M230 105 C249 113 259 167 272 330 C276 372 279 407 280 455"/>
+    <path d="M280 455 C286 374 295 246 330 155"/>
+    <path d="M330 205 C370 244 421 271 505 286"/>
+    <path d="M600 105H775"/>
+    <path d="M775 355L825 205L975 355"/>
+    <path d="M982 35 C988 111 1005 190 1050 238"/>
+  </g>
+  <g fill="#111827" stroke="#111827" stroke-width="3">
+    <circle cx="230" cy="105" r="5"/>
+    <circle cx="330" cy="305" r="5"/>
+    <circle cx="775" cy="105" r="5"/>
+    <circle cx="975" cy="355" r="5"/>
+  </g>
+  <g fill="#fff" stroke="#111827" stroke-width="3">
+    <circle cx="230" cy="245" r="6"/>
+    <circle cx="330" cy="155" r="6"/>
+    <circle cx="330" cy="205" r="6"/>
+    <circle cx="775" cy="355" r="6"/>
+  </g>
+  <g fill="#334155" font-family="Arial, sans-serif" font-size="13">
+    <text x="223" y="374">−3</text><text x="273" y="374">−2</text><text x="323" y="374">−1</text>
+    <text x="363" y="250">2</text><text x="363" y="200">3</text><text x="363" y="150">4</text><text x="363" y="100">5</text>
+    <text x="765" y="278">−3</text><text x="815" y="278">−2</text><text x="865" y="278">−1</text><text x="968" y="278">1</text>
+    <text x="908" y="110">3</text><text x="908" y="210">1</text><text x="905" y="360">−2</text>
+  </g>
+</svg>

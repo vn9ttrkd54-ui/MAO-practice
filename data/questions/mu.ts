@@ -1797,4 +1797,515 @@ solution: String.raw`Apply Stirling's approximation to the given formula:
 Therefore
 \[\lim_{n\to\infty}\frac{I_n}{(n/e)^n}=\boxed{\sqrt{2\pi}}.\]`,
   },
+  // FAMAT January Statewide Calculus Individual Test.
+  // Source questions 1–27 map to bank questions 207–233. Source question 28
+  // was thrown out and is excluded. Source questions 29–30 map to 234–235.
+  // The published dispute corrections are incorporated in questions 222, 232,
+  // and 233 (source questions 16, 26, and 27).
+  {
+    id: 10207,
+    number: 207,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
+
+Evaluate \(\displaystyle\lim_{x\to-1}f(x)\). Select DNE if you believe the limit does not exist.`,
+    illustration: {
+      src: "/questions/mu-207-210-graphs.svg",
+      alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
+      width: 1100,
+      height: 480,
+    },
+    choices: ["−1", "3", "4", "DNE", "NOTA"],
+    answer: "D",
+    solution: String.raw`The left-hand and right-hand limits are different; therefore, the limit does not exist.`,
+  },
+  {
+    id: 10208,
+    number: 208,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 2,
+    methods: ["Limit Properties"],
+    question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
+
+Determine \(\displaystyle\lim_{x\to-1}[f(x)g(x)]\). Select DNE if you believe the limit does not exist.`,
+    illustration: {
+      src: "/questions/mu-207-210-graphs.svg",
+      alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
+      width: 1100,
+      height: 480,
+    },
+    choices: ["0", "3", "4", "DNE", "NOTA"],
+    answer: "A",
+    solution: String.raw`The limit exists as long as
+\[\lim_{x\to-1^-}[f(x)g(x)]=\lim_{x\to-1^+}[f(x)g(x)].\]
+From the graphs,
+\[\lim_{x\to-1^-}[f(x)g(x)]=(4)(0)=0,\qquad
+\lim_{x\to-1^+}[f(x)g(x)]=(3)(0)=0.\]
+Therefore, \(\displaystyle\lim_{x\to-1}[f(x)g(x)]=0\).`,
+  },
+  {
+    id: 10209,
+    number: 209,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 3,
+    methods: ["Composition of Functions"],
+    question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
+
+Determine \(\displaystyle\lim_{x\to0^-}f(g(x))\). Select DNE if you believe the limit does not exist.`,
+    illustration: {
+      src: "/questions/mu-207-210-graphs.svg",
+      alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
+      width: 1100,
+      height: 480,
+    },
+    choices: ["1", "3", "4", "DNE", "NOTA"],
+    answer: "B",
+    solution: String.raw`\(\displaystyle\lim_{x\to0^-}g(x)=-1\). As this value is approached from above, the outer limit of \(f(x)\) is approached from the right. Thus,
+\[\lim_{x\to0^-}f(g(x))=\lim_{x\to-1^+}f(x)=3.\]`,
+  },
+  {
+    id: 10210,
+    number: 210,
+    division: "Mu",
+    topic: "Functions",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
+
+Determine the product of \(f(-1)\) and \(g(-3)\).`,
+    illustration: {
+      src: "/questions/mu-207-210-graphs.svg",
+      alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
+      width: 1100,
+      height: 480,
+    },
+    choices: ["−2", "−1", "1", "DNE", "NOTA"],
+    answer: "E",
+    solution: String.raw`From the filled points on the graphs, \(f(-1)=1\) and \(g(-3)=3\). Thus \(f(-1)g(-3)=3\), which is not an answer choice.`,
+  },
+  {
+    id: 10211,
+    number: 211,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 2,
+    methods: ["Exponential Limits"],
+    question: String.raw`Evaluate \(\displaystyle\lim_{n\to\infty}\left(\frac{n+3}{n-2}\right)^n\).`,
+    choices: [String.raw`\(e^{-2}\)`, String.raw`\(e^2\)`, String.raw`\(e^3\)`, String.raw`\(e^5\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Rewrite
+\[\left(\frac{n+3}{n-2}\right)^n
+=\left(\frac{n-2+5}{n-2}\right)^n
+=\left(1+\frac5{n-2}\right)^n.\]
+For large values of \(n\), this has the same limit as \(\left(1+\frac5n\right)^n\), so the limit is \(e^5\).`,
+  },
+  {
+    id: 10212,
+    number: 212,
+    division: "Mu",
+    topic: "Linear Approximation",
+    difficulty: 3,
+    methods: ["Implicit Differentiation", "Linear Approximation"],
+    question: String.raw`Given the function \(f(x)\) defined by the curve \(\arctan(y)=x+\frac12y\), use the line tangent to the curve at \(f\!\left(\frac{\pi-\sqrt3}{6}\right)=\frac1{\sqrt3}\) to approximate \(f\!\left(\frac35\right)\).`,
+    choices: [String.raw`\(\frac{\sqrt3}{3}+\frac{10\pi-36-10\sqrt3}{15}\)`, String.raw`\(\sqrt3+\frac{10\pi-36-10\sqrt3}{15}\)`, String.raw`\(\frac{\sqrt3}{3}+\frac{36-10\pi}{15}\)`, String.raw`\(\sqrt3+\frac{36-10\pi}{15}\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Differentiate implicitly:
+\[\frac1{1+y^2}y'=1+\frac12y'.\]
+At \(y=1/\sqrt3\), this gives \(y'=4\). The tangent-line approximation is therefore
+\[f\!\left(\frac35\right)\approx\frac1{\sqrt3}+4\left(\frac35-\frac{\pi-\sqrt3}{6}\right)
+=\sqrt3+\frac{36-10\pi}{15}.\]`,
+  },
+  {
+    id: 10213,
+    number: 213,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 3,
+    methods: ["Mean Value Theorem"],
+    question: String.raw`Given the function
+\[f(x)=\begin{cases}x\sin(1/x),&x\ne0,\\0,&x=0,\end{cases}\]
+which of the following statements is correct regarding whether or not the Mean Value Theorem (MVT) guarantees a value \(c\in(0,2/\pi)\) such that
+\[f'(c)=\frac{f(2/\pi)-f(0)}{2/\pi-0}?\]`,
+    choices: ["MVT applies", String.raw`MVT does not apply because \(f\) is not continuous on \([0,2/\pi]\)`, String.raw`MVT does not apply because \(f\) is not differentiable on \((0,2/\pi)\)`, String.raw`MVT does not apply because \(f'\) is not bounded near \(0\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`The function is differentiable over the open interval and continuous on the closed interval, so the MVT applies. Although \(f'\) is unbounded near \(0\), this does not invalidate the application of the MVT.`,
+  },
+  {
+    id: 10214,
+    number: 214,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 2,
+    methods: ["Conjugates"],
+    question: String.raw`Evaluate
+\[\lim_{x\to\infty}\left(\sqrt{3x^2-5x+4}-\sqrt{3x^2+7x+9}\right).\]`,
+    choices: ["−2", String.raw`\(-2\sqrt3\)`, "0", String.raw`\(-\frac{4\sqrt3}{3}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Multiply by the conjugate:
+\[\frac{-12x-5}{\sqrt{3x^2-5x+4}+\sqrt{3x^2+7x+9}}.\]
+Dividing the numerator and denominator by \(x\) and taking the limit gives
+\[\frac{-12}{2\sqrt3}=-2\sqrt3.\]`,
+  },
+  {
+    id: 10215,
+    number: 215,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Power Rule"],
+    question: String.raw`Given that \(f(x)=x^6+6x^5+15x^4+20x^3+15x^2+6x+1\), determine \(f'(1)\).`,
+    choices: ["64", "182", "192", "193", "NOTA"],
+    answer: "C",
+    solution: String.raw`Notice that \(f(x)=(x+1)^6\). Thus \(f'(x)=6(x+1)^5\), so \(f'(1)=6(2)^5=192\).`,
+  },
+  {
+    id: 10216,
+    number: 216,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 2,
+    methods: ["Special Trig Limits"],
+    question: String.raw`Evaluate \(\displaystyle\lim_{x\to0}\frac{\sin^2(2x)\tan^2(3x)\sec^2(4x)}{x^4}\). If you believe the limit does not exist, select DNE.`,
+    choices: ["0", "9", "18", "DNE", "NOTA"],
+    answer: "E",
+    solution: String.raw`Reorganize the expression as
+\[\left(\frac{\sin(2x)}x\right)^2
+\left(\frac{\tan(3x)}x\right)^2\sec^2(4x).\]
+The limit is \((2^2)(3^2)(1^2)=36\), which is not an answer choice.`,
+  },
+  {
+    id: 10217,
+    number: 217,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 4,
+    methods: ["Related Rates", "Similar Triangles"],
+    question: String.raw`A circle is inscribed inside a square which is, in turn, inscribed inside an equilateral triangle. At the moment when a side length of the square is \(6\text{ cm}\), the area of the circle is increasing at a rate of \(3\text{ cm}^2/\text{sec}\). At this instant, what is the rate at which the area of the equilateral triangle is increasing in \(\text{cm}^2/\text{sec}\)?`,
+    choices: [String.raw`\(\frac{24+14\sqrt3}{\pi}\)`, String.raw`\(\frac{24+14\sqrt3}{3\pi}\)`, String.raw`\(\frac{12+7\sqrt3}{\pi}\)`, String.raw`\(\frac{48+28\sqrt3}{3\pi}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Let \(s\) be the side length of the square. The inscribed circle has radius \(r=s/2\), so
+\[A_c=\frac\pi4s^2,\qquad \frac{dA_c}{dt}=\frac\pi2s\frac{ds}{dt}.\]
+At \(s=6\) and \(dA_c/dt=3\), we obtain \(ds/dt=1/\pi\).
+
+Let \(a\) be the side length of the equilateral triangle. Comparing the triangle above the square with the full triangle using similar triangles gives
+\[a=s\left(1+\frac2{\sqrt3}\right).\]
+Thus
+\[A_t=\frac{\sqrt3}{4}a^2=\left(1+\frac{7\sqrt3}{12}\right)s^2.\]
+Therefore, at \(s=6\),
+\[\frac{dA_t}{dt}=2\left(1+\frac{7\sqrt3}{12}\right)s\frac{ds}{dt}
+=\frac{12+7\sqrt3}{\pi}.\]`,
+  },
+  {
+    id: 10218,
+    number: 218,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 1,
+    methods: ["Closed Interval Method"],
+    question: String.raw`Determine the x-coordinate of the point corresponding to the absolute maximum value of \(f(x)=x^3-3x^2+2\) over the domain \([-1,4]\).`,
+    choices: ["−1", "0", "2", "4", "NOTA"],
+    answer: "D",
+    solution: String.raw`Differentiate to get \(f'(x)=3x^2-6x=3x(x-2)\), so the critical points are \(x=0\) and \(x=2\). Checking these and the endpoints gives
+\[f(-1)=-2,\quad f(0)=2,\quad f(2)=-2,\quad f(4)=18.\]
+Therefore, the absolute maximum occurs at \(x=4\).`,
+  },
+  {
+    id: 10219,
+    number: 219,
+    division: "Mu",
+    topic: "Inverse Functions",
+    difficulty: 2,
+    methods: ["Derivative of Inverse Functions"],
+    question: String.raw`Given that \(f(x)=x^3-2x+2\), and given that \(g(x)\) is the inverse of \(f(x)\), determine the value of \((g'(6))^3\).`,
+    choices: [String.raw`\(\frac1{1000}\)`, String.raw`\(\frac1{100}\)`, String.raw`\(\frac1{27}\)`, String.raw`\(\frac1{12}\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`Since \(f(2)=6\), the inverse-function derivative formula gives
+\[g'(6)=\frac1{f'(2)}.\]
+Because \(f'(x)=3x^2-2\), we have \(f'(2)=10\). Therefore,
+\[(g'(6))^3=\left(\frac1{10}\right)^3=\frac1{1000}.\]`,
+  },
+  {
+    id: 10220,
+    number: 220,
+    division: "Mu",
+    topic: "Riemann Sums",
+    difficulty: 4,
+    methods: ["Riemann Sums", "Integration by Parts"],
+    question: String.raw`Evaluate
+\[\lim_{n\to\infty}\sum_{k=1}^n\frac{e^{2k/n}(n^2+kn+k^2)}{n^3}.\]`,
+    choices: [String.raw`\(\frac{3e^2}{2}\)`, String.raw`\(\frac{e^2-1}{2}\)`, String.raw`\(\frac{2e^2-1}{2}\)`, String.raw`\(\frac{3e^2-1}{4}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Rewrite the sum as
+\[\sum_{k=1}^n e^{2k/n}\left(1+\frac kn+\frac{k^2}{n^2}\right)\frac1n.\]
+This is a Riemann sum for
+\[\int_0^1e^{2x}(1+x+x^2)\,dx.\]
+Integrating the three terms, using integration by parts as needed, gives
+\[\int_0^1e^{2x}(1+x+x^2)\,dx=e^2-\frac12=\frac{2e^2-1}{2}.\]`,
+  },
+  {
+    id: 10221,
+    number: 221,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 4,
+    methods: ["Implicit Differentiation"],
+    question: String.raw`Select the correct expression for \(\frac{dy}{dx}\) given the curve
+\[x^2y^3+e^{xy}=\ln(xy)+xy^2.\]`,
+    choices: [String.raw`\(\frac{-2x^2y^4+xy^2e^{xy}-xy^3}{3x^3y^3+x^2ye^{xy}-x-2x^2y^2}\)`, String.raw`\(\frac{2x^2y^4+xy^2e^{xy}-y-xy^3}{3x^3y^3+x^2ye^{xy}-x-2x^2y^2}\)`, String.raw`\(\frac{2x^2y^4-xy^2e^{xy}-y-xy^3}{3x^3y^3+x^2ye^{xy}-x-2x^2y^2}\)`, String.raw`\(\frac{-2x^2y^4-xy^2e^{xy}+y+xy^3}{3x^3y^3+x^2ye^{xy}-x-2x^2y^2}\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Differentiate implicitly:
+\[2xy^3+3x^2y^2y'+e^{xy}(y+xy')=\frac1x+\frac{y'}y+y^2+2xyy'.\]
+Collecting the \(y'\) terms and multiplying the numerator and denominator by \(xy\) gives
+\[\frac{dy}{dx}=\frac{-2x^2y^4-xy^2e^{xy}+y+xy^3}{3x^3y^3+x^2ye^{xy}-x-2x^2y^2}.\]`,
+  },
+  {
+    id: 10222,
+    number: 222,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 5,
+    methods: ["L'Hopital's Rule"],
+    question: String.raw`Evaluate
+\[\lim_{x\to0}\left(1+\frac{\ln(1+x^2)}{\sin^2x}\right)^{1/\tan^2x}.\]
+If the limit does not approach a finite real number, then select DNE.`,
+    choices: ["1", String.raw`\(e^{1/3}\)`, String.raw`\(e^{1/2}\)`, "DNE", "NOTA"],
+    answer: "D",
+    solution: String.raw`As \(x\to0\),
+\[\frac{\ln(1+x^2)}{\sin^2x}\to1,\]
+so the base approaches \(2\), while \(1/\tan^2x\to+\infty\). Hence the expression grows without bound and does not approach a finite real number. Therefore the answer is DNE.
+
+The original wording asked only whether the limit “exists,” which was ambiguous about an infinite limit. The corrected wording above incorporates the published resolution of that dispute.`,
+  },
+  {
+    id: 10223,
+    number: 223,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 3,
+    methods: ["Distance Formula", "Tangency"],
+    question: String.raw`Determine the shortest distance between the curve \(y=x^2+3\) and the line \(y=2x-1\).`,
+    choices: [String.raw`\(\frac2{\sqrt5}\)`, String.raw`\(\frac3{\sqrt5}\)`, String.raw`\(\frac4{\sqrt5}\)`, String.raw`\(\sqrt5\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`The closest tangent line to the parabola must have the same slope as the given line. Since \(y'=2x\), this occurs at \(x=1\), giving the point \((1,4)\). The parallel line through this point is
+\[y-4=2(x-1),\quad\text{or}\quad 2x-y+2=0.\]
+The given line is \(2x-y-1=0\). The distance between these parallel lines is
+\[\frac{|2-(-1)|}{\sqrt{2^2+(-1)^2}}=\frac3{\sqrt5}.\]`,
+  },
+  {
+    id: 10224,
+    number: 224,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Power Rule"],
+    question: String.raw`If \(f(a)=b\), which of the following could be \(f'(a)\) given \(f(x)=x^2+(1-2a)x+b\)?`,
+    choices: ["−1", "0", "1", "2", "NOTA"],
+    answer: "C",
+    solution: String.raw`The condition \(f(a)=b\) gives
+\[a^2+(1-2a)a+b=b,\]
+so \(a^2-a=0\) and \(a=0\) or \(a=1\). Since
+\[f'(x)=2x+1-2a,\]
+we have \(f'(a)=1\) for either possible value of \(a\).`,
+  },
+  {
+    id: 10225,
+    number: 225,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 4,
+    methods: ["Logarithmic Differentiation", "Implicit Differentiation"],
+    question: String.raw`Given that \(y^y=x^{x^2}\), determine \(\frac{d^2y}{dx^2}\) at \(x=1\).`,
+    choices: ["0", String.raw`\(-\frac12\)`, "1", "2", "NOTA"],
+    answer: "D",
+    solution: String.raw`Take the natural logarithm of both sides:
+\[y\ln y=x^2\ln x.\]
+Differentiate implicitly:
+\[y'(\ln y+1)=2x\ln x+x.\]
+At \(x=1\), the original equation gives \(y=1\), and then the first-derivative equation gives \(y'=1\). Differentiating once more,
+\[y''(\ln y+1)+\frac{(y')^2}{y}=2\ln x+3.\]
+At \(x=1\), this becomes \(y''+1=3\), so \(y''=2\).`,
+  },
+  {
+    id: 10226,
+    number: 226,
+    division: "Mu",
+    topic: "Numerical Integration",
+    difficulty: 2,
+    methods: ["Simpson's Rule"],
+    question: String.raw`Use the composite Simpson's rule with \(n=4\) subintervals to approximate \(\displaystyle\int_{-1}^3e^x\,dx\).`,
+    choices: [String.raw`\(\frac14(e^{-1}+e^3)+\frac12(e^0+e^1+e^2)\)`, String.raw`\(\frac13(e^{-1}+4e^0+2e^1+4e^2+e^3)\)`, String.raw`\(\frac13(e^{-1}+2e^0+2e^1+2e^2+e^3)\)`, String.raw`\(\frac12(e^{-1/2}+e^{1/2}+e^{3/2}+e^{5/2})\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`The interval has width \(4\), so with \(n=4\), the step size is \(h=1\). Composite Simpson's rule gives
+\[\int_{-1}^3e^x\,dx\approx\frac13\left(e^{-1}+4e^0+2e^1+4e^2+e^3\right).\]`,
+  },
+  {
+    id: 10227,
+    number: 227,
+    division: "Mu",
+    topic: "Conic Sections",
+    difficulty: 5,
+    methods: ["Implicit Differentiation", "Symmetry"],
+    question: String.raw`Given that curve \(c_1\) is defined by \(5x^2+8=2y^2+20x+4y\) and curve \(c_2\) is defined by \(3x^2+7y^2+14y=12x+2\), determine the sum of the slopes of \(c_2\) at the point or points where \(c_1\) and \(c_2\) intersect. If you feel that there is an infinite slope, select DNE as your answer.`,
+    choices: [String.raw`\(-\frac{21}{25}\)`, String.raw`\(\frac{42}{25}\)`, "4", "DNE", "NOTA"],
+    answer: "E",
+    solution: String.raw`Completing the square shows that both conics have center \((2,-1)\):
+\[c_1:\quad \frac{(x-2)^2}{2}-\frac{(y+1)^2}{5}=1,\]
+\[c_2:\quad \frac{(x-2)^2}{7}+\frac{(y+1)^2}{3}=1.\]
+Their intersections occur in four points symmetric about both center lines. Implicit differentiation of \(c_2\) gives
+\[6x+14yy'+14y'=12,
+\qquad y'=-\frac{3(x-2)}{7(y+1)}.\]
+The four symmetric intersection points produce slopes in opposite pairs, so their sum is \(0\), which is not an answer choice.`,
+  },
+  {
+    id: 10228,
+    number: 228,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["Symmetry", "Integration by Parts"],
+    question: String.raw`Calculate
+\[\int_{-\pi/2}^{\pi/2}(x^2\cos x)(\sin x+1)\,dx.\]`,
+    choices: [String.raw`\(\frac{\pi^2-16}{4}\)`, String.raw`\(\frac{\pi^2-8}{2}\)`, String.raw`\(\frac{\pi^2-8}{4}\)`, String.raw`\(\frac{\pi^2-4}{2}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Distribute to create two integrals. The function \(x^2\cos x\sin x\) is odd, so its integral over \([-\pi/2,\pi/2]\) is \(0\). Since \(x^2\cos x\) is even,
+\[\int_{-\pi/2}^{\pi/2}x^2\cos x\,dx=2\int_0^{\pi/2}x^2\cos x\,dx.\]
+Integration by parts gives
+\[2\left[x^2\sin x+2x\cos x-2\sin x\right]_0^{\pi/2}
+=\frac{\pi^2}{2}-4=\frac{\pi^2-8}{2}.\]`,
+  },
+  {
+    id: 10229,
+    number: 229,
+    division: "Mu",
+    topic: "Logarithmic Differentiation",
+    difficulty: 4,
+    methods: ["Logarithmic Differentiation"],
+    question: String.raw`Given that
+\[y=\frac{(x^2+1)^x(x-1)^3}{(2x+3)^{\cos x}},\]
+determine \(\frac{dy}{dx}\) at \(x=0\).`,
+    choices: [String.raw`\(-\frac79\)`, String.raw`\(\frac19\)`, String.raw`\(\frac79\)`, String.raw`\(\frac{11}{9}\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Take the natural logarithm of the absolute value of both sides:
+\[\ln|y|=x\ln(1+x^2)+3\ln|x-1|-\cos x\ln(2x+3).\]
+Differentiate implicitly:
+\[\frac{y'}y=\ln(1+x^2)+\frac{2x^2}{1+x^2}+\frac3{x-1}+\sin x\ln(2x+3)-\frac{2\cos x}{2x+3}.\]
+Since \(y(0)=-1/3\), substitution gives
+\[y'(0)=-\frac13\left(-3-\frac23\right)=\frac{11}{9}.\]`,
+  },
+  {
+    id: 10230,
+    number: 230,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Chain Rule"],
+    question: String.raw`Evaluate
+\[\left.\frac{d}{d\sqrt{2x+3}}(4x^3+15x^2+7x+10)\right|_{x=1}.\]`,
+    choices: [String.raw`\(49\sqrt5\)`, String.raw`\(\frac{49}{2\sqrt5}\)`, String.raw`\(\frac{49}{\sqrt5}\)`, "49", "NOTA"],
+    answer: "A",
+    solution: String.raw`Let \(u=\sqrt{2x+3}\). Then \(du/dx=1/\sqrt{2x+3}\), so \(dx/du=\sqrt{2x+3}\). Therefore,
+\[\frac d{du}(4x^3+15x^2+7x+10)=(12x^2+30x+7)\sqrt{2x+3}.\]
+At \(x=1\), this equals \(49\sqrt5\).`,
+  },
+  {
+    id: 10231,
+    number: 231,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 4,
+    methods: ["U-Substitution"],
+    question: String.raw`Calculate
+\[\int_0^1\sqrt{1-\sqrt{1-\sqrt x}}\,dx.\]`,
+    choices: [String.raw`\(\frac{32}{315}\)`, String.raw`\(\frac{48}{315}\)`, String.raw`\(\frac{144}{315}\)`, String.raw`\(\frac{208}{315}\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Let \(u=\sqrt x\), so \(x=u^2\) and \(dx=2u\,du\). Then let \(v=\sqrt{1-u}\), so \(u=1-v^2\) and \(du=-2v\,dv\). The integral becomes
+\[4\int_0^1v\sqrt{1-v}(1-v^2)\,dv.\]
+Finally let \(w=1-v\). Expanding and integrating gives
+\[4\int_0^1\left(2w^{3/2}-3w^{5/2}+w^{9/2}\right)dw
+=4\left(\frac45-\frac67+\frac2{11}\right)
+=\frac{208}{315}.\]`,
+  },
+  {
+    id: 10232,
+    number: 232,
+    division: "Mu",
+    topic: "Differential Equations",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`Given that \(h''(x)=p''(x)\), \(p(2)=5\), \(h(2)=3\), \(h(-2)=7\), and \(p(x)\) is an even monomial function with degree greater than \(1\), which of the following could be the value of the coefficient of the linear term of \(h(x)\)?`,
+    choices: ["−3", "−1", "2", "7", "NOTA"],
+    answer: "B",
+    solution: String.raw`Since \(h''(x)=p''(x)\), integrating twice gives
+\[h(x)=p(x)+C_1x+C_2.\]
+Because \(p\) is even, \(p(-2)=p(2)=5\). The two given values of \(h\) therefore yield
+\[3=5+2C_1+C_2,\qquad 7=5-2C_1+C_2.\]
+Subtracting gives \(-4=4C_1\), so \(C_1=-1\).
+
+The original question was thrown out because it also described \(p\) as first degree, contradicting the condition that \(p\) was even with degree greater than \(1\). The corrected wording above incorporates the published resolution.`,
+  },
+  {
+    id: 10233,
+    number: 233,
+    division: "Mu",
+    topic: "Series",
+    difficulty: 5,
+    methods: ["Infinite Products", "Partial Fractions"],
+    question: String.raw`Evaluate
+\[\prod_{n=1}^{\infty}\frac{\sqrt[a]{64}}{\sqrt[b]{4}},\]
+where \(a=n^2+2n\) and \(b=n^2+4n+3\).`,
+    choices: [String.raw`\(2^{7/3}\)`, String.raw`\(2^{11/3}\)`, String.raw`\(2^{11/9}\)`, String.raw`\(2^{28/6}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Take the natural logarithm of the product:
+\[\ln P=(\ln64)\sum_{n=1}^{\infty}\frac1{n^2+2n}-(\ln4)\sum_{n=1}^{\infty}\frac1{n^2+4n+3}.\]
+Partial fractions give
+\[\sum_{n=1}^{\infty}\frac1{n(n+2)}=\frac34,\qquad
+\sum_{n=1}^{\infty}\frac1{(n+1)(n+3)}=\frac5{12}.\]
+Therefore,
+\[\ln P=6\ln2\left(\frac34\right)-2\ln2\left(\frac5{12}\right)
+=\frac{11}{3}\ln2,\]
+so \(P=2^{11/3}\).
+
+The original choices B and C were mathematically identical. Choice C above uses the corrected exponent from the published dispute resolution.`,
+  },
+  {
+    id: 10234,
+    number: 234,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`Evaluate
+\[\lim_{x\to\infty}\frac1{1+\frac1{1+\frac1x}}.\]`,
+    choices: ["0", String.raw`\(\frac12\)`, String.raw`\(\frac1e\)`, String.raw`\(e\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`As \(x\to\infty\), \(1/x\to0\). Therefore,
+\[\frac1{1+\frac1{1+\frac1x}}\to\frac1{1+\frac1{1+0}}=\frac12.\]`,
+  },
+  {
+    id: 10235,
+    number: 235,
+    division: "Mu",
+    topic: "Indefinite Integrals",
+    difficulty: 5,
+    methods: ["Trig Substitution", "Integration by Parts"],
+    question: String.raw`Calculate
+\[\int\frac{x^2-6x+10}{\sqrt{x^2-6x+18}}\,dx.\]`,
+    choices: [String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}+\frac92\ln\left(\frac{\sqrt{x^2-6x+18}+x-3}{3}\right)+C\)`, String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}-\frac72\ln|x-3|+C\)`, String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}-\frac72\arctan\left(\frac{x-3}{3}\right)+C\)`, String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}-\frac72\ln\left|\frac{\sqrt{x^2-6x+18}+x-3}{3}\right|+C\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Complete the square and let \(u=x-3\):
+\[\int\frac{x^2-6x+10}{\sqrt{x^2-6x+18}}\,dx
+=\int\frac{u^2+1}{\sqrt{u^2+9}}\,du.\]
+Using \(u=3\tan\theta\), the integral becomes
+\[9\int\sec^3\theta\,d\theta-8\int\sec\theta\,d\theta.\]
+Integration by parts gives
+\[\int\sec^3\theta\,d\theta=\frac12\sec\theta\tan\theta+\frac12\ln|\sec\theta+\tan\theta|.\]
+Substituting back yields
+\[\frac{x-3}{2}\sqrt{x^2-6x+18}
+-\frac72\ln\left|\frac{\sqrt{x^2-6x+18}+x-3}{3}\right|+C.\]`,
+  },
 ];
