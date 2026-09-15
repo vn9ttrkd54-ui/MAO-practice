@@ -23,12 +23,12 @@ const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: numbe
   "[[solution-diagram:mu-217]]": {
     src: "/questions/mu-217-solution.svg",
     alt: "A circle inscribed in a square of side s, with the square inscribed in an equilateral triangle of side a.",
-    width: 520, height: 420,
+    width: 440, height: 360,
   },
   "[[solution-diagram:mu-227]]": {
     src: "/questions/mu-227-solution.svg",
     alt: "A centered ellipse and hyperbola intersecting at four points symmetric about x equals 2 and y equals negative 1.",
-    width: 620, height: 500,
+    width: 440, height: 360,
   },
 };
 
