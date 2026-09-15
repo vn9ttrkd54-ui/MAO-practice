@@ -54,9 +54,10 @@ test("all restored math compiles without KaTeX errors", () => {
   }
 });
 
-test("three diagrams render in solutions only, with local allowlisted sources", () => {
-  for (const n of [194,196,201]) {
-    const q = get(n);
+test("solution diagrams render from local allowlisted sources", () => {
+  for (const n of [194,196,201,217,227]) {
+    const q = muQuestions.find(question => question.number === n);
+    assert.ok(q);
     assert.doesNotMatch(q.question, /solution-diagram/);
     const html = renderToStaticMarkup(React.createElement(MathText, null, q.solution));
     assert.match(html, new RegExp(`/questions/mu-${n}-solution.svg`));

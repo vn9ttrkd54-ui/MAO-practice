@@ -1988,6 +1988,7 @@ The limit is \((2^2)(3^2)(1^2)=36\), which is not an answer choice.`,
 At \(s=6\) and \(dA_c/dt=3\), we obtain \(ds/dt=1/\pi\).
 
 Let \(a\) be the side length of the equilateral triangle. Comparing the triangle above the square with the full triangle using similar triangles gives
+[[solution-diagram:mu-217]]
 \[a=s\left(1+\frac2{\sqrt3}\right).\]
 Thus
 \[A_t=\frac{\sqrt3}{4}a^2=\left(1+\frac{7\sqrt3}{12}\right)s^2.\]
@@ -2149,6 +2150,7 @@ At \(x=1\), this becomes \(y''+1=3\), so \(y''=2\).`,
     solution: String.raw`Completing the square shows that both conics have center \((2,-1)\):
 \[c_1:\quad \frac{(x-2)^2}{2}-\frac{(y+1)^2}{5}=1,\]
 \[c_2:\quad \frac{(x-2)^2}{7}+\frac{(y+1)^2}{3}=1.\]
+[[solution-diagram:mu-227]]
 Their intersections occur in four points symmetric about both center lines. Implicit differentiation of \(c_2\) gives
 \[6x+14yy'+14y'=12,
 \qquad y'=-\frac{3(x-2)}{7(y+1)}.\]

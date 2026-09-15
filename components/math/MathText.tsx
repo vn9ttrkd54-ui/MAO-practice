@@ -2,7 +2,7 @@ import katex from "katex";
 import Image from "next/image";
 
 type MathTextProps = { children: string; className?: string };
-const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201)\]\])/g;
+const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227)\]\])/g;
 // Explicit local allowlist: never interpret arbitrary URLs or HTML from text.
 const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: number; height: number }> = {
   "[[solution-diagram:mu-194]]": {
@@ -19,6 +19,16 @@ const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: numbe
     src: "/questions/mu-201-solution.svg",
     alt: "Ladder triangle: ground b equals 5, leaning tree segment c equals 3, ladder a equals 7, with angle A equal to 2 pi over 3 at the tree base.",
     width: 460, height: 240,
+  },
+  "[[solution-diagram:mu-217]]": {
+    src: "/questions/mu-217-solution.svg",
+    alt: "A circle inscribed in a square of side s, with the square inscribed in an equilateral triangle of side a.",
+    width: 520, height: 420,
+  },
+  "[[solution-diagram:mu-227]]": {
+    src: "/questions/mu-227-solution.svg",
+    alt: "A centered ellipse and hyperbola intersecting at four points symmetric about x equals 2 and y equals negative 1.",
+    width: 620, height: 500,
   },
 };
 
