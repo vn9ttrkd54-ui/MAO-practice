@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" role="img" aria-labelledby="title desc">
+  <title id="title">Piecewise graph of f</title>
+  <desc id="desc">Graph of f on negative 5 through 6 with jumps, a removable discontinuity, a cusp, a vertical tangent, and a corner.</desc>
+  <rect width="760" height="520" fill="#fff"/>
+  <g stroke="#d1d5db" stroke-width="1">
+    <path d="M80 35V470M135 35V470M190 35V470M245 35V470M300 35V470M355 35V470M410 35V470M465 35V470M520 35V470M575 35V470M630 35V470M685 35V470"/>
+    <path d="M65 55H705M65 110H705M65 165H705M65 220H705M65 275H705M65 330H705M65 385H705M65 440H705"/>
+  </g>
+  <g stroke="#475569" stroke-width="2"><path d="M65 220H705"/><path d="M355 30V475"/></g>
+  <g fill="none" stroke="#dc5a55" stroke-width="3" stroke-linecap="round">
+    <path d="M80 128 C120 145 160 174 190 220 C225 177 270 144 300 128"/>
+    <path d="M300 244 C335 239 374 229 410 220 C438 211 457 205 465 176 C467 142 490 119 575 92"/>
+    <path d="M575 220 L630 495 L685 220"/>
+  </g>
+  <g fill="#dc5a55"><circle cx="80" cy="128" r="6"/><circle cx="300" cy="244" r="6"/><circle cx="410" cy="330" r="6"/><circle cx="575" cy="220" r="6"/><circle cx="685" cy="220" r="6"/></g>
+  <g fill="#fff" stroke="#dc5a55" stroke-width="3"><circle cx="300" cy="128" r="6"/><circle cx="410" cy="220" r="6"/><circle cx="575" cy="92" r="6"/></g>
+  <g fill="#334155" font-family="Arial, sans-serif" font-size="14">
+    <text x="73" y="242">−5</text><text x="183" y="242">−3</text><text x="293" y="242">−1</text><text x="404" y="242">1</text><text x="459" y="242">2</text><text x="569" y="242">4</text><text x="624" y="242">5</text><text x="679" y="242">6</text>
+    <text x="335" y="114">2</text><text x="335" y="169">1</text><text x="330" y="334">−2</text><text x="330" y="444">−4</text>
+  </g>
+</svg>

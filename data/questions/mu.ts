@@ -2299,4 +2299,523 @@ Substituting back yields
 \[\frac{x-3}{2}\sqrt{x^2-6x+18}
 -\frac72\ln\left|\frac{\sqrt{x^2-6x+18}+x-3}{3}\right|+C.\]`,
   },
+  // 2026 FAMAT January Regional Calculus Individual Test.
+  // Source questions 1–30 map to bank questions 236–265 (IDs 10236–10265).
+  {
+    id: 10236,
+    number: 236,
+    division: "Mu",
+    topic: "Continuity",
+    difficulty: 2,
+    methods: ["Intermediate Value Theorem"],
+    question: String.raw`How many of the following functions can be shown to have a root on the interval \([-2,1]\) due to the application of the Intermediate Value Theorem?
+\[f_1(x)=\frac{x}{x-2},\quad f_2(x)=\frac{x}{x+1},\quad f_3(x)=2x^2+5,\quad f_4(x)=2\sin(3x)+5\]`,
+    choices: ["0", "1", "2", "3", "NOTA"],
+    answer: "C",
+    solution: String.raw`The Intermediate Value Theorem requires continuity on a closed interval and values of opposite signs at its endpoints. Functions \(f_3\) and \(f_4\) cannot be shown to have roots because they are always positive. Function \(f_1\) is continuous on \([-2,1]\), with \(f_1(-2)>0\) and \(f_1(1)<0\). Although \(f_2\) is not continuous on all of \([-2,1]\), it is continuous on \([-1/2,1]\), where \(f_2(-1/2)<0\) and \(f_2(1)>0\). Thus two functions can be shown to have roots.`,
+  },
+  {
+    id: 10237,
+    number: 237,
+    division: "Mu",
+    topic: "Asymptotes",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`What are the equations of all asymptotes of the function
+\[f(x)=\frac{\sqrt{x^2-9}}{x-3}?\]`,
+    choices: [String.raw`\(y=1,\ y=-1,\ x=-3\)`, String.raw`\(y=0,\ x=3\)`, String.raw`\(y=1,\ x=3\)`, String.raw`\(y=1,\ y=-1,\ x=3\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`There is a vertical asymptote at \(x=3\) because \(f(x)\to\infty\) as \(x\to3^+\). As \(x\to\infty\), \(f(x)\to1\), while as \(x\to-\infty\), \(f(x)\to-1\). Thus the horizontal asymptotes are \(y=1\) and \(y=-1\).`,
+  },
+  {
+    id: 10238,
+    number: 238,
+    division: "Mu",
+    topic: "Continuity",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`Use the graph of \(f(x)\) shown below on the interval \([-5,6]\). The function is not defined for \(x<-5\) or \(x>6\), and there is a vertical tangent line at \(x=2\).
+
+For how many values of \(x\) on \([-5,6]\) is \(f\) discontinuous?`,
+    illustration: {
+      src: "/questions/mu-238-240-graph.svg",
+      alt: "Piecewise graph of f on the closed interval from negative 5 to 6",
+      width: 760,
+      height: 520,
+    },
+    choices: ["3", "4", "5", "6", "NOTA"],
+    answer: "A",
+    solution: String.raw`The function is discontinuous at three values: \(x=-1\) (jump), \(x=1\) (removable), and \(x=4\) (jump).`,
+  },
+  {
+    id: 10239,
+    number: 239,
+    division: "Mu",
+    topic: "Differentiability",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`Use the graph of \(f(x)\) shown below on the interval \([-5,6]\). The function is not defined for \(x<-5\) or \(x>6\), and there is a vertical tangent line at \(x=2\).
+
+For how many values of \(x\) on \((-5,6)\) is \(f\) non-differentiable?`,
+    illustration: {
+      src: "/questions/mu-238-240-graph.svg",
+      alt: "Piecewise graph of f on the closed interval from negative 5 to 6",
+      width: 760,
+      height: 520,
+    },
+    choices: ["3", "4", "5", "6", "NOTA"],
+    answer: "D",
+    solution: String.raw`The function is non-differentiable at six values: the three discontinuities \(x=-1,1,4\), together with \(x=-3\) (cusp), \(x=2\) (vertical tangent), and \(x=5\) (corner).`,
+  },
+  {
+    id: 10240,
+    number: 240,
+    division: "Mu",
+    topic: "Continuity",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`Use the graph of \(f(x)\) shown below on the interval \([-5,6]\). The function is not defined for \(x<-5\) or \(x>6\), and there is a vertical tangent line at \(x=2\).
+
+At what value \(a\) do both \(\displaystyle\lim_{x\to a}f(x)\) and \(f(a)\) exist, but \(\displaystyle\lim_{x\to a}f(x)\ne f(a)\)?`,
+    illustration: {
+      src: "/questions/mu-238-240-graph.svg",
+      alt: "Piecewise graph of f on the closed interval from negative 5 to 6",
+      width: 760,
+      height: 520,
+    },
+    choices: ["−3", "−1", "1", "4", "NOTA"],
+    answer: "C",
+    solution: String.raw`The given property describes a removable discontinuity. The only removable discontinuity occurs at \(x=1\), where the curve has a hole and \(f(1)\) is defined at a different value.`,
+  },
+  {
+    id: 10241,
+    number: 241,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 1,
+    methods: ["Exponential Limits"],
+    question: String.raw`Which limit approaches the constant \(e\)?`,
+    choices: [String.raw`\(\displaystyle\lim_{x\to\infty}\left(1+\frac1x\right)^x\)`, String.raw`\(\displaystyle\lim_{x\to0}\left(1+\frac1x\right)^x\)`, String.raw`\(\displaystyle\lim_{x\to0}(1-x)^{1/x}\)`, String.raw`\(\displaystyle\lim_{x\to\infty}(1+x)^{1/x}\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`The limit definition of \(e\) is
+\[e=\lim_{x\to\infty}\left(1+\frac1x\right)^x.\]`,
+  },
+  {
+    id: 10242,
+    number: 242,
+    division: "Mu",
+    topic: "Tangent Lines",
+    difficulty: 2,
+    methods: ["Quotient Rule"],
+    question: String.raw`What is the x-coordinate of the x-intercept of the tangent line to \(f(x)=\frac{e^x}{e^x+1}\) at \(x=0\)?`,
+    choices: ["−4", "−2", String.raw`\(\frac12\)`, "2", "NOTA"],
+    answer: "B",
+    solution: String.raw`We have \(f(0)=1/2\). By the quotient rule,
+\[f'(x)=\frac{e^x(e^x+1)-e^x(e^x)}{(e^x+1)^2},\]
+so \(f'(0)=1/4\). The tangent line is \(y-1/2=\frac14x\). Setting \(y=0\) gives \(x=-2\).`,
+  },
+  {
+    id: 10243,
+    number: 243,
+    division: "Mu",
+    topic: "Higher-Order Derivatives",
+    difficulty: 2,
+    methods: ["Derivative Cycles"],
+    question: String.raw`If \(y=\frac14\sin(2x)\), what is \(\frac{d^{99}y}{dx^{99}}\)?`,
+    choices: [String.raw`\(2^{98}\sin(2x)\)`, String.raw`\(-2^{98}\sin(2x)\)`, String.raw`\(-2^{97}\cos(2x)\)`, String.raw`\(-2^{98}\cos(2x)\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`The derivatives of sine repeat with period four, while each derivative contributes a factor of \(2\). The \(n\)th derivative has coefficient \(2^{n-2}\). Since the 99th derivative has the same trigonometric form as the third derivative, it equals
+\[-2^{97}\cos(2x).\]`,
+  },
+  {
+    id: 10244,
+    number: 244,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["First Derivative Test"],
+    question: String.raw`If \(f'(x)=-2x^2(x-1)(x+2)\), which statement is true about \(f\)?`,
+    choices: [String.raw`\(f\) has a local maximum at \(x=-2\) and a local minimum at \(x=1\).`, String.raw`\(f\) has a local maximum at \(x=1\) and a local minimum at \(x=-2\).`, String.raw`\(f\) has a local maximum at \(x=-2\) and no local minimum.`, String.raw`\(f\) has local maxima at \(x=-2\) and \(x=0\) and a local minimum at \(x=1\).`, "NOTA"],
+    answer: "B",
+    solution: String.raw`The critical values are \(x=-2,0,1\). A sign chart shows that \(f'\) is negative, positive, positive, and negative on the four resulting intervals. Therefore \(f\) has a local minimum at \(x=-2\), no extremum at \(x=0\), and a local maximum at \(x=1\).`,
+  },
+  {
+    id: 10245,
+    number: 245,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Chain Rule"],
+    question: String.raw`Which represents \(f''(x)\) if \(f(x)=\arctan(2x)\)?`,
+    choices: [String.raw`\(\frac{2(1-4x^2)}{(1+4x^2)^2}\)`, String.raw`\(\frac2{(1+4x^2)}\)`, String.raw`\(\frac{2(1-4x^2)}{(1+2x^2)^2}\)`, String.raw`\(\frac{2(1+4x^2)}{(1-4x^2)^2}\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`Using the chain rule,
+\[f'(x)=\frac2{1+(2x)^2}=\frac2{1+4x^2},\]
+so
+\[f''(x)=-\frac{16x}{(1+4x^2)^2}.\]
+This is not listed, so the answer is NOTA.`,
+  },
+  {
+    id: 10246,
+    number: 246,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 3,
+    methods: ["First Derivative Test"],
+    question: String.raw`A right circular cylinder is inscribed in a sphere of radius \(6\). What is the maximum volume of the cylinder?`,
+    choices: [String.raw`\(48\pi\sqrt3\)`, String.raw`\(64\pi\sqrt3\)`, String.raw`\(96\pi\sqrt3\)`, String.raw`\(108\pi\sqrt3\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Let \(r\) be the cylinder's radius and \(h\) half its height. Then \(r^2+h^2=36\), so
+\[V=\pi r^2(2h)=2\pi(36-h^2)h=72\pi h-2\pi h^3.\]
+Thus \(V'(h)=72\pi-6\pi h^2\), which is zero when \(h=2\sqrt3\). Since \(V''(h)<0\), this gives the maximum:
+\[V=72\pi(2\sqrt3)-2\pi(2\sqrt3)^3=96\pi\sqrt3.\]`,
+  },
+  {
+    id: 10247,
+    number: 247,
+    division: "Mu",
+    topic: "Sequences",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`Let \(a_1=1\) and define \(a_{n+1}=a_n+\frac1{2a_n+1}\) for \(n\ge1\). Evaluate \(\displaystyle\lim_{n\to\infty}\frac{a_n}{\sqrt n}\).`,
+    choices: [String.raw`\(\frac{\sqrt3}{2}\)`, String.raw`\(\frac34\)`, String.raw`\(\frac43\)`, String.raw`\(\frac{2\sqrt3}{3}\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`Let \(x_n=2a_n+1\), so \(x_1=3\) and
+\[x_{n+1}=x_n+\frac2{x_n}.\]
+Therefore,
+\[x_{n+1}^2-x_n^2=4+\frac4{x_n^2}.\]
+Summing gives \(x_n^2=4n+O(\ln n)\), so \(x_n/(2\sqrt n)\to1\). Since \(a_n=(x_n-1)/2\),
+\[\lim_{n\to\infty}\frac{a_n}{\sqrt n}=1,\]
+which is NOTA.`,
+  },
+  {
+    id: 10248,
+    number: 248,
+    division: "Mu",
+    topic: "Inequalities",
+    difficulty: 5,
+    methods: ["Cauchy-Schwarz Inequality"],
+    question: String.raw`If \(f\) is a continuously differentiable, real-valued function on \([0,1]\) such that \(f(0)=0\), find the rational number which is the least upper bound of
+\[\frac{\left(\int_0^1f(x)\,dx\right)^2}{\int_0^1(f'(x))^2\,dx}.\]
+If the maximum can be written in the form \(a/b\), where \(a\) and \(b\) are relatively prime, what is the remainder when \(a+b\) is divided by \(6\)?`,
+    choices: ["5", "4", "3", "2", "NOTA"],
+    answer: "B",
+    solution: String.raw`Since \(f(0)=0\), write \(f(x)=\int_0^x f'(t)\,dt\). Reversing the order of integration gives
+\[\int_0^1f(x)\,dx=\int_0^1(1-t)f'(t)\,dt.\]
+By Cauchy-Schwarz,
+\[\left(\int_0^1(1-t)f'(t)\,dt\right)^2
+\le\left(\int_0^1(1-t)^2dt\right)\left(\int_0^1(f'(t))^2dt\right)
+=\frac13\int_0^1(f'(t))^2dt.\]
+Equality occurs when \(f'(t)=c(1-t)\), so the maximum is \(1/3\). Thus \(a+b=4\), whose remainder modulo \(6\) is \(4\).`,
+  },
+  {
+    id: 10249,
+    number: 249,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 1,
+    methods: ["Related Rates"],
+    question: String.raw`A rectangle has a constant area of \(40\) square inches. Its base increases at a rate of \(2\) inches per second. Which best describes the rate of change of the rectangle's height when the height is \(10\) inches?`,
+    choices: ["The height is decreasing at a rate of 5 inches per second.", "The height is decreasing at a rate of 2 inches per second.", "The height is decreasing at a rate of 0.5 inches per second.", "The height is increasing at a rate of 2 inches per second.", "NOTA"],
+    answer: "A",
+    solution: String.raw`Let \(40=bh\), where \(b\) is the base and \(h\) is the height. When \(h=10\), \(b=4\). Differentiating gives
+\[0=b'h+bh'=2(10)+4h',\]
+so \(h'=-5\). The height is decreasing at \(5\) inches per second.`,
+  },
+  {
+    id: 10250,
+    number: 250,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 3,
+    methods: ["Derivative Graphs"],
+    question: String.raw`Three functions, \(p\), \(r\), and \(s\), are graphed. Which correctly matches how the graphs relate?`,
+    illustration: {
+      src: "/questions/mu-250-derivative-graphs.svg",
+      alt: "Three curves labeled p, r, and s for identifying first- and second-derivative relationships",
+      width: 760,
+      height: 430,
+    },
+    choices: [String.raw`\(r=s',\ p=s''\)`, String.raw`\(s=r',\ p=r''\)`, String.raw`\(p=r',\ s=r''\)`, String.raw`\(p=s',\ r=s''\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`The zeros of \(r\) correspond with the local extrema of \(s\), showing that \(s'=r\). Similarly, the zeros of \(p\) correspond to the local extrema of \(r\), showing that \(r'=p\), and therefore \(s''=p\).`,
+  },
+  {
+    id: 10251,
+    number: 251,
+    division: "Mu",
+    topic: "Differentiability",
+    difficulty: 2,
+    methods: ["Limit Definition of Derivatives"],
+    question: String.raw`If \(\displaystyle\lim_{x\to2}\frac{f(x)-f(2)}{x-2}=5\), which statement(s) must be true about \(f(x)\)?
+
+I. \(f(x)\) is continuous at \(x=2\).
+
+II. \(f(x)\) is differentiable at \(x=2\).
+
+III. \(f'(5)=2\).`,
+    choices: ["I only", "I and II only", "I and III only", "I, II, and III", "NOTA"],
+    answer: "B",
+    solution: String.raw`The given limit is the definition of \(f'(2)\), so \(f\) is differentiable at \(x=2\). Differentiability implies continuity there. Nothing is given about \(f'(5)\), so only I and II must be true.`,
+  },
+  {
+    id: 10252,
+    number: 252,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 2,
+    methods: ["Implicit Differentiation"],
+    question: String.raw`What is the slope of the normal line to the equation \(x^2y-xy^2=6\) at the point \((3,1)\)?`,
+    choices: [String.raw`\(-\frac53\)`, String.raw`\(-\frac35\)`, String.raw`\(\frac35\)`, String.raw`\(\frac53\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Implicit differentiation gives
+\[2xy+x^2y'-y^2-2xyy'=0,
+\qquad y'=\frac{y^2-2xy}{x^2-2xy}.\]
+At \((3,1)\), the tangent slope is \(-5/3\). The normal slope is its opposite reciprocal, \(3/5\).`,
+  },
+  {
+    id: 10253,
+    number: 253,
+    division: "Mu",
+    topic: "Linear Approximation",
+    difficulty: 2,
+    methods: ["Linear Approximation", "Concavity"],
+    question: String.raw`Which of the following best describes the local linear approximation of \(\sqrt{105}\) using \(f(x)=\sqrt x\) at \(x=100\)?`,
+    choices: [String.raw`\(\sqrt{105}\approx10.25\) and it is an underestimate.`, String.raw`\(\sqrt{105}\approx10.25\) and it is an overestimate.`, String.raw`\(\sqrt{105}\approx10.5\) and it is an underestimate.`, String.raw`\(\sqrt{105}\approx10.5\) and it is an overestimate.`, "NOTA"],
+    answer: "B",
+    solution: String.raw`We have \(f(100)=10\) and \(f'(100)=1/20\), so the local linear approximation gives
+\[\sqrt{105}\approx10+\frac1{20}(5)=10.25.\]
+Since \(f\) is concave down, its tangent line lies above the curve, making this an overestimate.`,
+  },
+  {
+    id: 10254,
+    number: 254,
+    division: "Mu",
+    topic: "Inverse Functions",
+    difficulty: 2,
+    methods: ["Derivative of Inverse Functions"],
+    question: String.raw`Use the following table for differentiable functions \(f\) and \(g\). Function \(f\) is invertible, and \(h(x)=f^{-1}(x)\).
+\[
+\begin{array}{c|rrrrr}
+x&-2&-1&0&1&2\\\hline
+f(x)&4&2&0&-1&-2\\
+g(x)&0&-2&1&-2&-1\\
+f'(x)&-4&-3&-2&-2&-2\\
+g'(x)&1&2&-2&1&3
+\end{array}
+\]
+What is \(h'(-2)\)?`,
+    choices: ["−2", String.raw`\(-\frac12\)`, String.raw`\(-\frac14\)`, String.raw`\(\frac12\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Since \(f(2)=-2\), we have \(h(-2)=2\). Derivatives of inverse functions are reciprocal at corresponding points, so
+\[h'(-2)=\frac1{f'(2)}=-\frac12.\]`,
+  },
+  {
+    id: 10255,
+    number: 255,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Chain Rule"],
+    question: String.raw`Use the following table for differentiable functions \(f\) and \(g\).
+\[
+\begin{array}{c|rrrrr}
+x&-2&-1&0&1&2\\\hline
+f(x)&4&2&0&-1&-2\\
+g(x)&0&-2&1&-2&-1\\
+f'(x)&-4&-3&-2&-2&-2\\
+g'(x)&1&2&-2&1&3
+\end{array}
+\]
+If \(r(x)=f(g(2x))\), what is \(r'(1)\)?`,
+    choices: ["−12", "−6", "−3", "3", "NOTA"],
+    answer: "E",
+    solution: String.raw`By the chain rule,
+\[r'(x)=2f'(g(2x))g'(2x).\]
+Using \(g(2)=-1\), \(f'(-1)=-3\), and \(g'(2)=3\),
+\[r'(1)=2(-3)(3)=-18,\]
+which is NOTA.`,
+  },
+  {
+    id: 10256,
+    number: 256,
+    division: "Mu",
+    topic: "Probability",
+    difficulty: 5,
+    methods: ["Integration by Parts", "Infinite Series"],
+    question: String.raw`What is the probability that \(\displaystyle\int_0^1x^n\tan^{-1}x\,dx\) is rational if \(n\) is a positive integer?`,
+    choices: [String.raw`\(\frac3{4e}\)`, String.raw`\(\frac{\sqrt2}{6}\)`, String.raw`\(\frac14\)`, String.raw`\(\frac3{4\pi}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Let
+\[I_n=\int_0^1x^n\tan^{-1}x\,dx.\]
+Integration by parts gives
+\[I_n=\frac1{n+1}\left(\frac\pi4-\int_0^1\frac{x^{n+1}}{1+x^2}\,dx\right).\]
+For odd \(n\), repeatedly using
+\[\frac{x^{m}}{1+x^2}=x^{m-2}-\frac{x^{m-2}}{1+x^2}\]
+shows that the integral on the right contains \(\pi/4\) with alternating sign. The \(\pi\)-terms cancel precisely when \(n\equiv3\pmod4\). Thus the integral is rational for the positive integers \(3,7,11,\ldots\), which have natural density \(1/4\).`,
+  },
+  {
+    id: 10257,
+    number: 257,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`Consider the three limits below. Which limit(s) evaluate to \(0\)?
+
+I. \(\displaystyle\lim_{x\to\infty}\frac{\ln(x^2)}{x^2}\)
+
+II. \(\displaystyle\lim_{x\to\infty}\frac{x^{100}}{e^{2x}}\)
+
+III. \(\displaystyle\lim_{x\to\infty}\frac{10\sin(4x)}x\)`,
+    choices: ["I and II only", "II and III only", "I and III only", "I, II, and III", "NOTA"],
+    answer: "D",
+    solution: String.raw`All three limits equal \(0\). In I, polynomial growth dominates logarithmic growth. In II, exponential growth dominates polynomial growth. In III, the numerator is bounded while the denominator grows without bound.`,
+  },
+  {
+    id: 10258,
+    number: 258,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 2,
+    methods: ["U-Substitution"],
+    question: String.raw`For a continuous function \(f(x)\), it is given that
+\[\int_1^3xf(x^2)\,dx=8.\]
+What is the value of \(\displaystyle\int_1^9f(x)\,dx\)?`,
+    choices: ["4", "8", "12", "16", "NOTA"],
+    answer: "D",
+    solution: String.raw`Let \(u=x^2\), so \(du=2x\,dx\). The bounds become \(u=1\) and \(u=9\), giving
+\[\frac12\int_1^9f(u)\,du=8.\]
+Therefore, \(\int_1^9f(x)\,dx=16\).`,
+  },
+  {
+    id: 10259,
+    number: 259,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 4,
+    methods: ["Integral Properties"],
+    question: String.raw`Evaluate
+\[\int_0^{1/2}\tan^{-1}(x^2-x+1)\,dx.\]`,
+    choices: [String.raw`\(\frac{\pi\ln2}{6}\)`, String.raw`\(\ln\sqrt2\)`, String.raw`\(\frac\pi8\)`, String.raw`\(\frac\pi4\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Using
+\[\tan^{-1}x+\tan^{-1}(1-x)=\tan^{-1}\left(\frac1{x^2-x+1}\right)
+=\frac\pi2-\tan^{-1}(x^2-x+1),\]
+and the symmetry of \(x^2-x+1\) about \(x=1/2\), we obtain
+\[2I=\frac\pi2-2\int_0^1\tan^{-1}x\,dx.\]
+Since \(\int_0^1\tan^{-1}x\,dx=\frac\pi4-\frac12\ln2\), it follows that
+\[I=\frac12\ln2=\ln\sqrt2.\]`,
+  },
+  {
+    id: 10260,
+    number: 260,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 4,
+    methods: ["Infinite Series", "Partial Fractions"],
+    question: String.raw`If \(g(x)=\left\lfloor\frac1x\right\rfloor\), evaluate
+\[\int_0^1\frac1{g(x)}\,dx.\]`,
+    choices: [String.raw`\(\frac{\pi^2}{16}\)`, String.raw`\(\frac{\pi^2}{8}\)`, String.raw`\(\frac{\pi^2}{6}\)`, String.raw`\(\frac{\pi^2}{12}\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`For \(x\in(1/(k+1),1/k]\), \(g(x)=k\). Therefore,
+\[\int_0^1\frac1{g(x)}\,dx
+=\sum_{k=1}^{\infty}\frac1k\left(\frac1k-\frac1{k+1}\right)
+=\sum_{k=1}^{\infty}\frac1{k^2(k+1)}.\]
+Since
+\[\frac1{k^2(k+1)}=\frac1{k^2}-\frac1k+\frac1{k+1},\]
+the sum is \(\pi^2/6-1\), which is NOTA.`,
+  },
+  {
+    id: 10261,
+    number: 261,
+    division: "Mu",
+    topic: "Applications of Integration",
+    difficulty: 1,
+    methods: ["Average Value of a Function"],
+    question: String.raw`The function \(f(t)\) represents the rate of rainfall, in inches per hour, at time \(t\) in hours after 12 p.m. Which of the following is the best interpretation of
+\[\frac1{3-1}\int_1^3f(t)\,dt=0.5?\]`,
+    choices: ["At 3 pm, 0.5 inches of rain was accumulated.", "An accumulation of 0.5 inches of rain occurred from 1 pm to 3 pm.", "An average of 0.5 inches of rain per hour fell from 1 pm to 3 pm.", "An average of 0.5 inches of rain per hour was accumulated at 3 pm.", "NOTA"],
+    answer: "C",
+    solution: String.raw`The average value of a function \(f\) on \([a,b]\) is
+\[\frac1{b-a}\int_a^bf(x)\,dx.\]
+Thus the expression represents an average rainfall rate of \(0.5\) inches per hour from 1 p.m. to 3 p.m.`,
+  },
+  {
+    id: 10262,
+    number: 262,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 5,
+    methods: ["Implicit Differentiation", "First Derivative Test"],
+    question: String.raw`A tangent line is drawn at a point in the first quadrant on the graph of
+\[\frac{x^2}{16}+\frac{y^2}{4}=1.\]
+This tangent line, together with the coordinate axes, encloses a triangular region in the first quadrant. What is the minimum possible area of the interior of this triangle?`,
+    choices: ["16", String.raw`\(\frac{16\sqrt3}{3}\)`, "8", String.raw`\(4\sqrt3\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Let \((a,b)\) be the point of tangency, so \(a^2+4b^2=16\). The tangent line to the ellipse at \((a,b)\) is
+\[\frac{ax}{16}+\frac{by}{4}=1.\]
+Its intercepts are \(16/a\) and \(4/b\), so the enclosed triangle has area
+\[A(b)=\frac12\left(\frac{16}{a}\right)\left(\frac4b\right)
+=\frac{16}{b\sqrt{4-b^2}}.\]
+Differentiation shows the minimum occurs at \(b=\sqrt2\), yielding \(A=8\).`,
+  },
+  {
+    id: 10263,
+    number: 263,
+    division: "Mu",
+    topic: "Differential Equations",
+    difficulty: 2,
+    methods: ["Separation of Variables"],
+    question: String.raw`If \(\frac{dy}{dx}=x^2y\) with \(y(0)=2\), what is \(y(3)\)?`,
+    choices: [String.raw`\(2e^3\)`, String.raw`\(e^9\)`, String.raw`\(2e^9\)`, String.raw`\(2e^{27}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Separate variables:
+\[\frac{dy}{y}=x^2\,dx.\]
+Integration gives \(\ln|y|=x^3/3+C\). Since \(y(0)=2\), \(C=\ln2\), so
+\[y=2e^{x^3/3}.\]
+Thus \(y(3)=2e^9\).`,
+  },
+  {
+    id: 10264,
+    number: 264,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 4,
+    methods: ["Implicit Differentiation", "Concavity"],
+    question: String.raw`Consider the three statements about the graph of the curve given by \(x^2-xy+y^2=3\).
+
+I. The graph is increasing at \((-1,1)\).
+
+II. The graph is concave up at \((-1,1)\).
+
+III. The graph has a vertical tangent line at \((2,1)\).
+
+Which of these statements are true?`,
+    choices: ["I only", "III only", "I and II only", "I, II, and III", "NOTA"],
+    answer: "E",
+    solution: String.raw`Implicit differentiation gives
+\[2x-y-xy'+2yy'=0,
+\qquad y'=\frac{2x-y}{x-2y}.\]
+At \((-1,1)\), \(y'>0\), so I is true. Differentiating again shows \(y''<0\) there, so II is false. At \((2,1)\), the denominator of \(y'\) is zero while the numerator is nonzero, so the tangent is vertical and III is true. Thus I and III are true, which is NOTA.`,
+  },
+  {
+    id: 10265,
+    number: 265,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 4,
+    methods: ["Trig Identity", "Chain Rule"],
+    question: String.raw`Let
+\[f(x)=\frac{\sec^2(2x)+\csc^2(2x)-\tan^2(2x)-\cot^2(2x)}{(\cos(4x)+\sin(4x))^2}.\]
+Which of the following is \(f'(\pi/48)\)?`,
+    choices: [String.raw`\(-\frac{32\sqrt3}{9}\)`, String.raw`\(-\frac{16\sqrt3}{9}\)`, String.raw`\(\frac{32\sqrt3}{9}\)`, String.raw`\(\frac{16\sqrt3}{9}\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`Using the Pythagorean and double-angle identities,
+\[f(x)=\frac2{1+\sin(8x)}.\]
+Therefore,
+\[f'(x)=-\frac{16\cos(8x)}{(1+\sin(8x))^2}.\]
+At \(x=\pi/48\), this is
+\[-\frac{16(\sqrt3/2)}{(1+1/2)^2}=-\frac{32\sqrt3}{9}.\]`,
+  },
 ];

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" role="img" aria-labelledby="title desc">
+  <title id="title">Three related function graphs</title>
+  <desc id="desc">A dashed curve p, dotted curve r, and solid curve s used to identify derivative relationships.</desc>
+  <rect width="760" height="430" fill="#fff"/>
+  <path d="M70 230H700" stroke="#64748b" stroke-width="1.5"/>
+  <path d="M70 214 C130 220 168 256 218 274 C279 295 333 270 375 215 C425 151 474 137 527 164 C585 194 633 230 700 236" fill="none" stroke="#111827" stroke-width="3"/>
+  <path d="M70 243 C133 273 182 278 229 246 C278 214 317 138 372 120 C430 101 483 159 527 243 C567 319 627 302 700 230" fill="none" stroke="#111827" stroke-width="4" stroke-dasharray="3 8" stroke-linecap="round"/>
+  <path d="M70 250 C132 271 173 237 218 181 C271 115 318 94 366 132 C421 176 466 330 518 352 C570 374 605 247 630 130 C650 62 680 156 700 206" fill="none" stroke="#111827" stroke-width="3" stroke-dasharray="11 8"/>
+  <g fill="#111827" font-family="Georgia, serif" font-size="25" font-style="italic"><text x="265" y="102">p</text><text x="397" y="95">r</text><text x="505" y="142">s</text></g>
+</svg>
