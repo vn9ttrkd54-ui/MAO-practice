@@ -136,7 +136,7 @@ export const muQuestions: Question[] = [
     division: "Mu",
     topic: "Derivatives",
     difficulty: 1,
-    methods: ["Trig Identity"],
+    methods: ["Trigonometric Identities"],
     question: String.raw`Compute
 \[\left.\frac{d}{dx}\left(\frac{\sin^2x-\cos^2x}{\cos^2x+\sin^2x}\right)\right|_{x=1}.\]`,
     choices: ["0", String.raw`\(2\sin2\)`, String.raw`\(-2\sin2\)`, String.raw`\(\sin2\)`, "NOTA"],
@@ -337,7 +337,7 @@ At \(t=2\), \(dV/dt=e^{-2}\) and \(h=4\), so
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 4,
-    methods: ["Trig Identity"],
+    methods: ["Trigonometric Identities"],
     question: String.raw`An inner product on a vector space of continuous functions on the interval \([-\pi,\pi]\) is defined as
 \[\langle f,g\rangle=\int_{-\pi}^{\pi}f(x)g(x)\,dx.\]
 Compute \(\langle\sin2x,\sin3x\rangle+\langle\sin3x,\cos4x\rangle-\langle\sin4x,\sin4x\rangle\).`,
@@ -625,7 +625,7 @@ Integrating from the base \(y=0\) to the top \(y=1\) gives
     division: "Mu",
     topic: "Limits",
     difficulty: 5,
-    methods: ["Trig Identity"],
+    methods: ["Trigonometric Identities"],
     question: String.raw`In the figure below, \(b\) is held constant. Evaluate
 \[\lim_{a\to b}\left(\frac{a-b}{c-d}\right).\]`,
     choices: [String.raw`\(\frac{\sqrt2}{2}\)`, String.raw`\(-\frac{\sqrt2}{2}\)`, String.raw`\(\sqrt2\)`, "1", "NOTA"],
@@ -798,7 +798,7 @@ so \(r=2\pm\sqrt3\). The condition \(-1<r<1\) leaves
     division: "Mu",
     topic: "Derivatives",
     difficulty: 2,
-    methods: ["Chain Rule", "Trig Identity"],
+    methods: ["Chain Rule", "Trigonometric Identities"],
     question: String.raw`The graph of \(f(x)=-\ln(2+\cos x)\) has an inflection point for \(x\) in the range \([0,\pi]\). Find the slope of the tangent line to \(f(x)\) at this point.`,
     choices: [String.raw`\(\frac{4-\sqrt3}{13}\)`, String.raw`\(\frac{\sqrt3}{5}\)`, String.raw`\(\frac{4+\sqrt3}{13}\)`, String.raw`\(\frac{\sqrt3}{3}\)`, "NOTA"],
     answer: "D",
@@ -1173,7 +1173,7 @@ Using \(\int\sec u\,du=\ln|\sec u+\tan u|+C\),
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 4,
-    methods: ["U-Substitution", "Trig Identity"],
+    methods: ["U-Substitution", "Trigonometric Identities"],
     question: String.raw`Evaluate:
 \[\int_0^{\pi/21}\frac{d\theta}{\cos(7\theta)+1}.\]`,
     choices: [String.raw`\(\frac1{21}\)`, String.raw`\(\frac{\sqrt3}{21}\)`, String.raw`\(\frac13\)`, String.raw`\(\frac{\sqrt3}{3}\)`, "NOTA"],
@@ -1867,7 +1867,7 @@ Determine \(\displaystyle\lim_{x\to0^-}f(g(x))\). Select DNE if you believe the 
     id: 10210,
     number: 210,
     division: "Mu",
-    topic: "Functions Analysis",
+    topic: "Function Analysis",
     difficulty: 1,
     methods: [],
     question: String.raw`Use the figures representing the graphs of the piecewise functions \(f(x)\) (left) and \(g(x)\) (right). The graph of \(f\) has asymptotes at \(x=-2\), \(y=2\), and \(y=1\); the graph of \(g\) has an asymptote at \(x=1\).
@@ -2318,7 +2318,7 @@ Substituting back yields
     id: 10237,
     number: 237,
     division: "Mu",
-    topic: "Functions Analysis",
+    topic: "Function Analysis",
     difficulty: 1,
     methods: [],
     question: String.raw`What are the equations of all asymptotes of the function
@@ -2805,7 +2805,7 @@ At \((-1,1)\), \(y'>0\), so I is true. Differentiating again shows \(y''<0\) the
     division: "Mu",
     topic: "Derivatives",
     difficulty: 4,
-    methods: ["Trig Identity", "Chain Rule"],
+    methods: ["Trigonometric Identities", "Chain Rule"],
     question: String.raw`Let
 \[f(x)=\frac{\sec^2(2x)+\csc^2(2x)-\tan^2(2x)-\cot^2(2x)}{(\cos(4x)+\sin(4x))^2}.\]
 Which of the following is \(f'(\pi/48)\)?`,
