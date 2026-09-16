@@ -838,7 +838,7 @@ Therefore
     division: "Mu",
     topic: "Differential Equations",
     difficulty: 5,
-    methods: ["Homogeneous First-Order"],
+    methods: ["Homogeneous First-Order Equations"],
     question: String.raw`Find the general solution to the differential equation
 \[\frac{dy}{dx}=\frac{3y^4-x^4}{xy^3}.\]`,
     choices: [String.raw`\(y^4=Kx^4+\frac1{2x^4}\)`, String.raw`\(y^4=Kx^8+\frac1{3x^4}\)`, String.raw`\(y^4=Kx^{12}+\frac{x^4}{2}\)`, String.raw`\(y^4=Kx^{16}+\frac{x^4}{3}\)`, "NOTA"],
@@ -1936,7 +1936,7 @@ which of the following statements is correct regarding whether or not the Mean V
     division: "Mu",
     topic: "Limits",
     difficulty: 2,
-    methods: ["Conjugates"],
+    methods: ["Rationalization"],
     question: String.raw`Evaluate
 \[\lim_{x\to\infty}\left(\sqrt{3x^2-5x+4}-\sqrt{3x^2+7x+9}\right).\]`,
     choices: ["−2", String.raw`\(-2\sqrt3\)`, "0", String.raw`\(-\frac{4\sqrt3}{3}\)`, "NOTA"],
@@ -2177,7 +2177,7 @@ Integration by parts gives
     id: 10229,
     number: 229,
     division: "Mu",
-    topic: "Logarithmic Differentiation",
+    topic: "Derivatives",
     difficulty: 4,
     methods: ["Logarithmic Differentiation"],
     question: String.raw`Given that
@@ -2283,7 +2283,7 @@ so \(P=2^{11/3}\).`,
     division: "Mu",
     topic: "Indefinite Integrals",
     difficulty: 5,
-    methods: ["Trig Substitution", "Integration by Parts"],
+    methods: ["Trigonometric Substitution", "Integration by Parts"],
     question: String.raw`Calculate
 \[\int\frac{x^2-6x+10}{\sqrt{x^2-6x+18}}\,dx.\]`,
     choices: [String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}+\frac92\ln\left(\frac{\sqrt{x^2-6x+18}+x-3}{3}\right)+C\)`, String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}-\frac72\ln|x-3|+C\)`, String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}-\frac72\arctan\left(\frac{x-3}{3}\right)+C\)`, String.raw`\(\frac{x-3}{2}\sqrt{x^2-6x+18}-\frac72\ln\left|\frac{\sqrt{x^2-6x+18}+x-3}{3}\right|+C\)`, "NOTA"],
