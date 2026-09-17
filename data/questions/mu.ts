@@ -2818,4 +2818,518 @@ Therefore,
 At \(x=\pi/48\), this is
 \[-\frac{16(\sqrt3/2)}{(1+1/2)^2}=-\frac{32\sqrt3}{9}.\]`,
   },
+  // 2026 FAMAT February Regional Calculus Individual Test.
+  // Source questions 1-30 map to bank questions 266-295 (IDs 10266-10295).
+  {
+    id: 10266,
+    number: 266,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Power Rule"],
+    question: String.raw`If \(f(x)=2x^3+4x^2+x+\pi\), find \(f'(1)\).`,
+    choices: ["15", "16", "17", "18", "NOTA"],
+    answer: "A",
+    solution: String.raw`\[f'(x)=6x^2+8x+1,\qquad f'(1)=15.\]`,
+  },
+  {
+    id: 10267,
+    number: 267,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`If \(f(x)=3\cos(2x)-6\sin(3x)\), find \(\displaystyle\int_0^\pi f(x)\,dx\).`,
+    choices: ["−12", "−4", "4", "12", "NOTA"],
+    answer: "B",
+    solution: String.raw`\[\int_0^\pi\bigl(3\cos(2x)-6\sin(3x)\bigr)\,dx
+=\left[\frac32\sin(2x)+2\cos(3x)\right]_0^\pi=-4.\]`,
+  },
+  {
+    id: 10268,
+    number: 268,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`Evaluate
+\[\lim_{x\to1}\frac{x^2+2x-3}{x^2+4x+3}.\]`,
+    choices: ["0", String.raw`\(\frac23\)`, String.raw`\(\frac35\)`, "1", "NOTA"],
+    answer: "A",
+    solution: String.raw`The denominator is nonzero at \(x=1\), so direct substitution gives
+\[\frac{1+2-3}{1+4+3}=0.\]`,
+  },
+  {
+    id: 10269,
+    number: 269,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Limit Definition of Derivatives"],
+    question: String.raw`Evaluate
+\[\lim_{x\to0}\frac{\cos\left(\frac\pi6+x\right)-\cos\left(\frac\pi6\right)}x.\]`,
+    choices: [String.raw`\(-\frac{\sqrt3}{2}\)`, String.raw`\(-\frac12\)`, String.raw`\(\frac12\)`, String.raw`\(\frac{\sqrt3}{2}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`This is the difference-quotient definition of the derivative of cosine at \(\pi/6\). Therefore, the limit is
+\[-\sin\left(\frac\pi6\right)=-\frac12.\]`,
+  },
+  {
+    id: 10270,
+    number: 270,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Chain Rule", "Double-Angle Identity"],
+    question: String.raw`If \(f(x)=\sin(x^2)\cos(x^2)\), find \(f'\!\left(\sqrt{\frac\pi6}\right)\).`,
+    choices: [String.raw`\(-\frac{\sqrt{2\pi}}2\)`, String.raw`\(-\frac{\sqrt{6\pi}}6\)`, String.raw`\(\frac{\sqrt{6\pi}}6\)`, String.raw`\(\frac{\sqrt{2\pi}}2\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Using the sine double-angle identity,
+\[f(x)=\frac12\sin(2x^2),\qquad f'(x)=2x\cos(2x^2).\]
+Thus,
+\[f'\!\left(\sqrt{\frac\pi6}\right)
+=2\sqrt{\frac\pi6}\cos\left(\frac\pi3\right)
+=\sqrt{\frac\pi6}=\frac{\sqrt{6\pi}}6.\]`,
+  },
+  {
+    id: 10271,
+    number: 271,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 1,
+    methods: ["U-Substitution"],
+    question: String.raw`Evaluate
+\[\int_0^{\pi/2}\sin^2x\cos x\,dx.\]`,
+    choices: ["0", String.raw`\(\frac13\)`, String.raw`\(\frac12\)`, "1", "NOTA"],
+    answer: "B",
+    solution: String.raw`Using the substitution \(u=\sin x\), \(du=\cos x\,dx\), we get
+\[\int_0^{\pi/2}\sin^2x\cos x\,dx=\int_0^1u^2\,du=\frac13.\]`,
+  },
+  {
+    id: 10272,
+    number: 272,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 2,
+    methods: ["Chain Rule"],
+    question: String.raw`If \(f(x)=e^{\cos(2x)}\), find \(f'(\pi/3)\).`,
+    choices: [String.raw`\(-\sqrt3e^{-1/2}\)`, String.raw`\(-\frac{\sqrt3}{2}e^{-1/2}\)`, String.raw`\(\frac{\sqrt3}{2}e^{-1/2}\)`, String.raw`\(\sqrt3e^{-1/2}\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`\[f'(x)=-2\sin(2x)e^{\cos(2x)}.\]
+Therefore,
+\[f'(\pi/3)=-2\left(\frac{\sqrt3}{2}\right)e^{-1/2}=-\sqrt3e^{-1/2}.\]`,
+  },
+  {
+    id: 10273,
+    number: 273,
+    division: "Mu",
+    topic: "Riemann Sums",
+    difficulty: 3,
+    methods: ["Riemann Sums"],
+    question: String.raw`Let \(f(x)=x^5+2x^4+9x^3+2x^2+x+6\). Consider the following four values on the real interval \([0,5]\):
+
+I. The integral of \(f(x)\).
+
+II. The left-handed rectangular Riemann sum of \(f(x)\) with 4 subdivisions.
+
+III. The right-handed rectangular Riemann sum of \(f(x)\) with 4 subdivisions.
+
+IV. The trapezoidal Riemann sum of \(f(x)\) with 4 subdivisions.
+
+Rank these four values from least to greatest.`,
+    choices: ["II, IV, I, III", "II, I, IV, III", "III, IV, I, II", "III, I, IV, II", "NOTA"],
+    answer: "B",
+    solution: String.raw`On \([0,5]\), \(f\) is increasing and concave up. Thus, the left-handed sum is less than the integral, while both the trapezoidal and right-handed sums are greater than the integral. The trapezoidal sum is less than the right-handed sum, so
+\[\mathrm{II}<\mathrm{I}<\mathrm{IV}<\mathrm{III}.\]`,
+  },
+  {
+    id: 10274,
+    number: 274,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Chain Rule"],
+    question: String.raw`Evaluate
+\[\frac d{dx}\ln(\cos x).\]`,
+    choices: [String.raw`\(\tan x\)`, String.raw`\(-\tan x\)`, String.raw`\(\cot x\)`, String.raw`\(-\cot x\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`\[\frac d{dx}\ln(\cos x)=\frac{-\sin x}{\cos x}=-\tan x.\]`,
+  },
+  {
+    id: 10275,
+    number: 275,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 4,
+    methods: ["First Derivative Test"],
+    question: String.raw`Let \(f(x)=5-x-\frac6x\), restricted to \(x>0\). Let \(a\) and \(b\) be the values with \(a<b\) that maximize \(\displaystyle\int_a^bf(x)\,dx\). What is \(a+b\)?`,
+    choices: ["2", "3", "4", "5", "NOTA"],
+    answer: "D",
+    solution: String.raw`We have
+\[f(x)=5-x-\frac6x=-\frac{(x-2)(x-3)}x.\]
+For \(x>0\), this is positive exactly on \((2,3)\) and negative outside that interval. Therefore, the integral is maximized by choosing \(a=2\) and \(b=3\), so \(a+b=5\).`,
+  },
+  {
+    id: 10276,
+    number: 276,
+    division: "Mu",
+    topic: "Function Analysis",
+    difficulty: 4,
+    methods: ["Even Functions"],
+    question: String.raw`Let \(f\) be a piecewise-smooth, real-valued function; that is, a function that is smooth everywhere on the real line except at a discontinuous set of points. How many of the following statements are true?
+
+I. If \(f(x)\) is even, then \(f'(x)\) is odd.
+
+II. If \(f'(x)\) is even, then \(f(x)\) is odd.
+
+III. If \(f(x)\) is odd, then \(f'(x)\) is even.
+
+IV. If \(f'(x)\) is odd, then \(f(x)\) is even.`,
+    choices: ["1", "2", "3", "4", "NOTA"],
+    answer: "B",
+    solution: String.raw`Statements I and III follow from the difference-quotient definition of the derivative and are true wherever the derivative exists.
+
+Statement IV need not hold for a piecewise-smooth function. For example, define
+\[f(x)=\begin{cases}\ln|x|+1,&x<0,\\ \ln|x|-1,&x>0.\end{cases}\]
+Then \(f'(x)=1/x\) is odd, but \(f\) is not even. Statement II also need not hold: an antiderivative of the even constant function \(f'(x)=c\) is \(f(x)=cx+m\), which is not necessarily odd. Therefore, exactly two statements are true.`,
+  },
+  {
+    id: 10277,
+    number: 277,
+    division: "Mu",
+    topic: "Function Analysis",
+    difficulty: 2,
+    methods: ["Second Derivative Test"],
+    question: String.raw`A cubic polynomial has roots 2, 3, and 5. Its inflection point has the form \(a/b\), where \(a\) and \(b\) are relatively prime. What is \(a+b\)?`,
+    choices: ["11", "12", "13", "14", "NOTA"],
+    answer: "C",
+    solution: String.raw`Let
+\[p(x)=k(x-2)(x-3)(x-5)\]
+for some nonzero real number \(k\). Differentiating twice gives
+\[p''(x)=k(6x-20).\]
+Setting \(p''(x)=0\) yields \(x=10/3\). Thus \(a+b=10+3=13\).`,
+  },
+  {
+    id: 10278,
+    number: 278,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 4,
+    methods: [],
+    question: String.raw`Two functions \(f\) and \(g\) are said to be asymptotically equivalent, denoted as \(f\sim g\), if and only if
+\[\lim_{x\to\infty}\frac{f(x)}{g(x)}=1.\]
+Suppose the limit to infinity of \(f\), \(g\), and \(h\) are nonzero, but they can be infinite. Which of the following statements are true?
+
+I. Let \(r\) be a real number for which \([f(x)]^r\) and \([g(x)]^r\) are defined for all sufficiently large \(x\). If \(f\sim g\), then \([f(x)]^r\sim[g(x)]^r\).
+
+II. All polynomials of the same degree are asymptotically equivalent.
+
+III. Asymptotic equivalence is a transitive relation: if \(f\sim g\) and \(g\sim h\), then \(f\sim h\).
+
+IV. \(f\sim g\) if and only if \(\displaystyle\lim_{x\to\infty}(f(x)-g(x))=0\).`,
+    choices: ["I, II, and III", "I, III, and IV", "I, II, and IV", "II, III, and IV", "NOTA"],
+    answer: "E",
+    solution: String.raw`Statement I is true because
+\[\frac{[f(x)]^r}{[g(x)]^r}=\left(\frac{f(x)}{g(x)}\right)^r\longrightarrow1.\]
+Statement II is false because polynomials of the same degree can have different leading coefficients. Statement III is true because
+\[\frac{f(x)}{h(x)}=\frac{f(x)}{g(x)}\frac{g(x)}{h(x)}\longrightarrow1.\]
+Statement IV is false; for example, \(x^2+x\sim x^2\), but their difference diverges. Thus only I and III are true, which is NOTA.`,
+  },
+  {
+    id: 10279,
+    number: 279,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 1,
+    methods: [],
+    question: String.raw`A cube is pushed with an initial velocity of \(3\text{ m/s}\) to the right. Suppose the wind causes an acceleration of \(2\text{ m/s}^2\) toward the left. How far in meters does the cube move until it starts turning around?`,
+    choices: [String.raw`\(\frac34\)`, String.raw`\(\frac54\)`, String.raw`\(\frac74\)`, String.raw`\(\frac94\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Let \(x(t)\) be the position of the cube. Then
+\[x''(t)=-2,\qquad x'(t)=-2t+3.\]
+The velocity remains positive until \(t=3/2\). Therefore, the distance traveled is
+\[\int_0^{3/2}(-2t+3)\,dt=\left[-t^2+3t\right]_0^{3/2}=\frac94.\]`,
+  },
+  {
+    id: 10280,
+    number: 280,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 3,
+    methods: ["Related Rates"],
+    question: String.raw`One side of a triangle is growing at a rate of \(2\text{ m/s}\), another side is shrinking at a rate of \(1\text{ m/s}\), and the angle between these two sides is increasing at a rate of \(\sqrt3/2\) radians per second. At some point during this process, the triangle is an equilateral triangle with side length 4 meters. What is the rate of change of the area of the triangle at this time in \(\text{m}^2/\text{s}\)?`,
+    choices: [String.raw`\(4\sqrt3\)`, String.raw`\(3\sqrt3\)`, String.raw`\(2\sqrt3\)`, String.raw`\(\sqrt3\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`The area is \(A=\frac12ab\sin C\), where \(a\) and \(b\) are the two side lengths and \(C\) is their included angle. Thus,
+\[\frac{dA}{dt}=\frac12\frac{da}{dt}b\sin C+\frac12a\frac{db}{dt}\sin C+\frac12ab\cos C\frac{dC}{dt}.\]
+Substituting \(da/dt=2\), \(db/dt=-1\), \(dC/dt=\sqrt3/2\), \(a=b=4\), and \(C=\pi/3\) gives
+\[\frac{dA}{dt}=3\sqrt3.\]`,
+  },
+  {
+    id: 10281,
+    number: 281,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 4,
+    methods: ["Related Rates", "Law of Cosines"],
+    question: String.raw`One side of a triangle is growing at a rate of \(2\text{ m/s}\), another side is shrinking at a rate of \(1\text{ m/s}\), and the angle between these two sides is increasing at a rate of \(\sqrt3/2\) radians per second. At an instant when the triangle is equilateral with side length 4 meters, what is the rate of change of the third side length?`,
+    choices: [String.raw`\(\frac12\)`, String.raw`\(\frac32\)`, String.raw`\(\frac52\)`, String.raw`\(\frac72\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Let \(c\) be the third side. The Law of Cosines gives
+\[c^2=a^2+b^2-2ab\cos C.\]
+Differentiating with respect to time,
+\[2c\frac{dc}{dt}=2a\frac{da}{dt}+2b\frac{db}{dt}-2\frac{da}{dt}b\cos C-2a\frac{db}{dt}\cos C+2ab\sin C\frac{dC}{dt}.\]
+At the given instant, \(a=b=c=4\), \(C=\pi/3\), \(da/dt=2\), \(db/dt=-1\), and \(dC/dt=\sqrt3/2\). Substitution gives
+\[\frac{dc}{dt}=\frac72.\]`,
+  },
+  {
+    id: 10282,
+    number: 282,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["Product-to-Sum Identity"],
+    question: String.raw`For positive integers \(m\) and \(n\), evaluate
+\[\int_0^{2\pi}\sin(mx)\cos(nx)\,dx.\]`,
+    choices: [String.raw`\(-\pi\)`, "0", String.raw`\(\pi\)`, String.raw`\(\frac{m+n}{2}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Using the product-to-sum identity,
+\[\sin(mx)\cos(nx)=\frac12\bigl(\sin((m+n)x)+\sin((m-n)x)\bigr).\]
+Each sine term integrates to 0 over \([0,2\pi]\), including when \(m=n\). Therefore, the integral is 0.`,
+  },
+  {
+    id: 10283,
+    number: 283,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 3,
+    methods: ["Product-to-Sum Identity"],
+    question: String.raw`For positive integers \(m\) and \(n\), evaluate
+\[\int_0^{2\pi}\sin(mx)\sin(nx)\,dx.\]`,
+    choices: [String.raw`\(-\pi\)`, "0", String.raw`\(\pi\)`, String.raw`\(\frac{m+n}{2}\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`Using the product-to-sum identity,
+\[\sin(mx)\sin(nx)=\frac12\bigl(\cos((m-n)x)-\cos((m+n)x)\bigr).\]
+If \(m\ne n\), the integral is 0. If \(m=n\), the integral is \(\pi\). Because the value depends on whether \(m=n\), none of the listed choices is always correct.`,
+  },
+  {
+    id: 10284,
+    number: 284,
+    division: "Mu",
+    topic: "Improper Integrals",
+    difficulty: 4,
+    methods: ["Gaussian Integral"],
+    question: String.raw`One of the most famous integrals is the Gaussian integral \(\displaystyle\int_{-\infty}^{\infty}e^{-x^2}\,dx=\sqrt\pi\). What is
+\[\int_{-\infty}^{\infty}e^{-(ax^2+bx+c)}\,dx\]
+for positive \(a\)? Side note: the integral diverges if \(a\) is negative. Additionally, this integral still holds if \(a\), \(b\), and \(c\) are complex numbers, with convergence holding if and only if the real part of \(a\) is positive.`,
+    choices: [String.raw`\(\frac{\sqrt{\pi a}}a e^{\frac{b^2}{2a}-c}\)`, String.raw`\(\frac{\sqrt{\pi a}}a e^{-c+\frac{b^2}{4a}}\)`, String.raw`\(\frac{\sqrt{2\pi a}}{2a}e^{\frac{b^2}{2a}-c}\)`, String.raw`\(\frac{\sqrt{2\pi a}}{2a}e^{\frac{b^2}{4a}-c}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Complete the square:
+\[ax^2+bx+c=a\left(x+\frac{b}{2a}\right)^2+c-\frac{b^2}{4a}.\]
+Using \(u=x+b/(2a)\), followed by \(v=\sqrt a\,u\), gives
+\[\int_{-\infty}^{\infty}e^{-(ax^2+bx+c)}\,dx
+=\frac{e^{-c+b^2/(4a)}}{\sqrt a}\int_{-\infty}^{\infty}e^{-v^2}\,dv
+=\frac{\sqrt{\pi a}}a e^{-c+b^2/(4a)}.\]`,
+  },
+  {
+    id: 10285,
+    number: 285,
+    division: "Mu",
+    topic: "Analytic Geometry",
+    difficulty: 4,
+    methods: ["Tangency"],
+    question: String.raw`Let \(f(0)=0\) and \(f(x)=e^{-1/x}\) for \(x>0\). What is the slope of the line tangent to \(f(x)\), with \(y\)-intercept \(\left(0,\frac12e^{-1/2}\right)\), that intersects \(f(x)\) at precisely that one point of tangency?`,
+    choices: [String.raw`\(4e^{-2}\)`, String.raw`\(e^{-1/2}\)`, String.raw`\(\frac14e^{-1/2}\)`, String.raw`\(\frac1{16}e^{-1/4}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`We have
+\[f'(x)=\frac1{x^2}e^{-1/x}.\]
+The tangent line at \(x=a\) has \(y\)-intercept
+\[f(a)-af'(a)=\left(1-\frac1a\right)e^{-1/a}.\]
+Setting this equal to \(\frac12e^{-1/2}\) gives \(a=2\). Therefore, the slope is
+\[f'(2)=\frac14e^{-1/2}.\]`,
+  },
+  {
+    id: 10286,
+    number: 286,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 2,
+    methods: ["U-Substitution", "Integration by Parts"],
+    question: String.raw`Evaluate
+\[\int_1^4\frac{\ln x}{\sqrt x}\,dx.\]`,
+    choices: [String.raw`\(\ln2-1\)`, String.raw`\(4\ln2-2\)`, String.raw`\(2\ln2-1\)`, String.raw`\(8\ln2-4\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Using \(u=\sqrt x\), so \(x=u^2\) and \(dx=2u\,du\), gives
+\[\int_1^4\frac{\ln x}{\sqrt x}\,dx=4\int_1^2\ln u\,du.\]
+Integration by parts yields
+\[4\left[u\ln u-u\right]_1^2=8\ln2-4.\]`,
+  },
+  {
+    id: 10287,
+    number: 287,
+    division: "Mu",
+    topic: "Function Analysis",
+    difficulty: 4,
+    methods: ["First Derivative Test"],
+    question: String.raw`Let \(f(x)=\ln x+\frac1{x^2}+bx^2\), whose domain is the positive real numbers. The values of \(b\) for which \(f\) has exactly two critical points are given in interval notation by \((m,n)\). What is \(m+n\)?`,
+    choices: [String.raw`\(-\frac1{16}\)`, String.raw`\(\frac1{16}\)`, "−16", "16", "NOTA"],
+    answer: "A",
+    solution: String.raw`Differentiating and multiplying the critical-point equation by \(x^3\) gives
+\[f'(x)=\frac1x-\frac2{x^3}+2bx=0
+\quad\Longleftrightarrow\quad 2bx^4+x^2-2=0.\]
+Let \(u=x^2>0\). We need the quadratic
+\[2bu^2+u-2=0\]
+to have two positive roots. Its discriminant must be positive, its product \(-1/b\) positive, and its sum \(-1/(2b)\) positive. These conditions give
+\[-\frac1{16}<b<0.\]
+Thus \(m+n=-1/16\).`,
+  },
+  {
+    id: 10288,
+    number: 288,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 3,
+    methods: ["First Derivative Test"],
+    question: String.raw`What is the absolute value of the difference between the minimum and the maximum real values of
+\[\sqrt{25-x^2}+x?\]`,
+    choices: [String.raw`\(5\sqrt2+5\)`, String.raw`\(5\sqrt2\)`, "5", "10", "NOTA"],
+    answer: "A",
+    solution: String.raw`The domain is \([-5,5]\). Differentiating gives
+\[f'(x)=-\frac{x}{\sqrt{25-x^2}}+1.\]
+The only critical point is \(x=5\sqrt2/2\), where \(f(x)=5\sqrt2\), the absolute maximum. Checking the endpoints gives \(f(-5)=-5\) and \(f(5)=5\), so the absolute minimum is \(-5\). The requested absolute difference is
+\[5\sqrt2-(-5)=5\sqrt2+5.\]`,
+  },
+  {
+    id: 10289,
+    number: 289,
+    division: "Mu",
+    topic: "Power Series",
+    difficulty: 4,
+    methods: ["Taylor's Theorem"],
+    question: String.raw`Let \(f\) be a function defined on the real line such that \(f(x)=e^{-1/x^2}\) for \(x>0\) and \(f(x)=0\) otherwise. Which of the following statements are true?
+
+I. \(f\) is infinitely differentiable everywhere.
+
+II. The Taylor series of \(f\) centered at \(x=0\) converges everywhere on the real line.
+
+III. \(f\) is analytic on the real line; that is, \(f\) is equal to its Taylor series expansion centered at \(x=0\).`,
+    choices: ["I", "I, II", "I, II, III", "All three are false", "NOTA"],
+    answer: "B",
+    solution: String.raw`For \(x>0\), every derivative has the form \(R(x)e^{-1/x^2}\), where \(R\) is a rational function. Since
+\[\lim_{x\to0^+}R(x)e^{-1/x^2}=0,\]
+all derivatives at \(x=0\) exist and equal 0. Thus I is true.
+
+The Taylor series centered at 0 is therefore the zero series, which converges everywhere, so II is true. However, \(f(x)>0\) for \(x>0\), so \(f\) is not equal to that Taylor series there. Thus III is false.`,
+  },
+  {
+    id: 10290,
+    number: 290,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 3,
+    methods: ["Related Rates"],
+    question: String.raw`A particle moves along the parabola \(y=-x^2+5x+6\) with speed \(1\text{ m/s}\) and with \(x\) increasing. What is \(dx/dt\) when the particle is at the larger of the two roots?`,
+    choices: [String.raw`\(\frac{\sqrt2}{6}\)`, String.raw`\(\frac{\sqrt2}{8}\)`, String.raw`\(\frac{\sqrt2}{10}\)`, String.raw`\(\frac{\sqrt2}{12}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Differentiating the curve with respect to time gives
+\[\frac{dy}{dt}=(-2x+5)\frac{dx}{dt}.\]
+The speed condition is
+\[\left(\frac{dx}{dt}\right)^2+\left(\frac{dy}{dt}\right)^2=1.\]
+Thus, because \(x\) is increasing,
+\[\frac{dx}{dt}=\frac1{\sqrt{1+(-2x+5)^2}}.\]
+The larger root of \(-x^2+5x+6\) is \(x=6\), so
+\[\frac{dx}{dt}=\frac1{\sqrt{50}}=\frac{\sqrt2}{10}.\]`,
+  },
+  {
+    id: 10291,
+    number: 291,
+    division: "Mu",
+    topic: "Rate of Change",
+    difficulty: 2,
+    methods: ["Related Rates"],
+    question: String.raw`A particle moves along the parabola \(y=-x^2+5x+6\) with speed \(1\text{ m/s}\) and with \(x\) increasing. What is \(dx/dt\) at the maximum of the parabola?`,
+    choices: [String.raw`\(\frac15\)`, String.raw`\(\frac25\)`, String.raw`\(\frac35\)`, String.raw`\(\frac45\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`At the maximum of the parabola, \(dy/dx=0\), so \(dy/dt=0\). Since the particle has speed \(1\text{ m/s}\) and \(x\) is increasing,
+\[\frac{dx}{dt}=1.\]
+This is not one of the listed choices.`,
+  },
+  {
+    id: 10292,
+    number: 292,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 4,
+    methods: ["U-Substitution", "Integral Properties"],
+    question: String.raw`Evaluate
+\[\int_{1/2}^2\frac{\tan^{-1}x}{x}\,dx.\]`,
+    choices: [String.raw`\(\pi\ln4\)`, String.raw`\(\frac\pi2\ln4\)`, String.raw`\(\frac\pi3\ln4\)`, String.raw`\(\frac\pi4\ln4\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Let
+\[I=\int_{1/2}^2\frac{\tan^{-1}x}{x}\,dx.\]
+Using \(u=1/x\) and \(\tan^{-1}(1/u)=\pi/2-\tan^{-1}u\), we obtain
+\[I=\int_{1/2}^2\frac{\pi/2-\tan^{-1}u}{u}\,du
+=\frac\pi2\int_{1/2}^2\frac{du}{u}-I.\]
+Therefore,
+\[2I=\frac\pi2\ln4,\qquad I=\frac\pi4\ln4.\]`,
+  },
+  {
+    id: 10293,
+    number: 293,
+    division: "Mu",
+    topic: "Polynomials",
+    difficulty: 4,
+    methods: [],
+    question: String.raw`The Legendre polynomials are a set of polynomials with positive leading coefficients, where \(P_n(x)\) denotes the Legendre polynomial of degree \(n\) that satisfies
+\[\int_{-1}^1P_m(x)P_n(x)\,dx=\frac2{2n+1}\delta_{mn}\]
+for all nonnegative integers \(m\) and \(n\), including 0. Here, \(\delta_{mn}\) is the Kronecker delta and equals 1 when \(m=n\), and 0 otherwise. Using this property, find \(P_2(x)\).`,
+    choices: [String.raw`\(\frac32x^2-\frac12\)`, String.raw`\(\frac34x^2-\frac12\)`, String.raw`\(\frac32x^2+\frac12\)`, String.raw`\(\frac34x^2+\frac12\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`First, \(P_0(x)=1\). Write \(P_1(x)=ax+b\). Orthogonality with \(P_0\) gives \(b=0\), and normalization gives \(a=1\), so \(P_1(x)=x\).
+
+Now write \(P_2(x)=cx^2+dx+e\). Orthogonality with \(P_0\) and \(P_1\), together with normalization, gives
+\[\int_{-1}^1(cx^2+dx+e)\,dx=0,\]
+\[\int_{-1}^1x(cx^2+dx+e)\,dx=0,\]
+\[\int_{-1}^1(cx^2+dx+e)^2\,dx=\frac25.\]
+Solving yields \(d=0\), \(c=3/2\), and \(e=-1/2\). Therefore,
+\[P_2(x)=\frac32x^2-\frac12.\]`,
+  },
+  {
+    id: 10294,
+    number: 294,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 4,
+    methods: ["U-Substitution", "Trigonometric Substitution"],
+    question: String.raw`Evaluate
+\[\int_{\ln2}^{2\ln2}\frac{1}{1-4e^{-x}+8e^{-2x}}\,dx.\]`,
+    choices: [String.raw`\(\frac14\ln2+\frac\pi4\)`, String.raw`\(\frac12\ln2+\frac\pi4\)`, String.raw`\(\ln2+\frac\pi4\)`, String.raw`\(2\ln2+\frac\pi4\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Multiply the numerator and denominator by \(e^{2x}\), then let \(u=e^x\), \(du=e^x\,dx\):
+\[\int_{\ln2}^{2\ln2}\frac{e^{2x}}{e^{2x}-4e^x+8}\,dx
+=\int_2^4\frac{u}{(u-2)^2+4}\,du.\]
+Let \(u-2=2\tan\theta\). The bounds become \(0\) and \(\pi/4\), and the integral simplifies to
+\[\frac12\int_0^{\pi/4}(2\tan\theta+2)\,d\theta
+=\frac12\ln2+\frac\pi4.\]`,
+  },
+  {
+    id: 10295,
+    number: 295,
+    division: "Mu",
+    topic: "Parametric",
+    difficulty: 3,
+    methods: ["Chain Rule"],
+    question: String.raw`A particle starting at \((1,0)\) at rest moves counterclockwise on the unit circle, such that its rotational speed increases uniformly at a rate of \(\pi/6\) radians per second squared. What is the particle's acceleration the first time it reaches the point \((-1,0)\)?`,
+    choices: [String.raw`\(\left\langle\frac{\pi^2}{3},-\frac\pi3\right\rangle\)`, String.raw`\(\left\langle\frac{\pi^2}{6},-\frac\pi3\right\rangle\)`, String.raw`\(\left\langle\frac{\pi^2}{3},-\frac\pi6\right\rangle\)`, String.raw`\(\left\langle\frac{\pi^2}{6},-\frac\pi6\right\rangle\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Parameterize the unit circle by
+\[x=\cos\theta,\qquad y=\sin\theta.\]
+Since \(\theta''=\pi/6\) and the particle starts at rest,
+\[\theta'=\frac\pi6t,\qquad \theta=\frac\pi{12}t^2.\]
+The first time the particle reaches \((-1,0)\), \(\theta=\pi\), so \(t=2\sqrt3\). Differentiating twice,
+\[x''=-\theta''\sin\theta-(\theta')^2\cos\theta,\]
+\[y''=\theta''\cos\theta-(\theta')^2\sin\theta.\]
+At \(\theta=\pi\) and \(t=2\sqrt3\), this gives
+\[\left\langle x'',y''\right\rangle
+=\left\langle\frac{\pi^2}{3},-\frac\pi6\right\rangle.\]`,
+  },
 ];
