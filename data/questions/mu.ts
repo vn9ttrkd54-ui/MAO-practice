@@ -2896,7 +2896,7 @@ Thus,
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 1,
-    methods: ["U-Substitution"],
+    methods: ["Trigonometric Substitution"],
     question: String.raw`Evaluate
 \[\int_0^{\pi/2}\sin^2x\cos x\,dx.\]`,
     choices: ["0", String.raw`\(\frac13\)`, String.raw`\(\frac12\)`, "1", "NOTA"],
@@ -2974,7 +2974,7 @@ For \(x>0\), this is positive exactly on \((2,3)\) and negative outside that int
     division: "Mu",
     topic: "Function Analysis",
     difficulty: 4,
-    methods: ["Even Functions"],
+    methods: [],
     question: String.raw`Let \(f\) be a piecewise-smooth, real-valued function; that is, a function that is smooth everywhere on the real line except at a discontinuous set of points. How many of the following statements are true?
 
 I. If \(f(x)\) is even, then \(f'(x)\) is odd.
@@ -3259,7 +3259,7 @@ This is not one of the listed choices.`,
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 4,
-    methods: ["U-Substitution", "Integral Properties"],
+    methods: ["U-Substitution"],
     question: String.raw`Evaluate
 \[\int_{1/2}^2\frac{\tan^{-1}x}{x}\,dx.\]`,
     choices: [String.raw`\(\pi\ln4\)`, String.raw`\(\frac\pi2\ln4\)`, String.raw`\(\frac\pi3\ln4\)`, String.raw`\(\frac\pi4\ln4\)`, "NOTA"],
@@ -3331,5 +3331,537 @@ The first time the particle reaches \((-1,0)\), \(\theta=\pi\), so \(t=2\sqrt3\)
 At \(\theta=\pi\) and \(t=2\sqrt3\), this gives
 \[\left\langle x'',y''\right\rangle
 =\left\langle\frac{\pi^2}{3},-\frac\pi6\right\rangle.\]`,
+  },
+  // 2026 Mu Alpha Theta King February Statewide Calculus Individual Test.
+  // Source questions 1-30 map to bank questions 296-325 (IDs 10296-10325).
+  {
+    id: 10296,
+    number: 296,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 1,
+    methods: ["U-Substitution"],
+    question: String.raw`Evaluate \(\displaystyle\int_0^3(1+x)^2\,dx\).`,
+    choices: ["21", String.raw`\(\frac{64}{3}\)`, "63", String.raw`\(\frac{190}{3}\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`\[\int_0^3(1+x)^2\,dx
+=\left[\frac{(1+x)^3}{3}\right]_0^3
+=\frac{64}{3}-\frac13=21.\]`,
+  },
+  {
+    id: 10297,
+    number: 297,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 2,
+    methods: ["First Derivative Test"],
+    question: String.raw`Find the maximum value of \(f(x)=-x^4+4x^2+1\), where the domain is all real numbers.`,
+    choices: ["1", String.raw`\(\frac{11}{4}\)`, "4", "5", "NOTA"],
+    answer: "D",
+    solution: String.raw`First notice that \(f(x)\to-\infty\) when \(x\to\pm\infty\), so the maximum must be at a point where \(f'(x)=0\). Since
+\[f'(x)=-4x^3+8x=-4x(x^2-2),\]
+the critical points are \(x=0\) and \(x=\pm\sqrt2\). We have \(f(0)=1\) and \(f(\pm\sqrt2)=5\), so the maximum is 5.`,
+  },
+  {
+    id: 10298,
+    number: 298,
+    division: "Mu",
+    topic: "Fundamental Theorem of Calculus",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`For \(0<x<2\pi\), find the sum of the possible values of \(x\) such that
+\[\int_{\pi/4}^x\cos(t)\,dt=0.\]`,
+    choices: [String.raw`\(\pi\)`, String.raw`\(\frac{3\pi}{2}\)`, String.raw`\(2\pi\)`, String.raw`\(3\pi\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`\[\int_{\pi/4}^x\cos(t)\,dt
+=\sin(x)-\sin\left(\frac\pi4\right).\]
+Setting this equal to 0 gives \(x=\pi/4\) or \(x=3\pi/4\) in the given interval. Their sum is \(\pi\).`,
+  },
+  {
+    id: 10299,
+    number: 299,
+    division: "Mu",
+    topic: "Volumes of Revolution",
+    difficulty: 1,
+    methods: ["Disk Method"],
+    question: String.raw`Gabriel's Little Horn is formed by revolving the graph \(y=1/x\) for \(1\le x\le4\) around the \(x\)-axis. What is the volume of Gabriel's Little Horn?`,
+    choices: [String.raw`\(\frac\pi4\)`, String.raw`\(\frac\pi2\)`, String.raw`\(\frac{3\pi}{4}\)`, String.raw`\(\pi\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`By the washer method,
+\[V=\pi\int_1^4\left(\frac1x\right)^2dx
+=\pi\left[-\frac1x\right]_1^4
+=\frac{3\pi}{4}.\]`,
+  },
+  {
+    id: 10300,
+    number: 300,
+    division: "Mu",
+    topic: "Function Analysis",
+    difficulty: 3,
+    methods: ["First Derivative Test", "Second Derivative Test"],
+    question: String.raw`The graph of \(y=\sin(x)-x\) has many points where the slope of the tangent line is 0. Which choice correctly describes the nature of these points?`,
+    choices: ["Some are local maxima, some are local minima", "Some are local maxima, some are inflection points", "All are local maxima", "All are inflection points", "NOTA"],
+    answer: "D",
+    solution: String.raw`Since \(y'=\cos x-1\), all such points occur at \(x=2\pi k\) for integers \(k\). At each one,
+\[y''=-\sin x=0,\qquad y'''=-\cos x=-1\ne0.\]
+Thus the concavity changes at every stationary point, so all are inflection points.`,
+  },
+  {
+    id: 10301,
+    number: 301,
+    division: "Mu",
+    topic: "Derivatives",
+    difficulty: 1,
+    methods: ["Mean Value Theorem"],
+    question: String.raw`Let \(f(t)=\ln(t)\). What is the value of \(t\) that satisfies the Mean Value Theorem for derivatives for \(f(t)\) on the interval \([1,e]\)?`,
+    choices: [String.raw`\(e-1\)`, String.raw`\(\frac e2\)`, String.raw`\(\frac e2+1\)`, String.raw`\(\frac{e+1}{2}\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`The Mean Value Theorem gives
+\[f'(t)=\frac{f(e)-f(1)}{e-1}.\]
+Since \(f'(t)=1/t\),
+\[\frac1t=\frac1{e-1},\]
+so \(t=e-1\).`,
+  },
+  {
+    id: 10302,
+    number: 302,
+    division: "Mu",
+    topic: "Geometry",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`A line is drawn on the curved surface of a cylinder. The line is straight and perpendicular to both of the cylinder's circular faces. If this line is fixed in place and the cylinder is revolved around it, what shape would be formed by the revolution?`,
+    choices: ["Sphere", "Cylinder", "Torus", "Two spheres", "NOTA"],
+    answer: "B",
+    solution: String.raw`The fixed line is a generator of the cylinder and is parallel to its central axis. In a cross-section perpendicular to these lines, the original cylinder is a disk and the fixed line is a point on its circumference. Rotating that disk about the fixed point sweeps out a disk with twice the original radius. Extending this cross-section along the cylinder's height forms another cylinder.`,
+  },
+  {
+    id: 10303,
+    number: 303,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 2,
+    methods: ["U-Substitution"],
+    question: String.raw`Evaluate \(\displaystyle\int_1^e\frac{e^x}{e^x+1}\,dx\).`,
+    choices: [String.raw`\(\ln\left(\frac{e^e+e}{e^e-e}\right)\)`, String.raw`\(\ln\left(\frac{e^e+1}{e+1}\right)\)`, String.raw`\(\ln\left(\frac{e^e-e}{e^e+e}\right)\)`, String.raw`\(\ln\left(\frac{e^e-1}{e-1}\right)\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Use \(u=e^x+1\), \(du=e^x\,dx\). The bounds become \(e+1\) and \(e^e+1\), so
+\[\int_1^e\frac{e^x}{e^x+1}\,dx
+=\int_{e+1}^{e^e+1}\frac1u\,du
+=\ln\left(\frac{e^e+1}{e+1}\right).\]`,
+  },
+  {
+    id: 10304,
+    number: 304,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 3,
+    methods: ["Implicit Differentiation"],
+    question: String.raw`At the point \((\pi,2\pi)\) on the curve \(y\sin(x)=x\sin(y)\), what is \(dy/dx\)?`,
+    choices: ["−2", String.raw`\(-\frac12\)`, String.raw`\(\frac12\)`, "2", "NOTA"],
+    answer: "A",
+    solution: String.raw`Differentiate both sides:
+\[y'\sin x+y\cos x=\sin y+xy'\cos y.\]
+At \((\pi,2\pi)\), this becomes
+\[0-2\pi=0+\pi y',\]
+so \(y'=-2\).`,
+  },
+  {
+    id: 10305,
+    number: 305,
+    division: "Mu",
+    topic: "Parametric",
+    difficulty: 2,
+    methods: ["Chain Rule"],
+    question: String.raw`A parametric curve is defined for \(t\ge0\) by
+\[x(t)=t\cos t,\qquad y(t)=\sin t.\]
+What is \(dy/dx\) on the curve at \(t=\pi\)?`,
+    choices: ["−1", "0", "1", String.raw`\(\infty\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`\[\frac{dy}{dx}=\frac{y'(t)}{x'(t)}
+=\frac{\cos t}{\cos t-t\sin t}.\]
+At \(t=\pi\), this equals \((-1)/(-1)=1\).`,
+  },
+  {
+    id: 10306,
+    number: 306,
+    division: "Mu",
+    topic: "Parametric",
+    difficulty: 4,
+    methods: ["Chain Rule"],
+    question: String.raw`A parametric curve is defined for \(t\ge0\) by
+\[x(t)=t\cos t,\qquad y(t)=\sin t.\]
+Vignesh picks a point \((X,Y)\) on the curve and finds that the curve has a vertical tangent line at that point. Which of the following must be true?`,
+    choices: [String.raw`\(X=\frac{1-Y^2}{Y}\)`, String.raw`\(X=\frac{Y^2-1}{Y^2}\)`, String.raw`\(X=\sqrt{\frac{1-Y^2}{Y}}\)`, String.raw`\(X=\frac{\sqrt{Y^2-1}}Y\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`A vertical tangent requires \(x'(t)=0\), so
+\[\cos t-t\sin t=0\quad\Longrightarrow\quad t=\cot t.\]
+At the point, \(X=t\cos t\) and \(Y=\sin t\). Therefore,
+\[\frac XY=t\cot t=\cot^2t=\csc^2t-1=\frac1{Y^2}-1,\]
+which gives
+\[X=\frac{1-Y^2}{Y}.\]`,
+  },
+  {
+    id: 10307,
+    number: 307,
+    division: "Mu",
+    topic: "Sequences",
+    difficulty: 2,
+    methods: ["Recursion"],
+    question: String.raw`Let \(x_0=1\), and \(x_{n+1}=\cos(x_n)\) for integers \(n\ge0\). This sequence converges, so \(\displaystyle\lim_{n\to\infty}x_n=D\), where \(D\) is Dottie's number. Which of the following is equivalent to \(\sin(D)\)?`,
+    choices: [String.raw`\(\sqrt{1-D^2}\)`, String.raw`\(-\sqrt{1-D^2}\)`, String.raw`\(D^2-D\)`, String.raw`\(D-D^2\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`Taking limits in the recurrence gives \(D=\cos D\). Since \(0<D<\pi/2\), \(\sin D\) is positive. Thus,
+\[\sin D=\sqrt{1-\cos^2D}=\sqrt{1-D^2}.\]`,
+  },
+  {
+    id: 10308,
+    number: 308,
+    division: "Mu",
+    topic: "Systems of Equations",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`Let \(F(x)=Ae^x+Be^{-x}+C\sin x+D\cos x\) for constants \(A,B,C,D\). Given that \(F(0)=0\), \(F'(0)=1\), \(F''(0)=2\), and \(F'''(0)=3\), what is \(ABCD\)?`,
+    choices: [String.raw`\(-\frac94\)`, String.raw`\(-\frac9{16}\)`, String.raw`\(-\frac34\)`, String.raw`\(-\frac3{16}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`The four conditions give
+\[A+B+D=0,\]
+\[A-B+C=1,\]
+\[A+B-D=2,\]
+\[A-B-C=3.\]
+Subtracting the first and third equations gives \(D=-1\), while subtracting the second and fourth gives \(C=-1\). Solving the remaining equations gives \(A=3/2\) and \(B=-1/2\). Therefore,
+\[ABCD=\left(\frac32\right)\left(-\frac12\right)(-1)(-1)=-\frac34.\]`,
+  },
+  {
+    id: 10309,
+    number: 309,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`Evaluate
+\[\lim_{x\to\infty}\frac{\lfloor\sin(\pi x)\rfloor+\sin(\pi x)}{(-1)^{\lfloor x\rfloor}}.\]`,
+    choices: ["−1", "0", "1", String.raw`\(\infty\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`Along the sequence \(x=n\) of integers, the expression equals 0. Along \(x=2n+1/2\), the numerator is \(\lfloor1\rfloor+1=2\) and the denominator is 1, so the expression equals 2. Since these two sequences approach different values, the limit does not exist.`,
+  },
+  {
+    id: 10310,
+    number: 310,
+    division: "Mu",
+    topic: "Implicit Differentiation",
+    difficulty: 5,
+    methods: ["Continued Fractions", "Implicit Differentiation"],
+    question: String.raw`Let \(y=y(x)\) be the value of the infinite continued expression in which every \(x\) is followed by adding \(1+\cdots\), and every 1 is followed by adding \(x+\cdots\). Equivalently, \(y\) satisfies
+\[y=x+\frac{1+\frac1{y-x}}{x+(y-x)}.\]
+Evaluate \(dy/dx\) at \(x=1\), taking the value \(y>1\) represented by the continued expression.`,
+    choices: [String.raw`\(\frac14\)`, String.raw`\(\frac34\)`, "2", String.raw`\(\frac{11}{4}\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`The defining relation simplifies as follows:
+\[y=x+\frac{1+\frac1{y-x}}{y}.\]
+Multiplying through and rearranging gives
+\[y^3-xy^2=xy^2-x^2y+y-x+1.\]
+At \(x=1\), this becomes \(y^3=2y^2\), and the continued expression has \(y=2\). Differentiating the implicit equation and substituting \((x,y)=(1,2)\) gives
+\[0=-3y^2y'+2xy^2+4xyy'-2xy-x^2y'+y'-1,\]
+so \(y'=3/4\).`,
+  },
+  {
+    id: 10311,
+    number: 311,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 3,
+    methods: ["U-Substitution"],
+    question: String.raw`Evaluate
+\[\lim_{n\to\infty}\left(n\int_0^1x(1-x^2)^n\,dx\right).\]`,
+    choices: ["0", String.raw`\(\frac14\)`, String.raw`\(\frac12\)`, String.raw`\(\frac{\sqrt2}{2}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`Use \(u=1-x^2\), \(du=-2x\,dx\):
+\[\int_0^1x(1-x^2)^n\,dx
+=\frac1{2(n+1)}.\]
+Therefore,
+\[\lim_{n\to\infty}\frac{n}{2(n+1)}=\frac12.\]`,
+  },
+  {
+    id: 10312,
+    number: 312,
+    division: "Mu",
+    topic: "Inverse Functions",
+    difficulty: 4,
+    methods: ["U-Substitution"],
+    question: String.raw`Let \(f(x)=x^3+x\), and let \(f^{-1}(x)\) be its inverse. Ignoring the integration constant, the integral
+\[\int\frac{f^{-1}(x)}x\,dx\]
+can be written as \(Af^{-1}(x)+B\arctan(f^{-1}(x))\) for integers \(A,B\). Find \(A+B\).`,
+    choices: ["−2", "−1", "0", "1", "NOTA"],
+    answer: "D",
+    solution: String.raw`Let \(\xi=f^{-1}(x)\), so \(x=\xi^3+\xi\) and \(dx=(3\xi^2+1)\,d\xi\). Then
+\[\int\frac{f^{-1}(x)}x\,dx
+=\int\frac{\xi}{\xi^3+\xi}(3\xi^2+1)\,d\xi
+=\int\left(3-\frac2{\xi^2+1}\right)d\xi.\]
+Thus,
+\[\int\frac{f^{-1}(x)}x\,dx=3f^{-1}(x)-2\arctan(f^{-1}(x)),\]
+so \(A+B=3-2=1\).`,
+  },
+  {
+    id: 10313,
+    number: 313,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 5,
+    methods: ["Infinite Geometric Series"],
+    question: String.raw`Evaluate
+\[\int_0^1\min\left(|x-1|,\left|x-\frac12\right|,\left|x-\frac14\right|,\left|x-\frac18\right|,\ldots\right)dx.\]`,
+    choices: [String.raw`\(\frac1{32}\)`, String.raw`\(\frac1{20}\)`, String.raw`\(\frac1{16}\)`, String.raw`\(\frac1{12}\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`The integrand is the distance from \(x\) to the nearest nonnegative power of \(1/2\). Between consecutive powers \(2^{-n}\) and \(2^{-(n-1)}\), its graph is an isosceles triangle with base \(2^{-n}\) and height \(2^{-(n+1)}\). Its area is therefore
+\[\frac12\cdot\frac1{2^n}\cdot\frac1{2^{n+1}}=\frac1{2^{2n+2}}.\]
+Summing over \(n\ge1\),
+\[\sum_{n=1}^\infty\frac1{2^{2n+2}}
+=\frac{1/16}{1-1/4}=\frac1{12}.\]`,
+  },
+  {
+    id: 10314,
+    number: 314,
+    division: "Mu",
+    topic: "Improper Integrals",
+    difficulty: 4,
+    methods: ["Integration by Parts"],
+    question: String.raw`Given that \(\displaystyle\int_0^\infty\frac{\sin t}{t}\,dt=\frac\pi2\), evaluate
+\[\int_0^\infty\frac{1-\cos(4t)}{t^2}\,dt.\]`,
+    choices: [String.raw`\(\frac\pi4\)`, String.raw`\(\frac\pi2\)`, String.raw`\(\pi\)`, String.raw`\(2\pi\)`, "NOTA"],
+    answer: "D",
+    solution: String.raw`Integrate by parts with \(u=1-\cos(4t)\) and \(dv=t^{-2}dt\):
+\[\int_0^\infty\frac{1-\cos(4t)}{t^2}\,dt
+=-\left[\frac{1-\cos(4t)}t\right]_0^\infty
++\int_0^\infty\frac{4\sin(4t)}t\,dt.\]
+The boundary term is 0. With \(u=4t\), the remaining integral is
+\[4\int_0^\infty\frac{\sin u}{u}\,du=2\pi.\]`,
+  },
+  {
+    id: 10315,
+    number: 315,
+    division: "Mu",
+    topic: "Limits",
+    difficulty: 3,
+    methods: ["L'Hopital's Rule"],
+    question: String.raw`Evaluate
+\[\lim_{x\to1^+}\left((\ln x)^2\int_x^\infty\frac1{t(\ln t)^3}\,dt\right).\]`,
+    choices: [String.raw`\(\frac13\)`, String.raw`\(\frac12\)`, "2", "3", "NOTA"],
+    answer: "B",
+    solution: String.raw`Write the expression as a quotient and apply L'Hopital's Rule:
+\[\lim_{x\to1^+}\frac{\int_x^\infty[t(\ln t)^3]^{-1}\,dt}{(\ln x)^{-2}}
+=\lim_{x\to1^+}\frac{-1/(x(\ln x)^3)}{-2/(x(\ln x)^3)}
+=\frac12.\]`,
+  },
+  {
+    id: 10316,
+    number: 316,
+    division: "Mu",
+    topic: "Improper Integrals",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`Given
+\[f(x)=\int_0^\infty\frac{\sin t}{t+x}\,dt,\qquad
+g(x)=\int_0^\infty\frac{\cos t}{t+x}\,dt,\]
+and
+\[h(x)=f(x)\sin x-g(x)\cos x,\]
+what is \(h'(\pi)\)? Note that \(f(\pi)\) and \(g(\pi)\) are well-defined.`,
+    choices: [String.raw`\(-\frac1{2\pi}\)`, String.raw`\(-\frac1\pi\)`, String.raw`\(\frac1{2\pi}\)`, String.raw`\(\frac1\pi\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Put the sine and cosine factors into the integrals:
+\[h(x)=\int_0^\infty\frac{\sin x\sin t-\cos x\cos t}{t+x}\,dt
+=\int_0^\infty\frac{-\cos(x+t)}{t+x}\,dt.\]
+Using \(u=t+x\),
+\[h(x)=-\int_x^\infty\frac{\cos u}{u}\,du.\]
+By the Fundamental Theorem of Calculus,
+\[h'(x)=\frac{\cos x}{x},\qquad h'(\pi)=-\frac1\pi.\]`,
+  },
+  {
+    id: 10317,
+    number: 317,
+    division: "Mu",
+    topic: "Definite Integrals",
+    difficulty: 5,
+    methods: ["Trigonometric Substitution", "Integral Properties"],
+    question: String.raw`Given that
+\[\int_{-\pi/2}^{\pi/2}\ln|\cos t|\,dt=-\pi\ln2,\]
+what is
+\[\int_0^4\frac{\ln x}{\sqrt{4x-x^2}}\,dx?\]`,
+    choices: [String.raw`\(\frac{\pi\ln2}{16}\)`, String.raw`\(\frac{\pi\ln2}{8}\)`, String.raw`\(\frac{\pi\ln2}{4}\)`, String.raw`\(\frac{\pi\ln2}{2}\)`, "NOTA"],
+    answer: "E",
+    solution: String.raw`Let \(x=u+2\), then use \(u=2\sin\theta\). This gives
+\[\int_0^4\frac{\ln x}{\sqrt{4x-x^2}}\,dx
+=\int_{-\pi/2}^{\pi/2}\ln(2+2\sin\theta)\,d\theta.\]
+Split the logarithm:
+\[\pi\ln2+\int_{-\pi/2}^{\pi/2}\ln(1+\sin\theta)\,d\theta.\]
+If the second integral is \(I\), substituting \(\theta\mapsto-\theta\) and adding gives
+\[2I=\int_{-\pi/2}^{\pi/2}\ln(1-\sin^2\theta)\,d\theta
+=2\int_{-\pi/2}^{\pi/2}\ln|\cos\theta|\,d\theta=-2\pi\ln2.\]
+Thus \(I=-\pi\ln2\), and the original integral is 0, which is NOTA.`,
+  },
+  {
+    id: 10318,
+    number: 318,
+    division: "Mu",
+    topic: "Differential Equations",
+    difficulty: 3,
+    methods: [],
+    question: String.raw`The Airy function, \(f(x)=\operatorname{Ai}(x)\), is a solution to the differential equation \(f''(x)-xf(x)=0\). Given that \(\operatorname{Ai}(1)=\psi\) and \(\operatorname{Ai}'(1)=\phi\), the value of \(\operatorname{Ai}'''(1)+\operatorname{Ai}^{(4)}(1)\) can be written as \(A\psi+B\phi\) for integers \(A,B\). What is \(A+B\)?`,
+    choices: ["2", "3", "5", "7", "NOTA"],
+    answer: "C",
+    solution: String.raw`From \(f''=xf\), differentiate successively:
+\[f'''=f+xf',\]
+\[f^{(4)}=2f'+xf''=2f'+x^2f.\]
+At \(x=1\),
+\[f'''(1)=\psi+\phi,\qquad f^{(4)}(1)=\psi+2\phi.\]
+Their sum is \(2\psi+3\phi\), so \(A+B=5\).`,
+  },
+  {
+    id: 10319,
+    number: 319,
+    division: "Mu",
+    topic: "Function Analysis",
+    difficulty: 2,
+    methods: [],
+    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both functions are defined for all \(x\in V\) and there is at least one \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
+
+One, and only one, of these functions \(f(x)\) is sadder than \(g(x)=\arctan x\) on the interval \(0<x<1\). Which is it?`,
+    choices: [String.raw`\(\frac{x}{1-x}\)`, String.raw`\(2x\)`, String.raw`\(2x^2\)`, String.raw`\(\frac{2x}{1+x^2}\)`, "NOTA"],
+    answer: "C",
+    solution: String.raw`For \(0<x<1\),
+\[\frac{x}{1-x}>x>\arctan x\qquad\text{and}\qquad 2x>x>\arctan x.\]
+Also, \(2x^2<\arctan x\) for sufficiently small positive \(x\). Finally, let
+\[q(x)=\frac{2x}{1+x^2}-\arctan x.\]
+Then \(q(0)=0\), \(q(1)=1-\pi/4>0\), and
+\[q'(x)=\frac{1-3x^2}{(1+x^2)^2},\]
+so \(q\) first increases and then decreases while remaining positive on \((0,1)\). Therefore,
+\[2x^2<\arctan x.\]
+Thus \(2x^2\) is the unique function that is sadder than \(\arctan x\).`,
+  },
+  {
+    id: 10320,
+    number: 320,
+    division: "Mu",
+    topic: "Inequalities",
+    difficulty: 5,
+    methods: [],
+    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both functions are defined for all \(x\in V\) and there is at least one \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
+
+Assume \(f(x)\) and \(g(x)\) are both continuous and differentiable on \(0\le x\le1\), with \(f(0)=g(0)=0\), \(f(1)=g(1)=1\), and \(f(x)\) sadder than \(g(x)\). Which statements must be true?
+
+I. There exists some real number \(r>1\) such that \([g(x)]^r\) is sadder than \(f(x)\).
+
+II. There exists some real number \(n>1\) such that \(x^ng(x)\) is sadder than \(f(x)\).`,
+    choices: ["Neither I nor II", "Both I and II", "Only I", "Only II", "NOTA"],
+    answer: "D",
+    solution: String.raw`Statement I is false. For example, let
+\[f(x)=2x^2-x,\qquad g(x)=5x-4x^2.\]
+These functions satisfy all the endpoint conditions and \(f(x)<g(x)\) on \((0,1)\). Where \(f(x)\le0\), we have \([g(x)]^r\ge0\ge f(x)\). Where \(f(x)>0\), we have \(g(x)\ge1\), so \([g(x)]^r\ge g(x)>f(x)\) for every \(r>1\). Thus I need not hold.
+
+Statement II must be true. Since \(f(1)=1\) and \(f\) is continuous, there is an interval \(1-\varepsilon<x<1\) on which \(0<f(x)<2\). Choose any \(x_0\) in this interval. As \(n\to\infty\), \(x_0^ng(x_0)\to0\). Therefore, for sufficiently large \(n\),
+\[x_0^ng(x_0)<f(x_0),\]
+so \(x^ng(x)\) is sadder than \(f(x)\). Thus only II is guaranteed.`,
+  },
+  {
+    id: 10321,
+    number: 321,
+    division: "Mu",
+    topic: "Optimization",
+    difficulty: 3,
+    methods: ["First Derivative Test"],
+    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both functions are defined for all \(x\in V\) and there is at least one \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
+
+Consider \(f(x)=-\ln x\) and \(g(x)=k-x^2\) for a constant \(k\). What is the maximum value of \(k\) such that \(f(x)\) is not sadder than \(g(x)\) on \(0<x<\infty\)?`,
+    choices: [String.raw`\(\frac12+\frac{\ln2}{2}\)`, String.raw`\(\frac12+\ln2\)`, String.raw`\(1+\frac{\ln2}{2}\)`, String.raw`\(2+2\ln2\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`Let
+\[\Delta(x)=f(x)-g(x)=x^2-\ln x-k.\]
+The function \(f\) is not sadder than \(g\) exactly when \(\Delta(x)\ge0\) for every \(x>0\). Its minimum occurs where
+\[\Delta'(x)=2x-\frac1x=0,\qquad x=\frac{\sqrt2}{2}.\]
+At this point,
+\[\Delta\left(\frac{\sqrt2}{2}\right)=\frac12+\frac12\ln2-k.\]
+Thus the maximum possible \(k\) is
+\[\frac12+\frac{\ln2}{2}.\]`,
+  },
+  {
+    id: 10322,
+    number: 322,
+    division: "Mu",
+    topic: "Functions",
+    difficulty: 3,
+    methods: ["Chain Rule"],
+    question: String.raw`Let \(f(x)\) be a continuous and differentiable function defined for \(x>0\). Given that \(f'(4)=5\) and
+\[f(x)=f\left(\frac x2\right)+f(2x),\]
+what is \(f'(1/2)\)? Note that continuous and differentiable functions satisfying these conditions do exist.`,
+    choices: ["−80", "−40", "5", "10", "NOTA"],
+    answer: "B",
+    solution: String.raw`Differentiate the functional equation:
+\[f'(x)=\frac12f'\left(\frac x2\right)+2f'(2x).\]
+At \(x=1\) and \(x=2\), respectively,
+\[f'(1)=\frac12f'\left(\frac12\right)+2f'(2),\]
+\[f'(2)=\frac12f'(1)+2f'(4).\]
+Substituting the second equation into the first gives
+\[f'(1)=\frac12f'\left(\frac12\right)+f'(1)+4f'(4).\]
+Since \(f'(4)=5\), we obtain \(f'(1/2)=-40\).`,
+  },
+  {
+    id: 10323,
+    number: 323,
+    division: "Mu",
+    topic: "Polynomials",
+    difficulty: 4,
+    methods: ["Product Rule"],
+    question: String.raw`For \(n\ge1\), the Hermite polynomials are defined by
+\[H_n(x)=(-1)^ne^{x^2}\left(\frac d{dx}\right)^n\left(e^{-x^2}\right).\]
+Given that \(H_8(a)=h\) and \(H_8'(a)=0\), what is \(H_9(a)\)?`,
+    choices: [String.raw`\(18h\)`, String.raw`\(2ah\)`, String.raw`\((9+8a)h\)`, String.raw`\((9+2a)h\)`, "NOTA"],
+    answer: "B",
+    solution: String.raw`Differentiate the defining relation to obtain
+\[H_n'(x)=2xH_n(x)-H_{n+1}(x).\]
+For \(n=8\) and \(x=a\),
+\[0=H_8'(a)=2aH_8(a)-H_9(a).\]
+Since \(H_8(a)=h\), it follows that
+\[H_9(a)=2ah.\]`,
+  },
+  {
+    id: 10324,
+    number: 324,
+    division: "Mu",
+    topic: "Polynomials",
+    difficulty: 5,
+    methods: ["Product Rule"],
+    question: String.raw`For \(n\ge1\), the Hermite polynomials are defined by
+\[H_n(x)=(-1)^ne^{x^2}\left(\frac d{dx}\right)^n\left(e^{-x^2}\right).\]
+Given that \(H_8(a)=h\) and \(H_8'(a)=0\), what is \(H_9'(a)\)?`,
+    choices: [String.raw`\(18h\)`, String.raw`\(2ah\)`, String.raw`\((9+8a)h\)`, String.raw`\((9+2a)h\)`, "NOTA"],
+    answer: "A",
+    solution: String.raw`The Hermite identities
+\[H_n'(x)=2nH_{n-1}(x),\qquad H_{n+1}(x)=2xH_n(x)-2nH_{n-1}(x)\]
+combine to give
+\[H_{n+1}(x)=2xH_n(x)-H_n'(x).\]
+Differentiate this last identity:
+\[H_{n+1}'(x)=2H_n(x)+2xH_n'(x)-H_n''(x).\]
+At a zero of \(H_8'\), the Hermite differential equation \(H_8''-2xH_8'+16H_8=0\) gives \(H_8''(a)=-16h\). Therefore,
+\[H_9'(a)=2h-(-16h)=18h.\]`,
+  },
+  {
+    id: 10325,
+    number: 325,
+    division: "Mu",
+    topic: "Geometry",
+    difficulty: 4,
+    methods: ["Tangency", "Double-Angle Identity"],
+    question: String.raw`A mirror is shaped like the curve \(y=\sqrt[3]x\) for positive \(x\). A ray of light is emitted from the origin following the line \(y=mx\), in the direction of increasing \(x\). It hits and reflects off the mirror. What is the positive value of \(m\) such that, after reflection, the ray travels parallel to the \(x\)-axis?`,
+    choices: [String.raw`\(\sqrt[3]3\)`, String.raw`\(\sqrt3\)`, String.raw`\(\sqrt[3]9\)`, "3", "NOTA"],
+    answer: "B",
+    solution: String.raw`Let \(P=(x_P,\sqrt[3]{x_P})\) be the point of reflection. Because \(P\) also lies on \(y=mx\),
+\[mx_P=\sqrt[3]{x_P},\qquad x_P=m^{-3/2}.\]
+The tangent slope at \(P\) is
+\[f'(x_P)=\frac13x_P^{-2/3}=\frac m3.\]
+Let \(\beta=\arctan m\) be the incident ray's angle with the horizontal, and let \(\theta_1=\arctan(m/3)\) be the tangent's angle. The law of reflection and the horizontal reflected ray give \(\beta=2\theta_1\). Thus,
+\[\arctan m=2\arctan\left(\frac m3\right).\]
+Using the tangent double-angle identity,
+\[m=\frac{2m/3}{1-m^2/9}.\]
+For positive \(m\), this yields \(m^2=3\), so
+\[m=\sqrt3.\]`,
   },
 ];
