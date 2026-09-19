@@ -3,6 +3,24 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import { tutorInstructions } from "../lib/tutorInstructions.ts";
 
+test("visual requests receive contextual text descriptions without fabricated images or solution leaks", () => {
+  for (const revealed of [false, true]) {
+    for (const firstMessage of [false, true]) {
+      const prompt = tutorInstructions(revealed, firstMessage);
+      assert.match(prompt, /Visual requests about the supplied problem are on-topic/);
+      assert.match(prompt, /draw the mirror in a plane/);
+      assert.match(prompt, /one short clarifying question/);
+      assert.match(prompt, /response is text-only/);
+      assert.match(prompt, /two to four short sentences/);
+      assert.match(prompt, /Do not use ASCII art/);
+      assert.match(prompt, /Before verified submission or Give Up, do not introduce a solved slope/);
+      assert.match(prompt, /After reveal, include those details only if requested/);
+      assert.match(prompt, /do not reuse this example for a different question/);
+      assert.ok(prompt.includes(String.raw`\(y=\sqrt[3]{x}\)`));
+    }
+  }
+});
+
 test("calculator-free rules cover hints and revealed solutions, including exact angle comparisons", () => {
   for (const revealed of [true, false]) {
     for (const firstMessage of [true, false]) {
