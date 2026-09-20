@@ -1,16 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="500" viewBox="0 0 720 500" role="img" aria-labelledby="title desc">
-  <title id="title">Balloon pattern equations</title><desc id="desc">Four equations involving checker, gray, striped, and dotted balloons.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="350" viewBox="0 0 600 350" role="img" aria-labelledby="title desc">
+  <title id="title">Balloon pattern equations</title>
+  <desc id="desc">Four separate equations involving checker, gray, striped, and dotted balloons.</desc>
   <defs>
-    <pattern id="checker" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#111"/><rect x="7" y="7" width="7" height="7" fill="#111"/></pattern>
-    <pattern id="stripes" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="5" fill="#222"/></pattern>
-    <pattern id="dots" width="13" height="13" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="2.4" fill="#222"/><circle cx="11" cy="11" r="2.4" fill="#222"/></pattern>
-    <g id="balloon"><ellipse cy="-10" rx="25" ry="34" stroke="#111" stroke-width="3"/><path d="M0 24 C-8 42 10 48 0 67 C-8 82 5 91 0 103" fill="none" stroke="#111" stroke-width="3"/></g>
+    <pattern id="checker" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="#111"/><rect x="5" y="5" width="5" height="5" fill="#111"/></pattern>
+    <pattern id="stripes" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="4" fill="#222"/></pattern>
+    <pattern id="dots" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.8" fill="#222"/><circle cx="8" cy="8" r="1.8" fill="#222"/></pattern>
+    <g id="balloon"><ellipse cy="-7" rx="18" ry="24" stroke="#111" stroke-width="2.5"/><path d="M0 17 C-5 25 5 30 0 38 C-4 44 3 48 0 53" fill="none" stroke="#111" stroke-width="2.5" stroke-linecap="round"/></g>
   </defs>
-  <rect width="720" height="430" fill="white"/>
-  <g font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="#111">
-    <g transform="translate(80 55)" fill="url(#checker)"><use href="#balloon"/></g><text x="135" y="62">+</text><g transform="translate(190 55)" fill="url(#checker)"><use href="#balloon"/></g><text x="245" y="62">+</text><g transform="translate(300 55)" fill="url(#checker)"><use href="#balloon"/></g><text x="415" y="62">= 300</text>
-    <g transform="translate(80 160)" fill="#888"><use href="#balloon"/></g><text x="135" y="167">+</text><g transform="translate(190 160)" fill="url(#checker)"><use href="#balloon"/></g><text x="245" y="167">+</text><g transform="translate(300 160)" fill="#888"><use href="#balloon"/></g><text x="415" y="167">= 140</text>
-    <g transform="translate(55 265)" fill="#888"><use href="#balloon"/></g><text x="100" y="272">+</text><g transform="translate(145 265)" fill="url(#stripes)"><use href="#balloon"/></g><text x="190" y="272">+</text><g transform="translate(235 265)" fill="url(#checker)"><use href="#balloon"/></g><text x="280" y="272">+</text><g transform="translate(325 265)" fill="url(#stripes)"><use href="#balloon"/></g><text x="440" y="272">= 180</text>
-    <g transform="translate(55 370)" fill="#888"><use href="#balloon"/></g><text x="100" y="377">+</text><g transform="translate(145 370)" fill="url(#dots)"><use href="#balloon"/></g><text x="190" y="377">+</text><g transform="translate(235 370)" fill="url(#dots)"><use href="#balloon"/></g><text x="280" y="377">+</text><g transform="translate(325 370)" fill="url(#stripes)"><use href="#balloon"/></g><text x="430" y="377">= ?</text>
+  <rect x="1.5" y="1.5" width="597" height="347" rx="8" fill="#fff" stroke="#d9e1ea" stroke-width="3"/>
+  <g font-family="Arial, sans-serif" font-size="25" text-anchor="middle" fill="#111">
+    <g transform="translate(100 52)" fill="url(#checker)"><use href="#balloon"/></g><text x="145" y="54">+</text><g transform="translate(190 52)" fill="url(#checker)"><use href="#balloon"/></g><text x="235" y="54">+</text><g transform="translate(280 52)" fill="url(#checker)"><use href="#balloon"/></g><text x="390" y="54">= 300</text>
+    <g transform="translate(100 132)" fill="#929292"><use href="#balloon"/></g><text x="145" y="134">+</text><g transform="translate(190 132)" fill="url(#checker)"><use href="#balloon"/></g><text x="235" y="134">+</text><g transform="translate(280 132)" fill="#929292"><use href="#balloon"/></g><text x="390" y="134">= 140</text>
+    <g transform="translate(70 212)" fill="#929292"><use href="#balloon"/></g><text x="108" y="214">+</text><g transform="translate(146 212)" fill="url(#stripes)"><use href="#balloon"/></g><text x="184" y="214">+</text><g transform="translate(222 212)" fill="url(#checker)"><use href="#balloon"/></g><text x="260" y="214">+</text><g transform="translate(298 212)" fill="url(#stripes)"><use href="#balloon"/></g><text x="410" y="214">= 180</text>
+    <g transform="translate(70 292)" fill="#929292"><use href="#balloon"/></g><text x="108" y="294">+</text><g transform="translate(146 292)" fill="url(#dots)"><use href="#balloon"/></g><text x="184" y="294">+</text><g transform="translate(222 292)" fill="url(#dots)"><use href="#balloon"/></g><text x="260" y="294">+</text><g transform="translate(298 292)" fill="url(#stripes)"><use href="#balloon"/></g><text x="397" y="294">= ?</text>
   </g>
 </svg>

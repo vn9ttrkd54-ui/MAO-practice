@@ -51,6 +51,12 @@ Therefore \(n^2+100x=2n^2+2nx\), so \(x=\boxed{\frac{n^2}{100-2n}}\).`,
 \[1=1,\ 2=3-1,\ 3=3,\ 4=5-1,\ 5=5,\]
 \[6=5+1,\ 7=5+3-1,\ 8=5+3,\ 9=5+3+1.\]
 Thus all \(\boxed9\) package weights can be determined.`,
+    illustration: {
+      src: "/questions/theta-7-balance-scale.svg",
+      alt: "A balanced two-pan scale with an object on the left pan, alongside separate 1-pound, 3-pound, and 5-pound weights.",
+      width: 600,
+      height: 230,
+    },
   },
   {
     id: 30008, number: 8, division: "Theta", topic: "Simplification", difficulty: 2, methods: [],
@@ -206,7 +212,7 @@ This gives \(x=3\) again and \(x=-1\); at \(x=-1\), the exponent is \(16\), whic
     solution: String.raw`The first row gives the checker balloons value \(100\) each. The second gives the gray balloons value \(20\) each. The third gives the striped balloons value \(30\) each. If \(d\) is the dotted-balloon value, the last row equals \(20+2d+30=50+2d\).
 
 Choice A makes \(d\) nonintegral, B makes \(d=30\) equal to the striped value, and D makes \(d=100\) equal to the checker value. Choice C makes \(d=70\), a distinct positive integer. Thus \(\boxed{190}\) could be the last row's value.`,
-    illustration: { src: "/questions/theta-29-balloons.svg", alt: "Four equations using checker, gray, striped, and dotted balloons.", width: 720, height: 500 },
+    illustration: { src: "/questions/theta-29-balloons.svg", alt: "Four equations using checker, gray, striped, and dotted balloons.", width: 600, height: 350 },
   },
   {
     id: 30030, number: 30, division: "Theta", topic: "Function Analysis", difficulty: 1, methods: [],

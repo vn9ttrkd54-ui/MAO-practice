@@ -26,7 +26,9 @@ test("source-sensitive details and corrections are retained", () => {
   assert.match(get(23).solution, /Every real number is also a complex number/);
   assert.match(get(25).solution, /distinct integral solutions/);
   assert.match(get(30).solution, /x=2.*hole/);
+  assert.equal(get(7).illustration.src, "/questions/theta-7-balance-scale.svg");
   assert.equal(get(29).illustration.src, "/questions/theta-29-balloons.svg");
+  assert.ok(existsSync(new URL("../public/questions/theta-7-balance-scale.svg", import.meta.url)));
   assert.ok(existsSync(new URL("../public/questions/theta-29-balloons.svg", import.meta.url)));
   assert.doesNotMatch(source, /disput|thrown out and|original wording|modified to fix/i);
 });
