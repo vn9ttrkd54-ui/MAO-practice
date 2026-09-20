@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 330" role="img" aria-labelledby="title desc">
+  <title id="title">Semicircle inscribed in a right triangle</title>
+  <desc id="desc">Right triangle ABC with horizontal base BC, vertical side AC, and a semicircle on DC tangent to side AB.</desc>
+  <g fill="none" stroke="#111" stroke-width="3">
+    <path d="M52 276h294V148L52 276Z"/>
+    <path d="M178.2 276a83.9 83.9 0 0 1 167.8 0"/>
+    <path d="M330 276v-16h16"/>
+  </g>
+  <g font-family="serif" font-size="24" font-style="italic" fill="#111">
+    <text x="348" y="145">A</text><text x="30" y="296">B</text>
+    <text x="350" y="298">C</text><text x="252" y="302">D</text>
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 230" role="img" aria-labelledby="title desc">
+  <title id="title">Seven-segment digit display</title>
+  <desc id="desc">Digits zero through nine shown in order with used segments solid and unused segments dashed, plus a complete eight at upper right.</desc>
+  <style>.on{stroke:#111}.off{stroke:#999;stroke-dasharray:6 5}.on,.off{fill:none;stroke-width:4;stroke-linecap:square}</style>
+  <g transform="translate(812 12)" class="on"><path d="M0 0h42M42 0v42M42 42v42M0 84h42M0 42v42M0 0v42M0 42h42"/></g>
+  <g transform="translate(18 120)">
+    <g transform="translate(0)"><path class="on" d="M0 0h42M42 0v42M42 42v42M0 84h42M0 42v42M0 0v42"/><path class="off" d="M0 42h42"/></g>
+    <g transform="translate(82)"><path class="on" d="M42 0v42M42 42v42"/><path class="off" d="M0 0h42M0 84h42M0 42v42M0 0v42M0 42h42"/></g>
+    <g transform="translate(164)"><path class="on" d="M0 0h42M42 0v42M0 42h42M0 42v42M0 84h42"/><path class="off" d="M42 42v42M0 0v42"/></g>
+    <g transform="translate(246)"><path class="on" d="M0 0h42M42 0v42M0 42h42M42 42v42M0 84h42"/><path class="off" d="M0 42v42M0 0v42"/></g>
+    <g transform="translate(328)"><path class="on" d="M0 0v42M0 42h42M42 0v42M42 42v42"/><path class="off" d="M0 0h42M0 84h42M0 42v42"/></g>
+    <g transform="translate(410)"><path class="on" d="M0 0h42M0 0v42M0 42h42M42 42v42M0 84h42"/><path class="off" d="M42 0v42M0 42v42"/></g>
+    <g transform="translate(492)"><path class="on" d="M0 0h42M0 0v42M0 42h42M0 42v42M42 42v42M0 84h42"/><path class="off" d="M42 0v42"/></g>
+    <g transform="translate(574)"><path class="on" d="M0 0h42M42 0v42M42 42v42"/><path class="off" d="M0 84h42M0 42v42M0 0v42M0 42h42"/></g>
+    <g transform="translate(656)" class="on"><path d="M0 0h42M42 0v42M42 42v42M0 84h42M0 42v42M0 0v42M0 42h42"/></g>
+    <g transform="translate(738)"><path class="on" d="M0 0h42M42 0v42M42 42v42M0 84h42M0 0v42M0 42h42"/><path class="off" d="M0 42v42"/></g>
+  </g>
+</svg>

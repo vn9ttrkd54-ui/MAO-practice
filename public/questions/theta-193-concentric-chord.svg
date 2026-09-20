@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 310" role="img" aria-labelledby="title desc">
+  <title id="title">Concentric circles intersected by a chord</title>
+  <desc id="desc">Two concentric circles with a horizontal chord of the larger circle divided into three portions labeled 12.</desc>
+  <g fill="none" stroke="#111" stroke-width="3">
+    <circle cx="220" cy="165" r="135"/><circle cx="220" cy="165" r="85.91"/>
+    <path d="M109.55 87.37h220.9"/>
+  </g>
+  <g font-family="serif" font-size="24" fill="#111" text-anchor="middle">
+    <text x="146.36" y="78">12</text><text x="220" y="78">12</text><text x="293.64" y="78">12</text>
+  </g>
+</svg>

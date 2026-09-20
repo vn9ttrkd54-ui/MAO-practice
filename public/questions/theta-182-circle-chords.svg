@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 270" role="img" aria-labelledby="title desc">
+  <title id="title">Circle with four labeled points and crossed chords</title>
+  <desc id="desc">A circle with upper chord BA, lower chord CD, and diagonal segments BD and CA.</desc>
+  <g fill="none" stroke="#111" stroke-width="3">
+    <circle cx="190" cy="135" r="104"/>
+    <path d="M104 77h172M104 193h172M104 77l172 116M276 77 104 193"/>
+  </g>
+  <g font-family="serif" font-size="24" font-style="italic" fill="#111">
+    <text x="78" y="72">B</text><text x="286" y="72">A</text>
+    <text x="78" y="216">C</text><text x="286" y="216">D</text>
+  </g>
+</svg>

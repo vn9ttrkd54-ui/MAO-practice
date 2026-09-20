@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 230" role="img" aria-labelledby="title desc">
+  <title id="title">Seven-circle equal-sum diagram</title>
+  <desc id="desc">Seven empty circles connected along the three sides and interior lines of a triangle.</desc>
+  <g fill="none" stroke="#111" stroke-width="3" stroke-linecap="round">
+    <path d="M210 24 62 198h296L210 24Z"/>
+    <path d="M210 24v174M136 111h148"/>
+  </g>
+  <g fill="#fff" stroke="#111" stroke-width="3">
+    <circle cx="210" cy="24" r="17"/><circle cx="136" cy="111" r="17"/>
+    <circle cx="210" cy="111" r="17"/><circle cx="284" cy="111" r="17"/>
+    <circle cx="62" cy="198" r="17"/><circle cx="210" cy="198" r="17"/>
+    <circle cx="358" cy="198" r="17"/>
+  </g>
+</svg>

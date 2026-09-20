@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300" role="img" aria-labelledby="title desc">
+  <title id="title">Two tangent circles with common tangent rays</title>
+  <desc id="desc">Two externally tangent circles centered at O1 and O2, with rays from P through their centers and tangent points A and B.</desc>
+  <defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#111"/></marker></defs>
+  <g fill="none" stroke="#111" stroke-width="3">
+    <circle cx="280" cy="180" r="50"/><circle cx="430" cy="180" r="100"/>
+    <path d="M130 180 565 180" marker-end="url(#arrow)"/>
+    <path d="M130 180 535 36.83" marker-end="url(#arrow)"/>
+    <path d="M280 180 263.33 132.86M430 180 396.67 85.72"/>
+  </g>
+  <g fill="#111"><circle cx="130" cy="180" r="5"/><circle cx="263.33" cy="132.86" r="5"/><circle cx="396.67" cy="85.72" r="5"/><circle cx="280" cy="180" r="5"/><circle cx="430" cy="180" r="5"/></g>
+  <g font-family="serif" font-size="22" font-style="italic" fill="#111">
+    <text x="108" y="188">P</text><text x="244" y="123">A</text><text x="392" y="75">B</text>
+    <text x="265" y="208">O₁</text><text x="415" y="210">O₂</text>
+  </g>
+</svg>

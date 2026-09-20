@@ -1555,4 +1555,351 @@ Thus \(\frac7{12}t=1\), so \(t=\frac{12}{7}\) hours.`,
 \[\frac{x}{16}=\frac4x.\]
 Cross-multiplying yields \(x^2=64\), so \(x=\pm8\). The smaller value is \(-8\).`,
   },
+  {
+    id: 30180, number: 180, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    question: String.raw`The following diagram contains several circles that are connected by lines, with 3 circles to each line. The integers from 1 to 7 must be inserted, one number to a circle, such that the sum of the three numbers in each line is the same. Which number cannot be placed in the lower left circle?`,
+    choices: ["3", "7", "2", "4", "NOTA"], answer: "D",
+    solution: String.raw`If we represent the numbers in the circles with letters \(A\) through \(G\), and let the sum of each line be \(S\), the numbers 1 through 7 sum to 28. Therefore,
+\[(A+B+E)+(A+C+F)+(A+D+G)=3S\Longrightarrow 2A+28=3S,\]
+and
+\[(B+C+D)+(E+F+G)=2S\Longrightarrow 28-A=2S.\]
+Solving this system gives \(A=4\). Since the top circle must contain 4, no other circle, including the lower left circle, can contain 4.`,
+    illustration: {
+      src: "/questions/theta-180-circle-sum.svg",
+      alt: "Seven empty circles connected along the sides and interior lines of a triangle.",
+      width: 420,
+      height: 230,
+    },
+  },
+  {
+    id: 30181, number: 181, division: "Theta", topic: "Polynomial Equations", difficulty: 3, methods: [],
+    question: String.raw`Solve for the sum of the values of \(x\):
+\[x+9+4\sqrt{2x+3}=0\]`,
+    choices: ["0", "3", "11", "14", "NOTA"], answer: "A",
+    solution: String.raw`If we subtract \(x+9\) from both sides and square, we have
+\[4\sqrt{2x+3}=-(x+9)\Longrightarrow16(2x+3)=x^2+18x+81\]
+\[\Longrightarrow x^2-14x+33=0\Longrightarrow(x-11)(x-3)=0.\]
+Our initial assessment would be that \(x=11\) and \(x=3\); however, both are extraneous when plugged back into the original equation. Therefore, with no solutions, the sum of the solutions is 0.`,
+  },
+  {
+    id: 30182, number: 182, division: "Theta", topic: "Geometry", difficulty: 3, methods: [],
+    question: String.raw`The combined area of the congruent two triangles, which each have two vertices on the circle and one vertex at the center of the circle, is \(5\sqrt3\). If \(m\widehat{BC}=m\widehat{AD}=60^\circ\), then what is the circumference of the circle?`,
+    choices: [String.raw`\(5\pi\)`, String.raw`\(\pi\sqrt5\)`, String.raw`\(2\pi\sqrt{10}\)`, String.raw`\(\pi\sqrt{10}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Given the triangles are congruent, the central angles intercept congruent arcs. Since the remaining arcs of the circle \(m\widehat{BC}=m\widehat{AD}\) sum to \(120^\circ\), our two central angles are \(120^\circ\) each. If we drop a perpendicular from the center, we get four \(30^\circ-60^\circ-90^\circ\) triangles. For one of these triangles, \(2b=r\) and \(b\sqrt3=h\). Thus,
+\[A=\frac{bh}{2}\Longrightarrow\frac{5\sqrt3}{4}=\frac{b^2\sqrt3}{2}
+\Longrightarrow\frac52=b^2\Longrightarrow b=\frac{\sqrt{10}}2.\]
+Therefore, the radius is \(\sqrt{10}\), and the circumference is \(2\pi\sqrt{10}\).`,
+    illustration: {
+      src: "/questions/theta-182-circle-chords.svg",
+      alt: "A circle with upper chord BA, lower chord CD, and crossed segments BD and CA.",
+      width: 380,
+      height: 270,
+    },
+  },
+  {
+    id: 30183, number: 183, division: "Theta", topic: "Matrices", difficulty: 1, methods: ["Determinant"],
+    question: String.raw`Find the determinant of the matrix:
+\[\begin{bmatrix}4&3\\-9&10\end{bmatrix}\]`,
+    choices: ["13", "-66", "-6", "-13", "NOTA"], answer: "E",
+    solution: String.raw`The determinant of the \(2\times2\) matrix is
+\[\begin{vmatrix}4&3\\-9&10\end{vmatrix}=(4)(10)-(3)(-9)=40-(-27)=67.\]
+Since 67 is not listed, the answer is NOTA.`,
+  },
+  {
+    id: 30184, number: 184, division: "Theta", topic: "Functions", difficulty: 4, methods: ["Substitution"],
+    question: String.raw`Suppose \(f(x)\) is a real-valued function such that
+\[5f\left(\frac1x\right)+\frac{f(2x)}{x^2}=x\]
+for \(x\ne0\). Find \(f(1)\).`,
+    choices: [String.raw`\(\frac3{10}\)`, String.raw`\(\frac1{21}\)`, String.raw`\(\frac17\)`, String.raw`\(\frac3{14}\)`, "NOTA"], answer: "D",
+    solution: String.raw`To solve this functional equation, plug in \(x=1\) and \(x=\frac12\):
+\[x=1\Longrightarrow5f(1)+f(2)=1,\]
+\[x=\frac12\Longrightarrow5f(2)+4f(1)=\frac12.\]
+Solving this system of equations yields \(f(1)=\frac3{14}\).`,
+  },
+  {
+    id: 30185, number: 185, division: "Theta", topic: "Polynomials", difficulty: 1, methods: ["Remainder Theorem"],
+    question: String.raw`If the function \(g(x)=x^3-4x^2+ax-12\) is divisible by \((x-3)\), find \(a^2\).`,
+    choices: ["25", "49", "441", "625", "NOTA"], answer: "B",
+    solution: String.raw`By the Remainder Theorem, \(g(3)=0\):
+\[g(3)=3^3-4\cdot3^2+3a-12=-21+3a=0.\]
+Thus \(a=7\), so \(a^2=49\).`,
+  },
+  {
+    id: 30186, number: 186, division: "Theta", topic: "Statistics", difficulty: 2, methods: [],
+    question: String.raw`For \(1<x<y\), let \(S=\{1,x,y,x+y\}\). Compute the absolute value of the difference between the mean and median of the set \(S\).`,
+    choices: [String.raw`\(\frac14\)`, String.raw`\(\frac{y-1}{2}\)`, String.raw`\(x\)`, "1", "NOTA"], answer: "A",
+    solution: String.raw`The mean is
+\[\frac{1+x+y+(x+y)}4=\frac14+\frac{x+y}{2},\]
+and the median is \(\frac{x+y}{2}\), so their absolute difference is \(\frac14\).`,
+  },
+  {
+    id: 30187, number: 187, division: "Theta", topic: "Functions", difficulty: 4, methods: [],
+    question: String.raw`Let \([x]\) represent the greatest integer function, also known as the floor function, which outputs the greatest integer less than or equal to \(x\). Compute the number of first quadrant ordered pairs \((x,y)\) that are solutions to the following system:
+\[\begin{cases}x+[y]=5.3\\y+[x]=5.7\end{cases}\]`,
+    choices: ["2", "4", "5", "6", "NOTA"], answer: "D",
+    solution: String.raw`Let \(x=n+0.3\) and \(y=m+0.7\) for two nonnegative integers \(m\) and \(n\). Then \(m+n=5\), which gives 6 pairs: \((0.3,5.7)\), \((1.3,4.7)\), \((2.3,3.7)\), \((3.3,2.7)\), \((4.3,1.7)\), and \((5.3,0.7)\).`,
+  },
+  {
+    id: 30188, number: 188, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    question: String.raw`What is the domain of the function below?
+\[f(x)=\frac{(x^2-4)\sqrt{9x^2-9}}{x-2}\]`,
+    choices: [String.raw`\((-1,1)\)`, String.raw`\((-\infty,-1]\cup[1,\infty)\)`, String.raw`\((-\infty,-1]\cup[1,2)\cup(2,\infty)\)`, String.raw`\((1,2)\cup(2,\infty)\)`, "NOTA"], answer: "C",
+    solution: String.raw`We can factor:
+\[f(x)=\frac{(x-2)(x+2)\cdot3\sqrt{(x-1)(x+1)}}{x-2}
+=3(x+2)\sqrt{(x-1)(x+1)},\qquad x\ne2.\]
+The radicand requires \((x-1)(x+1)\ge0\), and the original denominator requires \(x\ne2\). Therefore, the domain is
+\[(-\infty,-1]\cup[1,2)\cup(2,\infty).\]`,
+  },
+  {
+    id: 30189, number: 189, division: "Theta", topic: "Geometry", difficulty: 2, methods: [],
+    question: String.raw`A right cone's ratio of its height to its radius is \(8:1\). The cone and a sphere have the same volume. What is the ratio of the radius of the sphere to the radius of the cone?`,
+    choices: [String.raw`\(\sqrt[3]{2}\)`, String.raw`\(\sqrt2\)`, String.raw`\(\sqrt[3]{4}\)`, String.raw`\(\frac1{\sqrt[3]{2}}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Let the cone have radius \(r\) and height \(h=8r\). Then
+\[V_{\text{cone}}=\frac13\pi r^2h=\frac83\pi r^3.\]
+If the sphere has radius \(R\), then \(V_{\text{sphere}}=\frac43\pi R^3\). Equal volumes give
+\[\frac83\pi r^3=\frac43\pi R^3\Longrightarrow2r^3=R^3
+\Longrightarrow\frac Rr=\sqrt[3]{2}.\]`,
+  },
+  {
+    id: 30190, number: 190, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Remainder Theorem"],
+    question: String.raw`Let \(Q(x)\) be the quotient when \(20x^{26}-26x^{20}+6\) is divided by \(x-1\). Compute the sum of the coefficients of \(Q(x)\).`,
+    choices: ["6", "20", "0", "520", "NOTA"], answer: "C",
+    solution: String.raw`Write
+\[P(x)=20(x^{26}-1)-26(x^{20}-1).\]
+Using \(x^n-1=(x-1)(x^{n-1}+x^{n-2}+\cdots+1)\),
+\[Q(x)=20(x^{25}+x^{24}+\cdots+1)-26(x^{19}+x^{18}+\cdots+1).\]
+The sum of the coefficients is
+\[Q(1)=20(26)-26(20)=0.\]`,
+  },
+  {
+    id: 30191, number: 191, division: "Theta", topic: "Conic Sections", difficulty: 4, methods: ["Distance Formula"],
+    question: String.raw`Let \(P\) be the parabola with vertex at the origin and directrix of \(y=-1\). Compute the number of lattice points on \(P\) whose distance to \((0,1)\) is less than or equal to 2026.`,
+    choices: ["90", "46", "91", "181", "NOTA"], answer: "C",
+    solution: String.raw`The equation of the parabola is
+\[y=\frac{x^2}{4}.\]
+Its lattice points can be written as \((2k,k^2)\), where \(k\) is an integer. The distance from \((2k,k^2)\) to \((0,1)\) is
+\[d=\sqrt{(2k)^2+(k^2-1)^2}=\sqrt{k^4+2k^2+1}=k^2+1.\]
+Thus \(k^2+1\le2026\), so \(-45\le k\le45\). There are 91 values of \(k\).`,
+  },
+  {
+    id: 30192, number: 192, division: "Theta", topic: "Sequences", difficulty: 5, methods: ["Geometric Sequence"],
+    question: String.raw`Three integers, \(a,b,\) and \(c\), form a sequence where there exists some ratio \(r\) such that \(ar=b\), \(br=c\). If
+\[a+b+c=21\qquad\text{and}\qquad\frac1a+\frac1b+\frac1c=\frac7{12},\]
+what is the sum of all possible values of \(a\)?`,
+    choices: ["3", "9", "12", "15", "NOTA"], answer: "D",
+    solution: String.raw`Rewrite the sequence in terms of \(b\): \(a=\frac br\) and \(c=br\). Factoring the common terms in the two given equations gives
+\[b\left(\frac1r+1+r\right)=21\]
+and
+\[\frac1b\left(r+1+\frac1r\right)=\frac7{12}.\]
+Therefore,
+\[\frac{21}{b}=\frac1r+1+r=\frac{7b}{12},\]
+so \(b^2=36\). The value \(b=-6\) would make \(r\) irrational and cannot produce integer \(a\) and \(c\), so \(b=6\). Now
+\[\frac{21}{6}=\frac1r+1+r
+\Longrightarrow2r^2-5r+2=0,\]
+giving \(r=\frac12\) or \(r=2\). Since \(a=\frac br\), the possible values of \(a\) are 12 and 3, whose sum is 15.`,
+  },
+  {
+    id: 30193, number: 193, division: "Theta", topic: "Geometry", difficulty: 4, methods: [],
+    question: String.raw`Two concentric circles, shown below, are made such that a chord of the larger circle is trisected by the smaller circle. The length of the chord is 36, and the sum of the radii of the two circles is also 36. Find the smaller radius.`,
+    choices: ["14", "12", "16", "15", "NOTA"], answer: "A",
+    solution: String.raw`Let \(R\) be the radius of the larger circle, \(r\) the radius of the smaller circle, and \(a\) the perpendicular distance from the common center to the chord. The chord is divided into lengths \(12,12,12\), so
+\[a^2+6^2=r^2,\qquad a^2+18^2=R^2.\]
+Thus
+\[r^2-6^2=R^2-18^2
+\Longrightarrow288=R^2-r^2=(R+r)(R-r).\]
+Since \(R+r=36\), \(R-r=8\). Solving the two equations gives \(r=14\).`,
+    illustration: {
+      src: "/questions/theta-193-concentric-chord.svg",
+      alt: "Two concentric circles and a chord divided into three portions labeled 12.",
+      width: 440,
+      height: 310,
+    },
+  },
+  {
+    id: 30194, number: 194, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: [],
+    question: String.raw`For a function \(f(x)=ab^x\), it is given that \(f(3)=6\) and \(f(6)=3\). Find \(b^{-a}\).`,
+    choices: ["4", "8", "16", "32", "NOTA"], answer: "C",
+    solution: String.raw`Because of the exponential nature of the function,
+\[\frac{f(6)}{f(3)}=b^3=\frac12,\]
+so \(b=2^{-1/3}\). Also, \(a=\frac6{b^3}=12\). Therefore,
+\[b^{-a}=(2^{-1/3})^{-12}=2^4=16.\]`,
+  },
+  {
+    id: 30195, number: 195, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    question: String.raw`In base-\(n\), \(524_n+312_n=1240_n\). If the same equation in base-10 is \(a+b=c\), find the sum of the digits of \(a\), \(b\), and \(c\).`,
+    choices: ["18", "21", "24", "30", "NOTA"], answer: "D",
+    solution: String.raw`Converting each number to base 10 gives
+\[524_n=5n^2+2n+4,\quad312_n=3n^2+n+2,\quad1240_n=n^3+2n^2+4n.\]
+Therefore,
+\[8n^2+3n+6=n^3+2n^2+4n,\]
+so
+\[n^3-6n^2+n-6=(n^2+1)(n-6)=0.\]
+The only valid base is \(n=6\). Thus
+\[524_6=196,\qquad312_6=116,\qquad1240_6=312.\]
+The sum of all digits of \(a\), \(b\), and \(c\) is 30.`,
+  },
+  {
+    id: 30196, number: 196, division: "Theta", topic: "Sequences", difficulty: 5, methods: [],
+    question: String.raw`The sum of 2027 positive numbers in an increasing arithmetic progression is 1. If the width of the smallest interval that contains all possible values of the common difference is equal to \(\frac1K\), find the value of the last two digits of \(K\).`,
+    choices: ["1", "51", "81", "21", "NOTA"], answer: "B",
+    solution: String.raw`Suppose \(x\) is the first term and \(d\) is the common difference. Then
+\[x+(x+d)+\cdots+(x+2026d)=1,\]
+so
+\[\frac{2027}{2}(2x+2026d)=1
+\Longrightarrow x+1013d=\frac1{2027}.\]
+Because all terms are positive and the progression is increasing,
+\[0<d<\frac1{2027\cdot1013}.\]
+The width is \(\frac1K=\frac1{2027\cdot1013}\). Therefore,
+\[K\equiv27\cdot13\equiv51\pmod{100}.\]`,
+  },
+  {
+    id: 30197, number: 197, division: "Theta", topic: "Geometry", difficulty: 3, methods: [],
+    question: String.raw`A semicircle with radius \(\overline{DC}\) is inscribed in a right triangle \(ABC\) as shown. The semicircle is tangent to \(\overline{AB}\). If \(AB=10\) and \(AC=4\), find the length of \(\overline{BD}-\overline{DC}\).`,
+    choices: [String.raw`\(\frac67\sqrt{21}\)`, String.raw`\(\frac76\sqrt{21}\)`, "18", String.raw`\(\frac37\sqrt{21}\)`, "NOTA"], answer: "A",
+    solution: String.raw`First compute the length of \(BC\):
+\[BC=\sqrt{AB^2-AC^2}=\sqrt{10^2-4^2}=2\sqrt{21}.\]
+For this configuration,
+\[BD-DC=BC\cdot\frac{AB-AC}{AB+AC}.\]
+This follows from similar triangles formed using the point where the semicircle is tangent to \(\overline{AB}\). Substituting,
+\[BD-DC=2\sqrt{21}\cdot\frac{10-4}{10+4}
+=\frac67\sqrt{21}.\]`,
+    illustration: {
+      src: "/questions/theta-197-semicircle-triangle.svg",
+      alt: "Right triangle ABC containing a semicircle on segment DC tangent to side AB.",
+      width: 410,
+      height: 330,
+    },
+  },
+  {
+    id: 30198, number: 198, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: [],
+    question: String.raw`Given the system
+\[\begin{cases}xy+9=y^2\\xy+7=x^2,\end{cases}\]
+find the sum of the absolute values of all coordinates of the solutions.`,
+    choices: ["4", "8", String.raw`\(\frac{17}{4}\)`, "0", "NOTA"], answer: "B",
+    solution: String.raw`Subtracting the equations gives
+\[y^2-x^2=2\Longrightarrow(x+y)(x-y)=-2.\]
+Adding the equations gives
+\[2xy+16=x^2+y^2\Longrightarrow(x-y)^2=16,\]
+so \(x-y=\pm4\). The solutions are
+\[\left(\frac74,-\frac94\right)\quad\text{and}\quad\left(-\frac74,\frac94\right).\]
+The sum of the absolute values of all coordinates is 8.`,
+  },
+  {
+    id: 30199, number: 199, division: "Theta", topic: "Logs and Exponents", difficulty: 4, methods: ["Logarithms"],
+    question: String.raw`Find the product of all solutions to the equation
+\[\sqrt{\frac{\log\sqrt{3x}}{\log x}}\cdot\frac{\log x}{\log3}=-1.\]`,
+    choices: ["1", String.raw`\(\frac13\)`, String.raw`\(\frac19\)`, "3", "NOTA"], answer: "C",
+    solution: String.raw`Squaring and simplifying gives
+\[\frac{\log\sqrt{3x}}{\log x}=\left(\frac{\log3}{\log x}\right)^2.\]
+Let \(a=\frac{\log3}{\log x}\). Since
+\[\frac{\log\sqrt{3x}}{\log x}=\frac12(a+1),\]
+we get
+\[a+1=2a^2\Longrightarrow(2a+1)(a-1)=0.\]
+Thus \(a=-\frac12\) or \(a=1\), giving \(x=\frac19\) or \(x=3\). However, \(x=3\) is extraneous in the original equation because its left side is positive. The product of all solutions is \(\frac19\).`,
+  },
+  {
+    id: 30200, number: 200, division: "Theta", topic: "Polynomials", difficulty: 5, methods: [],
+    question: String.raw`A quartic polynomial \(P(x)\) with real coefficients satisfies \(P(1)=0\) and attains a maximum value of 3 at both \(x=2\) and \(x=3\). Compute \(P(5)\).`,
+    choices: ["-24", "-21", "-12", "-6", "NOTA"], answer: "A",
+    solution: String.raw`Consider \(Q(x)=P(x)-3\). It has roots at \(x=2\) and \(x=3\). Because both points are maxima, each is a double root, so
+\[Q(x)=a(x-2)^2(x-3)^2.\]
+Hence \(P(x)=a(x-2)^2(x-3)^2+3\). Since \(P(1)=0\), \(a=-\frac34\). Therefore,
+\[P(5)=-\frac34(5-2)^2(5-3)^2+3=-24.\]`,
+  },
+  {
+    id: 30201, number: 201, division: "Theta", topic: "Geometry", difficulty: 4, methods: ["Tangency"],
+    question: String.raw`Two circles \(O_1\) and \(O_2\) are tangent to each other, and the radius of circle \(O_1\) is 1. Points \(A\), \(B\), and \(P\) are such that \(P\) lies on line \(O_1O_2\), ray \(PA\) is tangent to circle \(O_1\) at \(A\) and to circle \(O_2\) at \(B\), and \(A\) is the midpoint of \(PB\). Find the area of quadrilateral \(AO_1O_2B\).`,
+    choices: ["3", String.raw`\(2\sqrt3\)`, String.raw`\(3\sqrt2\)`, String.raw`\(2\sqrt6\)`, "NOTA"], answer: "C",
+    solution: String.raw`Radii \(\overline{O_1A}\) and \(\overline{O_2B}\) are both perpendicular to ray \(PA\), so \(\triangle PO_1A\sim\triangle PO_2B\). Since \(PA=AB=\frac{PB}{2}\), the constant of proportionality is \(\frac12\). Thus \(PO_1=O_1O_2=3\), and
+\[PA=\sqrt{PO_1^2-O_1A^2}=\sqrt{3^2-1^2}=2\sqrt2.\]
+Quadrilateral \(AO_1O_2B\) is a trapezoid with bases 1 and 2 and height \(2\sqrt2\), so its area is
+\[\frac{1+2}{2}\cdot2\sqrt2=3\sqrt2.\]`,
+    illustration: {
+      src: "/questions/theta-201-tangent-circles.svg",
+      alt: "Two externally tangent circles with centers O1 and O2 and common rays from P through the centers and tangent points A and B.",
+      width: 620,
+      height: 300,
+    },
+  },
+  {
+    id: 30202, number: 202, division: "Theta", topic: "Number Theory", difficulty: 3, methods: ["Modular Arithmetic"],
+    question: String.raw`If the number \(A8640543981270644B\) is divisible by 99, compute \(A^2+B^2\).`,
+    choices: ["81", "82", "100", "32", "NOTA"], answer: "B",
+    solution: String.raw`Using the divisibility-by-11 rule,
+\[(A+6+0+4+9+1+7+6+4)-(8+4+5+3+8+2+0+4+B)\equiv0\pmod{11},\]
+which gives \(A-B\equiv8\pmod{11}\). Divisibility by 9 gives
+\[71+A+B\equiv0\pmod9,\]
+so \(A+B\equiv1\pmod9\). Since \(A\) and \(B\) are digits, the only possibility is \(A=9\) and \(B=1\). Therefore, \(A^2+B^2=82\).`,
+  },
+  {
+    id: 30203, number: 203, division: "Theta", topic: "Simplification", difficulty: 4, methods: [],
+    question: String.raw`If \((a^2+b^2)^3=(a^3+b^3)^2\) and \(ab\ne0\), find the numerical value of
+\[\frac ab+\frac ba.\]`,
+    choices: ["1", String.raw`\(\frac23\)`, String.raw`\(\frac8{27}\)`, "Cannot Be Determined", "NOTA"], answer: "B",
+    solution: String.raw`Expanding gives
+\[a^6+3a^4b^2+3a^2b^4+b^6=a^6+2a^3b^3+b^6,\]
+so \(3a^4b^2+3a^2b^4=2a^3b^3\). Since \(ab\ne0\), divide by \(a^2b^2\):
+\[3a^2+3b^2=2ab.\]
+Dividing by \(3ab\) gives
+\[\frac ab+\frac ba=\frac23.\]`,
+  },
+  {
+    id: 30204, number: 204, division: "Theta", topic: "Probability", difficulty: 2, methods: [],
+    question: String.raw`A lottery cost \(\$7\) to play. The probability of winning a \(\$28\) payout is \(\frac27\). Otherwise, there is no payout. What is the expected value of the lottery?`,
+    choices: ["$0.80", "$1.00", "$1.40", "$3.00", "NOTA"], answer: "B",
+    solution: String.raw`The net payout for winning is \(\$21\), while the net payout for losing is \(-\$7\). Therefore, the expected value is
+\[21\cdot\frac27+(-7)\cdot\frac57=\$1.00.\]`,
+  },
+  {
+    id: 30205, number: 205, division: "Theta", topic: "Probability", difficulty: 3, methods: [],
+    question: String.raw`A card game is played with these rules: a card is drawn from a standard deck (no jokers). If the card is a face card, you win \(\$10\). If the card is a prime number, you win \(\$8\). Otherwise, you lose \(\$12\). Find the expected value of the game.`,
+    choices: ["$0", String.raw`\(-\$\frac{10}{13}\)`, String.raw`\(-\$\frac5{13}\)`, String.raw`\(\$\frac8{13}\)`, "NOTA"], answer: "B",
+    solution: String.raw`In a standard deck, the face cards are \(J,Q,K\): 3 per suit, so 12 total. Prime number cards are \(2,3,5,7\): 4 ranks times 4 suits, so 16 cards. These categories do not overlap. The remaining 24 cards lose. Therefore,
+\[E=10\cdot\frac{12}{52}+8\cdot\frac{16}{52}-12\cdot\frac{24}{52}
+=-\frac{10}{13}\text{ dollars}.\]`,
+  },
+  {
+    id: 30206, number: 206, division: "Theta", topic: "Probability", difficulty: 4, methods: [],
+    question: String.raw`A digital watch displays the digits from 0 to 9 as shown below by displaying some subset of the seven segments which make up an 8 as shown at the right. If a randomly chosen segment fails to light up, compute the expected value of the number of digits that can still be displayed.`,
+    choices: ["3", String.raw`\(\frac{19}{7}\)`, String.raw`\(\frac{18}{7}\)`, String.raw`\(\frac{22}{7}\)`, "NOTA"], answer: "D",
+    solution: String.raw`For each digit, count how many single segments could fail while still allowing that digit to be displayed:
+\[\begin{array}{c|cccccccccc}
+\text{Digit}&0&1&2&3&4&5&6&7&8&9\\\hline
+\text{Possible failed segments}&1&5&2&2&3&2&1&4&0&2
+\end{array}\]
+Averaging over the seven equally likely failed segments gives
+\[\frac{1+5+2+2+3+2+1+4+0+2}{7}=\frac{22}{7}.\]`,
+    illustration: {
+      src: "/questions/theta-206-seven-segment.svg",
+      alt: "The digits zero through nine represented by a simplified seven-segment display, with dashed segments showing possible failures.",
+      width: 900,
+      height: 245,
+    },
+  },
+  {
+    id: 30207, number: 207, division: "Theta", topic: "Probability", difficulty: 4, methods: [],
+    question: String.raw`A six-sided die has these markings on its sides: \(\$12\), \(\$12\), \(\$16\), \(\$16\), \(\$26\), and \(\$26\). The following game is played. The die is rolled and the player wins whatever amount of money comes up. The player keeps rolling the die and winning money until a money amount comes up a second time, in which case the game ends. A sample game would be rolls of \(\$16\), \(\$12\), and \(\$16\), in which case the player wins \(\$44\). Compute the expected winnings by the player in this game.`,
+    choices: ["36", "44", "52", "60", "NOTA"], answer: "C",
+    solution: String.raw`The expected amount earned per throw is \(\$18\), the average of the values on the faces. The game ends in 2 to 4 throws. Two throws occur with probability \(\frac13\). Three throws occur with probability \(\frac49\), and four throws occur with probability
+\[1-\frac13-\frac49=\frac29.\]
+Thus, the expected number of throws is
+\[2\cdot\frac13+3\cdot\frac49+4\cdot\frac29=\frac{26}{9}.\]
+The expected winnings are \(\frac{26}{9}\cdot18=\$52\).`,
+  },
+  {
+    id: 30208, number: 208, division: "Theta", topic: "Number Theory", difficulty: 5, methods: [],
+    question: String.raw`What is the greatest possible integer that always divides \(n^3(n^2-1)(n^2-4)\), given \(n\) is a positive integer greater than 2026?`,
+    choices: ["360", "180", "120", "40", "NOTA"], answer: "A",
+    solution: String.raw`Factoring in a particular way gives
+\[n^3(n^2-1)(n^2-4)=n^2(n-2)(n-1)n(n+1)(n+2).\]
+This contains five consecutive integers, so it is divisible by 5. It contains four consecutive integers and an extra factor of \(n\), ensuring divisibility by 8, and the factors \((n-2)(n-1)n\) and \(n(n+1)(n+2)\) each ensure a factor of 3, so the product is divisible by 9. Therefore, it is always divisible by \(5\cdot8\cdot9=360\). The greatest common divisor of the expression's values at \(n=2027,2028,\ldots,2032\) is 360, so no larger integer can always divide it.`,
+  },
+  {
+    id: 30209, number: 209, division: "Theta", topic: "Number Theory", difficulty: 3, methods: [],
+    question: String.raw`Chloe informed me that it was perfect square day on September 16th, 2025, because the date reads \(9/16/25\) in order! I retorted that it wouldn't be in order in most of the world. However, September 27th, 2025 would be an even more perfect square day because the numbers \(9{,}272{,}025\) and \(27{,}092{,}025\) are both perfect squares and most countries that use the Gregorian calendar could celebrate. What is the sum of the square roots of those numbers?`,
+    choices: ["8,110", "8,250", "8,350", "9,150", "NOTA"], answer: "B",
+    solution: String.raw`\[\sqrt{9{,}272{,}025}=3045\qquad\text{and}\qquad
+\sqrt{27{,}092{,}025}=5205.\]
+Therefore, \(3045+5205=8250\).`,
+  },
 ];
