@@ -696,4 +696,289 @@ Cross-multiplying yields \(192000-960w=128000+640w\), so \(1600w=64000\) and \(w
     solution: String.raw`Eliminating \(x\) gives \(7y=1\), so \(y=\frac17\). Substitution gives \(x=\frac17\). Therefore,
 \[x+y=\boxed{\frac27}.\]`,
   },
+  {
+    id: 30090, number: 90, division: "Theta", topic: "Analytic Geometry", difficulty: 1, methods: [],
+    question: String.raw`Let's get familiar with coordinates. In what quadrant is the coordinate \(\left(-e,\frac{2\pi}{7}\right)\) located?`,
+    choices: ["Quadrant 1", "Quadrant 2", "Quadrant 3", "Quadrant 4", "NOTA"], answer: "B",
+    solution: String.raw`Since the \(x\)-coordinate is negative, it must be in either Quadrant 2 or 3. Since the \(y\)-coordinate is positive, the point must be in Quadrant 2.`,
+  },
+  {
+    id: 30091, number: 91, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: ["Distance Formula"],
+    question: String.raw`Consider the distance between the coordinate \(\left(-e,\frac{2\pi}{7}\right)\) and the origin. Which of the following best represents this distance, \(d\)?`,
+    choices: [String.raw`\(0<d<1\)`, String.raw`\(1<d<2\)`, String.raw`\(2<d<3\)`, String.raw`\(3<d<4\)`, "NOTA"], answer: "C",
+    solution: String.raw`Since \(e\approx2.71\) and \(\frac{2\pi}{7}\approx0.89\), the distance formula gives
+\[d=\sqrt{e^2+\left(\frac{2\pi}{7}\right)^2}\approx\sqrt{(2.71)^2+(0.89)^2}<3.\]
+Because \(e>2\), the distance is greater than \(2\). Therefore, \(2<d<3\).`,
+  },
+  {
+    id: 30092, number: 92, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    question: String.raw`Let's introduce our very special coordinate for this test: \((h,k)\). Consider the line \(f(x)=x\). What is the \(y\)-intercept of the transformed function \(f(x-h)+k\)?`,
+    choices: [String.raw`\(k\)`, String.raw`\(h+k\)`, String.raw`\(-h+k\)`, String.raw`\(-h-k\)`, "NOTA"], answer: "C",
+    solution: String.raw`In the parent linear function, a horizontal shift in either direction also changes the \(y\)-intercept in that corresponding direction. In other words, \(y=(0-h)+k\) has value \(-h+k\).`,
+  },
+  {
+    id: 30093, number: 93, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    question: String.raw`The line \(2x-4y=5\) is shifted horizontally by \(h\) and vertically by \(k\). If the transformed function is mapped onto the original function for all points \((x,y)\), what could be the values of \(h\) and \(k\)?`,
+    choices: [String.raw`\(h=3,k=6\)`, String.raw`\(h=-4,k=8\)`, String.raw`\(h=10,k=-5\)`, String.raw`\(h=5,k=\frac52\)`, "NOTA"], answer: "D",
+    solution: String.raw`The transformed equation
+\[2(x-h)-4(y-k)=5\]
+can be rewritten as \(y=\frac12x-\frac54-\frac12h+k\). Setting this equal to the original function gives \(k=\frac12h\). Of the choices, \(h=5\) and \(k=\frac52\) satisfy this condition.`,
+  },
+  {
+    id: 30094, number: 94, division: "Theta", topic: "Inverse Functions", difficulty: 2, methods: [],
+    question: String.raw`Consider linear function \(g(x)\) where \(g(2)=3\) and \(g(-4)=10\). Find \(g^{-1}(-4)\).`,
+    choices: ["-10", "-4", "8", "10", "NOTA"], answer: "C",
+    solution: String.raw`The slope is \(m=-\frac76\), so
+\[g(x)=-\frac76(x-2)+3.\]
+Since we are looking for the inverse function's value at \(-4\), solve \(g(x)=-4\):
+\[-4=-\frac76(x-2)+3.\]
+This gives \(x=8\), so \(g^{-1}(-4)=8\).`,
+  },
+  {
+    id: 30095, number: 95, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: [],
+    question: String.raw`Consider two perpendicular lines graphed on a coordinate plane. Which of the following must be true?
+\[\begin{array}{ll}
+\text{I.} & \text{Two perpendicular lines will always intersect exactly once}\\
+\text{II.} & \text{For any line, there is exactly one possible perpendicular line}\\
+\text{III.} & \text{Two perpendicular lines are inverses of each other}\\
+\text{IV.} & \text{If a line is a function, then a line perpendicular to it must also be a function.}
+\end{array}\]`,
+    choices: ["I only", "I, III", "I, III, IV", "I, II, IV", "NOTA"], answer: "A",
+    solution: String.raw`The first statement is true: two perpendicular lines intersect once and only once. The second is false because infinitely many parallel lines can have the required perpendicular slope. The third is not always true; reflection across \(y=x\) does not generally produce a perpendicular line. The fourth is not always true because a line perpendicular to a horizontal function is vertical. Therefore, I is the only statement that must be true.`,
+  },
+  {
+    id: 30096, number: 96, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    question: String.raw`Let's take another look at our special coordinate \((h,k)\). The quadratic function \(y=4x^2+6x-5\) can be rewritten as \(y=4(x-h)^2+k\). Find \(h+k\).`,
+    choices: ["-8", String.raw`\(-\frac{23}{4}\)`, String.raw`\(-\frac{21}{2}\)`, String.raw`\(-\frac64\)`, "NOTA"], answer: "A",
+    solution: String.raw`Complete the square:
+\[y=4\left(x^2+\frac32x+\frac9{16}\right)-5-\frac94
+=4\left(x+\frac34\right)^2-\frac{29}{4}.\]
+Thus \(h=-\frac34\), \(k=-\frac{29}{4}\), and \(h+k=-8\).`,
+  },
+  {
+    id: 30097, number: 97, division: "Theta", topic: "Function Analysis", difficulty: 1, methods: [],
+    question: String.raw`Which of the following correctly describes the translations that occurred to \(y=4x^2\) to create the function \(y=4\left(x-\frac34\right)^2-\frac{17}{4}\)?`,
+    choices: [
+      String.raw`Translation to the right by \(\frac34\), translation down by \(\frac{17}{4}\)`,
+      String.raw`Translation to the left by \(\frac34\), translation down by \(\frac{17}{4}\)`,
+      String.raw`Translation to the right by \(\frac34\), translation up by \(\frac{17}{4}\)`,
+      String.raw`Translation to the left by \(\frac34\), translation up by \(\frac{17}{4}\)`,
+      "NOTA",
+    ], answer: "A",
+    solution: String.raw`The general form \(y=a(x-h)^2+k\) is translated horizontally \(h\) units and vertically \(k\) units from \(y=ax^2\). The given function has been translated \(\frac34\) unit to the right and \(\frac{17}{4}\) units down.`,
+  },
+  {
+    id: 30098, number: 98, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: [],
+    question: String.raw`A quadratic relation has an axis of symmetry of \(y=5\), an \(x\)-intercept of \((48,0)\) and intersects with the coordinate \((6,3)\). Find the sum of the coefficients \((a,b,\text{ and }c)\) of this relation when it is written in the form \(x=ay^2+by+c\).`,
+    choices: ["-60", "30", "60", "70", "NOTA"], answer: "B",
+    solution: String.raw`Based on the given information, we can generate a system of equations from the general form \(x=a(y-k)^2+h\):
+\[48=a(0-5)^2+h,\qquad 6=a(3-5)^2+h.\]
+Solving gives \(a=2\) and \(h=-2\). Expanding to standard form gives \(x=2y^2-20y+48\), whose sum of coefficients is \(30\).`,
+  },
+  {
+    id: 30099, number: 99, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Vieta's Formulas"],
+    question: String.raw`Questions #10-12 all concern the same quadratic. Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), which of the following must be true?
+\[\begin{array}{ll}
+\text{I.} & \text{The sum of the roots is an integer.}\\
+\text{II.} & \text{The roots are integers.}\\
+\text{III.} & f(x)\text{ is defined for all integer values of }x.
+\end{array}\]`,
+    choices: ["I only", "II only", "III only", "I, III", "NOTA"], answer: "C",
+    solution: String.raw`By Vieta's formulae, the sum of the roots is \(-\frac ba\), which may not be an integer. If \(b^2-4ac\) is not a perfect square, the roots may not be rational and therefore may not be integers. Quadratic functions with integer coefficients are defined for all values of \(x\). This means that only III is necessarily true.`,
+  },
+  {
+    id: 30100, number: 100, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    question: String.raw`Questions #10-12 all concern the same quadratic. Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), Dorin rewrites the function in vertex form, giving \(f(x)=a(x-h)^2+11\). Which of the following must be true?
+\[\begin{array}{ll}
+\text{I.} & f(x)\text{ must have two non-real, complex roots}\\
+\text{II.} & f(x)\text{ must have a double root at }x=h\\
+\text{III.} & f(x)\text{ must have an axis of symmetry at }x=11
+\end{array}\]`,
+    choices: ["I, II", "I, III", "II, III", "I, II, and III", "NOTA"], answer: "E",
+    solution: String.raw`If \(a\) is negative, \(f(x)\) has two real roots, so I need not be true. With a vertex \(y\)-coordinate of \(11\), there cannot be a double root at \(x=h\), so II is false. The axis of symmetry is \(x=h\), which may be \(x=11\) but does not have to be. This results in none of the above answers.`,
+  },
+  {
+    id: 30101, number: 101, division: "Theta", topic: "Conic Sections", difficulty: 4, methods: [],
+    question: String.raw`Questions #10-12 all concern the same quadratic. Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), Dorin rewrites the function in vertex form as \(f(x)=a(x-h)^2+11\). Through further inspection, Dorin finds the focus of the function at \((3,10.75)\). Find \(a+b+c\).`,
+    choices: ["6", "-6", "7", "15", "NOTA"], answer: "C",
+    solution: String.raw`The focus reveals that the quadratic has a negative leading coefficient, signed focal length \(p=-\frac14\), and axis of symmetry \(x=3\). Therefore,
+\[y=-(x-3)^2+11=-x^2+6x+2.\]
+Thus \(a+b+c=-1+6+2=7\).`,
+  },
+  {
+    id: 30102, number: 102, division: "Theta", topic: "Polynomial Equations", difficulty: 4, methods: [],
+    question: String.raw`Our coordinate helps us change and move functions yet again! This time, a cubic function \(c(x)\) has roots at \(x=-1\) and \(x=4\), \(c(1)=2\), and \(c(x)\ge0\) on the interval \([-1,\infty)\). What is the \(y\)-intercept of the function \(c(x+3)-1\)?`,
+    choices: ["-1", String.raw`\(-\frac59\)`, String.raw`\(\frac19\)`, String.raw`\(\frac59\)`, "NOTA"], answer: "B",
+    solution: String.raw`Since \(c(x)\ge0\) on \([-1,\infty)\), there must be a double root at \(x=4\) and a positive leading coefficient. Thus
+\[c(x)=a(x+1)(x-4)^2.\]
+Using \(c(1)=2\) gives \(a=\frac19\). Therefore,
+\[c(x+3)-1=\frac19(x+4)(x-1)^2-1,\]
+which has a \(y\)-intercept of \(-\frac59\).`,
+  },
+  {
+    id: 30103, number: 103, division: "Theta", topic: "Functions", difficulty: 4, methods: [],
+    question: String.raw`This coordinate helps us change and move functions, no matter their behavior. Consider the parent cubic function \(f(x)=x^3\) with point \(A(0,0)\). Point \(A\) (and all other coordinates of \(f(x)\)) has been translated to create function \(g(x)=f(x-h)+k\). Similarly, exponential function \(d(x)=2^x\) has been translated to create \(p(x)=d(x-h)+k\). Find \(p(1)-g(1)\) in terms of \(h\).`,
+    choices: [
+      String.raw`\(\frac1{2^h}-(h+1)^3\)`,
+      String.raw`\((h-1)^3+\frac2{2^h}\)`,
+      String.raw`\(h^3+\frac1{2^h}\)`,
+      String.raw`\(h^3-3h^2-3h-1+\frac2{2^h}\)`,
+      "NOTA",
+    ], answer: "B",
+    solution: String.raw`We have \(p(1)=2^{1-h}+k\) and \(g(1)=(1-h)^3+k\). Subtracting eliminates \(k\):
+\[p(1)-g(1)=2^{1-h}-(1-h)^3.\]
+Since \(-(1-h)^3=(h-1)^3\) and \(2^{1-h}=\frac2{2^h}\), this is
+\[(h-1)^3+\frac2{2^h}.\]`,
+  },
+  {
+    id: 30104, number: 104, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Rational Root Theorem"],
+    question: String.raw`Consider \(y=3x^5+7x^4-x^2+x-12\). The rational root theorem defines a set of possible rational roots of certain polynomial functions. How many unique integer roots are contained in this set of possible roots of \(y\)?`,
+    choices: ["5", "6", "12", "18", "NOTA"], answer: "C",
+    solution: String.raw`The Rational Root Theorem gives possible rational roots \(\frac pq\), where \(p\mid12\) and \(q\mid3\). The integer candidates among them are
+\[\{\pm1,\pm2,\pm3,\pm4,\pm6,\pm12\}.\]
+There are \(12\) unique integer candidates in this set.`,
+  },
+  {
+    id: 30105, number: 105, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    question: String.raw`The radical \(\sqrt{a+\sqrt{bc}}\) can be simplified into \(\sqrt{\frac b2}+\sqrt{\frac c2}\). If \(x^3-64=(x-b)(x^2+bx+c)\), what is \(a\)?`,
+    choices: ["2", "10", "16", "32", "NOTA"], answer: "B",
+    solution: String.raw`By the difference of cubes, \(b=4\) and \(c=16\). Thus
+\[\sqrt{a+\sqrt{64}}=\sqrt2+\sqrt8=3\sqrt2.\]
+Squaring both sides gives \(a+8=18\), so \(a=10\).`,
+  },
+  {
+    id: 30106, number: 106, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Remainder Theorem"],
+    question: String.raw`Consider the following functions:
+\[f(x)=3x^3-2x+10,\quad g(x)=x-\frac13,\quad h(x)=2x+4,\quad j(x)=x+2,\quad k(x)=3x-1.\]
+Which order below shows the remainders of the polynomial divisions in order from least to greatest?`,
+    choices: [
+      String.raw`\(\frac{f(x)}{g(x)},\frac{f(x)}{h(x)},\frac{f(x)}{j(x)},\frac{f(x)}{k(x)}\)`,
+      String.raw`\(\frac{f(x)}{j(x)},\frac{f(x)}{k(x)},\frac{f(x)}{g(x)},\frac{f(x)}{h(x)}\)`,
+      String.raw`\(\frac{f(x)}{j(x)},\frac{f(x)}{h(x)},\frac{f(x)}{k(x)},\frac{f(x)}{g(x)}\)`,
+      String.raw`\(\frac{f(x)}{k(x)},\frac{f(x)}{g(x)},\frac{f(x)}{h(x)},\frac{f(x)}{j(x)}\)`,
+      "NOTA",
+    ], answer: "C",
+    solution: String.raw`The remainder when dividing by a linear polynomial is the value of \(f\) at its zero. Both \(j(x)\) and \(h(x)\) have zero \(-2\), so their remainders are
+\[f(-2)=-10.\]
+Both \(k(x)\) and \(g(x)\) have zero \(\frac13\), so their remainders are
+\[f\left(\frac13\right)=\frac{85}{9}.\]
+Therefore, a valid nondecreasing order is
+\[\frac{f(x)}{j(x)},\frac{f(x)}{h(x)},\frac{f(x)}{k(x)},\frac{f(x)}{g(x)}.\]`,
+  },
+  {
+    id: 30107, number: 107, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    question: String.raw`The following questions (#18-19) consider the function
+\[h(x)=\frac{ax^2+bx+c}{x^2-2x-35},\qquad a,b,c\in\mathbb Z.\]
+If it is known that \(h(x)\) has no vertical asymptotes, what is the value of \(h(x)\) on its domain?`,
+    choices: [String.raw`\(h(x)=a\)`, String.raw`\(h(x)=b\)`, String.raw`\(h(x)=c\)`, String.raw`\(h(x)=1\)`, "NOTA"], answer: "A",
+    solution: String.raw`If \(h(x)\) has no vertical asymptotes, the denominator must divide the numerator entirely. Because both are quadratic and the numerator's leading coefficient is \(a\), the simplified value is \(h(x)=a\) on its domain.`,
+  },
+  {
+    id: 30108, number: 108, division: "Theta", topic: "Function Analysis", difficulty: 4, methods: [],
+    question: String.raw`The following questions (#18-19) consider the function
+\[h(x)=\frac{ax^2+bx+c}{x^2-2x-35},\qquad a,b,c\in\mathbb Z.\]
+If it is known that \(h(x)\) has exactly one removable discontinuity, which of the following could be true?
+\[\begin{array}{ll}
+\text{I.} & c\text{ is divisible by 7 but is not divisible by 5}\\
+\text{II.} & c\text{ has a 0 as its units digit}\\
+\text{III.} & c\text{ is divisible by both 7 and 5}
+\end{array}\]`,
+    choices: ["I only", "III only", "I and II", "I, II, and III", "NOTA"], answer: "D",
+    solution: String.raw`The denominator factors as \((x-7)(x+5)\). Exactly one removable discontinuity means the numerator can share either one of these factors, but not both. Each condition can occur: for example, numerators with other factors \(x+7\), \(x+10\), and \(x+25\), respectively, give constant terms meeting I, II, and III while sharing only one denominator factor. Thus all three could be true.`,
+  },
+  {
+    id: 30109, number: 109, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: [],
+    question: String.raw`Don't worry, \((h,k)\) is back again! Consider \(f(x)=\frac{4x-8}{x^2-4}\) and \(g(x)=f(x+h)-k\) where \(h,k\in\mathbb N\). If \(g(x)\) has a vertical asymptote at \(x=-8\) and horizontal asymptote at \(y=-1\), what is the value of \(h+k\)?`,
+    choices: ["-9", "-7", "7", "11", "NOTA"], answer: "C",
+    solution: String.raw`Simplifying \(f(x)\) gives
+\[f(x)=\frac4{x+2}\]
+with a vertical asymptote at \(x=-2\) and horizontal asymptote at \(y=0\). To obtain \(g(x)\), the graph is translated left \(6\) units and down \(1\) unit. Thus \(h=6\), \(k=1\), and \(h+k=7\).`,
+  },
+  {
+    id: 30110, number: 110, division: "Theta", topic: "Vectors", difficulty: 1, methods: ["Distance Formula"],
+    question: String.raw`Let's look at \((h,k)\) in a slightly different light. Consider point \(A_0(x,y)\) on any function \(f(x)\) corresponding to point \(A_1\) on function \(g(x)\), where \(g(x)=f(x-h)+k\). What is the displacement from \(A_0\) to \(A_1\) in terms of \(h\) and \(k\)?`,
+    choices: [String.raw`\(h+k\)`, String.raw`\(\sqrt{h^2+k^2}\)`, String.raw`\(h-k\)`, String.raw`\(\sqrt{h^2-k^2}\)`, "NOTA"], answer: "B",
+    solution: String.raw`The translation moves each point by the vector \(\langle h,k\rangle\). Its magnitude, and therefore the displacement, is \(\sqrt{h^2+k^2}\) by the distance formula.`,
+  },
+  {
+    id: 30111, number: 111, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    question: String.raw`A vector is a quantity that has both magnitude and direction. When functions are translated by horizontal and vertical shifts, the change in each coordinate's position can be modeled by a vector \((h,k)\). If function \(f(x)=\ln(x+1)-10\) is translated by \((3,-2)\), which of the following coordinates lies on the transformed function?`,
+    choices: ["(0, -10)", "(-3, -2)", "(3, -12)", "(-3, -12)", "NOTA"], answer: "C",
+    solution: String.raw`The parent function \(y=\ln x\) has an \(x\)-intercept at \((1,0)\). The function \(f(x)=\ln(x+1)-10\) shifts this point left \(1\) and down \(10\), giving \((0,-10)\). Translating by \((3,-2)\) moves it to \((3,-12)\).`,
+  },
+  {
+    id: 30112, number: 112, division: "Theta", topic: "Vectors", difficulty: 1, methods: ["Distance Formula"],
+    question: String.raw`If \(f(x)=\log_2x\) is first translated by \((-3,4)\), then translated again by \((8,15)\), find the total displacement of any point on \(f(x)\) to its corresponding translated point.`,
+    choices: [String.raw`\(\sqrt{146}\)`, "17", String.raw`\(\sqrt{386}\)`, "22", "NOTA"], answer: "C",
+    solution: String.raw`The two vectors combine to give the vector \((5,19)\). Its magnitude is
+\[\sqrt{5^2+19^2}=\sqrt{25+361}=\sqrt{386}.\]`,
+  },
+  {
+    id: 30113, number: 113, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    question: String.raw`Steven likes logarithms. He realizes that dilations and translations aren't so different when dealing with functions like \(y=\log_5x\). Which of the following functions has equivalent translations to \((2,-3)\)?`,
+    choices: [
+      String.raw`\(\log_5\frac{x-2}{5}\)`,
+      String.raw`\(\log_5(125x-25)\)`,
+      String.raw`\(\log_5\frac{x-2}{125}\)`,
+      String.raw`\(\log_5(125(x-25))\)`,
+      "NOTA",
+    ], answer: "C",
+    solution: String.raw`The translated function is \(\log_5(x-2)-3\). By the quotient rule for logarithms,
+\[\log_5(x-2)-\log_5 125=\log_5\left(\frac{x-2}{125}\right).\]`,
+  },
+  {
+    id: 30114, number: 114, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: [],
+    question: String.raw`Translations still have applications to non-functions. Consider \(16x=8(y-20)^2+2\). What translation would map the focus of this relation to its vertex?`,
+    choices: [String.raw`\(\left\langle-\frac12,0\right\rangle\)`, String.raw`\(\left\langle\frac12,0\right\rangle\)`, String.raw`\(\left\langle0,\frac12\right\rangle\)`, String.raw`\(\left\langle0,-\frac12\right\rangle\)`, "NOTA"], answer: "A",
+    solution: String.raw`Rewriting gives
+\[(y-20)^2=2\left(x-\frac18\right).\]
+The vertex is \(\left(\frac18,20\right)\) and the focal length is \(p=\frac12\), so the focus is \(\left(\frac58,20\right)\). To map the focus onto the vertex, translate by \(\left\langle-\frac12,0\right\rangle\).`,
+  },
+  {
+    id: 30115, number: 115, division: "Theta", topic: "Conic Sections", difficulty: 4, methods: ["Eccentricity"],
+    question: String.raw`Consider \(2x^2+8x=-y^2-y+10\). Tahir finds the center of this ellipse, then translates the relation so that the center is located at the origin. Find the eccentricity of this ellipse.`,
+    choices: [String.raw`\(\frac{\sqrt2}{4}\)`, String.raw`\(\frac{\sqrt2}{2}\)`, "1", String.raw`\(\frac{\sqrt2}{8}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Completing the square gives
+\[2(x+2)^2+\left(y+\frac12\right)^2=\frac{73}{4},\]
+or
+\[\frac{(x+2)^2}{73/8}+\frac{(y+1/2)^2}{73/4}=1.\]
+Thus \(a^2=\frac{73}{4}\), \(b^2=\frac{73}{8}\), and \(c^2=a^2-b^2=\frac{73}{8}\). The eccentricity is
+\[\frac ca=\frac{\sqrt{73/8}}{\sqrt{73/4}}=\frac{\sqrt2}{2}.\]`,
+  },
+  {
+    id: 30116, number: 116, division: "Theta", topic: "Binomial Expansion", difficulty: 3, methods: ["Binomial Theorem"],
+    question: String.raw`Even binomials can be translated! Consider the expansion of \((x+2)^4\). Find the difference between the cubic term of \((x+2)^4\) and the cubic term of \(((x-h)+2)^4\) in terms of \(h\).`,
+    choices: ["0", "-4h", "4h", "8 - 4h", "NOTA"], answer: "C",
+    solution: String.raw`The cubic term of \((x+2)^4\) is
+\[\binom41x^3(2)=8x^3.\]
+Since \(((x-h)+2)^4=(x+(2-h))^4\), its cubic term is
+\[\binom41x^3(2-h)=(8-4h)x^3.\]
+The difference between the cubic terms is \(8x^3-(8-4h)x^3=4hx^3\), so the difference between their coefficients is \(4h\).`,
+  },
+  {
+    id: 30117, number: 117, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    question: String.raw`Which of the following is equivalent to \(424_6\)?`,
+    choices: [String.raw`\(160_9\)`, String.raw`\(311_7\)`, String.raw`\(242_8\)`, String.raw`\(2200_4\)`, "NOTA"], answer: "D",
+    solution: String.raw`In base ten,
+\[424_6=4(6^2)+2(6)+4=160.\]
+The choices have base-ten values \(160_9=135\), \(311_7=155\), \(242_8=162\), and \(2200_4=160\). Therefore, \(424_6=2200_4\).`,
+  },
+  {
+    id: 30118, number: 118, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: ["Substitution"],
+    question: String.raw`Find the sum of the solutions to \(2^{2x-1}-4=2^x\).`,
+    choices: ["1", "2", "3", String.raw`\(\frac32\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let \(a=2^x\). Then
+\[\frac12a^2-a-4=0,\]
+so
+\[\left(\frac12a-2\right)(a+2)=0.\]
+The solution \(a=-2\) is extraneous because \(2^x>0\). Thus \(a=4\), so \(x=2\). The sum of the solutions is \(2\).`,
+  },
+  {
+    id: 30119, number: 119, division: "Theta", topic: "Probability", difficulty: 1, methods: [],
+    question: String.raw`What is the difference between the number of distinct arrangements of the word "LIONS" and the number of distinct arrangements of the letters "ROOAR"?`,
+    choices: ["0", "90", "105", "120", "NOTA"], answer: "B",
+    solution: String.raw`The number of arrangements of "LIONS" is \(5!=120\). The number of distinct arrangements of "ROOAR" is
+\[\frac{5!}{2!2!}=30\]
+because the letters O and R are each repeated. The difference is \(120-30=90\).`,
+  },
 ];
