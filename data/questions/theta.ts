@@ -981,4 +981,290 @@ The solution \(a=-2\) is extraneous because \(2^x>0\). Thus \(a=4\), so \(x=2\).
 \[\frac{5!}{2!2!}=30\]
 because the letters O and R are each repeated. The difference is \(120-30=90\).`,
   },
+  {
+    id: 30120, number: 120, division: "Theta", topic: "Polynomial Equations", difficulty: 3, methods: [],
+    question: String.raw`One of the most celebrated traditions of March is "March Madness" when people fill out their NCAA Division I men's basketball tournament brackets to predict who will win. Which of the following is a root of the following polynomial equation, which uses brackets to group terms together?
+\[\left[4x^3-8x^2+3x-6\right]\left[9x^2-4\right]=0\]`,
+    choices: ["-2", String.raw`\(-\frac{i\sqrt3}{2}\)`, String.raw`\(\frac{1-i\sqrt5}{2}\)`, String.raw`\(\frac32\)`, "NOTA"], answer: "B",
+    solution: String.raw`Factor the first expression:
+\[4x^2(x-2)+3(x-2)=(4x^2+3)(x-2),\]
+so its roots are \(x=2\) and \(x=\pm\frac{i\sqrt3}{2}\). The second expression factors as \((3x+2)(3x-2)\), with roots \(x=-\frac23\) and \(x=\frac23\). From this, only \(x=-\frac{i\sqrt3}{2}\) is a listed root.`,
+  },
+  {
+    id: 30121, number: 121, division: "Theta", topic: "Systems of Equations", difficulty: 1, methods: ["Row Operations"],
+    question: String.raw`How fast can you "march" through this problem? Find the sum of \(x\) and \(y\), which are the solutions to the following system of equations.
+\[2x-3y=-39\]
+\[-4x+5y=73\]`,
+    choices: ["-11", "-9", "-7", "-5", "NOTA"], answer: "C",
+    solution: String.raw`Adding twice the top equation, \(4x-6y=-78\), to the bottom equation gives \(-y=-5\), so \(y=5\). Solving \(2x-15=-39\) gives \(x=-12\). Therefore, \(x+y=-12+5=-7\).`,
+  },
+  {
+    id: 30122, number: 122, division: "Theta", topic: "Matrices", difficulty: 2, methods: ["Determinant"],
+    question: String.raw`Beware the Ides of March and large matrices! If \(D\) is determinant of the following matrix, find the remainder when \(|D|\) is divided by 10.
+\[\begin{bmatrix}
+1&5&1&5\\
+0&15&15&9\\
+0&15&15&5\\
+0&0&0&9
+\end{bmatrix}\]`,
+    choices: ["1", "3", "5", "9", "NOTA"], answer: "E",
+    solution: String.raw`Expanding along row 4, the determinant is \(9\) times the determinant of the upper \(3\times3\) matrix. Expanding that determinant along column 1 leaves
+\[\begin{vmatrix}15&15\\15&15\end{vmatrix}=0.\]
+Thus \(D=0\), and the remainder when \(|D|\) is divided by \(10\) is \(0\), or NOTA.`,
+  },
+  {
+    id: 30123, number: 123, division: "Theta", topic: "Logs and Exponents", difficulty: 4, methods: ["Logarithms"],
+    question: String.raw`Spring is in the air, and the bunnies are multiplying exponentially! Megan's farm has 5 bunnies at the end of March 1st and 600 bunnies at the end of March 10th. If \(a=\ln2\), \(b=\ln3\), and \(c=\ln5\), then which expression below represents the rate of growth per day for the bunny population on the farm in terms of \(a\), \(b\), and \(c\)?`,
+    choices: [
+      String.raw`\(\frac{3a+b+c}{e^{2b}}\)`,
+      String.raw`\(\frac{3a+b+c}{e^{a+c}}\)`,
+      String.raw`\(\frac{3a+b+3c}{e^{2b}}\)`,
+      String.raw`\(\frac{3a+b+3c}{e^{a+c}}\)`,
+      "NOTA",
+    ], answer: "A",
+    solution: String.raw`The number of bunnies multiplies by \(\frac{600}{5}=120\) in 9 days, so the continuous rate is
+\[\frac{\ln120}{9}=\frac{\ln8+\ln3+\ln5}{e^{\ln9}}=\frac{3a+b+c}{e^{2b}}.\]`,
+  },
+  {
+    id: 30124, number: 124, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: [],
+    question: String.raw`Randall is chasing after one of the bunnies on the farm, which got loose and is now hopping along the bunny trail! The bunny takes one gigantic bounce whose height during the hop can be modeled by the equation \(y=-3t^2+25.5t-45\), where \(t\) is time in seconds. How many seconds pass while the bunny has jumped in the air? You may assume \(y=0\) is the ground.`,
+    choices: ["3.5", "4.5", "6", "6.5", "NOTA"], answer: "A",
+    solution: String.raw`Multiplying the equation by \(-\frac23\) gives
+\[2t^2-17t+30=0.\]
+This factors as \((2t-5)(t-6)=0\), so the bunny is in the air from \(t=\frac52\) to \(t=6\). The elapsed time is \(6-2.5=3.5\) seconds.`,
+  },
+  {
+    id: 30125, number: 125, division: "Theta", topic: "Analytic Geometry", difficulty: 4, methods: [],
+    question: String.raw`One of the best holidays in March is, of course, Pi Day! Find the \(x\)-coordinate of the \(x\)-intercept of the line that perpendicularly bisects the segment with endpoints \((\pi,1)\) and \((-3\pi,-5)\).`,
+    choices: [String.raw`\(1-\pi\)`, "-2", String.raw`\(\frac9{2\pi}-\pi\)`, String.raw`\(\pi\)`, "NOTA"], answer: "E",
+    solution: String.raw`The midpoint is
+\[\left(\frac{\pi-3\pi}{2},\frac{1-5}{2}\right)=(-\pi,-2).\]
+The segment's slope is \(\frac{3}{2\pi}\), so the perpendicular bisector's slope is \(-\frac{2\pi}{3}\). Its equation is
+\[y+2=-\frac{2\pi}{3}(x+\pi).\]
+Setting \(y=0\) gives \(x=-\pi-\frac3\pi\), which is not among choices A-D. Therefore, the answer is NOTA.`,
+  },
+  {
+    id: 30126, number: 126, division: "Theta", topic: "Probability", difficulty: 2, methods: [],
+    question: String.raw`Before 150 B.C.E., March was the first month of the calendar! You can still see traces of this in the modern calendar. For example, December is named after the Latin word for ten. Find the number of distinct permutations of the letters in the word DECEMBER.`,
+    choices: ["720", "6720", "13440", "20160", "NOTA"], answer: "B",
+    solution: String.raw`There are 8 letters in DECEMBER, 3 of which are E; all others are unique. Therefore, the number of distinct permutations is
+\[\frac{8!}{3!}=\frac{40320}{6}=6720.\]`,
+  },
+  {
+    id: 30127, number: 127, division: "Theta", topic: "Polynomials", difficulty: 5, methods: [],
+    question: String.raw`March was named for the Roman god of war, Mars. Suppose Mars is arranging his soldiers in rows so that the \(n\)th row of soldiers contains \(f(n)\) soldiers for some degree-4 polynomial \(f(n)\). The first five rows contain 8, 27, 64, 125, and 336 soldiers, respectively. How many soldiers are there in the ninth row?`,
+    choices: ["9400", "14824", "17280", "20683", "NOTA"], answer: "A",
+    solution: String.raw`For \(n\in\{1,2,3,4\}\), the values agree with \((n+1)^3\). Therefore, \(f(n)-(n+1)^3\) is a quartic with roots \(1,2,3,\) and \(4\), so
+\[f(n)=(n+1)^3+A(n-1)(n-2)(n-3)(n-4).\]
+Using \(f(5)=336\) gives \(336=216+24A\), so \(A=5\). Hence
+\[f(9)=10^3+5(8)(7)(6)(5)=9400.\]`,
+  },
+  {
+    id: 30128, number: 128, division: "Theta", topic: "Binomial Expansion", difficulty: 2, methods: ["Binomial Theorem"],
+    question: String.raw`NASA astronaut Scott Kelly returned to Earth after one full year in space on March 2nd, 2016. In honor of Scott, find the coefficient of the \(x^3y^2\) term in the expansion of \((2y-x)^5\).`,
+    choices: ["-80", "-40", "40", "80", "NOTA"], answer: "B",
+    solution: String.raw`\[\binom53(-x)^3(2y)^2=10(-x^3)(4y^2)=-40x^3y^2.\]
+Thus the coefficient is \(-40\).`,
+  },
+  {
+    id: 30129, number: 129, division: "Theta", topic: "Probability", difficulty: 1, methods: [],
+    question: String.raw`On March 17th, 1973, Pink Floyd's album "The Dark Side of the Moon" first hit the Billboard Top 200 album chart at number 95. If the claim made at the closing of the album that, "There is no dark side of the moon...as a matter of fact, it's all dark." is true, in other words, all sides of the moon are actually dark; then, what is the probability of randomly selecting a point on the moon that is on the dark side of the moon?`,
+    choices: ["0", String.raw`\(\frac12\)`, "1", String.raw`\(\frac23\)`, "NOTA"], answer: "C",
+    solution: String.raw`Given that all sides of the moon are dark, the probability of randomly selecting a point on the moon that is on the dark side of the moon is \(1\).`,
+  },
+  {
+    id: 30130, number: 130, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    question: String.raw`As the saying goes, March comes "in like a lion, out like a lamb." That was certainly true on March 1st, 2007, when a detachment of 170 Swiss infantrymen accidentally invaded neighboring Liechtenstein when they got lost on a training mission. Rewrite the logarithmic expression \(\log_3 170\) in terms of \(a=\log3\) and \(b=\log289\).`,
+    choices: [String.raw`\(1+\frac{b}{2a}\)`, String.raw`\(\frac{1+a}{b}\)`, String.raw`\(1+\frac b2+\frac1a\)`, String.raw`\(\frac{2+b}{2a}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Using change of base,
+\[\log_3 170=\frac{\log170}{\log3}
+=\frac{\log10+\log17}{\log3}
+=\frac{1+\frac b2}{a}
+=\frac{2+b}{2a}.\]`,
+  },
+  {
+    id: 30131, number: 131, division: "Theta", topic: "Matrices", difficulty: 3, methods: ["Matrix Inverse"],
+    question: String.raw`Find \(A_{12}\) if \(A^{-1}=\begin{bmatrix}2&3\\5&7\end{bmatrix}\). Note \(A_{12}\) means the entry in the first row and second column.`,
+    choices: ["-5", "-3", "3", "5", "NOTA"], answer: "C",
+    solution: String.raw`Since \(A=(A^{-1})^{-1}\) and the determinant of \(A^{-1}\) is \(2(7)-3(5)=-1\),
+\[A=-\begin{bmatrix}7&-3\\-5&2\end{bmatrix}
+=\begin{bmatrix}-7&3\\5&-2\end{bmatrix}.\]
+Therefore, \(A_{12}=3\).`,
+  },
+  {
+    id: 30132, number: 132, division: "Theta", topic: "Sequences and Series", difficulty: 3, methods: ["Infinite Geometric Series"],
+    question: String.raw`A University of Miami player drops a basketball beginning at a point 10 feet in the air and it begins bouncing off the ground. After the initial bounce off the ground, the ball continues bouncing straight up and down vertically returning to a height that is \(\frac45\) of the height of the bounce before it. If this ball could continue bouncing forever, find the sum of the vertical distances (both up and down) the ball travels beginning with the initial drop, in feet.`,
+    choices: ["40", "50", "80", "90", "NOTA"], answer: "D",
+    solution: String.raw`The downward distances form a geometric series with first term \(10\) and ratio \(\frac45\), with sum
+\[\frac{10}{1-4/5}=50.\]
+The upward distances form a geometric series with first term \(10\cdot\frac45=8\), with sum
+\[\frac8{1-4/5}=40.\]
+The total distance is \(50+40=90\) feet.`,
+  },
+  {
+    id: 30133, number: 133, division: "Theta", topic: "Simplification", difficulty: 4, methods: [],
+    question: String.raw`March is a radical month! Simplify
+\[(\sqrt[3]{36}-\sqrt[3]{6}+1)(\sqrt{56}-\sqrt{24})(\sqrt[3]{6}+1)(\sqrt{56}+\sqrt{24}).\]`,
+    choices: ["160", "224", "400", "560", "NOTA"], answer: "B",
+    solution: String.raw`Reordering the cube-root factors gives a sum-of-cubes factorization:
+\[(\sqrt[3]{36}-\sqrt[3]{6}+1)(\sqrt[3]{6}+1)=6+1=7.\]
+The square-root factors give a difference of squares:
+\[(\sqrt{56}-\sqrt{24})(\sqrt{56}+\sqrt{24})=56-24=32.\]
+Thus the product is \(7\cdot32=224\).`,
+  },
+  {
+    id: 30134, number: 134, division: "Theta", topic: "Probability", difficulty: 1, methods: [],
+    question: String.raw`On March 5, 1981, Clive Sinclair launched the ZX81 computer, the first British model to sell more than a million units. It cost just €70, and nobody who uses its peculiar keyboard will ever forget it. The ZX81 uses an 8-bit processor, meaning it uses strings of 8 values, each of which is either a 0 or a 1. How many different 8-bit strings are possible?`,
+    choices: ["127", "128", "255", "256", "NOTA"], answer: "D",
+    solution: String.raw`Each of the eight bits can independently take one of 2 values, so there are \(2^8=256\) possible strings.`,
+  },
+  {
+    id: 30135, number: 135, division: "Theta", topic: "Probability", difficulty: 3, methods: [],
+    question: String.raw`Blaise Pascal time-travels to the future along with a 23-bit processor. He inputs a value into the computer to generate a 23-bit string, but due to the time travel, the processor is faulty, and up to 3 bits may be processed as the wrong values. How many possible values might the computer have stored incorrectly after Blaise's input?`,
+    choices: ["2023", "2024", "2047", "2048", "NOTA"], answer: "C",
+    solution: String.raw`Choose \(1\), \(2\), or \(3\) of the \(23\) bits to be incorrect. The case with no incorrectly processed bits is excluded by the wording. Therefore, the number of incorrectly stored values is
+\[\binom{23}{1}+\binom{23}{2}+\binom{23}{3}=23+253+1771=2047.\]`,
+  },
+  {
+    id: 30136, number: 136, division: "Theta", topic: "Polynomial Equations", difficulty: 1, methods: [],
+    question: String.raw`Read Across America is celebrated on Dr. Seuss's birthday, March 2. What would you be reading about if you saw the statement "Every polynomial equation with complex coefficients and degree \(\ge1\) has at least one complex root."?`,
+    choices: ["Descartes's Rule of Signs", "Fundamental Theorem of Algebra", "Fundamental Theorem of Arithmetic", "Rational Root Theorem", "NOTA"], answer: "B",
+    solution: String.raw`This is a formulation of the Fundamental Theorem of Algebra, which also states that a degree-\(n\ge1\) polynomial with complex coefficients has exactly \(n\) complex roots when multiplicity is counted.`,
+  },
+  {
+    id: 30137, number: 137, division: "Theta", topic: "Inequalities", difficulty: 4, methods: ["Rational Root Theorem"],
+    question: String.raw`March is Women's History Month. Help fight the inequality and give the interval of real values for \(x\) such that
+\[x^5-5x^4+4x^3+4x^2+3x+9>0.\]`,
+    choices: [
+      String.raw`\((-\infty,-3)\cup(3,\infty)\)`,
+      String.raw`\((-3,1)\)`,
+      String.raw`\((-1,3)\cup(3,\infty)\)`,
+      String.raw`\((-1,\infty)\)`,
+      "NOTA",
+    ], answer: "C",
+    solution: String.raw`The polynomial factors as
+\[(x+1)(x-3)^2(x^2+1).\]
+The second and third factors are nonnegative for real \(x\), with zeros at \(x=3\) for the squared factor. The strict inequality therefore holds on
+\[(-1,3)\cup(3,\infty).\]`,
+  },
+  {
+    id: 30138, number: 138, division: "Theta", topic: "Conic Sections", difficulty: 5, methods: [],
+    question: String.raw`March 31 is the International Transgender Day of Visibility. The rectangular transgender pride flag consists of five congruent rectangles (colored blue, pink, white, pink, and blue) stacked on top of each other. This flag is placed on the coordinate plane such that each of its vertices has an \(x\)-coordinate of \(\pm5\) and a \(y\)-coordinate of \(\pm3\). An ellipse is drawn around the flag such that it passes through each vertex of the flag and the points \((\sqrt5,\sqrt{21})\) and \((2\sqrt5,\sqrt{k})\). Find \(k\).`,
+    choices: ["6", "8", "10", "12", "NOTA"], answer: "D",
+    solution: String.raw`By symmetry, the ellipse is centered at the origin and has equation
+\[\frac{x^2}{a^2}+\frac{y^2}{b^2}=1.\]
+Using \((5,3)\) and \((\sqrt5,\sqrt{21})\) gives
+\[\frac{25}{a^2}+\frac9{b^2}=1,\qquad \frac5{a^2}+\frac{21}{b^2}=1,\]
+which yields \(a^2=40\) and \(b^2=24\). Substituting \((2\sqrt5,\sqrt{k})\) gives
+\[\frac{20}{40}+\frac{k}{24}=1,\]
+so \(k=12\).`,
+  },
+  {
+    id: 30139, number: 139, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    question: String.raw`Which of the following is an asymptote of the graph of the equation \(y=\frac{x^3-1}{x-1}\)?`,
+    choices: [String.raw`\(x=-1\)`, String.raw`\(x=1\)`, String.raw`\(y=1\)`, String.raw`\(y=x^2\)`, "NOTA"], answer: "E",
+    solution: String.raw`Using the difference of cubes,
+\[\frac{x^3-1}{x-1}=x^2+x+1\qquad(x\ne1).\]
+The graph is the parabola \(y=x^2+x+1\) with a hole at \((1,3)\), so it has no asymptotes. The answer is NOTA.`,
+  },
+  {
+    id: 30140, number: 140, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: ["Symmetry"],
+    question: String.raw`How many of the following describe the graph of \(xy=1\)?
+\[\begin{array}{lll}
+\text{i.} & \text{Relation}\\
+\text{ii.} & \text{Function}\\
+\text{iii.} & \text{One-to-one}\\
+\text{iv.} & \text{Symmetric about the }x\text{-axis}\\
+\text{v.} & \text{Symmetric about the }y\text{-axis}\\
+\text{vi.} & \text{Symmetric about the line }y=x
+\end{array}\]`,
+    choices: ["2", "3", "4", "5", "NOTA"], answer: "C",
+    solution: String.raw`The equation \(y=\frac1x\) is a relation, a function, and a one-to-one function. It is also its own inverse, so it is symmetric about \(y=x\). It is not symmetric about either coordinate axis. Therefore, \(4\) statements describe the graph.`,
+  },
+  {
+    id: 30141, number: 141, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: ["Discriminant Test"],
+    question: String.raw`Which of the following equations describes a parabola?`,
+    choices: [
+      String.raw`\(x^2+6xy+9y^2+20x+24y+311838=0\)`,
+      String.raw`\(3x^2+6xy+7y^2+20x+24y+311838=0\)`,
+      String.raw`\(5x^2+6xy+5y^2+20x+24y+311838=0\)`,
+      String.raw`\(7x^2+6xy+3y^2+20x+24y+311838=0\)`,
+      "NOTA",
+    ], answer: "A",
+    solution: String.raw`A nondegenerate conic is a parabola when \(B^2-4AC=0\). For choice A,
+\[6^2-4(1)(9)=0,\]
+so \(x^2+6xy+9y^2+20x+24y+311838=0\) describes a parabola.`,
+  },
+  {
+    id: 30142, number: 142, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: ["Substitution"],
+    question: String.raw`The Easter Bunny takes a parabolic hop starting at \(t=0\) seconds and a height of 0 cm. At time \(t=3\) seconds, he is at a height of 60 cm, and at \(t=4\) seconds he is at a height of 66 cm. At what time (in seconds) will he land at a height of 0 cm again?`,
+    choices: ["7", String.raw`\(\frac{51}{7}\)`, "8", String.raw`\(\frac{61}{7}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Because the parabola passes through \((0,0)\), write it as \(y=at^2+bt\). The other points give
+\[9a+3b=60,\qquad16a+4b=66.\]
+Solving yields \(a=-\frac72\) and \(b=\frac{61}{2}\). Thus
+\[y=\frac t2(-7t+61),\]
+whose nonzero root is \(t=\frac{61}{7}\).`,
+  },
+  {
+    id: 30143, number: 143, division: "Theta", topic: "Sequences", difficulty: 2, methods: [],
+    question: String.raw`St. Patrick's Day is famous for its green attire. In the year 2010, 712 students wore green shirts to the IMAO National Convention. In the year 2019, 1027 students wore green shirts to the IMAO National Convention. If the number of students who wear green shirts follows an arithmetic progression every year, how many students are predicted to be wearing green in the year 2038?`,
+    choices: ["1622", "1657", "1692", "1787", "NOTA"], answer: "C",
+    solution: String.raw`The number of students increases by \(1027-712=315\) in \(9\) years, or \(35\) students per year. The year 2038 is \(28\) years after 2010, so the prediction is
+\[712+35(28)=1692.\]`,
+  },
+  {
+    id: 30144, number: 144, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    question: String.raw`March 9 is a date such that the number of the month is the square root of the number of the day - nice! Find the digit \(M\) such that the five-digit integer formed by \(3M9M2\) is divisible by 12. What is \(M\)?`,
+    choices: ["1", "5", "8", "9", "NOTA"], answer: "B",
+    solution: String.raw`The number must be divisible by both \(3\) and \(4\). Its digit sum is \(14+2M\), so divisibility by \(3\) gives \(M\in\{2,5,8\}\). Its final two digits are \(M2\), so divisibility by \(4\) gives \(M\in\{1,5,9\}\). The intersection is \(M=5\).`,
+  },
+  {
+    id: 30145, number: 145, division: "Theta", topic: "Probability", difficulty: 4, methods: ["Complement Rule"],
+    question: String.raw`March is Red Cross Month. Every 8 minutes, the American Red Cross responds to an emergency. One of the ways people at least 17 years old can help the Red Cross is to donate blood. The 8 blood types are \(O^-,O^+,A^-,A^+,B^-,B^+,AB^-,\) and \(AB^+\), where the positive and negative signs indicate the presence of the rhesus factor on the surface of red blood cells. Suppose you randomly select 3 out of those 8 blood types. Let \(X\) represent the probability that your 3 randomly selected blood types are either not all positive or not all negative for the rhesus factor when the selections are done without replacement. Let \(Y\) represent the probability that your 3 randomly selected blood types are either not all positive or not all negative for the rhesus factor when the selections are done with replacement. What is \(X-Y\)?`,
+    choices: [String.raw`\(\frac3{28}\)`, String.raw`\(\frac67\)`, String.raw`\(\frac14\)`, String.raw`\(\frac{17}{28}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Without replacement, there are \(\binom83=56\) selections. There are \(2\binom43=8\) selections that are all positive or all negative, so
+\[X=\frac{56-8}{56}=\frac67.\]
+With replacement, the \(2^3=8\) equally likely sign patterns include two constant-sign patterns, so
+\[Y=\frac{8-2}{8}=\frac34.\]
+Therefore,
+\[X-Y=\frac67-\frac34=\frac3{28}.\]`,
+  },
+  {
+    id: 30146, number: 146, division: "Theta", topic: "Logs and Exponents", difficulty: 4, methods: ["Logarithms"],
+    question: String.raw`March is Fire Prevention Month. A wood fire burns at \(600^\circ\text{C}\). Newton's Law of Cooling states that the difference in temperature between an object and its ambient environment experiences exponential decay; despite being named after the case when an object is cooling down, it also applies when an object is heating up! An object at \(80^\circ\text{C}\) at time \(t=0\) minutes has a temperature of \(470^\circ\text{C}\) at \(t=4\) minutes. Assuming Newton's Law of Cooling to be true, at an integer \(t=T\) minutes, the temperature of the object will be closest to \(599^\circ\text{C}\). Find \(T\).`,
+    choices: ["11", "14", "18", "19", "NOTA"], answer: "C",
+    solution: String.raw`The difference from the ambient temperature is \(520^\circ\text{C}\) at \(t=0\) and \(130^\circ\text{C}\) at \(t=4\). Thus the difference is quartered every \(4\) minutes, or halved every \(2\) minutes. After \(18\) minutes, the difference is
+\[\frac{520}{2^9}=\frac{65}{64},\]
+so the temperature is \(598.984375^\circ\text{C}\), closer to \(599^\circ\text{C}\) than at either adjacent integer time. Therefore, \(T=18\).`,
+  },
+  {
+    id: 30147, number: 147, division: "Theta", topic: "Complex Numbers", difficulty: 2, methods: ["De Moivre's Theorem"],
+    question: String.raw`The zodiac signs for the month of March are Pisces and Aries. If \(i=\sqrt{-1}\), find \((1+i)^{10}\).`,
+    choices: [String.raw`\(-32i\)`, "-32", "32", String.raw`\(32i\)`, "NOTA"], answer: "D",
+    solution: String.raw`Observe that \((1+i)^2=2i\). Therefore,
+\[(1+i)^{10}=(2i)^5=2^5i^5=32i.\]`,
+  },
+  {
+    id: 30148, number: 148, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: ["Eccentricity"],
+    question: String.raw`Spring into this problem and find the eccentricity of the following hyperbola.
+\[2x^2-y^2-6y=-4\]`,
+    choices: [String.raw`\(\frac{\sqrt6}{2}\)`, String.raw`\(\sqrt2\)`, String.raw`\(\frac32\)`, String.raw`\(\sqrt3\)`, "NOTA"], answer: "A",
+    solution: String.raw`Completing the square gives
+\[2x^2-(y^2+6y+9)=-13,\]
+so
+\[\frac{(y+3)^2}{13}-\frac{x^2}{13/2}=1.\]
+The eccentricity is
+\[\frac{\sqrt{13+13/2}}{\sqrt{13}}=\sqrt{1+\frac12}=\frac{\sqrt6}{2}.\]`,
+  },
+  {
+    id: 30149, number: 149, division: "Theta", topic: "Simplification", difficulty: 2, methods: [],
+    question: String.raw`Time goes on eternally, much like the following infinitely nested radical. Find its value.
+\[\sqrt{3+\sqrt{3+\sqrt{3+\sqrt{3+\cdots}}}}\]`,
+    choices: ["2", String.raw`\(\frac12+\sqrt3\)`, String.raw`\(\frac{1+\sqrt{13}}2\)`, "3", "NOTA"], answer: "C",
+    solution: String.raw`Let the nested radical equal \(x\). Then
+\[x=\sqrt{3+x}.\]
+Squaring gives \(x^2-x-3=0\), so
+\[x=\frac{1\pm\sqrt{13}}2.\]
+The nested radical is positive, so \(x=\frac{1+\sqrt{13}}2\).`,
+  },
 ];
