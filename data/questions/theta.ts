@@ -1766,8 +1766,8 @@ This follows from similar triangles formed using the point where the semicircle 
     illustration: {
       src: "/questions/theta-197-semicircle-triangle.svg",
       alt: "Right triangle ABC containing a semicircle on segment DC tangent to side AB.",
-      width: 410,
-      height: 330,
+      width: 390,
+      height: 380,
     },
   },
   {
