@@ -428,4 +428,272 @@ by Vieta's formulas.`,
     choices: ["0.5", "2%", "20%", "200%", "NOTA"], answer: "D",
     solution: String.raw`\[\frac{10\%}{5\%}=\frac{1/10}{1/20}=2=\boxed{200\%}.\]`,
   },
+  {
+    id: 30060, number: 60, division: "Theta", topic: "Number Theory", difficulty: 1, methods: [],
+    question: String.raw`How many of these four sets below are CLOSED under the given operation?
+\[\begin{array}{ll}
+\{\text{Odd Integers}\}\text{ Addition} & \{\text{Integers}\}\text{ Multiplication}\\
+\{\text{Rational Numbers}\}\text{ Division} & \{\text{Natural Numbers}\}\text{ Subtraction}
+\end{array}\]`,
+    choices: ["1", "2", "3", "4", "NOTA"], answer: "A",
+    solution: String.raw`Odd plus odd is even, so the odd integers are not closed under addition. Division by \(0\), which is rational, is undefined, so the rational numbers are not closed under division. Since \(3-8=-5\), the natural numbers are not closed under subtraction. However, the product of two integers is always an integer. Therefore, \(\boxed1\) set is closed.`,
+  },
+  {
+    id: 30061, number: 61, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Rational Root Theorem"],
+    question: String.raw`Find the number of rational zeros of \(P(x)=x^3+2x^2-4x+5\).`,
+    choices: ["1", "2", "3", "4", "NOTA"], answer: "E",
+    solution: String.raw`By the Rational Zero's Theorem, the potential rational zeros are \(\{\pm1,\pm5\}\). Testing them gives
+\[P(-1)=10,\quad P(1)=4,\quad P(-5)=-50,\quad P(5)=160.\]
+Therefore, \(P(x)\) has no rational zeros, so the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30062, number: 62, division: "Theta", topic: "Analytic Geometry", difficulty: 1, methods: [],
+    question: String.raw`Write the equation of a line in standard form passing through the point \((3,-5)\) and perpendicular to the line \(y=\frac34x+2\).`,
+    choices: [String.raw`\(3x-4y=29\)`, String.raw`\(3x+4y=-11\)`, String.raw`\(4x+3y=-3\)`, String.raw`\(4x-3y=27\)`, "NOTA"], answer: "C",
+    solution: String.raw`A perpendicular line has slope \(-\frac43\). Using point-slope form,
+\[y+5=-\frac43(x-3).\]
+Multiplying by \(3\) and rearranging gives \(\boxed{4x+3y=-3}\).`,
+  },
+  {
+    id: 30063, number: 63, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    question: String.raw`Given \(f(x)=3x+7\) and \(g(x)=x^2+2x-1\), then \(g(g(g(f(-2))))=?\)`,
+    choices: ["-7", "2", "7", "62", "NOTA"], answer: "D",
+    solution: String.raw`Working from the inside out,
+\[f(-2)=1,\quad g(1)=2,\quad g(2)=7,\quad g(7)=62.\]
+Thus the value is \(\boxed{62}\).`,
+  },
+  {
+    id: 30064, number: 64, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: ["Row Operations"],
+    question: String.raw`Given \(x-2y+3z=3\), \(2x+y+5z=8\), and \(3x-y-3z=-22\), solve for \((x,y,z)\). What is \(x+y+z\)?`,
+    choices: ["-4", "0", "1", "3", "NOTA"], answer: "B",
+    solution: String.raw`Eliminating \(y\) gives
+\[5x+2z=-14,\qquad 5x+13z=19.\]
+Subtracting yields \(11z=33\), so \(z=3\). Then \(x=-4\), and substitution gives \(y=1\). Therefore,
+\[x+y+z=-4+1+3=\boxed0.\]`,
+  },
+  {
+    id: 30065, number: 65, division: "Theta", topic: "Inequalities", difficulty: 3, methods: [],
+    question: String.raw`When the following system is graphed, there are no solutions in which quadrant(s)?
+\[2x+y\le4\]
+\[x-2y\le-2\]`,
+    choices: ["I, II", "II", "II, III", "IV", "NOTA"], answer: "D",
+    solution: String.raw`The inequalities are \(y\le4-2x\) and \(y\ge\frac{x+2}{2}\). Their overlap lies above the increasing line and below the decreasing line. In quadrant IV, \(x>0\) and \(y<0\), but \(y\ge\frac{x+2}{2}>0\), which is impossible. The answer is \(\boxed{\text{IV}}\).`,
+  },
+  {
+    id: 30066, number: 66, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    question: String.raw`For the function \(y=2x^2-8x+3\), determine the equation of the axis of symmetry \((x=a)\) and the minimum value \((y=b)\). What is \(a+b\)?`,
+    choices: ["-3", "1", "2", "5", "NOTA"], answer: "A",
+    solution: String.raw`Completing the square gives
+\[y=2(x-2)^2-5.\]
+Thus \(a=2\) and \(b=-5\), so \(a+b=\boxed{-3}\).`,
+  },
+  {
+    id: 30067, number: 67, division: "Theta", topic: "Polynomial Equations", difficulty: 1, methods: ["Discriminant Test"],
+    question: String.raw`What are the \(x\)-coordinates of the \(x\)-intercepts of \(f(x)=x^2-3x+15\)?`,
+    choices: ["3, 5", "-3, 5", "3, -5", "-3, -5", "NOTA"], answer: "E",
+    solution: String.raw`The discriminant is
+\[b^2-4ac=(-3)^2-4(1)(15)=-51<0.\]
+There are no real roots and therefore no \(x\)-intercepts. The answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30068, number: 68, division: "Theta", topic: "Complex Numbers", difficulty: 1, methods: [],
+    question: String.raw`In what quadrant does the point \(-3+5i\) lie on the argand plane (the complex number plane)?`,
+    choices: ["I", "II", "III", "IV", "NOTA"], answer: "B",
+    solution: String.raw`The real part is negative and the imaginary part is positive, corresponding to the point \((-3,5)\). It lies in \(\boxed{\text{Quadrant II}}\).`,
+  },
+  {
+    id: 30069, number: 69, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: ["Row Operations"],
+    question: String.raw`Find the quadratic function \(f(x)=ax^2+bx+c\) that passes through the points \((-2,9)\), \((1,-6)\), \((3,4)\). What is the sum \(a+b+c\)?`,
+    choices: ["-12", "-9", "-6", "0", "NOTA"], answer: "C",
+    solution: String.raw`Substitution of the three points gives
+\[4a-2b+c=9,\qquad a+b+c=-6,\qquad 9a+3b+c=4.\]
+Elimination yields \(a=2\), \(b=-3\), and \(c=-5\). Hence \(a+b+c=\boxed{-6}\).`,
+  },
+  {
+    id: 30070, number: 70, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: [],
+    question: String.raw`How many pounds of salt must be added to 80 pounds of a \(5\%\) salt solution to make a \(24\%\) salt solution?`,
+    choices: ["5 lbs.", "15 lbs.", "20 lbs.", "30 lbs.", "NOTA"], answer: "C",
+    solution: String.raw`The original solution contains \(0.05(80)=4\) pounds of salt. If \(x\) pounds of pure salt are added, then
+\[4+x=0.24(80+x).\]
+Thus \(4+x=19.2+0.24x\), so \(0.76x=15.2\) and \(x=\boxed{20}\) pounds.`,
+  },
+  {
+    id: 30071, number: 71, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    question: String.raw`When simplifying the expression
+\[\frac{(6x^{2/7}y^{-4}z^0)^3}{9x^2y^5z^{-8}},\]
+the final result is of the form \(Kx^ay^bz^c\) where \(K,a,b,\) and \(c\) are some rational numbers. What is \(a+b+c\)?`,
+    choices: [String.raw`\(-\frac{71}{7}\)`, String.raw`\(-\frac{92}{7}\)`, String.raw`\(-\frac{99}{7}\)`, String.raw`\(-\frac{101}{7}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The expression simplifies to
+\[24x^{6/7-2}y^{-12-5}z^{0-(-8)}=24x^{-8/7}y^{-17}z^8.\]
+Therefore,
+\[a+b+c=-\frac87-17+8=\boxed{-\frac{71}{7}}.\]`,
+  },
+  {
+    id: 30072, number: 72, division: "Theta", topic: "Logs and Exponents", difficulty: 5, methods: ["Logarithms"],
+    question: String.raw`Which of the following expressions is equal to \(\log_2x\), if \(x>0\) satisfies the following equation?
+\[\frac{\log_2(\sqrt{x})+\log_{\sqrt2}(x)}{\sqrt{\log_2(x)}}
+=
+\frac{\log_4(\sqrt[4]{x})+\log_{\sqrt[4]{4}}(x)}{\sqrt[4]{\log_4(x)}}\]`,
+    choices: [String.raw`\(8\left(\frac5{17}\right)^4\)`, String.raw`\(2\left(\frac{17}{5}\right)^4\)`, String.raw`\(8\left(\frac{17}{5}\right)^4\)`, String.raw`\(8\left(\frac{10}{17}\right)^4\)`, "NOTA"], answer: "D",
+    solution: String.raw`By logarithm properties, the equation becomes
+\[\frac52(\log_2x)^{1/2}=\frac{17}{4}(\log_4x)^{3/4}.\]
+Since \(\log_4x=\frac12\log_2x\), rearranging gives
+\[(\log_2x)^{1/4}=\frac{10}{17}\sqrt[4]{8}.\]
+Raising both sides to the fourth power yields
+\[\log_2x=\boxed{8\left(\frac{10}{17}\right)^4}.\]`,
+  },
+  {
+    id: 30073, number: 73, division: "Theta", topic: "Logs and Exponents", difficulty: 1, methods: ["Logarithms"],
+    question: String.raw`Given \(x=\log_2(\log_3(\log_4 64))\), then \(x=?\)`,
+    choices: ["1", "2", "3", "4", "NOTA"], answer: "E",
+    solution: String.raw`\[\log_4 64=3,\qquad \log_3 3=1,\qquad \log_2 1=0.\]
+Thus \(x=0\), so the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30074, number: 74, division: "Theta", topic: "Probability", difficulty: 4, methods: [],
+    question: String.raw`A real number \(x\) is randomly chosen from the interval \((0,10)\). What is the probability that
+\[(x^2-5x+6)(x^2-9x+18)(x^2-9x+14)(x^2-7x+12)\]
+is positive?`,
+    choices: [String.raw`\(\frac12\)`, String.raw`\(\frac35\)`, String.raw`\(\frac7{10}\)`, String.raw`\(\frac45\)`, "NOTA"], answer: "D",
+    solution: String.raw`Factoring gives
+\[(x-2)^2(x-3)^3(x-4)(x-6)(x-7).\]
+The expression is positive on \((0,3)\cup(4,6)\cup(7,10)\), whose total length is \(3+2+3=8\). Therefore, the probability is \(\frac8{10}=\boxed{\frac45}\).`,
+  },
+  {
+    id: 30075, number: 75, division: "Theta", topic: "Simplification", difficulty: 1, methods: [],
+    question: String.raw`Factor: \((3x-4)^2-(2x+5)^2\). Which of the following is one of the factors?`,
+    choices: [String.raw`\(x-1\)`, String.raw`\(x-9\)`, String.raw`\(5x-1\)`, String.raw`\(5x-9\)`, "NOTA"], answer: "B",
+    solution: String.raw`Using the difference of squares,
+\[(3x-4)^2-(2x+5)^2=[(3x-4)+(2x+5)][(3x-4)-(2x+5)]
+=(5x+1)(x-9).\]
+Thus one factor is \(\boxed{x-9}\).`,
+  },
+  {
+    id: 30076, number: 76, division: "Theta", topic: "Function Analysis", difficulty: 1, methods: [],
+    question: String.raw`What is(are) the equation(s) of the horizontal asymptote(s) for the following rational function?
+\[f(x)=\frac{6x^2-3x+2}{4x^2-9}\]`,
+    choices: [String.raw`\(y=\pm\frac32\)`, String.raw`\(x=\pm\frac32\)`, String.raw`\(y=\frac32\)`, String.raw`\(x=\frac32\)`, "NOTA"], answer: "C",
+    solution: String.raw`When the numerator and denominator have equal degree, the horizontal asymptote is the ratio of their leading coefficients. Thus
+\[y=\frac64=\boxed{\frac32}.\]`,
+  },
+  {
+    id: 30077, number: 77, division: "Theta", topic: "Polynomials", difficulty: 2, methods: [],
+    question: String.raw`When multiplied, what is the coefficient of the \(x^3\) term for \((x^2-x+2)(x^3+3x^2-5x+4)\)?`,
+    choices: ["-6", "-1", "-8", "-3", "NOTA"], answer: "A",
+    solution: String.raw`The terms contributing to \(x^3\) are
+\[(x^2)(-5x)+(-x)(3x^2)+2(x^3)=(-5-3+2)x^3=-6x^3.\]
+The coefficient is \(\boxed{-6}\).`,
+  },
+  {
+    id: 30078, number: 78, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
+    question: String.raw`Factor by completing the square: \(x^4+2x^2+9\). Which of the following is one of the factors?`,
+    choices: [String.raw`\(x^2+3\)`, String.raw`\(x^2+x+3\)`, String.raw`\(x^2-x+3\)`, String.raw`\(x^2-2x+3\)`, "NOTA"], answer: "D",
+    solution: String.raw`\[
+x^4+2x^2+9=(x^2+3)^2-(2x)^2
+=(x^2+2x+3)(x^2-2x+3).
+\]
+Therefore, one factor is \(\boxed{x^2-2x+3}\).`,
+  },
+  {
+    id: 30079, number: 79, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    question: String.raw`What is the least common multiple, plus the greatest common factor of 126 and 140?`,
+    choices: ["14", "648", "1274", "1310", "NOTA"], answer: "C",
+    solution: String.raw`The prime factorizations are \(126=2\cdot3^2\cdot7\) and \(140=2^2\cdot5\cdot7\). Therefore,
+\[\operatorname{lcm}(126,140)=1260,\qquad \gcd(126,140)=14.\]
+Their sum is \(\boxed{1274}\).`,
+  },
+  {
+    id: 30080, number: 80, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Remainder Theorem"],
+    question: String.raw`What is the remainder when \(x^4+7x^3+5x^2-8x-14\) is divided by \(x+6\)?`,
+    choices: ["-6", "-2", "4", "6", "NOTA"], answer: "B",
+    solution: String.raw`By the Remainder Theorem, the remainder is
+\[P(-6)=(-6)^4+7(-6)^3+5(-6)^2-8(-6)-14=\boxed{-2}.\]`,
+  },
+  {
+    id: 30081, number: 81, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: ["Substitution"],
+    question: String.raw`Given \(3x^2-5y^2=22\) and \(3x^2-y^2-6x=8\), solve the system for all real ordered pairs \((x,y)\) that satisfy the system. What is the sum of all the real coordinates of the ordered pair solutions? That is, what is \(x_1+y_1+x_2+y_2+\cdots\) where each \(x_k\) and \(y_k\) corresponds to a real ordered pair solution \((x_k,y_k)\).`,
+    choices: ["8", "6", "5", "4", "NOTA"], answer: "B",
+    solution: String.raw`From the first equation, \(y^2=\frac{3x^2-22}{5}\). Substituting into the second gives
+\[2x^2-5x-3=0,\]
+so \(x=3\) or \(x=-\frac12\). The latter produces no real \(y\). When \(x=3\), \(y=\pm1\), so the real solutions are \((3,1)\) and \((3,-1)\). The requested sum is
+\[3+1+3-1=\boxed6.\]`,
+  },
+  {
+    id: 30082, number: 82, division: "Theta", topic: "Sequences", difficulty: 3, methods: ["Recursion"],
+    question: String.raw`Define a sequence such that \(a_1=1\) and \(a_{n+1}=1+ia_n\) for all \(n\ge1\) and \(i=\sqrt{-1}\). Compute \(a_{1066}\). (By the way, the year 1066 is when the Battle of Hastings was fought in England.)`,
+    choices: ["1", "-1", String.raw`\(i\)`, String.raw`\(-i\)`, "NOTA"], answer: "E",
+    solution: String.raw`The first terms are
+\[a_1=1,\quad a_2=1+i,\quad a_3=i,\quad a_4=0,\quad a_5=1,\]
+so the sequence repeats every four terms. Since \(1066\equiv2\pmod4\), \(a_{1066}=1+i\), which is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30083, number: 83, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
+    question: String.raw`Find the quadratic function \(f(x)\) which has a zero of \(x=-5+2i\sqrt3\) in the form \(f(x)=ax^2+bx+c\) where \(a,b,\) and \(c\) are pairwise relatively prime integers and \(a>0\). What is \(a+b+c\)?`,
+    choices: ["48", "37", "28", "-26", "NOTA"], answer: "A",
+    solution: String.raw`Because the polynomial has real integer coefficients, \(-5-2i\sqrt3\) is also a zero. Therefore,
+\[(x+5-2i\sqrt3)(x+5+2i\sqrt3)=x^2+10x+37.\]
+Thus \(a+b+c=1+10+37=\boxed{48}\).`,
+  },
+  {
+    id: 30084, number: 84, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: ["Point-to-Line Distance Formula"],
+    question: String.raw`The shortest distance between a point \((x_0,y_0)\) and a line \(Ax+By+C=0\) is given by
+\[\frac{|Ax_0+By_0+C|}{\sqrt{A^2+B^2}}.\]
+Compute the shortest distance between the lines \(x+2y=20\) and \(x+2y=25\).`,
+    choices: ["5", String.raw`\(\sqrt5\)`, "1", String.raw`\(\frac{\sqrt5}{5}\)`, "NOTA"], answer: "B",
+    solution: String.raw`The lines are parallel. Taking \((20,0)\) on the first line, its distance from the second line is
+\[\frac{|20+2(0)-25|}{\sqrt{1^2+2^2}}=\frac5{\sqrt5}=\boxed{\sqrt5}.\]`,
+  },
+  {
+    id: 30085, number: 85, division: "Theta", topic: "Analytic Geometry", difficulty: 5, methods: ["Point-to-Line Distance Formula"],
+    question: String.raw`The shortest distance between a point \((x_0,y_0)\) and a line \(Ax+By+C=0\) is given by
+\[\frac{|Ax_0+By_0+C|}{\sqrt{A^2+B^2}}.\]
+Let \(S\) be the set of all points \(P\) such that the distance from \(P\) to \((0,0)\) is half the distance from \(P\) to the line \(3x+4y=5\). There exist real numbers \(A,B,C,D,\) and \(E\) such that \(S\) is modeled by the equation
+\[Ax^2+Bxy+Cy^2+Dx+Ey=1.\]
+Compute \(A+B+C+D+E\).`,
+    choices: [String.raw`\(\frac{67}{50}\)`, String.raw`\(\frac{81}{25}\)`, String.raw`\(-\frac{213}{50}\)`, String.raw`\(\frac{221}{25}\)`, "NOTA"], answer: "D",
+    solution: String.raw`For \(P=(x,y)\),
+\[\sqrt{x^2+y^2}=\frac12\cdot\frac{|3x+4y-5|}{5}=\frac1{10}|3x+4y-5|.\]
+Squaring and rearranging into the requested form gives
+\[\frac{91}{25}x^2-\frac{24}{25}xy+\frac{84}{25}y^2+\frac{30}{25}x+\frac{40}{25}y=1.\]
+The sum of the coefficients is \(\boxed{\frac{221}{25}}\).`,
+  },
+  {
+    id: 30086, number: 86, division: "Theta", topic: "Conic Sections", difficulty: 5, methods: ["Discriminant Test"],
+    question: String.raw`The shortest distance between a point \((x_0,y_0)\) and a line \(Ax+By+C=0\) is given by
+\[\frac{|Ax_0+By_0+C|}{\sqrt{A^2+B^2}}.\]
+Let \(S\) be the set of all points \(P\) such that the product of the distance from \(P\) to the line \(y=x\) and the distance from \(P\) to the line \(y=-\frac34x\) is \(\frac1{5\sqrt2}\). Set \(S\) consists of two slightly rotated hyperbolas such that one of which has a transverse axis with a positive slope (call this hyperbola \(H\)). Compute the smallest positive \(x\)-coordinate of any point on \(H\).`,
+    choices: [String.raw`\(\frac47\)`, String.raw`\(\frac35\)`, String.raw`\(\frac59\)`, String.raw`\(\frac23\)`, "NOTA"], answer: "A",
+    solution: String.raw`The distance product condition becomes
+\[\left|\frac{x-y}{\sqrt2}\right|\left|\frac{3x+4y}{5}\right|=\frac1{5\sqrt2},\]
+so \(|x-y||3x+4y|=1\). The hyperbola with a positive-slope transverse axis has
+\[(x-y)(3x+4y)=1,\]
+or \(3x^2+xy-4y^2=1\). Treating this as a quadratic in \(y\), a real point exists when
+\[\Delta=x^2-4(-4)(3x^2-1)=49x^2-16\ge0.\]
+For positive \(x\), this means \(x\ge\boxed{\frac47}\).`,
+  },
+  {
+    id: 30087, number: 87, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
+    question: String.raw`According to Descartes' Rule of Signs, there are a few possible candidates for the numbers of positive real, negative real, and non-real complex roots of the following function:
+\[f(x)=x^4-2x^3-x+1.\]
+Which of the following is one such candidate? Answers are in the form of an ordered triple as follows: (positive real, negative real, non-real complex).`,
+    choices: ["(2, 1, 1)", "(2, 0, 2)", "(1, 2, 1)", "(2, 2, 0)", "NOTA"], answer: "B",
+    solution: String.raw`There are two sign changes in \(f(x)\), so there are \(2\) or \(0\) positive real roots. Also,
+\[f(-x)=x^4+2x^3+x+1\]
+has no sign changes, so there are no negative real roots. Since the polynomial has degree \(4\), \((2,0,2)\) is a possible distribution. The answer is \(\boxed{(2,0,2)}\).`,
+  },
+  {
+    id: 30088, number: 88, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`A plane can fly 200mph in still air. Flying with the wind, it can fly 960 miles. Flying against the wind, it can fly only two-thirds of the distance in the same amount of time. Find the speed of the wind in mph.`,
+    choices: ["20", "40", "60", "80", "NOTA"], answer: "B",
+    solution: String.raw`If the wind speed is \(w\), equal travel times give
+\[\frac{960}{200+w}=\frac{640}{200-w}.\]
+Cross-multiplying yields \(192000-960w=128000+640w\), so \(1600w=64000\) and \(w=\boxed{40}\) mph.`,
+  },
+  {
+    id: 30089, number: 89, division: "Theta", topic: "Systems of Equations", difficulty: 1, methods: ["Row Operations"],
+    question: String.raw`Solve this system: \(3x+4y=1\) and \(5x+9y=2\). What is \(x+y\)?`,
+    choices: [String.raw`\(\frac27\)`, String.raw`\(\frac49\)`, String.raw`\(\frac73\)`, String.raw`\(\frac45\)`, "NOTA"], answer: "A",
+    solution: String.raw`Eliminating \(x\) gives \(7y=1\), so \(y=\frac17\). Substitution gives \(x=\frac17\). Therefore,
+\[x+y=\boxed{\frac27}.\]`,
+  },
 ];
