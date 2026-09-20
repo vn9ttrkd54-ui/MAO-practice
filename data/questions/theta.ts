@@ -1267,4 +1267,292 @@ Squaring gives \(x^2-x-3=0\), so
 \[x=\frac{1\pm\sqrt{13}}2.\]
 The nested radical is positive, so \(x=\frac{1+\sqrt{13}}2\).`,
   },
+  {
+    id: 30150, number: 150, division: "Theta", topic: "Inverse Functions", difficulty: 3, methods: [],
+    question: String.raw`What is the range of the function \(f^{-1}(x)\) if \(f(x)=\frac{\ln(x+1)}{\sqrt{x-13}}\)?`,
+    choices: [String.raw`\(y>-1\)`, String.raw`\(y>13\)`, String.raw`\(-1<x<13\)`, String.raw`\(x>-1\)`, "NOTA"], answer: "B",
+    solution: String.raw`The range of \(f^{-1}(x)\) is the same as the domain of \(f(x)\). For \(\ln(x+1)\), we need \(x+1>0\), so \(x>-1\). The denominator \(\sqrt{x-13}\) requires \(x\ge13\), but it also cannot equal \(0\), so \(x>13\). Both conditions together give \(x>13\). Therefore, the range of \(f^{-1}(x)\) is \(y>13\).`,
+  },
+  {
+    id: 30151, number: 151, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    question: String.raw`Express the following as a single simplified radical expression without rationalizing the denominator:
+\[\sqrt[12]{x^5y}\div\sqrt[8]{x^3y^5}\]`,
+    choices: [String.raw`\(\sqrt[24]{\frac{x}{y^{13}}}\)`, String.raw`\(\sqrt{\frac{x}{y^2}}\)`, String.raw`\(\sqrt[4]{\frac{x}{y^2}}\)`, String.raw`\(\sqrt[48]{\frac{x}{y^2}}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The twelfth root is a \(\frac1{12}\) power and the eighth root is a \(\frac18\) power. The least common multiple of \(12\) and \(8\) is \(24\), so
+\[\sqrt[12]{x^5y}=\sqrt[24]{x^{10}y^2},\qquad
+\sqrt[8]{x^3y^5}=\sqrt[24]{x^9y^{15}}.\]
+Combining the roots gives \(\sqrt[24]{\frac{x}{y^{13}}}\).`,
+  },
+  {
+    id: 30152, number: 152, division: "Theta", topic: "Functions", difficulty: 3, methods: [],
+    question: String.raw`The function \(y=g(x)\) has the property that \(f(g(x))=x+2\) for all values of \(x\). If \(f(x)=\sqrt[3]{x-1}\), and \(g(x)=x^3+bx^2+cx+d\), then give the value of \(\frac{b+c}{d}\).`,
+    choices: ["-1", "0", "1", "2", "NOTA"], answer: "D",
+    solution: String.raw`Since \(f(x)=\sqrt[3]{x-1}\),
+\[\sqrt[3]{g(x)-1}=x+2.\]
+Cubing gives \(g(x)-1=x^3+6x^2+12x+8\), so
+\[g(x)=x^3+6x^2+12x+9.\]
+Thus \(b=6\), \(c=12\), and \(d=9\), giving \(\frac{b+c}{d}=2\).`,
+  },
+  {
+    id: 30153, number: 153, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`Pat can cut and split a cord of firewood in 6 fewer hours than Jesse can. When they work together, it takes them 4 hr. How long would it take Jesse to do the job alone?`,
+    choices: ["2 hr.", "6 hr.", "7 hr.", "12 hr.", "NOTA"], answer: "D",
+    solution: String.raw`Let \(J\) be Jesse's time, so Pat's time is \(J-6\). The work-rate equation is
+\[\frac4{J-6}+\frac4J=1.\]
+Multiplying by \(J(J-6)\) and simplifying gives
+\[J^2-14J+24=0=(J-12)(J-2).\]
+The value \(J=2\) is impossible because their combined time is \(4\) hours, so \(J=12\).`,
+  },
+  {
+    id: 30154, number: 154, division: "Theta", topic: "Inequalities", difficulty: 1, methods: [],
+    question: String.raw`Which mathematical symbol best compares \(|x+y|\) and \(|x|+|y|\) over all real numbers \(x\) and \(y\) (that is, replace "and" with one of the following symbols to make a true mathematical statement in all cases)?`,
+    choices: ["<", String.raw`\(\le\)`, "=", String.raw`\(\ge\)`, "NOTA"], answer: "B",
+    solution: String.raw`By the triangle inequality,
+\[|x+y|\le|x|+|y|.\]
+Equality occurs when \(x\) and \(y\) have the same sign, while the inequality is strict for some values with opposite signs.`,
+  },
+  {
+    id: 30155, number: 155, division: "Theta", topic: "Polynomial Equations", difficulty: 3, methods: ["Substitution"],
+    question: String.raw`How many real number solutions does the following equation have?
+\[\left(\frac1x+2\right)^2+5\left(\frac1x+2\right)-14=0\]`,
+    choices: ["0", "1", "2", "3", "NOTA"], answer: "B",
+    solution: String.raw`Let \(u=\frac1x+2\). Then
+\[u^2+5u-14=(u+7)(u-2)=0,\]
+so \(u=-7\) or \(u=2\). The first gives \(\frac1x=-9\), hence \(x=-\frac19\). The second gives \(\frac1x=0\), which has no solution. Therefore, the original equation has one real solution.`,
+  },
+  {
+    id: 30156, number: 156, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: [],
+    question: String.raw`For a given line \(l_1\) with slope \(m\), we'll call a perpendicular line \(l_2\) and the "inverse" line to \(l_1\) we'll call \(l_3\), where the "inverse" line is defined as \(y=\frac1m x-\frac bm\). What is the product of the slopes of \(l_2\) and \(l_3\)?`,
+    choices: ["We cannot determine", "-1", String.raw`\(\frac1m\)`, String.raw`\(-\frac1m\)`, "NOTA"], answer: "E",
+    solution: String.raw`For \(l_1:y=mx+b\), a perpendicular line has slope \(-\frac1m\), while the defined "inverse" line has slope \(\frac1m\). Their product is
+\[-\frac1m\cdot\frac1m=-\frac1{m^2},\]
+which is not listed among choices A-D. Therefore, the answer is NOTA.`,
+  },
+  {
+    id: 30157, number: 157, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`The current in a river moves at a rate of 3 ft/sec. Rowing his kayak with the current, Pat travels 150 ft forward in the time it takes to travel 50 ft in the opposite direction. How fast can Pat row in still water?`,
+    choices: ["5 ft/sec.", "10 ft/sec.", "12 ft/sec.", "15 ft/sec.", "NOTA"], answer: "E",
+    solution: String.raw`Let \(r\) be Pat's still-water speed and \(t\) the common travel time. Then
+\[150=(r+3)t,\qquad50=(r-3)t.\]
+Dividing the equations gives \(3=\frac{r+3}{r-3}\), so \(r=6\) ft/sec. Since \(6\) is not listed, the answer is NOTA.`,
+  },
+  {
+    id: 30158, number: 158, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: ["Geometric Sequence"],
+    question: String.raw`The number of poodles in Pat's Pet Palace doubles every three months. If after nine months, Pat has \(p\) poodles, which expression below represents how many poodles will Pat have after \(y\) years?`,
+    choices: [String.raw`\((2p)^{4y}\)`, String.raw`\(p(2^{3y-2})\)`, String.raw`\(p(2^{4y-3})\)`, String.raw`\((2p)^3(4y-3)\)`, "NOTA"], answer: "C",
+    solution: String.raw`In nine months, the population has doubled three times, so Pat began with \(\frac{p}{2^3}\) poodles. Since \(y\) years is \(12y\) months, there are \(4y\) doubling periods. Thus the population is
+\[\frac{p}{2^3}(2^{4y})=p(2^{4y-3}).\]`,
+  },
+  {
+    id: 30159, number: 159, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    question: String.raw`What is the domain of the relation \(y=\log_2\left(\frac{\sqrt{6-2x}}{x-5}\right)\) in interval notation?`,
+    choices: [String.raw`\((5,\infty)\)`, String.raw`\((-\infty,3]\)`, String.raw`\([3,5)\)`, String.raw`\((-\infty,3]\cup(5,\infty)\)`, "NOTA"], answer: "E",
+    solution: String.raw`The logarithm's argument must be positive. The numerator \(\sqrt{6-2x}\) exists only for \(x\le3\) and equals \(0\) at \(x=3\); the denominator is negative throughout \(x\le3\). Thus the quotient is never positive. There is no real domain, so the answer is NOTA.`,
+  },
+  {
+    id: 30160, number: 160, division: "Theta", topic: "Optimization", difficulty: 1, methods: [],
+    question: String.raw`Over all integers, what integer will minimize \(f(x)=5x^2-7x+11\)?`,
+    choices: ["-1", "0", "1", "2", "NOTA"], answer: "C",
+    solution: String.raw`The vertex occurs at
+\[x=-\frac{b}{2a}=\frac7{10}.\]
+Since the parabola opens upward, the closest integer to \(\frac7{10}\) minimizes the function. That integer is \(x=1\).`,
+  },
+  {
+    id: 30161, number: 161, division: "Theta", topic: "Inequalities", difficulty: 5, methods: [],
+    question: String.raw`What is the solution set to the following inequality in interval notation?
+\[\frac{x^7(x-2)^4}{(x+5)^3(x+8)^6(x-9)^{11}}\le0\]`,
+    choices: [
+      String.raw`\((-\infty,-5)\cup[0,9)\)`,
+      String.raw`\((-\infty,-8)\cup(-8,-5)\cup[0,9)\)`,
+      String.raw`\((-\infty,-8)\cup(-8,-5)\cup[0,2)\cup(2,9)\)`,
+      String.raw`\((-\infty,-8)\cup(-8,-5)\cup(0,2)\cup(2,9)\)`,
+      "NOTA",
+    ], answer: "B",
+    solution: String.raw`A sign chart uses the critical values \(-8,-5,0,2,\) and \(9\). The even powers at \(-8\) and \(2\) do not change the sign, although \(x=-8\) is excluded because it makes the denominator zero. The odd powers change the sign at \(-5,0,\) and \(9\). The expression is nonpositive on
+\[(-\infty,-8)\cup(-8,-5)\cup[0,9).\]`,
+  },
+  {
+    id: 30162, number: 162, division: "Theta", topic: "Functions", difficulty: 3, methods: [],
+    question: String.raw`For \(f(x)=\frac{x-1}{x-2}\) and \(g(x)=\frac{x-3}{x-2}\), where \(x\) is over the real numbers, what is the domain of \(f\circ g\) in set notation?`,
+    choices: [
+      String.raw`\(\{x\mid x\ne2\}\)`,
+      String.raw`\(\{x\mid x\ne1,x\ne2\}\)`,
+      String.raw`\(\{x\mid x\ne1,x\ne3\}\)`,
+      String.raw`\(\{x\mid x\ne1,x\ne2,x\ne3\}\)`,
+      "NOTA",
+    ], answer: "B",
+    solution: String.raw`The inner function requires \(x\ne2\). The outer function also requires \(g(x)\ne2\). Solving
+\[\frac{x-3}{x-2}=2\]
+gives \(x=1\). Therefore, the domain is \(\{x\mid x\ne1,x\ne2\}\).`,
+  },
+  {
+    id: 30163, number: 163, division: "Theta", topic: "Inequalities", difficulty: 4, methods: [],
+    question: String.raw`Solve the inequality \(|x+2|+|2x+10|>4\) in interval notation.`,
+    choices: [
+      String.raw`\((-\infty,-\frac{16}{3})\cup(\frac83,\infty)\)`,
+      String.raw`\((-\infty,-\frac{16}{3})\cup(-4,\infty)\)`,
+      String.raw`\((-\infty,-\frac{16}{3})\cup(-4,-2)\cup(\frac83,\infty)\)`,
+      String.raw`\((-4,-2)\cup(\frac83,\infty)\)`,
+      "NOTA",
+    ], answer: "B",
+    solution: String.raw`The critical points are \(x=-5\) and \(x=-2\). Solving on the three intervals gives:
+\[\begin{array}{ll}
+x<-5:&-3x-12>4\Longrightarrow x<-\frac{16}{3},\\
+-5\le x<-2:&x+8>4\Longrightarrow x>-4,\\
+x\ge-2:&3x+12>4,
+\end{array}\]
+and the last inequality holds for every \(x\ge-2\). Combining the valid portions gives
+\[(-\infty,-\tfrac{16}{3})\cup(-4,\infty).\]`,
+  },
+  {
+    id: 30164, number: 164, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    question: String.raw`Simplify \(\sqrt{27x-18}+\sqrt{3x^3-2x^2}-\sqrt{12x-8}\) by collecting radical terms so that you are only left with one radical expression. Assume all expressions under all radicals represent nonnegative real numbers and \(x\) is a nonnegative real number as well.`,
+    choices: [
+      String.raw`\((x+1)\sqrt{3x-2}\)`,
+      String.raw`\(x\sqrt{3x-2}\)`,
+      String.raw`\(\sqrt{3x^3-2x^2+15x-10}\)`,
+      String.raw`\((x^2+5)\sqrt{3x-2}\)`,
+      "NOTA",
+    ], answer: "A",
+    solution: String.raw`Treat each square root separately:
+\[\sqrt{27x-18}=3\sqrt{3x-2},\]
+\[\sqrt{3x^3-2x^2}=x\sqrt{3x-2}\]
+because \(x\ge0\), and
+\[\sqrt{12x-8}=2\sqrt{3x-2}.\]
+Collecting like radical terms gives \((x+1)\sqrt{3x-2}\).`,
+  },
+  {
+    id: 30165, number: 165, division: "Theta", topic: "Sequences and Series", difficulty: 2, methods: ["Telescoping"],
+    question: String.raw`What is \(\sum_{n=1}^{100}\left(\frac1n-\frac1{n+1}\right)\)?`,
+    choices: ["1", String.raw`\(\frac12\)`, String.raw`\(\frac{99}{100}\)`, String.raw`\(\frac{100}{101}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Writing out the sum,
+\[\left(1-\frac12\right)+\left(\frac12-\frac13\right)+\cdots+\left(\frac1{100}-\frac1{101}\right),\]
+all intermediate terms cancel. The result is
+\[1-\frac1{101}=\frac{100}{101}.\]`,
+  },
+  {
+    id: 30166, number: 166, division: "Theta", topic: "Simplification", difficulty: 4, methods: ["Partial Fractions"],
+    question: String.raw`If
+\[\frac{x^2+7x}{(x-1)(x^2+1)}=\frac{A}{x-1}+\frac{Bx+C}{x^2+1},\]
+then what is \(\frac{AB}{C}\)?`,
+    choices: ["-3", "-12", "6", "9", "NOTA"], answer: "A",
+    solution: String.raw`Equating numerators gives
+\[x^2+7x=A(x^2+1)+(Bx+C)(x-1).\]
+Matching coefficients yields
+\[1=A+B,\qquad7=-B+C,\qquad0=A-C.\]
+Solving gives \(A=4\), \(B=-3\), and \(C=4\). Therefore,
+\[\frac{AB}{C}=\frac{4(-3)}4=-3.\]`,
+  },
+  {
+    id: 30167, number: 167, division: "Theta", topic: "Inequalities", difficulty: 2, methods: [],
+    question: String.raw`If \(f(x)=x^2-8x+23\) and \(g(x)=2x-13\), find all values of \(a\) such that \(g(a)<f(x)\) for all values of \(x\). Express your answer in interval notation.`,
+    choices: [String.raw`\((-\infty,4)\)`, String.raw`\((4,\infty)\)`, String.raw`\((-\infty,10)\)`, String.raw`\((10,\infty)\)`, "NOTA"], answer: "C",
+    solution: String.raw`Completing the square gives
+\[f(x)=(x-4)^2+7,\]
+so the minimum value of \(f\) is \(7\). We need
+\[g(a)=2a-13<7,\]
+which gives \(a<10\). Therefore, the solution is \((-\infty,10)\).`,
+  },
+  {
+    id: 30168, number: 168, division: "Theta", topic: "Inequalities", difficulty: 1, methods: [],
+    question: String.raw`If \(f(x)=x^2-8x+23\) and \(g(x)=2x-13\) as in the problem above, find all values of \(a\) such that \(g(a)<f(x)\) for some value \(x\). Express your answer in interval notation.`,
+    choices: [String.raw`\((-\infty,\infty)\)`, String.raw`\([7,\infty)\)`, String.raw`\((-\infty,10)\)`, String.raw`\((4,\infty)\)`, "NOTA"], answer: "A",
+    solution: String.raw`The parabola \(f(x)=(x-4)^2+7\) is unbounded above. For every real \(a\), the value \(g(a)\) is finite, so some sufficiently large \(|x|\) makes \(f(x)>g(a)\). Thus every real \(a\) works, giving \((-\infty,\infty)\).`,
+  },
+  {
+    id: 30169, number: 169, division: "Theta", topic: "Probability", difficulty: 4, methods: [],
+    question: String.raw`Angela has exactly one $1 bill, one $5 bill, one $10 bill, one $20 bill, one $50 bill and one $100 bill. She wants to give Bob and Casey all of her money so that the difference in the amounts she gives them differs by $25 or less. How many different ways can Angela give Bob and Casey her money?`,
+    choices: ["8", "6", "4", "2", "NOTA"], answer: "B",
+    solution: String.raw`The total is \(\$186\), so each person must receive between \(\$81\) and \(\$105\). The possible unordered splits are
+\[\$81/\$105,\qquad \$85/\$101,\qquad \$86/\$100.\]
+Each split can be assigned to Bob and Casey in two orders, giving \(3\cdot2=6\) ways.`,
+  },
+  {
+    id: 30170, number: 170, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
+    question: String.raw`When the cubic function \(f(x)=9x^3-x+5\) is divided by \(g(x)=3x-2\), it approaches a quadratic function as \(x\) goes to positive infinity. What is the smallest positive integer value for \(x\) such that the height difference between \(f(x)\div g(x)\) and the quadratic equation it approaches is less than one?`,
+    choices: ["2", "3", "4", "5", "NOTA"], answer: "C",
+    solution: String.raw`Polynomial division gives
+\[\frac{9x^3-x+5}{3x-2}=3x^2+2x+1+\frac7{3x-2}.\]
+For positive \(x\), the height difference is \(\frac7{3x-2}\). Solving
+\[\frac7{3x-2}<1\]
+gives \(x>3\). Therefore, the smallest positive integer is \(x=4\).`,
+  },
+  {
+    id: 30171, number: 171, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: [],
+    question: String.raw`A mold grows exponentially and doubles its size every 4 years. If there is 100 grams of mold to begin with, which value or expression below represents how many grams of mold there will be after 7 years?`,
+    choices: [String.raw`\(200\sqrt[4]{8}\)`, "350", String.raw`\(175\ln2\)`, "275", "NOTA"], answer: "A",
+    solution: String.raw`With a doubling time of \(4\) years, the amount after \(7\) years is
+\[100\cdot2^{7/4}=100\cdot2\cdot2^{3/4}=200\sqrt[4]{8}.\]`,
+  },
+  {
+    id: 30172, number: 172, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: [],
+    question: String.raw`What is the range of the function \(f(x)=\frac1{x^2-6x+14}-7\)?`,
+    choices: [String.raw`\((-\frac{34}{5},\infty)\)`, String.raw`\([-7,\infty)\)`, String.raw`\([-\frac{34}{5},\infty)\)`, String.raw`\((-\frac{34}{5},-7)\)`, "NOTA"], answer: "E",
+    solution: String.raw`Complete the square:
+\[x^2-6x+14=(x-3)^2+5.\]
+The reciprocal term has range \((0,\frac15]\). Subtracting \(7\) gives
+\[\left(-7,-\frac{34}{5}\right].\]
+This interval is not listed, so the answer is NOTA.`,
+  },
+  {
+    id: 30173, number: 173, division: "Theta", topic: "Geometry", difficulty: 2, methods: [],
+    question: String.raw`What is the area between the \(x\)-axis and the function \(f(x)=|6-2x|\) between the \(x\) values (vertical lines) of \(x=-1\) and \(x=5\)?`,
+    choices: ["12", "20", "24", "40", "NOTA"], answer: "B",
+    solution: String.raw`The graph meets the \(x\)-axis at \(x=3\). From \(x=-1\) to \(x=3\), it forms a triangle with base \(4\) and height \(8\), having area \(16\). From \(x=3\) to \(x=5\), it forms a triangle with base \(2\) and height \(4\), having area \(4\). The total area is \(16+4=20\).`,
+  },
+  {
+    id: 30174, number: 174, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: ["Substitution"],
+    question: String.raw`Alex was digging a hole in his yard when he thought: "I've dug half of the depth of this hole. I'm 70 inches tall, and right now my head is above ground-level by a certain amount when I stand in the hole. When I am done digging this hole and stand in it, my head will be twice as far below ground-level as it is now above." What will be the hole's final depth?`,
+    choices: ["100 inches", "105 inches", "110 inches", "115 inches", "NOTA"], answer: "B",
+    solution: String.raw`Let \(x\) be the final depth and \(y\) the amount Alex's head is currently above ground level. Then
+\[\frac12x+y=70,\qquad x-2y=70.\]
+Solving the system gives \(x=105\) inches.`,
+  },
+  {
+    id: 30175, number: 175, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: [],
+    question: String.raw`The outer edge of a picture frame measures 14 cm by 20 cm and the picture inside the frame measures \(160\text{ cm}^2\). The frame forms a border that is the same width all around the picture in that there is a border of uniform width between the outer edge of the picture frame and the outer edge of the picture that is inside the frame. What is the width of this border?`,
+    choices: ["1 cm", "2 cm", "3 cm", "4 cm", "NOTA"], answer: "B",
+    solution: String.raw`If the border width is \(x\), then
+\[(14-2x)(20-2x)=160.\]
+Expanding and simplifying gives
+\[x^2-17x+30=0=(x-15)(x-2).\]
+The value \(x=15\) is impossible for a frame only \(14\) cm wide, so \(x=2\) cm.`,
+  },
+  {
+    id: 30176, number: 176, division: "Theta", topic: "Inequalities", difficulty: 3, methods: [],
+    question: String.raw`Find all values of \(x\) (in interval notation) such that
+\[-x^2+10x-18>|3x-18|.\]`,
+    choices: [String.raw`\((0,7)\)`, String.raw`\((4,7)\)`, String.raw`\((4,9)\)`, String.raw`\([0,7]\)`, "NOTA"], answer: "B",
+    solution: String.raw`For \(x<6\), \(|3x-18|=-3x+18\), and the inequality reduces to
+\[-x^2+13x-36>0,\]
+which holds between its roots \(4\) and \(9\), giving \((4,6)\) in this case. For \(x\ge6\), the inequality becomes
+\[-x^2+7x>0,\]
+which gives \([6,7)\) in this case. Combining them gives \((4,7)\).`,
+  },
+  {
+    id: 30177, number: 177, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    question: String.raw`Which of the following expressions is equivalent to
+\[\sqrt{a\cdot\sqrt[3]{a}\cdot\sqrt[4]{\sqrt[3]{a}}}\ ?\]`,
+    choices: [String.raw`\(a^{15/16}\)`, String.raw`\(a^{1/24}\)`, String.raw`\(a^{17/24}\)`, String.raw`\(a^4\)`, "NOTA"], answer: "C",
+    solution: String.raw`Writing each radical as an exponent, the expression is
+\[\left(a\cdot a^{1/3}\cdot a^{1/12}\right)^{1/2}
+=a^{(1+1/3+1/12)/2}
+=a^{17/24}.\]`,
+  },
+  {
+    id: 30178, number: 178, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`Alex is trying to fill her pool with water using 2 hoses. The first hose could fill her pool in 2 hours working alone and the second hose could fill her pool in 3 hours working alone. Suppose Alex uses both hoses to fill her pool, but she also leaves the drain open which can empty her entire pool in 4 hours. How many hours does it take for her pool to fill up under these conditions?`,
+    choices: [String.raw`\(\frac7{12}\)`, String.raw`\(\frac{12}{7}\)`, String.raw`\(\frac56\)`, String.raw`\(\frac65\)`, "NOTA"], answer: "B",
+    solution: String.raw`If \(t\) is the filling time, the rate equation is
+\[\frac t2+\frac t3-\frac t4=1.\]
+Thus \(\frac7{12}t=1\), so \(t=\frac{12}{7}\) hours.`,
+  },
+  {
+    id: 30179, number: 179, division: "Theta", topic: "Polynomial Equations", difficulty: 1, methods: [],
+    question: String.raw`There are two numbers such that each one is sixteen times as large as four times its multiplicative inverse. What is the smaller of the two values of these two numbers?`,
+    choices: ["-64", "-8", "8", "64", "NOTA"], answer: "B",
+    solution: String.raw`Let one of the numbers be \(x\). The condition gives
+\[\frac{x}{16}=\frac4x.\]
+Cross-multiplying yields \(x^2=64\), so \(x=\pm8\). The smaller value is \(-8\).`,
+  },
 ];
