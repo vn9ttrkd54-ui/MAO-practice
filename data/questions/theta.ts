@@ -222,4 +222,210 @@ Choice A makes \(d\) nonintegral, B makes \(d=30\) equal to the striped value, a
 \[y=\frac{2x(x-2)}{(x-2)(x+4)}.\]
 Thus \(x=2\) is a hole and \(x=-4\) is the vertical asymptote, so \(P=-4\). The horizontal asymptote is \(y=2\), so \(Q=2\). Therefore \(P+Q=\boxed{-2}\).`,
   },
+  {
+    id: 30031, number: 31, division: "Theta", topic: "Logs and Exponents", difficulty: 1, methods: [],
+    question: String.raw`Evaluate \((2^{3^2})(-2^{-2})\).`,
+    choices: ["−512", "−128", "−64", "128", "NOTA"], answer: "B",
+    solution: String.raw`\[(2^{3^2})(-2^{-2})=2^9\left(-\frac1{2^2}\right)=-2^7=\boxed{-128}.\]`,
+  },
+  {
+    id: 30032, number: 32, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    question: String.raw`Given that \(f(x)=x^3-5x^2+1\) and \(g(x)=2x+5\), determine \(f(g(f(1)))\).`,
+    choices: ["−71", "−5", "−3", "−1", "NOTA"], answer: "B",
+    solution: String.raw`Work from the inside out: \(f(1)=-3\), \(g(-3)=-1\), and \(f(-1)=-5\). Therefore the answer is \(\boxed{-5}\).`,
+  },
+  {
+    id: 30033, number: 33, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: ["Discriminant Test"],
+    question: String.raw`For how many values of \(a\) does \(f(x)=ax^2-5x+6\) have one and only one real root?`,
+    choices: ["0", "1", "2", "Infinitely many", "NOTA"], answer: "C",
+    solution: String.raw`For a quadratic, \(25-24a=0\), so \(a=\frac{25}{24}\). Also, when \(a=0\), the function is linear and has exactly one real root. Therefore there are \(\boxed2\) values.`,
+  },
+  {
+    id: 30034, number: 34, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    question: String.raw`The following table represents select values of an odd function \(f(x)\).
+\[\begin{array}{c|ccccc}x&-7&-2&4&a&7\\\hline f(x)&b&7&5&-7&4\end{array}\]
+Determine the following: \(af(a)f(b)\).`,
+    choices: ["−56", "35", "56", "70", "NOTA"], answer: "D",
+    solution: String.raw`Since \(f\) is odd, \(a=2\), \(b=-4\), and \(f(b)=-5\). Thus \(af(a)f(b)=(2)(-7)(-5)=\boxed{70}\).`,
+  },
+  {
+    id: 30035, number: 35, division: "Theta", topic: "Binomial Expansion", difficulty: 2, methods: ["Binomial Theorem"],
+    question: String.raw`Given that \(f(x)=(2x^3-3)^5\), determine the coefficient of the \(12^{\text{th}}\) degree term if \(f(x)\) is fully expanded.`,
+    choices: ["−240", "−120", "32", "720", "NOTA"], answer: "A",
+    solution: String.raw`The \(12^{\text{th}}\)-degree term occurs when \(2x^3\) is raised to the fourth power:
+\[5(2x^3)^4(-3)=-240x^{12}.\]
+The coefficient is \(\boxed{-240}\).`,
+  },
+  {
+    id: 30036, number: 36, division: "Theta", topic: "Complex Numbers", difficulty: 3, methods: [],
+    question: String.raw`Given that \((1-i)^3+(1-i)^5+(1-i)^7=a+bi\), determine the product of \(a\) and \(b\).`,
+    choices: ["−12", "4", "20", "84", "NOTA"], answer: "C",
+    solution: String.raw`Since \((1-i)^2=-2i\), factoring \(1-i\) gives \(2+10i\). Thus \(a=2\), \(b=10\), and \(ab=\boxed{20}\).`,
+  },
+  {
+    id: 30037, number: 37, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Rational Root Theorem", "Vieta's Formulas"],
+    question: String.raw`Determine the sum of the non-real roots of \(f(x)=x^7+3x^6+2x^5+5x^3+11x^2+8x+2\).`,
+    choices: ["1", "2", "4", "6", "NOTA"], answer: "B",
+    solution: String.raw`Repeated division by \(x+1\) gives \(f(x)=(x+1)^5(x^2-2x+2)\). The non-real roots are \(1+i\) and \(1-i\), whose sum is \(\boxed2\).`,
+  },
+  {
+    id: 30038, number: 38, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: ["Discriminant Test"],
+    question: String.raw`Which of the following values of \(a\) guarantee that the following parabolic system has only one solution:
+\[y=ax^2-2x-5\]
+\[y=2x^2+6x+5+\sqrt5\]`,
+    choices: [String.raw`\(\frac25\)`, String.raw`\(\frac{30+16\sqrt5}{95}\)`, String.raw`\(\frac{30+8\sqrt5}{95}\)`, String.raw`\(\frac{350+16\sqrt5}{95}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Setting the curves equal gives \((a-2)x^2-8x-10-\sqrt5=0\). Setting its discriminant equal to zero and rationalizing gives \(a=\boxed{\frac{30+16\sqrt5}{95}}\).`,
+  },
+  {
+    id: 30039, number: 39, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    question: String.raw`Evaluate \(\left(\frac{7!!}{90}\right)^{-1}\).`,
+    choices: [String.raw`\(\frac67\)`, String.raw`\(\frac{67}{6}\)`, "67", String.raw`\(6^{-7}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The double factorial is \(7!!=105\). Therefore
+\[\left(\frac{7!!}{90}\right)^{-1}=\left(\frac{105}{90}\right)^{-1}=\boxed{\frac67}.\]`,
+  },
+  {
+    id: 30040, number: 40, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: [],
+    question: String.raw`Given a parabola in the form \(f(x)=ax^2+bx+c\) that passes through the points \((1,2)\), \((3,4)\), and \((5,3)\), determine the product of \(a\), \(b\), and \(c\).`,
+    choices: [String.raw`\(-\frac{15}{128}\)`, String.raw`\(\frac{15}{64}\)`, String.raw`\(\frac{15}{16}\)`, String.raw`\(\frac{16}{15}\)`, "NOTA"], answer: "E",
+    solution: String.raw`Substitution gives \(a=-\frac38\), \(b=\frac52\), and \(c=-\frac18\). Hence \(abc=\frac{15}{128}\), which is not listed. Therefore the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30041, number: 41, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    question: String.raw`Choose the answer that correctly simplifies the expression
+\[\frac{\log_7(5^9)\cdot\log_5(3^8)\cdot\log_3(2^6)}{\log_7(3^4)\cdot\log_3(5^3)\cdot\log_5(2^2)}.\]`,
+    choices: ["9", "18", String.raw`\(\log_7(5^9\cdot3^8\cdot2^6)\)`, String.raw`\(5^6\cdot3^4\cdot2^4\)`, "NOTA"], answer: "B",
+    solution: String.raw`Using exponent properties gives \(\frac{9\cdot8\cdot6}{4\cdot3\cdot2}=18\). By change of base, the remaining logarithmic factors cancel, leaving \(\boxed{18}\).`,
+  },
+  {
+    id: 30042, number: 42, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Vieta's Formulas"],
+    question: String.raw`Given a polynomial \(p(x)\) with roots \(x=1\), \(x=2-i\), and \(x=\pm\sqrt2\), determine the value of the constant term if the polynomial is written in standard form: \(p(x)=x^5+bx^4+cx^3+dx^2+ex+f\) where \(b,c,d,e,\) and \(f\) are integers.`,
+    choices: ["−4", "−5", "5", "10", "NOTA"], answer: "D",
+    solution: String.raw`Since the coefficients are integers, \(2+i\) is also a root. The product is \(1(2-i)(2+i)(\sqrt2)(-\sqrt2)=-10\). Since the product is \(-f\), \(f=\boxed{10}\).`,
+  },
+  {
+    id: 30043, number: 43, division: "Theta", topic: "Matrices", difficulty: 4, methods: ["Matrix Multiplication", "Determinant", "Vieta's Formulas"],
+    question: String.raw`Given that matrix \(A=\begin{pmatrix}x&3\\5&-1\end{pmatrix}\) and matrix \(B=\begin{pmatrix}1&-5\\x^2&2x\end{pmatrix}\), the product \(A\cdot B\) results in an invertible matrix with a determinant equal to \(-42x^2\). Determine the product of all values of \(x\) that satisfies these conditions.`,
+    choices: ["−7", "−1", "0", "6", "NOTA"], answer: "D",
+    solution: String.raw`Computing the determinant and setting it equal to \(-42x^2\) gives \(-5x(x^2+7x+6)=0\). Exclude \(x=0\), which makes the matrix noninvertible. By Vieta's formulas, the product of the remaining roots is \(\boxed6\).`,
+  },
+  {
+    id: 30044, number: 44, division: "Theta", topic: "Complex Numbers", difficulty: 2, methods: ["Modular Arithmetic"],
+    question: String.raw`Find the value of \(|7-i^{6767}|\).`,
+    choices: ["6", String.raw`\(4\sqrt3\)`, String.raw`\(5\sqrt2\)`, "8", "NOTA"], answer: "C",
+    solution: String.raw`Since \(6767\equiv3\pmod4\), \(i^{6767}=-i\). Thus \(|7+i|=\sqrt{50}=\boxed{5\sqrt2}\).`,
+  },
+  {
+    id: 30045, number: 45, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: ["Logarithms"],
+    question: String.raw`Which of the following is the minimum possible value for \(x\) given the expression \(\ln(\ln(\ln(\ln x)))\).`,
+    choices: ["0", "1", String.raw`\(e\)`, String.raw`\(e^e\)`, "NOTA"], answer: "E",
+    solution: String.raw`The domain is \(x>e^e\). Since \(e^e\) is not included, there is no minimum possible value. Therefore the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30046, number: 46, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: [],
+    question: String.raw`Determine the only real root for \(f(x)=x^9-8\).`,
+    choices: [String.raw`\(2^{1/9}\)`, String.raw`\(2^{1/3}\)`, String.raw`\(2^{1/2}\)`, "2", "NOTA"], answer: "B",
+    solution: String.raw`Factoring gives \(x^9-8=(x^3-2)(x^6+2x^3+4)\). The latter factor has no real zeros, so the only real root is \(\boxed{2^{1/3}}\).`,
+  },
+  {
+    id: 30047, number: 47, division: "Theta", topic: "Functions", difficulty: 4, methods: [],
+    question: String.raw`Given \(f(x)=\frac{x}{x^2-1}\), \(g(x)=\frac{x+1}{x-3}\), and \(h(x)=\sqrt{x-1}\), for which of the following integers is \(f(g(h(x)))\) undefined?
+\[\text{I. }1\qquad\text{II. }2\qquad\text{III. }3\qquad\text{IV. }10\]`,
+    choices: ["I, II, and III only", "II and III only", "II and IV only", "I, II, III, and IV", "NOTA"], answer: "C",
+    solution: String.raw`Testing each value, \(x=1\) and \(x=3\) produce defined outputs. For \(x=2\), \(g(h(2))=-1\), where \(f\) is undefined. For \(x=10\), \(h(10)=3\), where \(g\) is undefined. Thus the answer is \(\boxed{\text{II and IV only}}\).`,
+  },
+  {
+    id: 30048, number: 48, division: "Theta", topic: "Systems of Equations", difficulty: 3, methods: ["Determinant"],
+    question: String.raw`Given the system:
+\[x+2y-z=3\]
+\[2x-y+3z=1\]
+\[ax+y+z=5\]
+For what value of \(a\) does this system have no unique solution?`,
+    choices: ["−3", "−1", "0", "2", "NOTA"], answer: "D",
+    solution: String.raw`The system has no unique solution when
+\[\begin{vmatrix}1&2&-1\\2&-1&3\\a&1&1\end{vmatrix}=5a-10=0.\]
+Thus \(a=\boxed2\).`,
+  },
+  {
+    id: 30049, number: 49, division: "Theta", topic: "Simplification", difficulty: 4, methods: ["Binomial Theorem"],
+    question: String.raw`Which of the following correctly simplifies the expression
+\[\frac{x^5-5x^4+10x^3-10x^2+5x-1}{x^7+3x^6+x^5-5x^4-5x^3+x^2+3x+1}\]
+where defined, given the fact that the expression is undefined at \(x=1\).`,
+    choices: [String.raw`\(\frac1{(x+1)^2}\)`, String.raw`\(\frac{(x-1)^3}{(x+1)^3}\)`, String.raw`\(\frac{(x-1)^3}{(x+1)^5}\)`, String.raw`\(\frac{(x-1)^5}{(x+1)^5}\)`, "NOTA"], answer: "C",
+    solution: String.raw`The numerator is \((x-1)^5\), while the denominator factors as \((x-1)^2(x+1)^5\). Therefore the expression simplifies to \(\boxed{\frac{(x-1)^3}{(x+1)^5}}\).`,
+  },
+  {
+    id: 30050, number: 50, division: "Theta", topic: "Number Theory", difficulty: 3, methods: [],
+    question: String.raw`Which of the following correctly writes \(0.00\overline{76}\) as a fraction?`,
+    choices: [String.raw`\(\frac{19}{2475}\)`, String.raw`\(\frac{19}{2250}\)`, String.raw`\(\frac{38}{4995}\)`, String.raw`\(\frac{76}{9999}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Since \(0.\overline{76}=\frac{76}{99}\),
+\[0.00\overline{76}=\frac{76}{99}\cdot\frac1{100}=\frac{76}{9900}=\boxed{\frac{19}{2475}}.\]`,
+  },
+  {
+    id: 30051, number: 51, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    question: String.raw`The population of Boringville can be represented by \(450p\) people where \(p\) represents some positive integer. Let \(A\) represent the number of people in Boringville that are under the age of 18, let \(B\) represent the number of people who are between 18 and 35, let \(C\) represent the number of people between 36 and 50, \(D\) represent the number of people between 51 and 65, \(E\) represent the number of people over 65. Given that the ratio of \(A:B:C\) is \(1:3:7\) and the ratio of \(C:D:E\) is \(2:5:6\), what is the minimum possible value for \(p\) that guarantees an integer number of people in each category, \(A,B,C,D,\) and \(E\)?`,
+    choices: ["1", "11", "23", "99", "NOTA"], answer: "B",
+    solution: String.raw`Combining the ratios gives \(A:B:C:D:E=2:6:14:35:42\), totaling \(99\) parts. Thus \(99x=450p\). Since \(\gcd(450,99)=9\), the least possible \(p\) is \(\boxed{11}\).`,
+  },
+  {
+    id: 30052, number: 52, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: [],
+    question: String.raw`Determine the value of \(y\) given that
+\[\frac1{x-y}+\frac1{x+y}=\frac13\qquad\text{and}\qquad\frac1x=x-\frac{y^2}{x}.\]`,
+    choices: ["0", String.raw`\(\frac16\)`, String.raw`\(\frac{\sqrt{35}}6\)`, "6", "NOTA"], answer: "E",
+    solution: String.raw`The second equation gives \(1=x^2-y^2\). The first then gives \(2x=\frac13\), so \(x=\frac16\). Hence \(y^2=-\frac{35}{36}\), which has no real solution. The answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30053, number: 53, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: [],
+    question: String.raw`Determine the slope of the line that passes through the focus of the parabola \(y^2+2y-x=1\) and the origin.`,
+    choices: [String.raw`\(-\frac74\)`, String.raw`\(\frac12\)`, String.raw`\(\frac47\)`, String.raw`\(\frac23\)`, "NOTA"], answer: "C",
+    solution: String.raw`Completing the square gives \((y+1)^2=x+2\). Since \(4p=1\), the focus is \(\left(-\frac74,-1\right)\). The slope from the origin is \(\frac{-1}{-7/4}=\boxed{\frac47}\).`,
+  },
+  {
+    id: 30054, number: 54, division: "Theta", topic: "Conic Sections", difficulty: 5, methods: [],
+    question: String.raw`How many of the following conics are degenerate?
+\[x^2+4xy+4y^2-2x+4y=-1.\]
+\[9x^2+16y^2-54x+64y+145=0.\]
+\[x^2-y^2-4x-6y+13=0.\]`,
+    choices: ["0", "1", "2", "3", "NOTA"], answer: "B",
+    solution: String.raw`The first is a rotated, nondegenerate parabola. Completing the square in the second gives
+\[9(x-3)^2+16(y+2)^2=0,\]
+a single point, so it is degenerate. The third becomes \((x-2)^2-(y+3)^2=-18\), a nondegenerate hyperbola. Exactly \(\boxed1\) conic is degenerate.`,
+  },
+  {
+    id: 30055, number: 55, division: "Theta", topic: "Inequalities", difficulty: 4, methods: [],
+    question: String.raw`How many integer solutions are there to the inequality \(2|3x-1|-|2-x|<5\)?`,
+    choices: ["0", "1", "2", "3", "NOTA"], answer: "C",
+    solution: String.raw`The critical values are \(x=\frac13\) and \(x=2\). Checking the resulting intervals shows that the only integer solutions are \(x=0\) and \(x=1\). Therefore there are \(\boxed2\) integer solutions.`,
+  },
+  {
+    id: 30056, number: 56, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: [],
+    question: String.raw`Given that \(f(x)=\frac1{x-2}+\frac2{x+1}-\frac3{x^2-x-2}\), how many vertical asymptotes does \(f(x)\) have?`,
+    choices: ["0", "1", "2", "3", "NOTA"], answer: "B",
+    solution: String.raw`Combining the terms gives
+\[f(x)=\frac{3(x-2)}{(x+1)(x-2)}=\frac3{x+1},\]
+with a hole at \(x=2\). The only vertical asymptote is \(x=-1\), so the answer is \(\boxed1\).`,
+  },
+  {
+    id: 30057, number: 57, division: "Theta", topic: "Systems of Equations", difficulty: 5, methods: ["Substitution"],
+    question: String.raw`Given that \(xy=6\) and \(x^3y+xy^3-2x^2y^2-2x-2y=16\), which of the following is a possible value of \(x^2+y^2\)?`,
+    choices: [String.raw`\(\frac{148}{9}\)`, String.raw`\(\frac{202}{9}\)`, String.raw`\(\frac{68}{3}\)`, String.raw`\(\frac{74}{3}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Using \(xy=6\), the equation reduces to \(3(x+y)^2-(x+y)-80=0\). Thus \(x+y=\frac{16}{3}\) or \(5\). The first value gives
+\[x^2+y^2=(x+y)^2-2xy=\frac{256}{9}-12=\boxed{\frac{148}{9}},\]
+which appears among the choices.`,
+  },
+  {
+    id: 30058, number: 58, division: "Theta", topic: "Polynomial Equations", difficulty: 4, methods: ["Substitution", "Vieta's Formulas"],
+    question: String.raw`Find the sum of all solutions to the equation \(2^{4x}+70(2^{2x})+64=15(2^{3x})+120(2^x)\).`,
+    choices: ["5", "6", "7", "15", "NOTA"], answer: "B",
+    solution: String.raw`Let \(u=2^x\). The equation becomes
+\[u^4-15u^3+70u^2-120u+64=0.\]
+If its positive roots are \(u_1,\ldots,u_4\), the sum of the corresponding \(x\)-values is
+\[\log_2(u_1u_2u_3u_4)=\log_2(64)=\boxed6\]
+by Vieta's formulas.`,
+  },
+  {
+    id: 30059, number: 59, division: "Theta", topic: "Simplification", difficulty: 1, methods: [],
+    question: String.raw`\[\frac{10\%}{5\%}=\_\_\_\]`,
+    choices: ["0.5", "2%", "20%", "200%", "NOTA"], answer: "D",
+    solution: String.raw`\[\frac{10\%}{5\%}=\frac{1/10}{1/20}=2=\boxed{200\%}.\]`,
+  },
 ];
