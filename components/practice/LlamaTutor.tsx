@@ -1,10 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { Send, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 import MathText from "@/components/math/MathText";
+import LlamaPet from "@/components/practice/LlamaPet";
+import { tutorPetState } from "@/lib/tutorPet";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -12,6 +13,7 @@ type ChatMessage = {
 };
 
 const MAX_MESSAGE_LENGTH = 600;
+const DAILY_LIMIT_MESSAGE = "Today's tutor requests are used or still processing. Check again later, or come back tomorrow.";
 
 export default function LlamaTutor({
   questionId,
@@ -21,6 +23,7 @@ export default function LlamaTutor({
   revealToken: string | null;
 }) {
   const [open, setOpen] = useState(false);
+  const [hop, setHop] = useState(0);
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -28,11 +31,13 @@ export default function LlamaTutor({
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [messagesRemaining, setMessagesRemaining] = useState<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const requestEpochRef = useRef(0);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const draftRef = useRef<HTMLTextAreaElement | null>(null);
   const launcherRef = useRef<HTMLButtonElement | null>(null);
-  const resting = errorCode === "daily_limit" || errorCode === "pool_exhausted";
-  const tutorState = resting ? "sleeping" : error ? "error" : loading ? "thinking" : messages.length > 0 ? "ready" : "listening";
+  const tutorState = tutorPetState({ loading, remaining: messagesRemaining, errorCode, hasError: !!error, hasAnswer: messages.at(-1)?.role === "assistant" });
+  const resting = tutorState === "sleeping";
+  const onEscape = useEffectEvent(() => closeTutor());
   const tutorStatus = resting
     ? "Resting for now"
     : error
@@ -46,6 +51,7 @@ export default function LlamaTutor({
   useEffect(() => {
     function clearTemporaryChat() {
       abortRef.current?.abort();
+      abortRef.current = null;
       setOpen(false);
       setMessages([]);
       setDraft("");
@@ -78,19 +84,24 @@ export default function LlamaTutor({
 
     draftRef.current?.focus();
     const controller = new AbortController();
+    const requestEpoch = requestEpochRef.current;
     void fetch("/api/tutor", { signal: controller.signal, cache: "no-store" })
       .then(async (response) => ({ response, data: await response.json() as { messagesRemaining?: number } }))
       .then(({ response, data }) => {
+        if (controller.signal.aborted || requestEpoch !== requestEpochRef.current) return;
         if (!response.ok || typeof data.messagesRemaining !== "number") return;
         setMessagesRemaining(data.messagesRemaining);
         if (data.messagesRemaining === 0) {
-          setError("Today's tutor requests are used or still processing. Check again later, or come back tomorrow.");
+          setError(DAILY_LIMIT_MESSAGE);
           setErrorCode("daily_limit");
+        } else {
+          setErrorCode((current) => current === "daily_limit" ? null : current);
+          setError((current) => current === DAILY_LIMIT_MESSAGE ? null : current);
         }
       })
       .catch(() => undefined);
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") closeTutor();
+      if (event.key === "Escape") onEscape();
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -141,7 +152,8 @@ export default function LlamaTutor({
 
   async function handleSend() {
     const message = draft.trim();
-    if (!message || loading) return;
+    if (!message || loading || resting) return;
+    requestEpochRef.current += 1;
 
     const history = messages;
     const userMessage: ChatMessage = { role: "user", content: message };
@@ -155,6 +167,7 @@ export default function LlamaTutor({
 
     try {
       const data = await sendTutorRequest(message, history, controller.signal);
+      if (controller.signal.aborted || abortRef.current !== controller) return;
       setMessages((current) => [...current, { role: "assistant", content: data.message! }]);
       if (typeof data.messagesRemaining === "number") setMessagesRemaining(data.messagesRemaining);
     } catch (caught) {
@@ -164,19 +177,21 @@ export default function LlamaTutor({
       setErrorCode(requestError?.code ?? "unavailable");
       if (typeof requestError?.messagesRemaining === "number") setMessagesRemaining(requestError.messagesRemaining);
     } finally {
-      if (abortRef.current === controller) abortRef.current = null;
-      setLoading(false);
+      if (abortRef.current === controller) {
+        abortRef.current = null;
+        setLoading(false);
+      }
     }
   }
 
   function closeTutor() {
     abortRef.current?.abort();
+    abortRef.current = null;
     setOpen(false);
     setMessages([]);
     setDraft("");
-    setError(null);
-    setErrorCode(null);
-    setMessagesRemaining(null);
+    if (!resting) setError(null);
+    setErrorCode((current) => current === "daily_limit" || current === "pool_exhausted" ? current : null);
     setLoading(false);
     window.requestAnimationFrame(() => launcherRef.current?.focus());
   }
@@ -184,13 +199,10 @@ export default function LlamaTutor({
   return (
     <aside className="fixed bottom-6 right-6 z-40 hidden lg:block">
       {open ? (
-        <section className="flex h-[min(620px,calc(100vh-10rem))] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-xl border border-slate-300 bg-white shadow-2xl" aria-label="Llama Tutor">
+        <section id="llama-tutor-panel" className="mb-3 flex h-[min(620px,calc(100vh-10rem))] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-xl border border-slate-300 bg-white shadow-2xl" aria-label="Llama Tutor">
           <header className="flex items-center justify-between border-b border-slate-200 bg-slate-950 px-4 py-3 text-white">
             <div className="flex items-center gap-3">
-              <span className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white">
-                <Image src="/llama-tutor.png" alt="" width={42} height={42} className={`tutor-mascot tutor-mascot--${tutorState} h-full w-full object-cover object-top`} />
-                {resting ? <span aria-hidden="true" className="tutor-sleep-symbols">z z</span> : null}
-              </span>
+              <LlamaPet state={tutorState} small />
               <div>
                 <h2 className="font-bold">Llama Tutor</h2>
                 <p className="text-xs text-slate-300">{tutorStatus}</p>
@@ -253,8 +265,8 @@ export default function LlamaTutor({
         </section>
       ) : null}
 
-      <button ref={launcherRef} type="button" onClick={() => setOpen(true)} className={`ml-auto h-16 w-16 place-items-center overflow-hidden rounded-full border-2 border-slate-950 bg-white shadow-xl transition-shadow hover:shadow-2xl ${open ? "hidden" : "grid"}`} aria-label="Open Llama Tutor" title="Llama Tutor">
-        <Image src="/llama-tutor.png" alt="Llama Tutor" width={64} height={64} className="tutor-mascot tutor-mascot--idle h-full w-full object-cover object-top" priority />
+      <button ref={launcherRef} type="button" onClick={() => { setHop((value) => value + 1); setOpen(true); if (open) draftRef.current?.focus(); }} className="ml-auto block cursor-pointer rounded-lg bg-transparent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600" aria-label={open ? "Focus Llama Tutor" : "Open Llama Tutor"} aria-expanded={open} aria-controls="llama-tutor-panel" title={resting ? "Llama Tutor is resting — view usage details" : "Llama Tutor"}>
+        <LlamaPet state={tutorState} hop={hop} />
       </button>
     </aside>
   );

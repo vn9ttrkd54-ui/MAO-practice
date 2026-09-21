@@ -1,0 +1,39 @@
+.pet { position: relative; display: block; width: 84px; height: 112px; pointer-events: none; }
+.small { width: 42px; height: 56px; }
+.still, .hop, .motion, .sprite { display: block; width: 100%; height: 100%; }
+.motion { transform-origin: 50% 85%; animation: float 3.6s ease-in-out infinite; }
+.sprite { background: url('/llama-pet.png') 0 0 / 400% 100% no-repeat; image-rendering: pixelated; filter: drop-shadow(0 3px 2px rgb(15 23 42 / .16)); }
+.pet[data-state="idle"] .sprite { animation: blink 6s step-end infinite; }
+:global(button:hover) .pet[data-state="idle"] .sprite,
+:global(button:focus-visible) .pet[data-state="idle"] .sprite { animation: none; background-position: 33.333333% 0; }
+:global(button:hover) .pet[data-state="idle"] .motion,
+:global(button:focus-visible) .pet[data-state="idle"] .motion { animation: none; transform: translateY(-3px) rotate(-3deg); }
+.pet[data-state="thinking"] .sprite { background-position: 33.333333% 0; }
+.pet[data-state="thinking"] .motion { animation: ponder 2s ease-in-out infinite; }
+.pet[data-state="ready"] .sprite { background-position: 66.666667% 0; }
+.pet[data-state="ready"] .motion { animation: nod .55s ease-in-out 2; }
+.pet[data-state="sleeping"] .sprite { background-position: 100% 0; }
+.pet[data-state="sleeping"] .motion { animation: breathe 4s ease-in-out infinite; }
+.pet[data-state="error"] .motion { animation: ponder .4s ease-in-out 2; }
+.hop { animation: hop .48s ease-out; }
+.thought { position: absolute; top: -10px; left: -5px; display: flex; align-items: center; gap: 4px; padding: 8px; background: white; border: 2px solid #443126; box-shadow: 2px 2px 0 #cdbba3; }
+.thought::before, .thought::after { content: ''; position: absolute; background: white; border: 1px solid #443126; width: 5px; height: 5px; bottom: -9px; left: 14px; }
+.thought::after { width: 3px; height: 3px; bottom: -15px; left: 21px; }
+.thought i { width: 4px; height: 4px; background: #443126; animation: dot 1.2s ease-in-out infinite; }
+.thought i:nth-child(2) { animation-delay: .2s; }
+.thought i:nth-child(3) { animation-delay: .4s; }
+.small .thought { top: -4px; left: -4px; padding: 4px; gap: 2px; }
+.small .thought i { width: 3px; height: 3px; }
+.sleep { position: absolute; top: 10%; right: 8%; color: #64748b; font: bold 13px monospace; animation: sleep 3s ease-in-out infinite; }
+.sleep span { position: relative; top: -8px; margin-left: 3px; font-size: 10px; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes ponder { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-3deg); } }
+@keyframes hop { 0%,100% { transform: translateY(0); } 45% { transform: translateY(-10px); } }
+@keyframes nod { 0%,100% { transform: rotate(0); } 50% { transform: rotate(4deg) translateY(2px); } }
+@keyframes breathe { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(.975); } }
+@keyframes dot { 0%,70%,100% { opacity: .35; } 35% { opacity: 1; } }
+@keyframes sleep { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+@keyframes blink { 0%,97%,100% { background-position: 0 0; } 95% { background-position: 66.666667% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .pet *, .pet *::before, .pet *::after { animation: none !important; transform: none !important; }
+}
