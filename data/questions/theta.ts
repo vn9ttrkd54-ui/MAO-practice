@@ -1902,4 +1902,232 @@ This contains five consecutive integers, so it is divisible by 5. It contains fo
 \sqrt{27{,}092{,}025}=5205.\]
 Therefore, \(3045+5205=8250\).`,
   },
+  // FAMAT State Convention 2025, Theta Individual.
+  {
+    id: 30210, number: 210, division: "Theta", topic: "Systems of Equations", difficulty: 1, methods: [],
+    question: String.raw`If \(8x-4y=7\) and \(x-2y=5\), find the value of \(x+y\).`,
+    choices: [String.raw`\(-\frac{15}{7}\)`, String.raw`\(-\frac{13}{4}\)`, String.raw`\(\frac{15}{7}\)`, String.raw`\(\frac{13}{4}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Subtracting twice the second equation from the first equation eliminates the \(y\), leaving
+\[6x=-3\Longrightarrow x=-\frac12.\]
+Plugging this into the first equation yields \(-4y=11\Longrightarrow y=-\frac{11}{4}\). Thus
+\[-\frac12+\left(-\frac{11}{4}\right)=\boxed{-\frac{13}{4}}.\]`,
+  },
+  {
+    id: 30211, number: 211, division: "Theta", topic: "Functions", difficulty: 1, methods: ["Inverse Functions", "Nested Functions"],
+    question: String.raw`If \(f(x)=4x^2-12x\), \(g(x)=47-3x\), and \(h(x)=\sqrt{x}\), find the value of \(f\bigl(g(h^{-1}(4))\bigr)\).`,
+    choices: ["16", "-8", "4", "6232", "NOTA"], answer: "A",
+    solution: String.raw`\[f\bigl(g(h^{-1}(4))\bigr)=f(g(16))=f(-1)=\boxed{16}.\]`,
+  },
+  {
+    id: 30212, number: 212, division: "Theta", topic: "Geometry", difficulty: 4, methods: [],
+    question: String.raw`A right triangle has one interior angle that is four times as large as another interior angle. Find the largest possible value, in degrees, of the smallest interior angle of such a triangle.`,
+    choices: [String.raw`\(15^\circ\)`, String.raw`\(16^\circ\)`, String.raw`\(18^\circ\)`, String.raw`\(20^\circ\)`, "NOTA"], answer: "E",
+    solution: String.raw`Call the two angles mentioned in the problem \(x\) and \(4x\). The angle \(4x\) is either the larger acute angle or the right angle. In the first scenario, \(4x+x+90^\circ=180^\circ\), so \(x=18^\circ\), which is the smallest interior angle. In the second scenario, \(4x=90^\circ\), so \(x=22.5^\circ\), which is the smallest interior angle. Therefore, the largest possible smallest interior angle is \(22.5^\circ\), so the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30213, number: 213, division: "Theta", topic: "Algebra", difficulty: 1, methods: [],
+    question: String.raw`Solve for \(x\): \(x+x+\cdots+x=1369\), where \(x\) copies of \(x\) are being summed on the left side of the equation.`,
+    choices: ["31", "33", "37", "39", "NOTA"], answer: "C",
+    solution: String.raw`This equation is \(x^2=1369\), and since \(x\) is being used as a quantity number, \(x\ge0\). Therefore, \(\boxed{x=37}\).`,
+  },
+  {
+    id: 30214, number: 214, division: "Theta", topic: "Complex Numbers", difficulty: 2, methods: [],
+    question: String.raw`Take a complex number with positive imaginary part, and consider four new complex numbers: the original number added to itself, the original number subtracted from itself, the original number multiplied by itself, and the original number divided by itself. When the four new complex numbers are added together, the result is \(-4\). What was the original complex number?`,
+    choices: [String.raw`\(2i\)`, String.raw`\(1+2i\)`, String.raw`\(-1+2i\)`, String.raw`\(1+i\)`, "NOTA"], answer: "C",
+    solution: String.raw`Let \(x\) be the original complex number; the four new complex numbers would then be \(x+x=2x\), \(x-x=0\), \(x\cdot x=x^2\), and \(x/x=1\). Thus
+\[-4=2x+0+x^2+1=(x+1)^2,\]
+so \(x+1=2i\) since the imaginary part was positive. Therefore, \(\boxed{x=-1+2i}\).`,
+  },
+  {
+    id: 30215, number: 215, division: "Theta", topic: "Geometry", difficulty: 3, methods: [],
+    question: String.raw`\(ABCD\) is a square, \(E\) is the midpoint of side \(BC\), and \(F\) is the intersection of line segment \(DE\) and diagonal \(AC\). Find the ratio of the area enclosed by triangle \(CEF\) to that of quadrilateral \(ABEF\).`,
+    choices: ["2:9", "1:6", "2:11", "1:5", "NOTA"], answer: "D",
+    solution: String.raw`Let \(A,B,C,D\) be at \((0,2),(2,2),(2,0),(0,0)\), respectively; this puts \(E\) at \((2,1)\), and line segment \(DE\) has equation \(y=\frac12x\). Diagonal \(AC\) has equation \(y=2-x\), so for \(F\), \(\frac12x=2-x\Longrightarrow x=\frac43\Longrightarrow y=\frac23\). The area enclosed by triangle \(CEF\) is \(\frac13\), and the area enclosed by quadrilateral \(ABEF\) is \(\frac53\), so the ratio of those areas is \(\frac13:\frac53=\boxed{1:5}\).`,
+  },
+  {
+    id: 30216, number: 216, division: "Theta", topic: "Geometry", difficulty: 2, methods: ["Pythagorean Theorem"],
+    question: String.raw`A right triangle has legs with lengths 476 and 765. Find the length of the triangle's hypotenuse.`,
+    choices: ["881", "899", "901", "919", "NOTA"], answer: "C",
+    solution: String.raw`\(476=28\cdot17\) and \(765=45\cdot17\), and since \(28\text{-}45\text{-}53\) is a primitive Pythagorean triple, the hypotenuse has length \(53\cdot17=\boxed{901}\).`,
+  },
+  {
+    id: 30217, number: 217, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Asymptotes"],
+    question: String.raw`Find the non-linear asymptote of the function \(y=\frac{x^4}{(x+1)(x-2)}\).`,
+    choices: [String.raw`\(y=x^2+x+3\)`, String.raw`\(y=x^2-x+3\)`, String.raw`\(y=x^2+x-3\)`, String.raw`\(y=x^2-x-3\)`, "NOTA"], answer: "A",
+    solution: String.raw`\[\frac{x^4}{(x+1)(x-2)}=x^2+x+3+\frac{5x+6}{(x+1)(x-2)}.\]
+Because the remainder after this polynomial division is nonzero, the non-linear asymptote is the quotient: \(\boxed{y=x^2+x+3}\).`,
+  },
+  {
+    id: 30218, number: 218, division: "Theta", topic: "Derivatives", difficulty: 1, methods: ["Power Rule"],
+    question: String.raw`A significant topic in calculus is that of derivatives of functions. One important result in the study of derivatives is that if \(f(x)=x^n\), where \(n\) is a real number, then the derivative \(f'(x)\) of this function is given by \(f'(x)=n\cdot x^{n-1}\). If \(f(x)=x^4\), find the value of \(f'(-2)\).`,
+    choices: ["16", "64", "-16", "-64", "NOTA"], answer: "E",
+    solution: String.raw`\[f'(x)=4x^3\Longrightarrow f'(-2)=4(-2)^3=-32.\]
+Thus the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30219, number: 219, division: "Theta", topic: "Derivatives", difficulty: 3, methods: ["Power Rule"],
+    question: String.raw`A significant topic in calculus is that of derivatives of functions. One important result in the study of derivatives is that if \(f(x)=x^n\), where \(n\) is a real number, then the derivative \(f'(x)\) of this function is given by \(f'(x)=n\cdot x^{n-1}\). If \(g(x)=\frac{1}{x\sqrt[3]{x}}\), find the value of \(g'(-8)\).`,
+    choices: [String.raw`\(\frac38\)`, String.raw`\(-\frac38\)`, String.raw`\(\frac1{96}\)`, String.raw`\(-\frac1{96}\)`, "NOTA"], answer: "C",
+    solution: String.raw`\[g(x)=x^{-4/3}\Longrightarrow g'(x)=-\frac43x^{-7/3}\Longrightarrow g'(-8)=-\frac43(-8)^{-7/3}=\frac1{96}.\]`,
+  },
+  {
+    id: 30220, number: 220, division: "Theta", topic: "Sequences", difficulty: 3, methods: ["Recursion"],
+    question: String.raw`A sequence of integers is defined by the rule that any term in the sequence is the sum of the two immediate preceding terms, similarly to how the Fibonacci sequence is defined. The 532nd term in this sequence is 10, and the 537th term in this sequence is 15. Find the least possible absolute value of a term in this sequence.`,
+    choices: ["0", "1", "3", "4", "NOTA"], answer: "C",
+    solution: String.raw`Call the 533rd term of the sequence \(a\). Then the 534th through 537th terms are \(10+a\), \(10+2a\), \(20+3a\), and \(30+5a\), respectively. Therefore, \(30+5a=15\Longrightarrow a=-3\), which makes the sequence \(\ldots,10,-3,7,4,11,15,\ldots\). Going forward in the sequence, terms are all positive and continue to get larger. Going backward, terms alternate between positive and negative, and their magnitudes continue to get larger. Therefore, the least possible absolute value is \(\boxed3\).`,
+  },
+  {
+    id: 30221, number: 221, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    question: String.raw`Two integers \(a\) and \(b\) satisfy the condition \(ab=6a+8b\). How many such ordered pairs \((a,b)\) of integers exist?`,
+    choices: ["16", "20", "28", "32", "NOTA"], answer: "B",
+    solution: String.raw`\[ab=6a+8b\Longrightarrow ab-6a-8b+48=48\Longrightarrow(a-8)(b-6)=48.\]
+Since \(48=2^4\cdot3\), there are \((4+1)(1+1)=10\) ordered pairs of positive factors. Both factors can be negative as well, so there are \(\boxed{20}\) ordered pairs of integers \((a,b)\).`,
+  },
+  {
+    id: 30222, number: 222, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    question: String.raw`Two integers \(a\) and \(b\) satisfy the condition \(ab=6a+8b\). Among these ordered pairs, what is the least possible product \(ab\)?`,
+    choices: ["-294", "-200", "-108", "-64", "NOTA"], answer: "A",
+    solution: String.raw`Since \((a-8)(b-6)=48\), a negative product \(ab\) requires one of \(a\) and \(b\) to be positive and the other negative. Checking the negative factor pairs of 48 gives the possible products
+\[-294,-108,-50,-24,-4,0,-8,-24,-64,-200.\]
+The least possible product is \(\boxed{-294}\).`,
+  },
+  {
+    id: 30223, number: 223, division: "Theta", topic: "Logs and Exponents", difficulty: 5, methods: ["Change of Base"],
+    question: String.raw`The function \(y=a\cdot x^b\), where \(a\) and \(b\) are real numbers, passes through the points \((6,5)\) and \((18,25)\). If \(\log_5a=\log_3c\), find the value of \(c\).`,
+    choices: [String.raw`\(\frac52\)`, String.raw`\(\frac25\)`, "2", String.raw`\(\frac12\)`, "NOTA"], answer: "D",
+    solution: String.raw`The two points give \(25=a(18)^b\) and \(5=a(6)^b\). Dividing yields \(5=3^b\), so \(b=\log_3 5\). Then
+\[\log_5a=\log_5\left(\frac5{6^b}\right)=1-\log_3 6=\log_3\left(\frac12\right).\]
+Therefore, \(\log_3c=\log_3\left(\frac12\right)\), and \(\boxed{c=\frac12}\).`,
+  },
+  {
+    id: 30224, number: 224, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms", "Rational Root Theorem"],
+    question: String.raw`Find the sum of the solutions to the equation \(\log_x(6x^2-3x-10)=3\).`,
+    choices: ["6", "7", "8", "10", "NOTA"], answer: "B",
+    solution: String.raw`The exponential form of this equation is
+\[x^3=6x^2-3x-10\Longrightarrow x^3-6x^2+3x+10=(x-5)(x-2)(x+1)=0.\]
+The logarithm's base must be positive and cannot equal 1, so only 2 and 5 are solutions. Their sum is \(\boxed7\).`,
+  },
+  {
+    id: 30225, number: 225, division: "Theta", topic: "Geometry", difficulty: 3, methods: ["Tangency"],
+    question: String.raw`In this diagram, three congruent circles are all pairwise externally tangent to each other, and all three are contained within and tangent to a rectangle. The two lower circles are tangent to exactly two sides of the rectangle, and the upper circle is tangent to exactly one side of the rectangle. If the circles each have a radius of length \(\sqrt3-1\) inches, find the area, in square inches, enclosed by the rectangle.`,
+    choices: [String.raw`\(6\sqrt3\)`, String.raw`\(8\sqrt3\)`, "6", "8", "NOTA"], answer: "D",
+    solution: String.raw`Call the radius of any of the circles \(r\). The horizontal side length of the rectangle is \(4r\). The centers form an equilateral triangle of side \(2r\), whose altitude is \(r\sqrt3\), so the vertical side length of the rectangle is \((2+\sqrt3)r\). Thus its area is
+\[4(2+\sqrt3)r^2=4(2+\sqrt3)(\sqrt3-1)^2=\boxed8.\]`,
+    illustration: {
+      src: "/questions/theta-225-three-circles.svg",
+      alt: "Three congruent pairwise tangent circles inside a rectangle, with two circles along the bottom and one centered above them touching the top.",
+      width: 520,
+      height: 470,
+    },
+  },
+  {
+    id: 30226, number: 226, division: "Theta", topic: "Analytic Geometry", difficulty: 3, methods: [],
+    question: String.raw`Find the area of the region enclosed by the graphs of \(y=x\), \(y=-x\), and \(y=-6x-10\).`,
+    choices: [String.raw`\(\frac{20}{7}\)`, String.raw`\(\frac{24}{7}\)`, String.raw`\(\frac{30}{7}\)`, String.raw`\(\frac{34}{7}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The intersections are \((0,0)\), \((-2,2)\), and \(\left(-\frac{10}{7},\frac{10}{7}\right)\). Since \(y=x\) and \(y=-x\) are perpendicular, the region is a right triangle whose legs have lengths \(2\sqrt2\) and \(\frac{10\sqrt2}{7}\). Therefore, its area is
+\[\frac12(2\sqrt2)\left(\frac{10\sqrt2}{7}\right)=\boxed{\frac{20}{7}}.\]`,
+  },
+  {
+    id: 30227, number: 227, division: "Theta", topic: "Matrices", difficulty: 2, methods: ["Determinant"],
+    question: String.raw`Evaluate:
+\[\begin{vmatrix}4&-2&1\\-5&-2&0\\0&3&5\end{vmatrix}.\]`,
+    choices: ["5", "-5", "105", "-105", "NOTA"], answer: "D",
+    solution: String.raw`Expanding the determinant gives
+\[(-40)+0+(-15)-0-0-50=\boxed{-105}.\]`,
+  },
+  {
+    id: 30228, number: 228, division: "Theta", topic: "Algebra", difficulty: 3, methods: ["Absolute Value"],
+    question: String.raw`Consider the equation \(\left|\left|\left|\left|x-1\right|-2\right|-3\right|-2\right|=1\). How many real numbers satisfy the equation?`,
+    choices: ["8", "9", "15", "16", "NOTA"], answer: "B",
+    solution: String.raw`Working from the outside inward gives
+\[\left|\left|x-1\right|-2\right|-3=1\text{ or }3,\]
+then \(\left|x-1\right|-2=2,4,0,\) or \(6\), and then \(\left|x-1\right|=0,2,4,6,\) or \(8\). The resulting values are
+\[x=1,-1,3,-3,5,-5,7,-7,9,\]
+which is a total of \(\boxed9\) solutions.`,
+  },
+  {
+    id: 30229, number: 229, division: "Theta", topic: "Algebra", difficulty: 3, methods: ["Absolute Value"],
+    question: String.raw`Consider the equation \(\left|\left|\left|\left|x-1\right|-2\right|-3\right|-2\right|=1\). Find the sum of the real solutions to the equation.`,
+    choices: ["8", "9", "15", "16", "NOTA"], answer: "B",
+    solution: String.raw`The solutions are \(1,-1,3,-3,5,-5,7,-7,9\). Their sum is \(\boxed9\).`,
+  },
+  {
+    id: 30230, number: 230, division: "Theta", topic: "Polynomials", difficulty: 5, methods: [],
+    question: String.raw`The polynomial \(3x^4-8x^3-5x^2+16x-5\) can be factored as \((ax^2+bx+c)(dx^2+ex+f)\), where \(a,b,c,d,e,\) and \(f\) are all integers, and \(a,d>0\). Additionally, both quadratic factors are irreducible over integers. Find the value of \(a+b+c+d+e+f\).`,
+    choices: ["-2", "-1", "1", "2", "NOTA"], answer: "A",
+    solution: String.raw`The factorization is
+\[3x^4-8x^3-5x^2+16x-5=(3x^2+x-5)(x^2-3x+1).\]
+Both factors are irreducible over the integers, and the requested sum is
+\[3+1-5+1-3+1=\boxed{-2}.\]`,
+  },
+  {
+    id: 30231, number: 231, division: "Theta", topic: "Applications of Integration", difficulty: 4, methods: ["Riemann Sums"],
+    question: String.raw`In calculus, we sometimes use rectangles to estimate the area of a region. For example, if I wanted to estimate the area in the first quadrant bounded by the \(x\)- and \(y\)-axes and the graph of \(x^2+y^2=100\), I might create five non-overlapping rectangles whose bases, all of which have length 2 units, lie on the \(x\)-axis. The heights of these rectangles will extend from the \(x\)-axis to the graph of \(x^2+y^2=100\) as measured from the left endpoint of each of the rectangle's bases. Determine this approximation for the area of this region.`,
+    choices: [String.raw`\(28+8\sqrt6+4\sqrt{21}\)`, String.raw`\(36+12\sqrt6+4\sqrt{21}\)`, String.raw`\(48+8\sqrt6+4\sqrt{21}\)`, String.raw`\(36+8\sqrt6+6\sqrt{21}\)`, "NOTA"], answer: "C",
+    solution: String.raw`The bases are \([0,2],[2,4],[4,6],[6,8],\) and \([8,10]\), so the left-endpoint heights are \(10,4\sqrt6,2\sqrt{21},8,\) and \(6\), respectively. Since each base has length 2, the approximation is
+\[2(10+4\sqrt6+2\sqrt{21}+8+6)=\boxed{48+8\sqrt6+4\sqrt{21}}.\]`,
+  },
+  {
+    id: 30232, number: 232, division: "Theta", topic: "Matrices", difficulty: 4, methods: ["Matrix Inverse", "Matrix Multiplication"],
+    question: String.raw`Solve for matrix \(A\):
+\[A\begin{bmatrix}5&1\\2&1\end{bmatrix}=\begin{bmatrix}7&-1\\9&3\end{bmatrix}.\]`,
+    choices: [String.raw`\(\begin{bmatrix}-\frac23&-\frac43\\\frac{31}{3}&\frac{17}{3}\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}-12&5\\-14&5\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}-\frac{17}{3}&\frac{11}{3}\\-\frac23&-\frac43\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}\frac{17}{3}&-\frac{11}{3}\\\frac23&\frac43\end{bmatrix}\)`, "NOTA"], answer: "E",
+    solution: String.raw`The inverse of \(\begin{bmatrix}5&1\\2&1\end{bmatrix}\) is \(\frac13\begin{bmatrix}1&-1\\-2&5\end{bmatrix}\). Thus
+\[A=\begin{bmatrix}7&-1\\9&3\end{bmatrix}\frac13\begin{bmatrix}1&-1\\-2&5\end{bmatrix}=\begin{bmatrix}3&-4\\1&2\end{bmatrix}.\]
+This is not among choices A through D, so the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30233, number: 233, division: "Theta", topic: "Conic Sections", difficulty: 4, methods: ["Eccentricity"],
+    question: String.raw`A hyperbola has focal width (length of a latus rectum) 6 and eccentricity \(\frac74\). Find the distance between the two vertices of this hyperbola.`,
+    choices: [String.raw`\(\frac{24}{13}\)`, String.raw`\(\frac{32}{13}\)`, String.raw`\(\frac{24}{11}\)`, String.raw`\(\frac{32}{11}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Using the notation common to conic sections, \(\frac{2b^2}{a}=6\), so \(b^2=3a\). Since the eccentricity is \(\frac74\), \(c^2=\frac{49}{16}a^2\). For a hyperbola, \(a^2+b^2=c^2\), so
+\[a^2+3a=\frac{49}{16}a^2\Longrightarrow a=\frac{16}{11}.\]
+Therefore, the distance between the vertices is \(2a=\boxed{\frac{32}{11}}\).`,
+  },
+  {
+    id: 30234, number: 234, division: "Theta", topic: "Probability", difficulty: 5, methods: ["Conditional Probability"],
+    question: String.raw`Suppose that two bags contain solid white and solid black marbles only. The first bag initially contains exactly 16 marbles: 10 white and 6 black. The second bag initially contains exactly 14 marbles: 5 white and 9 black. A marble is selected at random from the first bag and transferred to the second bag without looking to see what color it is; a marble is then drawn from the second bag. If the marble drawn from the second bag is white, what is the probability that the marble transferred from the first bag to the second bag was also white?`,
+    choices: [String.raw`\(\frac{15}{23}\)`, String.raw`\(\frac{12}{19}\)`, String.raw`\(\frac6{11}\)`, String.raw`\(\frac23\)`, "NOTA"], answer: "D",
+    solution: String.raw`The transferred marble is white with probability \(\frac58\) and black with probability \(\frac38\). The probability of then drawing white is \(\frac25\) after a white transfer and \(\frac13\) after a black transfer. Therefore, the requested conditional probability is
+\[\frac{\frac58\cdot\frac25}{\frac58\cdot\frac25+\frac38\cdot\frac13}=\boxed{\frac23}.\]`,
+  },
+  {
+    id: 30235, number: 235, division: "Theta", topic: "Sequences", difficulty: 4, methods: [],
+    question: String.raw`An arithmetic sequence has 519 as its 207th term and 471 as its 315th term. What is the term number of the term in this sequence that is closest to 0?`,
+    choices: ["1375", "1442", "1502", "1598", "NOTA"], answer: "A",
+    solution: String.raw`The common difference is
+\[d=\frac{519-471}{207-315}=-\frac49,\]
+so \(a_n=471-\frac49(n-315)=\frac{5499-4n}{9}\). Setting this equal to 0 gives \(n=1374.75\). The adjacent terms are \(a_{1374}=\frac13\) and \(a_{1375}=-\frac19\), so the closest term to 0 is the \(\boxed{1375\text{th}}\) term.`,
+  },
+  {
+    id: 30236, number: 236, division: "Theta", topic: "Functions", difficulty: 4, methods: [],
+    question: String.raw`There is a positive real solution to the equation \(x\lfloor x\rfloor=2026\) \(\left(x=45\frac1{45}\right)\) and a positive real solution to the equation \(x\lfloor x\rfloor=2025\) \((x=45)\), but there is no positive real solution to the equation \(x\lfloor x\rfloor=2024\). What is the greatest integer \(a\) less than 2025 for which \(x\lfloor x\rfloor=a\) has a positive real solution?`,
+    choices: ["1964", "1979", "1996", "2005", "NOTA"], answer: "B",
+    solution: String.raw`Let \(x=n+f\), where \(n\) is a positive integer and \(0\le f<1\). Then
+\[x\lfloor x\rfloor=(n+f)n=n^2+fn,\]
+which ranges from \(n^2\) through values strictly less than \(n^2+n\). For \(n=44\), every integer from 1936 through 1979 occurs, while \(n=45\) begins at 2025. Therefore, the greatest qualifying integer less than 2025 is \(\boxed{1979}\).`,
+  },
+  {
+    id: 30237, number: 237, division: "Theta", topic: "Geometry", difficulty: 4, methods: [],
+    question: String.raw`Let \(D_n\) equal the total number of diagonals of a regular \(n\)-gon, \(E_n\) be the number of degrees in one exterior angle of a regular \(n\)-gon, and \(I_n\) be the number of degrees in the sum of the interior angles of a regular \(n\)-gon. If \(\frac{D_mE_m}{I_m}=0.998\) and \(\frac{D_kE_k}{I_k}=0.999\), find the value of \(k-m\).`,
+    choices: ["250", "500", "1000", "2000", "NOTA"], answer: "B",
+    solution: String.raw`Since \(D_n=\frac{n(n-3)}2\), \(E_n=\frac{360}{n}\), and \(I_n=180(n-2)\),
+\[\frac{D_nE_n}{I_n}=\frac{n-3}{n-2}=1-\frac1{n-2}.\]
+Thus \(1-\frac1{m-2}=\frac{499}{500}\) gives \(m=502\), and \(1-\frac1{k-2}=\frac{999}{1000}\) gives \(k=1002\). Therefore, \(k-m=\boxed{500}\).`,
+  },
+  {
+    id: 30238, number: 238, division: "Theta", topic: "Geometry", difficulty: 5, methods: ["Point-to-Line Distance Formula"],
+    question: String.raw`A right triangle has sides of length 5, 12, and 13. A point \(P\) is located in the region bounded by the triangle such that the distances from \(P\) to all three sides of the triangle are at least 1. Find the minimum value of the sum of those three distances.`,
+    choices: [String.raw`\(\frac{43}{13}\)`, "3", String.raw`\(\frac{69}{13}\)`, "6", "NOTA"], answer: "C",
+    solution: String.raw`Place the vertices at \((0,0),(0,5),\) and \((12,0)\), so the hypotenuse is \(5x+12y=60\). If \((a,b)\) is an eligible point, then \(a,b\ge1\), and its distance sum is
+\[a+b+\frac{60-5a-12b}{13}=\frac{60+8a+b}{13}.\]
+This is minimized at \(a=b=1\), which is feasible, and the minimum is \(\boxed{\frac{69}{13}}\).`,
+  },
+  {
+    id: 30239, number: 239, division: "Theta", topic: "Functions", difficulty: 5, methods: [],
+    question: String.raw`Find the area of the region in the first quadrant enclosed by the graphs of \(y=\lfloor11-x\rfloor\), \(x=\lfloor11-y\rfloor\), the \(x\)-axis, the \(y\)-axis, and the set \(\{(x,y)\mid x\text{ and }y\text{ are positive integers with }x+y=10\}\).`,
+    choices: ["55", "60", "66", "70", "NOTA"], answer: "A",
+    solution: String.raw`The first equation gives the horizontal portions of the staircase, the second gives the vertical portions, and the listed integer points fill the remaining holes. Working from left to right, the region consists of strips with areas
+\[10+9+8+7+6+5+4+3+2+1=\boxed{55}.\]`,
+  },
 ];

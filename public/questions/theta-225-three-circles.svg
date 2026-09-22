@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 400" role="img" aria-labelledby="title desc">
+  <title id="title">Three congruent circles tangent inside a rectangle</title>
+  <desc id="desc">Two congruent circles touch the bottom and opposite sides of a rectangle. A third congruent circle is centered above them, touches both lower circles, and touches the top edge.</desc>
+  <rect width="440" height="400" fill="white"/>
+  <g fill="none" stroke="#111" stroke-width="4">
+    <rect x="20" y="6.795" width="400" height="373.205"/>
+    <circle cx="120" cy="280" r="100"/>
+    <circle cx="320" cy="280" r="100"/>
+    <circle cx="220" cy="106.795" r="100"/>
+  </g>
+</svg>

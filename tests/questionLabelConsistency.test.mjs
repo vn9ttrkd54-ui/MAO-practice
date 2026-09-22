@@ -47,7 +47,7 @@ test("question-bank labels use canonical names", () => {
     "Generating Functions", "Geometric Series", "Half-Angle", "Homogeneous First-Order Equations",
     "Hyperbolic Functions", "Imaginary-Part Argument",
     "Implicit Differentiation", "Infinite Geometric Series", "Infinite Series",
-    "Integral Properties", "Integration by Parts", "Intermediate Value Theorem",
+    "Integral Properties", "Integration by Parts", "Intermediate Value Theorem", "Inverse Functions",
     "King's Rule", "L'Hopital's Rule", "Law of Cosines", "Law of Sines",
     "Limit Comparison Test", "Limit Definition of Derivatives", "Linear Approximation",
     "Logarithmic Differentiation", "Logarithms", "Mathematical Induction", "Matrix Inverse", "Matrix Multiplication",
