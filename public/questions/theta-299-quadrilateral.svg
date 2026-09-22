@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" role="img" aria-labelledby="title desc">
+  <title id="title">Quadrilateral ABCD</title><desc id="desc">Quadrilateral with AB vertical, BC horizontal, equal perpendicular sides AD and DC, and diagonal BD.</desc>
+  <rect width="560" height="360" fill="white"/><g fill="none" stroke="#111" stroke-width="4" stroke-linejoin="round"><path d="M110 55L110 300L365 300L405 115Z"/><path d="M110 300L405 115"/></g>
+  <g fill="#111" font-family="Arial,sans-serif" font-size="25"><text x="76" y="62">A</text><text x="76" y="308">B</text><text x="373" y="330">C</text><text x="420" y="118">D</text><text x="252" y="196">2</text></g>
+</svg>

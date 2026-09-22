@@ -2365,4 +2365,166 @@ so \(7g=540^\circ\). Since \(g=\frac X7\), \(\boxed{X=540}\).`,
     choices: ["3.0", "3.5", "4.0", "4.5", "NOTA"], answer: "B",
     solution: String.raw`For 100 ordered values, the median is the average of the 50th and 51st. Give the first 49 members one can each, the 50th member 3 cans, and the remaining 50 members 4 cans each. This uses \(49+3+200=252\) cans and gives median \(\frac{3+4}{2}=3.5\). A larger median would require more than 252 cans. Thus the maximum is \(\boxed{3.5}\).`,
   },
+  // FAMAT State Convention 2023, Theta Individual.
+  {
+    id: 30270, number: 270, division: "Theta", topic: "Polynomials", difficulty: 2, methods: [],
+    question: String.raw`The quartic polynomial \(3x^4-8x^3-50x^2-57x-18\) can be factored as \((x^2-5x-6)(ax^2+bx+c)\). Find \(a+b+c\).`,
+    choices: ["-23", "7", "13", "27", "NOTA"], answer: "C",
+    solution: String.raw`Using long division, the quotient is \(3x^2+7x+3\). The sum of its coefficients is \(3+7+3=\boxed{13}\).`,
+  },
+  {
+    id: 30271, number: 271, division: "Theta", topic: "Logs and Exponents", difficulty: 1, methods: ["Logarithms"],
+    question: String.raw`The value of \(\log_{10}(172)\), rounded to four decimal places, is 2.2355. Find the value of \(\log_{10}(0.172)\), rounded to four decimal places.`,
+    choices: ["-1.7645", "-0.7645", "0.0022", "0.0224", "NOTA"], answer: "B",
+    solution: String.raw`Since \(0.172=172\cdot10^{-3}\), \(\log_{10}(0.172)=2.2355-3=\boxed{-0.7645}\).`,
+  },
+  {
+    id: 30272, number: 272, division: "Theta", topic: "Matrices", difficulty: 3, methods: ["Matrix Inverse"],
+    question: String.raw`Find the element in the second row, third column of \(A^{-1}\), if \(A=\begin{bmatrix}3&-11&4\\1&2&3\\2&3&1\end{bmatrix}\).`,
+    choices: ["-5", String.raw`\(-\frac3{16}\)`, String.raw`\(\frac3{16}\)`, String.raw`\(\frac1{16}\)`, "NOTA"], answer: "D",
+    solution: String.raw`\(\det A=-80\). The required entry uses cofactor \(C_{3,2}=(-1)^5\begin{vmatrix}3&4\\1&3\end{vmatrix}=-5\). Hence it is \(\frac{-5}{-80}=\boxed{\frac1{16}}\).`,
+  },
+  {
+    id: 30273, number: 273, division: "Theta", topic: "Inequalities", difficulty: 4, methods: ["Absolute Value"],
+    question: String.raw`Solve for \(x\): \(\left|\frac{2-3x}{3+x}\right|\le\frac1x\).`,
+    choices: [String.raw`\((0,1]\)`, String.raw`\((-3,0)\)`, String.raw`\(\left(0,\frac{1+\sqrt3}{2}\right]\)`, String.raw`\(\left(0,\frac{1+\sqrt5}{2}\right]\)`, "NOTA"], answer: "D",
+    solution: String.raw`The right side forces \(x>0\). Squaring and solving the resulting rational inequality gives \(\boxed{\left(0,\frac{1+\sqrt5}{2}\right]}\).`,
+  },
+  {
+    id: 30274, number: 274, division: "Theta", topic: "Number Theory", difficulty: 2, methods: ["Modular Arithmetic"],
+    question: String.raw`Determine the last digit of \(3^{3^3}\).`, choices: ["1", "3", "7", "9", "NOTA"], answer: "C",
+    solution: String.raw`The exponent is 27. Last digits of powers of 3 cycle as \(3,9,7,1\), and \(27\equiv3\pmod4\), so the last digit is \(\boxed7\).`,
+  },
+  {
+    id: 30275, number: 275, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    question: String.raw`How many real number solutions are there for the equation \(\left(x^2+4x+5\right)^{x^2+1}=1\)?`, choices: ["0", "1", "2", "3", "NOTA"], answer: "B",
+    solution: String.raw`The base is \((x+2)^2+1\ge1\) and the exponent is positive. Equality occurs only when the base is 1, at \(x=-2\), so there is \(\boxed1\) solution.`,
+  },
+  {
+    id: 30276, number: 276, division: "Theta", topic: "Polynomial Equations", difficulty: 3, methods: ["Rational Root Theorem"],
+    question: String.raw`Find the positive difference between the largest and the smallest roots of \(30x^3-31x^2-66x+72=0\), given that there is a root in the interval \((-2,-1)\).`,
+    choices: [String.raw`\(-\frac32\)`, String.raw`\(\frac65\)`, String.raw`\(\frac43\)`, String.raw`\(\frac{17}{6}\)`, "NOTA"], answer: "D",
+    solution: String.raw`The roots are \(-\frac32,\frac43,\frac65\). The requested difference is \(\frac43-(-\frac32)=\boxed{\frac{17}{6}}\).`,
+  },
+  {
+    id: 30277, number: 277, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: ["Row Operations"],
+    question: String.raw`If \(x+2y+3z=6\), \(2x-3y+2z=14\), and \(3x+y-z=-2\), then \(x+y+z\) is`, choices: ["0", "2", "3", "4", "NOTA"], answer: "B",
+    solution: String.raw`Solving gives \((x,y,z)=(1,-2,3)\), so \(x+y+z=\boxed2\).`,
+  },
+  {
+    id: 30278, number: 278, division: "Theta", topic: "Polynomials", difficulty: 1, methods: ["Remainder Theorem"],
+    question: String.raw`Solve for \(k\) such that \((x-3)\) is a factor of \(x^3-kx^2+2x-1\).`, choices: [String.raw`\(\frac{22}{9}\)`, String.raw`\(\frac{32}{9}\)`, String.raw`\(-\frac{22}{9}\)`, String.raw`\(-\frac{32}{9}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Substituting \(x=3\) gives \(32-9k=0\), so \(\boxed{k=\frac{32}{9}}\).`,
+  },
+  {
+    id: 30279, number: 279, division: "Theta", topic: "Conic Sections", difficulty: 1, methods: ["Eccentricity"],
+    question: String.raw`Consider the following statements:
+I. The eccentricity of a hyperbola is greater than 1
+II. The eccentricity of a parabola is equal to 1
+III. The eccentricity of an ellipse is less than 1
+
+Which of the following statement(s) is(are) always true?`, choices: ["I only", "I and III", "I and II", "I, II, and III", "NOTA"], answer: "D",
+    solution: String.raw`These are the defining eccentricity ranges for the three conics, so all three statements are true: \(\boxed{\text{I, II, and III}}\).`,
+  },
+  {
+    id: 30280, number: 280, division: "Theta", topic: "Complex Numbers", difficulty: 2, methods: ["Conjugates"],
+    question: String.raw`For what value of \(b\) is \(\frac{2+i}{bi-1}\) a real number?`, choices: [String.raw`\(-\frac32\)`, String.raw`\(-\frac12\)`, String.raw`\(\frac12\)`, "2", "NOTA"], answer: "B",
+    solution: String.raw`After multiplying by the denominator's conjugate, the imaginary part is proportional to \(2b+1\). Thus \(2b+1=0\), giving \(\boxed{b=-\frac12}\).`,
+  },
+  {
+    id: 30281, number: 281, division: "Theta", topic: "Geometry", difficulty: 2, methods: ["Pythagorean Theorem"],
+    question: String.raw`What is the radius of a circle which circumscribes the triangle with vertices \((2,0)\), \((0,4)\), and \((4,6)\)?`, choices: [String.raw`\(\sqrt5\)`, String.raw`\(\sqrt{10}\)`, String.raw`\(2\sqrt{10}\)`, String.raw`\(2\sqrt5\)`, "NOTA"], answer: "B",
+    solution: String.raw`The triangle is right with hypotenuse \(\sqrt{40}=2\sqrt{10}\). A right triangle's circumradius is half its hypotenuse, so \(r=\boxed{\sqrt{10}}\).`,
+  },
+  {
+    id: 30282, number: 282, division: "Theta", topic: "Inequalities", difficulty: 3, methods: [],
+    question: String.raw`What percentage of the interval \([-10,10]\) is the inequality \(x+2>\frac5{x-2}\) satisfied?`, choices: ["70%", "60%", "50%", "40%", "NOTA"], answer: "B",
+    solution: String.raw`The inequality becomes \(\frac{x^2-9}{x-2}>0\), true on \((-3,2)\cup(3,\infty)\). Inside \([-10,10]\), the total length is 12 out of 20, or \(\boxed{60\%}\).`,
+  },
+  {
+    id: 30283, number: 283, division: "Theta", topic: "Binomial Expansion", difficulty: 3, methods: ["Multinomial Theorem"],
+    question: String.raw`Let \(a\) and \(b\) be the coefficients of \(x^3\) in \((1+x+2x^2+3x^3)^3\) and \((1+x+2x^2+3x^3+4x^4)^3\), respectively. Find \(a-b\).`, choices: ["0", "1", "-1", String.raw`\(3^3-4^3\)`, "NOTA"], answer: "A",
+    solution: String.raw`The added \(4x^4\) term cannot contribute to an \(x^3\) coefficient. Hence \(a=b\), so \(\boxed{a-b=0}\).`,
+  },
+  {
+    id: 30284, number: 284, division: "Theta", topic: "Polynomials", difficulty: 1, methods: ["Remainder Theorem"],
+    question: String.raw`When the polynomial \(f(x)\) is divided by \(x+3\), the quotient is \(x^2-1\) and the remainder is 2. Find the remainder when \(f(x)\) is divided by \(x-2\).`, choices: ["1", "2", "15", "17", "NOTA"], answer: "D",
+    solution: String.raw`\(f(x)=(x+3)(x^2-1)+2=x^3+3x^2-x-1\). Thus the remainder is \(f(2)=\boxed{17}\).`,
+  },
+  {
+    id: 30285, number: 285, division: "Theta", topic: "Inequalities", difficulty: 4, methods: [],
+    question: String.raw`Find all values of \(x\) such that \(\sqrt{2x+3}-\sqrt{4x-1}\ge\sqrt{6x-2}\).`, choices: [String.raw`\(\left[\frac13,\frac12\right]\)`, String.raw`\(\left[\frac14,\frac12\right]\)`, String.raw`\(\left[0,\frac12\right]\)`, String.raw`\(\left[-\frac74,\frac12\right]\)`, "NOTA"], answer: "A",
+    solution: String.raw`The domain requires \(x\ge\frac13\). Squaring carefully and checking the resulting candidates gives \(x\le\frac12\), including both endpoints. Thus \(\boxed{\left[\frac13,\frac12\right]}\).`,
+  },
+  {
+    id: 30286, number: 286, division: "Theta", topic: "Matrices", difficulty: 3, methods: ["Determinant", "Vieta's Formulas"],
+    question: String.raw`Find the sum of the solutions of \(\begin{vmatrix}x^2&x&2\\x&-x&1\\-4&5&-2\end{vmatrix}=0\).`, choices: [String.raw`\(-\frac32\)`, String.raw`\(\frac23\)`, "3", String.raw`\(\frac73\)`, "NOTA"], answer: "E",
+    solution: String.raw`The determinant is \(2x^3-3x^2-2x=x(2x+1)(x-2)\). Its roots sum to \(\frac32\), which is not listed, so \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30287, number: 287, division: "Theta", topic: "Simplification", difficulty: 1, methods: [],
+    question: String.raw`Solve for \(n\) if \(\frac{(n-1)!(n+1)!}{n!n!}=\frac{10}{9}\).`, choices: ["10", "9", "8", "7", "NOTA"], answer: "B",
+    solution: String.raw`The left side simplifies to \(\frac{n+1}{n}\). Hence \(\frac{n+1}{n}=\frac{10}{9}\), so \(\boxed{n=9}\).`,
+  },
+  {
+    id: 30288, number: 288, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    question: String.raw`Find all solutions such that \(9^{\log_3x}+\log_x x^{2x}=\log_3 27\).`, choices: ["No Solution", "-3", "1", "1, -3", "NOTA"], answer: "A",
+    solution: String.raw`The equation becomes \(x^2+2x=3\), with candidates \(1,-3\). The first is an invalid logarithm base and the second is outside the domain, so there is \(\boxed{\text{no solution}}\).`,
+  },
+  {
+    id: 30289, number: 289, division: "Theta", topic: "Polynomial Equations", difficulty: 4, methods: ["Rational Root Theorem"],
+    question: String.raw`Find the sum of the value(s) of an integer \(k\) for which the equation \(x^3+kx^2+kx+2=0\) has at least one rational root.`, choices: ["3", "2", "1", "0", "NOTA"], answer: "A",
+    solution: String.raw`A rational root must be among \(\pm1,\pm2\). Substitution produces an integer \(k\) only for \(x=-2\), giving \(k=3\). The requested sum is \(\boxed3\).`,
+  },
+  {
+    id: 30290, number: 290, division: "Theta", topic: "Matrices", difficulty: 3, methods: ["Matrix Inverse", "Matrix Multiplication"],
+    question: String.raw`Let \(A=\begin{bmatrix}-1&0\\1&2\end{bmatrix}\), \(B=\begin{bmatrix}2&1\\1&-1\end{bmatrix}\), and \(C=\begin{bmatrix}-2&2\\3&1\end{bmatrix}\). Find the largest entry in matrix \(X\) if \(AX+B=CX\).`, choices: [String.raw`\(\frac43\)`, String.raw`\(\frac53\)`, "1", "2", "NOTA"], answer: "B",
+    solution: String.raw`Rearranging and multiplying by the inverse gives \(X=(C-A)^{-1}B\). Carrying out the multiplication, the largest entry is \(\boxed{\frac53}\).`,
+  },
+  {
+    id: 30291, number: 291, division: "Theta", topic: "Number Theory", difficulty: 3, methods: ["Parity"],
+    question: String.raw`What is the largest power of 2 that divides \(2^{2010}+10^{2010}\)?`, choices: [String.raw`\(2^{2000}\)`, String.raw`\(2^{2010}\)`, String.raw`\(2^{2009}\)`, String.raw`\(2^{2011}\)`, "NOTA"], answer: "D",
+    solution: String.raw`The expression is \(2^{2010}(1+5^{2010})\). Since \(5^{2010}\equiv1\pmod8\), the parenthetical factor is divisible by 2 but not 4. The answer is \(\boxed{2^{2011}}\).`,
+  },
+  {
+    id: 30292, number: 292, division: "Theta", topic: "Algebra", difficulty: 1, methods: ["Difference of Squares"],
+    question: String.raw`If \(x-y=3\) and \(x^2-y^2=9\), then \(xy=?\)`, choices: ["0", "1", "2", "3", "NOTA"], answer: "A",
+    solution: String.raw`\((x-y)(x+y)=9\), so \(x+y=3\). Thus \(x=3,y=0\), and \(\boxed{xy=0}\).`,
+  },
+  {
+    id: 30293, number: 293, division: "Theta", topic: "Number Theory", difficulty: 1, methods: ["Modular Arithmetic"],
+    question: String.raw`An odd integer between 600 and 800 is divisible by 9 and 11. What is the sum of its digits?`, choices: ["9", "12", "18", "21", "NOTA"], answer: "C",
+    solution: String.raw`The only odd multiple of 99 in the interval is 693. Its digit sum is \(6+9+3=\boxed{18}\).`,
+  },
+  {
+    id: 30294, number: 294, division: "Theta", topic: "Analytic Geometry", difficulty: 1, methods: ["Point-to-Line Distance Formula"],
+    question: String.raw`Find the minimum distance from the point \((20,23)\) to the line \(3x+4y-2=0\).`, choices: ["30", "32", "34", "36", "NOTA"], answer: "A",
+    solution: String.raw`\[d=\frac{|3(20)+4(23)-2|}{\sqrt{3^2+4^2}}=\frac{150}{5}=\boxed{30}.\]`,
+  },
+  {
+    id: 30295, number: 295, division: "Theta", topic: "Combinatorics", difficulty: 1, methods: [],
+    question: String.raw`Four points, no three of which are collinear, determine how many line segments?`, choices: ["8", "6", "5", "4", "NOTA"], answer: "B",
+    solution: String.raw`Choose the two endpoints from four points: \(\binom42=\boxed6\).`,
+  },
+  {
+    id: 30296, number: 296, division: "Theta", topic: "Complex Numbers", difficulty: 2, methods: ["Vieta's Formulas"],
+    question: String.raw`If \(r\) and \(s\) are the complex roots of \(x^2-\sqrt{27}x+13=0\), what is \(r^2+s^2\)?`, choices: [String.raw`\(\sqrt{27}\)`, "1", "13", "53", "NOTA"], answer: "B",
+    solution: String.raw`Since \(r+s=\sqrt{27}\) and \(rs=13\), \(r^2+s^2=(r+s)^2-2rs=27-26=\boxed1\).`,
+  },
+  {
+    id: 30297, number: 297, division: "Theta", topic: "Algebra", difficulty: 2, methods: ["Quadratic Formula"],
+    question: String.raw`Let \(A>B>1\). If the arithmetic mean of two positive numbers is \(A\) and the geometric mean is \(B\), what are the two numbers?`, choices: [String.raw`\(A\pm\sqrt{A^2-B^2}\)`, String.raw`\(B\pm\sqrt{A^2-B^2}\)`, String.raw`\(A\pm\sqrt{A-B}\)`, String.raw`\(A\pm B\)`, "NOTA"], answer: "A",
+    solution: String.raw`The numbers are roots of \(t^2-2At+B^2=0\), hence \(\boxed{A\pm\sqrt{A^2-B^2}}\).`,
+  },
+  {
+    id: 30298, number: 298, division: "Theta", topic: "Functions", difficulty: 3, methods: ["Recursion"],
+    question: String.raw`Suppose that for any integer \(n\), \(f(n)=\begin{cases}n-1,&\text{if }n\text{ is even}\\2n,&\text{if }n\text{ is odd}\end{cases}\). If \(k\) is a natural number, and \(f(f(f(k)))=21\), find the sum of the digits in \(k\).`, choices: ["3", "4", "5", "7", "NOTA"], answer: "A",
+    solution: String.raw`Working backward uniquely gives \(21\leftarrow22\leftarrow11\leftarrow12\). Thus \(k=12\), whose digits sum to \(\boxed3\).`,
+  },
+  {
+    id: 30299, number: 299, division: "Theta", topic: "Geometry", difficulty: 4, methods: ["Reflection"],
+    question: String.raw`Find the area of quadrilateral \(ABCD\) if \(\overline{AD}\cong\overline{DC}\), \(\overline{AB}\perp\overline{BC}\), \(\overline{AD}\perp\overline{DC}\), and diagonal \(\overline{BD}\) has length 2.`, choices: ["2", "8", String.raw`\(2\sqrt2\)`, String.raw`\(\sqrt2\)`, "NOTA"], answer: "A",
+    solution: String.raw`Reflect triangle \(CDB\) across \(BD\). The conditions make the reflected figure a square of side \(BD=2\), while \(ABCD\) occupies half its area. Hence \([ABCD]=\frac12(2^2)=\boxed2\).`,
+    illustration: { src: "/questions/theta-299-quadrilateral.svg", alt: "Quadrilateral ABCD with perpendicular adjacent sides at B and D and diagonal BD labeled 2.", width: 560, height: 360 },
+  },
 ];
