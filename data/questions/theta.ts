@@ -2130,4 +2130,239 @@ This is minimized at \(a=b=1\), which is feasible, and the minimum is \(\boxed{\
     solution: String.raw`The first equation gives the horizontal portions of the staircase, the second gives the vertical portions, and the listed integer points fill the remaining holes. Working from left to right, the region consists of strips with areas
 \[10+9+8+7+6+5+4+3+2+1=\boxed{55}.\]`,
   },
+  // FAMAT State Convention 2024, Theta Individual.
+  {
+    id: 30240, number: 240, division: "Theta", topic: "Geometry", difficulty: 4, methods: ["Heron's Formula"],
+    question: String.raw`The diagonals of a parallelogram are 20 and 16 units long and one side of the parallelogram is 12 units. Find the area of the parallelogram.`,
+    choices: [String.raw`\(60\sqrt3\)`, String.raw`\(60\sqrt5\)`, String.raw`\(60\sqrt7\)`, "Not enough information", "NOTA"], answer: "C",
+    solution: String.raw`The diagonals divide the parallelogram into four triangles of equal area. Each triangle has side lengths 8, 10, and 12, so its semiperimeter is 15. By Heron's formula, its area is
+\[\sqrt{15(15-8)(15-10)(15-12)}=15\sqrt7.\]
+Thus the parallelogram's area is \(4(15\sqrt7)=\boxed{60\sqrt7}\).`,
+  },
+  {
+    id: 30241, number: 241, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    question: String.raw`Snow started counting the number of digits for the page number of his favorite book, “Math for beginners”. He counted 2025 digits. If the book begins on page 1 and ends on page \(R\), find \(R\).`,
+    choices: ["612", "675", "711", "712", "NOTA"], answer: "C",
+    solution: String.raw`Pages 1 through 9 use 9 digits, and pages 10 through 99 use \(2\cdot90=180\) digits. This leaves \(2025-189=1836\) digits, enough for \(1836\div3=612\) three-digit page numbers. Therefore, \(R=99+612=\boxed{711}\).`,
+  },
+  {
+    id: 30242, number: 242, division: "Theta", topic: "Simplification", difficulty: 4, methods: ["Absolute Value"],
+    question: String.raw`Simplify: \(\sqrt{(5-2\sqrt7)^2}+\sqrt{(5+2\sqrt7)^2}\).`,
+    choices: ["0", "10", String.raw`\(4\sqrt7\)`, String.raw`\(4\sqrt7+10\)`, "NOTA"], answer: "C",
+    solution: String.raw`Since \(2\sqrt7>5\),
+\[\sqrt{(5-2\sqrt7)^2}+\sqrt{(5+2\sqrt7)^2}
+=|5-2\sqrt7|+|5+2\sqrt7|=\boxed{4\sqrt7}.\]`,
+  },
+  {
+    id: 30243, number: 243, division: "Theta", topic: "Number Theory", difficulty: 3, methods: ["Difference of Squares"],
+    question: String.raw`How many of the prime numbers below are factors of \(3^{128}-2^{128}\)?
+\[\text{I. }2\qquad\text{II. }5\qquad\text{III. }13\qquad\text{IV. }97\]`,
+    choices: ["0", "1", "2", "3", "NOTA"], answer: "D",
+    solution: String.raw`Repeatedly factor as a difference of squares:
+\[3^{128}-2^{128}=(3^{64}-2^{64})(3^{64}+2^{64})=\cdots.\]
+The resulting factors include \(3^4-2^4=65=5\cdot13\) and \(3^4+2^4=97\). The number is odd, so 2 is not a factor. Thus exactly \(\boxed3\) listed primes are factors.`,
+  },
+  {
+    id: 30244, number: 244, division: "Theta", topic: "Geometry", difficulty: 3, methods: ["Angle Chasing"],
+    question: String.raw`Right triangle \(WIG\) has a right angle at \(G\) and median \(\overline{GM}\) and altitude \(\overline{GU}\). If \(m\angle MGU=\frac12m\angle W\), \(m\angle W>m\angle I\), then the degree measure of \(\angle MGU\) is?`,
+    choices: ["18", "30", "34", "36", "NOTA"], answer: "B",
+    solution: String.raw`Let \(m\angle W=x\), so \(m\angle I=90^\circ-x\). The midpoint of the hypotenuse is equidistant from the three vertices, so \(GM=WM\) and \(m\angle WGM=x\). Also, triangle \(WGU\) is right at \(U\), so \(m\angle WGU=90^\circ-x\). Therefore,
+\[m\angle MGU=x-(90^\circ-x)=2x-90^\circ.\]
+The given condition yields \(2x-90^\circ=\frac{x}{2}\), so \(x=60^\circ\) and \(m\angle MGU=\boxed{30^\circ}\).`,
+  },
+  {
+    id: 30245, number: 245, division: "Theta", topic: "Inequalities", difficulty: 4, methods: [],
+    question: String.raw`How many integers between -10 and 10 inclusive satisfy the inequality \(\frac1{k-1}+\frac{k}{k+2}\le\frac32\)?`,
+    choices: ["16", "17", "18", "19", "NOTA"], answer: "B",
+    solution: String.raw`Combining terms gives
+\[\frac1{k-1}+\frac{k}{k+2}-\frac32
+=-\frac{(k+5)(k-2)}{2(k-1)(k+2)}\le0.\]
+A sign chart gives \(( -\infty,-5]\cup(-2,1)\cup[2,\infty)\). Intersecting with the integers from -10 through 10 gives \(6+2+9=\boxed{17}\).`,
+  },
+  {
+    id: 30246, number: 246, division: "Theta", topic: "Functions", difficulty: 4, methods: [],
+    question: String.raw`Find the greatest integer \(x\) such that \(\left\lfloor\sqrt{\left\lfloor\sqrt{\left\lfloor\sqrt{x}\right\rfloor}\right\rfloor}\right\rfloor=2\). Here, \(\lfloor\ \rfloor\) denotes the greatest integer less than or equal to its argument. What is the sum of the digits of \(x\)?`,
+    choices: ["13", "17", "18", "19", "NOTA"], answer: "B",
+    solution: String.raw`Working outward from \(2\le\sqrt{\lfloor\sqrt{\lfloor\sqrt{x}\rfloor}\rfloor}<3\) gives
+\[4\le\lfloor\sqrt{\lfloor\sqrt{x}\rfloor}\rfloor\le8,
+\quad16\le\lfloor\sqrt{x}\rfloor\le80,
+\quad256\le x<6561.\]
+Thus the greatest integer is 6560, whose digits sum to \(\boxed{17}\).`,
+  },
+  {
+    id: 30247, number: 247, division: "Theta", topic: "Geometric Series", difficulty: 2, methods: [],
+    question: String.raw`Mr. Wiggins needs \(\$40.95\) to buy a new 3-volume set of romance novels. He puts a penny in his piggy bank on day 1, 2 cents in on day 2, 4 cents in on day 3, 8 cents in on day 4, and he continues this doubling pattern until he has enough money. On what day will it be when he has exactly enough money to purchase this 3-volume set?`,
+    choices: ["10", "11", "12", "13", "NOTA"], answer: "C",
+    solution: String.raw`In cents, the total after \(n\) days is
+\[1+2+\cdots+2^{n-1}=2^n-1.\]
+Since \(4095=2^{12}-1\), he has exactly enough money on day \(\boxed{12}\).`,
+  },
+  {
+    id: 30248, number: 248, division: "Theta", topic: "Binomial Expansion", difficulty: 3, methods: ["Binomial Theorem"],
+    question: String.raw`Find the coefficient of the 4th term of the binomial expansion of \(\left(2x-\frac12\right)^n\) when terms are written in order of decreasing power of \(x\) if it is known the middle term is the 6th term.`,
+    choices: ["-1920", "-252", String.raw`\(-\frac{15}{2}\)`, "840", "NOTA"], answer: "A",
+    solution: String.raw`If the 6th term is the middle term, the expansion has 11 terms, so \(n=10\). The 4th term has coefficient
+\[\binom{10}{3}2^7\left(-\frac12\right)^3=\boxed{-1920}.\]`,
+  },
+  {
+    id: 30249, number: 249, division: "Theta", topic: "Analytic Geometry", difficulty: 3, methods: [],
+    question: String.raw`Find an equation of a line perpendicular to \(5x-y=1\) and is such that the area of the triangle formed by the line, the \(x\)-axis and the \(y\)-axis is equal to 5.`,
+    choices: [String.raw`\(x-5y=10\)`, String.raw`\(5x-y=10\)`, String.raw`\(x+5y=10\)`, String.raw`\(5x+y=10\)`, "NOTA"], answer: "E",
+    solution: String.raw`A perpendicular line must have slope \(-\frac15\), so among choices A through D only \(x+5y=10\) has the correct slope. Its intercepts are 10 and 2, which form a triangle of area \(\frac12(10)(2)=10\), not 5. Therefore, the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30250, number: 250, division: "Theta", topic: "Logs and Exponents", difficulty: 4, methods: ["Logarithms"],
+    question: String.raw`Find the sum of the solutions to \(\log_{x+1}(9x^2+22x-83)=3\).`,
+    choices: ["3", "6", "7", "10", "NOTA"], answer: "D",
+    solution: String.raw`Writing the equation in exponential form gives
+\[(x+1)^3=9x^2+22x-83,
+\quad x^3-6x^2-19x+84=(x-3)(x-7)(x+4)=0.\]
+The value \(x=-4\) is extraneous because it gives a negative logarithm base. The valid solutions are 3 and 7, whose sum is \(\boxed{10}\).`,
+  },
+  {
+    id: 30251, number: 251, division: "Theta", topic: "Geometry", difficulty: 3, methods: [],
+    question: String.raw`In right triangle \(ROB\), with right angle at \(R\), \(RB=3\) and \(RO=4\), point \(S\) is on \(\overline{OB}\) so that triangles \(RBS\) and \(ROS\) have equal perimeters. What is the area of triangle \(SOR\)?`,
+    choices: ["1.5", "2", "2.4", "2.5", "NOTA"], answer: "C",
+    solution: String.raw`Since \(OB=5\), equal perimeters give \(3+BS=4+OS\), while \(BS+OS=5\). Hence \(BS=3\) and \(OS=2\). Triangles \(ROB\) and \(ROS\) share the altitude from \(R\), so their areas are in the ratio \(OB:OS=5:2\). Since \([ROB]=6\),
+\[[ROS]=\frac25\cdot6=\boxed{2.4}.\]`,
+  },
+  {
+    id: 30252, number: 252, division: "Theta", topic: "Functions", difficulty: 3, methods: ["Removable Discontinuity"],
+    question: String.raw`Given \(f(x)=\frac{x^3-2x^2+cx+d}{(x+1)(x-3)}\), where \(c\) and \(d\) are real numbers. If we know that \(f(x)\) has no vertical asymptotes, what is the value of \(f(1)\)?`,
+    choices: ["-4", "-1", "1", "3", "NOTA"], answer: "C",
+    solution: String.raw`To avoid vertical asymptotes, the numerator must be zero at \(x=3\) and \(x=-1\). These conditions give \(c=-3\) and \(d=0\). Thus
+\[f(x)=\frac{x(x-3)(x+1)}{(x+1)(x-3)}=x\]
+where defined, and \(f(1)=\boxed1\).`,
+  },
+  {
+    id: 30253, number: 253, division: "Theta", topic: "Geometry", difficulty: 4, methods: ["Pick's Theorem"],
+    question: String.raw`Find the number of integral coordinates in the interior of the triangle with vertices \((0,0)\), \((0,17)\), and \((17,0)\).`,
+    choices: ["120", "136", "153", "171", "NOTA"], answer: "A",
+    solution: String.raw`The area is \(\frac12(17)(17)=\frac{289}{2}\), and the boundary contains \(17+17+17=51\) lattice intervals. By Pick's theorem,
+\[I=\frac{289}{2}-\frac{51}{2}+1=\boxed{120}.\]`,
+  },
+  {
+    id: 30254, number: 254, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    question: String.raw`What is the largest integer \(k\) for which \(5^k\) is a factor of \(98!+99!+100!\)?`,
+    choices: ["23", "24", "25", "26", "NOTA"], answer: "D",
+    solution: String.raw`\[98!+99!+100!=98!(1+99+9900)=98!\cdot10{,}000.\]
+The exponent of 5 in \(98!\) is \(\lfloor98/5\rfloor+\lfloor98/25\rfloor=19+3=22\), and \(10{,}000\) contributes four more factors of 5. Therefore, \(k=\boxed{26}\).`,
+  },
+  {
+    id: 30255, number: 255, division: "Theta", topic: "Geometry", difficulty: 5, methods: ["Angle Bisector Theorem", "Pythagorean Theorem"],
+    question: String.raw`Circle \(K\) has diameter \(\overline{JW}\), \(Z\) lies on the circle and \(U\) is on \(\overline{JW}\) such that \(\overline{ZU}\) bisects \(\angle JZW\). If \(JK=13\), \(ZW=10\), and \(KU=\frac ab\), where \(a\) and \(b\) are relatively prime, what is \(a+b\)?`,
+    choices: ["13", "18", "54", "108", "NOTA"], answer: "D",
+    solution: String.raw`Since \(JK=13\), the diameter \(JW=26\). By Thales' theorem and the Pythagorean theorem, \(JZ=24\). Let \(KU=x\), so \(JU=13+x\) and \(UW=13-x\). The angle bisector theorem gives
+\[\frac{10}{13-x}=\frac{24}{13+x},\]
+so \(x=\frac{91}{17}\). Therefore, \(a+b=91+17=\boxed{108}\).`,
+  },
+  {
+    id: 30256, number: 256, division: "Theta", topic: "Algebra", difficulty: 4, methods: ["Quadratic Formula"],
+    question: String.raw`If \(a^2=ab+12b^2\) and \(a\) and \(b\) are non-zero real numbers, how many possible values exist for \(\frac ab\)?`,
+    choices: ["1", "2", "4", "Infinitely many", "NOTA"], answer: "B",
+    solution: String.raw`Dividing by \(b^2\) and setting \(t=\frac ab\) gives
+\[t^2-t-12=(t-4)(t+3)=0.\]
+Thus \(\frac ab\) can equal 4 or -3, for \(\boxed2\) possible values.`,
+  },
+  {
+    id: 30257, number: 257, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`Wiggie the pool man needs to empty a dirty pool for cleaning. He turned on pump one and after 3 hours he turned on a second pump and the pool was emptied in 8 more hours. The first pump could have done the job alone in 20 hours. How many hours would it take for the second pump to empty the pool working alone?`,
+    choices: [String.raw`\(\frac{40}{3}\)`, String.raw`\(\frac{124}{9}\)`, String.raw`\(\frac{52}{3}\)`, String.raw`\(\frac{160}{9}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Let the second pump's time be \(x\) hours. The work equation is
+\[\frac{11}{20}+\frac8x=1.\]
+Thus \(\frac8x=\frac9{20}\), so \(x=\boxed{\frac{160}{9}}\) hours.`,
+  },
+  {
+    id: 30258, number: 258, division: "Theta", topic: "Geometry", difficulty: 4, methods: [],
+    question: String.raw`A sphere is inscribed in a cube with a surface area of 24 square units. A second cube is then inscribed within the sphere. What is the surface area of the inner cube, in square units?`,
+    choices: ["4", "8", "12", "16", "NOTA"], answer: "B",
+    solution: String.raw`The outer cube has side length 2, so the sphere has diameter 2. If the inner cube has side length \(L\), its space diagonal is the sphere's diameter:
+\[L\sqrt3=2\Longrightarrow L^2=\frac43.\]
+Its surface area is \(6L^2=\boxed8\).`,
+  },
+  {
+    id: 30259, number: 259, division: "Theta", topic: "Probability", difficulty: 3, methods: [],
+    question: String.raw`Three fair six-sided dice are rolled. The probability that the sum of the 3 numbers is 9 is \(\frac{L}{216}\). What does \(L\) equal?`,
+    choices: ["25", "26", "27", "28", "NOTA"], answer: "A",
+    solution: String.raw`The number of positive integer solutions to \(a+b+c=9\) is \(\binom82=28\). Three of these have one variable equal to 7 or more and are invalid for a die. Hence \(L=28-3=\boxed{25}\).`,
+  },
+  {
+    id: 30260, number: 260, division: "Theta", topic: "Number Theory", difficulty: 4, methods: ["Completing the Square"],
+    question: String.raw`How many ordered pairs of positive integers \((J,W)\) satisfy \(J^2+W^2-8J+4W-5=0\)?`,
+    choices: ["3", "4", "12", "16", "NOTA"], answer: "B",
+    solution: String.raw`Completing the square gives
+\[(J-4)^2+(W+2)^2=25.\]
+The positive integer solutions are \((4,3),(1,2),(7,2),\) and \((8,1)\), so there are \(\boxed4\) ordered pairs.`,
+  },
+  {
+    id: 30261, number: 261, division: "Theta", topic: "Complex Numbers", difficulty: 4, methods: [],
+    question: String.raw`In the complex plane, a square is centered at the origin with a diagonal of length 6. The sides of the square are parallel to the coordinate axes with vertices \(z_1,z_2,z_3\) and \(z_4\). What does \(z_1z_2z_3z_4\) equal?`,
+    choices: ["-324", "20.25", "81", "324", "NOTA"], answer: "C",
+    solution: String.raw`Each vertex is distance 3 from the origin, and the four arguments sum to a multiple of \(2\pi\). Therefore,
+\[z_1z_2z_3z_4=3^4=\boxed{81}.\]`,
+  },
+  {
+    id: 30262, number: 262, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    question: String.raw`How many positive integers less than 100 can be represented as the product of exactly 3 different primes?`,
+    choices: ["1", "3", "4", "8", "NOTA"], answer: "E",
+    solution: String.raw`The qualifying products are
+\[2\cdot3\cdot5=30,
+\quad2\cdot3\cdot7=42,
+\quad2\cdot3\cdot11=66,
+\quad2\cdot3\cdot13=78,
+\quad2\cdot5\cdot7=70.\]
+There are 5 such integers, which is not listed, so the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30263, number: 263, division: "Theta", topic: "Geometry", difficulty: 5, methods: ["Pythagorean Theorem"],
+    question: String.raw`The length of the base of an isosceles triangle and the length of the height to that base sum to 62. If the perimeter of the triangle is 100, what is the sum of all the possible values for the height of the triangle to the base?`,
+    choices: ["30", "35", "45", "50", "NOTA"], answer: "D",
+    solution: String.raw`Let the base be \(b\), height be \(h\), and equal side length be \(x\). Then \(b+h=62\) and \(2x+b=100\). The altitude bisects the base, so
+\[h^2=x^2-\left(\frac b2\right)^2.\]
+Substitution gives \(h^2-50h+600=0\), so \(h=20\) or 30. Their sum is \(\boxed{50}\).`,
+  },
+  {
+    id: 30264, number: 264, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: ["Completing the Square"],
+    question: String.raw`Find the distance from the directrix to the vertex for: \(4x=2y^2+2y+3\).`,
+    choices: ["0.125", "0.5", "2", "8", "NOTA"], answer: "B",
+    solution: String.raw`Completing the square gives
+\[2x-\frac54=\left(y+\frac12\right)^2.\]
+In the form \((y-k)^2=4p(x-h)\), this has \(4p=2\), so \(p=\frac12\). The vertex-to-directrix distance is \(\boxed{0.5}\).`,
+  },
+  {
+    id: 30265, number: 265, division: "Theta", topic: "Area Between Curves", difficulty: 3, methods: ["Absolute Value"],
+    question: String.raw`Find the area of the region bounded by the graphs: \(y=|x+2|+|x-3|\), \(x=-2\), \(x=3\), and \(y=0\).`,
+    choices: ["10", "12.5", "15", "25", "NOTA"], answer: "D",
+    solution: String.raw`For \(-2\le x\le3\),
+\[|x+2|+|x-3|=(x+2)+(3-x)=5.\]
+The bounded region is a rectangle of width 5 and height 5, so its area is \(\boxed{25}\).`,
+  },
+  {
+    id: 30266, number: 266, division: "Theta", topic: "Combinatorics", difficulty: 4, methods: ["Complement Rule"],
+    question: String.raw`Point \(W\), \(J\), and \(F\) lie on the sides of triangle \(ROB\) so that segments \(RW\), \(OJ\), and \(BF\), if drawn, would intersect at one interior point \(S\). Using 3 of these 7 points as vertices, how many triangles can be formed?`,
+    choices: ["28", "29", "32", "34", "NOTA"], answer: "B",
+    solution: String.raw`There are \(\binom73=35\) triples of points. Six triples are collinear: three lie on the sides of triangle \(ROB\), and three lie on the concurrent segments \(RW\), \(OJ\), and \(BF\). Therefore, \(35-6=\boxed{29}\) triangles can be formed.`,
+  },
+  {
+    id: 30267, number: 267, division: "Theta", topic: "Rate of Change", difficulty: 3, methods: [],
+    question: String.raw`In Snowman's most recent triathlon, he ran 15 miles at 6 mph, he biked 6 miles in 15 minutes, and he swam for 10 minutes at 1.5 mph. His average speed can be represented as \(\frac RS\), where \(R\) and \(S\) are relatively prime. What is \(R+S\)?`,
+    choices: ["58", "64", "117", "127", "NOTA"], answer: "A",
+    solution: String.raw`The total distance is \(15+6+\frac14=\frac{85}{4}\) miles. The total time is \(\frac{15}{6}+\frac14+\frac16=\frac{35}{12}\) hours. Thus the average speed is
+\[\frac{85/4}{35/12}=\frac{51}{7},\]
+so \(R+S=\boxed{58}\).`,
+  },
+  {
+    id: 30268, number: 268, division: "Theta", topic: "Geometry", difficulty: 4, methods: ["Angle Chasing"],
+    question: String.raw`In \(\triangle WIG\), point \(U\) is on \(\overline{GI}\) and point \(L\) is on \(\overline{WI}\). Triangles \(WIG\), \(WGU\), \(WUL\), and \(ILU\) are isosceles with bases \(\overline{WG}\), \(\overline{UG}\), \(\overline{WL}\), and \(\overline{IU}\), respectively. The degree measure of \(\angle G=\frac X7\). What is \(X\)?`,
+    choices: ["180", "270", "360", "540", "NOTA"], answer: "D",
+    solution: String.raw`Let \(m\angle G=g\). The isosceles conditions give \(m\angle I=180^\circ-2g\), \(m\angle WUG=g\), and \(m\angle WUL=540^\circ-6g\). Because \(G,U,I\) are collinear,
+\[g+(540^\circ-6g)+(180^\circ-2g)=180^\circ,\]
+so \(7g=540^\circ\). Since \(g=\frac X7\), \(\boxed{X=540}\).`,
+  },
+  {
+    id: 30269, number: 269, division: "Theta", topic: "Statistics", difficulty: 3, methods: [],
+    question: String.raw`Dr. S gave 252 cans of his favorite energy drink to 100 members of his math team. If each team member got at least 1 can, what is the maximum possible median number of cans per team member?`,
+    choices: ["3.0", "3.5", "4.0", "4.5", "NOTA"], answer: "B",
+    solution: String.raw`For 100 ordered values, the median is the average of the 50th and 51st. Give the first 49 members one can each, the 50th member 3 cans, and the remaining 50 members 4 cans each. This uses \(49+3+200=252\) cans and gives median \(\frac{3+4}{2}=3.5\). A larger median would require more than 252 cans. Thus the maximum is \(\boxed{3.5}\).`,
+  },
 ];
