@@ -1,0 +1,13 @@
+import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import test from "node:test";
+import katex from "katex";
+const source=readFileSync(new URL("../data/questions/theta.ts",import.meta.url),"utf8");
+const js=source.replace(/^import type .*;\s*/m,"").replace(": Question[]","");
+const {thetaQuestions}=await import("data:text/javascript;base64,"+Buffer.from(js).toString("base64"));
+const questions=thetaQuestions.filter(q=>q.number>=300&&q.number<=329);
+test("FAMAT State Convention 2022 contains all 30 sequential Theta questions",()=>{assert.equal(questions.length,30);assert.deepEqual(questions.map(q=>q.id),Array.from({length:30},(_,i)=>30300+i));assert.equal(questions.map(q=>q.answer).join(""),"DCACAADABDCACDCCCBA BDBDBAADBCA".replaceAll(" ",""));assert.equal(new Set(thetaQuestions.map(q=>q.id)).size,thetaQuestions.length);});
+test("the alternating table and corrected placement are retained",()=>{const q=questions.find(q=>q.number===315);assert.equal(q.answer,"C");assert.match(q.solution,/a=51,b=4.*55/s);assert.ok(existsSync(new URL(`../public${q.illustration.src}`,import.meta.url)));assert.deepEqual(questions.filter(q=>q.illustration).map(q=>q.number),[315]);});
+test("the clock question is self-contained",()=>{const q=questions.find(q=>q.number===310);assert.match(q.question,/9:45/);assert.doesNotMatch(q.question,/previous question/i);});
+test("high-risk results agree independently",()=>{assert.equal(10*9*8*7*6*5*4*3*2/(6*2),302400);assert.equal(Math.ceil(Math.log2(2022)),11);assert.equal(2*3*4*5*6,720);assert.equal(2*(4*8-7*4+5*2+2),32);});
+test("all formulas compile with KaTeX",()=>{for(const q of questions)for(const text of[q.question,...q.choices,q.solution])for(const m of text.matchAll(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g))assert.doesNotThrow(()=>katex.renderToString(m[1]??m[2],{throwOnError:true,displayMode:m[2]!==undefined}),`Theta ${q.number}`);});
