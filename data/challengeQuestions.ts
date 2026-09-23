@@ -113,272 +113,446 @@ export const challengeQuestions = [
   {
     id: "CH-0007",
     division: "Mu",
-    topic: "Percents",
-    difficulty: 2,
-    question:
-      "A number is increased by 40%, and the result is 56. What was the original number?",
+    topic: "Limits",
+    difficulty: 4,
+    question: String.raw`Evaluate
+\[
+\lim_{x\to 0}\frac{\displaystyle\int_0^{\sin x}\arctan(t)\,dt}{x^2}.
+\]`,
     choices: {
-      A: "32",
-      B: "36",
-      C: "40",
-      D: "42",
-      E: "44",
+      A: String.raw`\(0\)`,
+      B: String.raw`\(\frac14\)`,
+      C: String.raw`\(\frac12\)`,
+      D: String.raw`\(1\)`,
+      E: String.raw`\(2\)`,
     },
     answer: "C",
-    solution:
-      "Let the original number be n. Increasing n by 40% gives 1.4n = 56. Dividing by 1.4 gives n = 40.",
+    solution: String.raw`Both the numerator and denominator approach \(0\). By the Fundamental Theorem of Calculus and the chain rule,
+\[
+\frac{d}{dx}\int_0^{\sin x}\arctan(t)\,dt
+=\arctan(\sin x)\cos x.
+\]
+One application of L'Hopital's Rule still gives \(0/0\), so differentiate again:
+\[
+\frac{d}{dx}\bigl(\arctan(\sin x)\cos x\bigr)
+=\frac{\cos^2x}{1+\sin^2x}-\arctan(\sin x)\sin x.
+\]
+At \(x=0\), this expression equals \(1\), while \(\frac{d^2}{dx^2}(x^2)=2\). Therefore the limit is \(\boxed{\frac12}\).`,
   },
   {
     id: "CH-0008",
     division: "Alpha",
-    topic: "Algebra",
-    difficulty: 3,
-    question:
-      "If x is nonzero and x + 1/x = 5, what is the value of x^2 + 1/x^2?",
+    topic: "Trigonometry",
+    difficulty: 4,
+    question: String.raw`Let \(\theta\) be an acute angle satisfying
+\[
+\sec\theta+\tan\theta=3.
+\]
+What is \(\cos(2\theta)\)?`,
     choices: {
-      A: "21",
-      B: "22",
-      C: "24",
-      D: "23",
-      E: "25",
+      A: String.raw`\(-\frac{24}{25}\)`,
+      B: String.raw`\(-\frac{16}{25}\)`,
+      C: String.raw`\(-\frac{9}{25}\)`,
+      D: String.raw`\(-\frac{7}{25}\)`,
+      E: String.raw`\(\frac{7}{25}\)`,
     },
     answer: "D",
-    solution:
-      "Square the given equation: (x + 1/x)^2 = x^2 + 2 + 1/x^2 = 25. Therefore, x^2 + 1/x^2 = 25 - 2 = 23.",
+    solution: String.raw`Use the conjugate identity
+\[
+(\sec\theta+\tan\theta)(\sec\theta-\tan\theta)=\sec^2\theta-\tan^2\theta=1.
+\]
+Thus \(\sec\theta-\tan\theta=\frac13\). Adding this to the given equation gives \(2\sec\theta=\frac{10}{3}\), so \(\sec\theta=\frac53\) and \(\cos\theta=\frac35\). Since \(\theta\) is acute, \(\sin\theta=\frac45\). Hence
+\[
+\cos(2\theta)=\cos^2\theta-\sin^2\theta
+=\frac{9}{25}-\frac{16}{25}
+=\boxed{-\frac{7}{25}}.
+\]`,
   },
   {
     id: "CH-0009",
     division: "Theta",
-    topic: "Algebra",
-    difficulty: 4,
-    question:
-      "If r is a root of x^2 - 5x + 1 = 0, what is the value of r^3 + 1/r^3?",
+    topic: "Functions",
+    difficulty: 5,
+    question: String.raw`Define
+\[
+f(x)=\frac{x-1}{x+1},
+\]
+and let \(f^{(n)}\) denote the composition of \(f\) with itself \(n\) times. What is \(f^{(2026)}(2)\)?`,
     choices: {
-      A: "98",
-      B: "100",
-      C: "105",
-      D: "108",
-      E: "110",
+      A: String.raw`\(-2\)`,
+      B: String.raw`\(-\frac12\)`,
+      C: String.raw`\(\frac13\)`,
+      D: String.raw`\(\frac12\)`,
+      E: String.raw`\(2\)`,
     },
-    answer: "E",
-    solution:
-      "Since r is nonzero, divide r^2 - 5r + 1 = 0 by r to get r + 1/r = 5. Using (r + 1/r)^3 = r^3 + 1/r^3 + 3(r + 1/r), we get 125 = r^3 + 1/r^3 + 15. Thus, r^3 + 1/r^3 = 110.",
+    answer: "B",
+    solution: String.raw`First compose \(f\) with itself:
+\[
+f^{(2)}(x)
+=\frac{\frac{x-1}{x+1}-1}{\frac{x-1}{x+1}+1}
+=\frac{-2}{2x}
+=-\frac1x.
+\]
+Applying this transformation twice gives \(f^{(4)}(x)=x\), so the iterates repeat with period \(4\). Since
+\[
+2026=4(506)+2,
+\]
+we have \(f^{(2026)}(2)=f^{(2)}(2)=\boxed{-\frac12}\).`,
   },
   {
     id: "CH-0010",
     division: "Mu",
-    topic: "Number Theory",
-    difficulty: 2,
-    question:
-      "What is the least positive integer that is divisible by both 12 and 18?",
+    topic: "Optimization",
+    difficulty: 4,
+    question: String.raw`A right circular cylinder is inscribed in a sphere of radius \(6\). What is the maximum possible volume of the cylinder?`,
     choices: {
-      A: "24",
-      B: "30",
-      C: "36",
-      D: "48",
-      E: "72",
+      A: String.raw`\(72\sqrt3\pi\)`,
+      B: String.raw`\(96\pi\)`,
+      C: String.raw`\(96\sqrt3\pi\)`,
+      D: String.raw`\(144\pi\)`,
+      E: String.raw`\(144\sqrt3\pi\)`,
     },
     answer: "C",
-    solution:
-      "The prime factorizations are 12 = 2^2 times 3 and 18 = 2 times 3^2. Their least common multiple is 2^2 times 3^2 = 36.",
+    solution: String.raw`Let the cylinder have radius \(r\) and height \(h\). A central cross-section gives a right triangle with legs \(r\) and \(\frac h2\) and hypotenuse \(6\), so
+\[
+r^2+\frac{h^2}{4}=36.
+\]
+Therefore
+\[
+V(h)=\pi r^2h=\pi\left(36-\frac{h^2}{4}\right)h.
+\]
+Differentiate:
+\[
+V'(h)=36\pi-\frac{3\pi h^2}{4}.
+\]
+The positive critical point satisfies \(h^2=48\), so \(h=4\sqrt3\) and \(r^2=24\). The volume is
+\[
+V_{\max}=\pi(24)(4\sqrt3)=\boxed{96\sqrt3\pi}.
+\]`,
   },
   {
     id: "CH-0011",
     division: "Alpha",
-    topic: "Geometry",
-    difficulty: 3,
-    question:
-      "A right triangle has legs of length 9 and 12. What is the radius of its inscribed circle?",
+    topic: "Polynomials",
+    difficulty: 5,
+    question: String.raw`A monic quartic polynomial \(P\) has four distinct real roots and satisfies
+\[
+P(x)=P(4-x)
+\]
+for every real \(x\). If \(-2\) and \(1\) are roots of \(P\), what is \(P(0)\)?`,
     choices: {
-      A: "2",
-      B: "3",
-      C: "4",
-      D: "5",
-      E: "6",
+      A: String.raw`\(-36\)`,
+      B: String.raw`\(-12\)`,
+      C: String.raw`\(12\)`,
+      D: String.raw`\(24\)`,
+      E: String.raw`\(36\)`,
     },
-    answer: "B",
-    solution:
-      "The hypotenuse is 15 by the Pythagorean theorem. The triangle has area 9 times 12 divided by 2, or 54, and semiperimeter (9 + 12 + 15)/2 = 18. Since area equals inradius times semiperimeter, the inradius is 54/18 = 3.",
+    answer: "A",
+    solution: String.raw`The identity \(P(x)=P(4-x)\) means that reflection across \(x=2\) preserves the roots. Thus a root \(r\) is paired with \(4-r\). The root \(-2\) is paired with \(6\), and the root \(1\) is paired with \(3\). Since \(P\) is a monic quartic with distinct roots,
+\[
+P(x)=(x+2)(x-1)(x-3)(x-6).
+\]
+Consequently,
+\[
+P(0)=(2)(-1)(-3)(-6)=\boxed{-36}.
+\]`,
   },
   {
     id: "CH-0012",
     division: "Theta",
-    topic: "Counting",
-    difficulty: 4,
-    question:
-      "How many four-digit even positive integers have no repeated digits?",
+    topic: "Number Theory",
+    difficulty: 5,
+    question: String.raw`How many integers \(n\) with \(1\le n\le 1000\) satisfy
+\[
+n^2\equiv 1\pmod{24}?
+\]`,
     choices: {
-      A: "2016",
-      B: "2160",
-      C: "2240",
-      D: "2296",
-      E: "2304",
+      A: String.raw`\(166\)`,
+      B: String.raw`\(167\)`,
+      C: String.raw`\(332\)`,
+      D: String.raw`\(333\)`,
+      E: String.raw`\(334\)`,
     },
     answer: "D",
-    solution:
-      "If the units digit is 0, there are 9 choices for the thousands digit, then 8 and 7 choices for the remaining digits, giving 9 times 8 times 7 = 504. If the units digit is 2, 4, 6, or 8, there are 4 choices for it, 8 choices for the nonzero thousands digit, then 8 and 7 choices for the remaining digits. This gives 4 times 8 times 8 times 7 = 1792. The total is 504 + 1792 = 2296.",
+    solution: String.raw`An odd integer has square congruent to \(1\pmod 8\). Also, an integer not divisible by \(3\) has square congruent to \(1\pmod 3\). By the Chinese Remainder Theorem, both conditions together are equivalent to
+\[
+n^2\equiv1\pmod{24}.
+\]
+Thus the valid integers are exactly those relatively prime to \(6\), namely the integers congruent to \(1\) or \(5\pmod6\). Each complete block of six contributes two values. The first \(996=6\cdot166\) integers contribute \(332\), and among \(997,998,999,1000\), only \(997\equiv1\pmod6\) qualifies. The total is \(332+1=\boxed{333}\).`,
   },
   {
     id: "CH-0013",
     division: "Mu",
-    topic: "Geometry",
-    difficulty: 3,
-    question:
-      "A rectangular garden is 14 meters long and 9 meters wide. A path 1 meter wide runs along the inside edge of the garden. What is the area of the path?",
+    topic: "Differential Equations",
+    difficulty: 4,
+    question: String.raw`A function \(y\) satisfies
+\[
+\frac{dy}{dx}=y(2-y),\qquad y(0)=1.
+\]
+What is \(y(\ln\sqrt3)\)?`,
     choices: {
-      A: "38 square meters",
-      B: "40 square meters",
-      C: "42 square meters",
-      D: "44 square meters",
-      E: "46 square meters",
+      A: String.raw`\(1\)`,
+      B: String.raw`\(\frac43\)`,
+      C: String.raw`\(\frac32\)`,
+      D: String.raw`\(\frac53\)`,
+      E: String.raw`\(2\)`,
     },
     answer: "C",
-    solution:
-      "The whole garden has area 14 times 9 = 126 square meters. Removing a 1-meter path from every edge leaves an inner rectangle measuring 12 by 7, with area 84. The path has area 126 - 84 = 42 square meters.",
+    solution: String.raw`Separate variables and use partial fractions:
+\[
+\int\frac{dy}{y(2-y)}=\int dx
+\quad\Longrightarrow\quad
+\frac12\ln\left(\frac{y}{2-y}\right)=x+C.
+\]
+The condition \(y(0)=1\) gives \(C=0\), so
+\[
+\frac{y}{2-y}=e^{2x}.
+\]
+At \(x=\ln\sqrt3\), we have \(e^{2x}=3\). Hence \(y=3(2-y)\), so \(4y=6\) and
+\[
+y(\ln\sqrt3)=\boxed{\frac32}.
+\]`,
   },
   {
     id: "CH-0014",
     division: "Alpha",
-    topic: "Number Theory",
-    difficulty: 4,
-    question:
-      "How many positive divisors does 360 have?",
+    topic: "Complex Numbers",
+    difficulty: 5,
+    question: String.raw`Let
+\[
+z=\frac{1+i\sqrt3}{1-i}.
+\]
+What is \(z^6\)?`,
     choices: {
-      A: "12",
-      B: "18",
-      C: "20",
-      D: "24",
-      E: "30",
+      A: String.raw`\(-8\)`,
+      B: String.raw`\(-4i\)`,
+      C: String.raw`\(4i\)`,
+      D: String.raw`\(-8i\)`,
+      E: String.raw`\(8i\)`,
     },
     answer: "D",
-    solution:
-      "The prime factorization is 360 = 2^3 times 3^2 times 5. A divisor can use 0 through 3 factors of 2, 0 through 2 factors of 3, and 0 or 1 factor of 5. Therefore, the number of positive divisors is (3 + 1)(2 + 1)(1 + 1) = 24.",
+    solution: String.raw`Write the numerator and denominator in polar form:
+\[
+1+i\sqrt3=2\operatorname{cis}\left(\frac\pi3\right),
+\qquad
+1-i=\sqrt2\operatorname{cis}\left(-\frac\pi4\right).
+\]
+Therefore
+\[
+z=\sqrt2\operatorname{cis}\left(\frac{7\pi}{12}\right).
+\]
+By De Moivre's Theorem,
+\[
+z^6=(\sqrt2)^6\operatorname{cis}\left(\frac{7\pi}{2}\right)
+=8\operatorname{cis}\left(\frac{3\pi}{2}\right)
+=\boxed{-8i}.
+\]`,
   },
   {
     id: "CH-0015",
     division: "Theta",
-    topic: "Geometry",
-    difficulty: 4,
-    question:
-      "A triangle has side lengths 13, 14, and 15. What is the radius of its inscribed circle?",
+    topic: "Counting",
+    difficulty: 5,
+    question: String.raw`How many five-digit palindromes are divisible by \(9\)?`,
     choices: {
-      A: "3",
-      B: "4",
-      C: "5",
-      D: "6",
-      E: "7",
+      A: String.raw`\(81\)`,
+      B: String.raw`\(90\)`,
+      C: String.raw`\(99\)`,
+      D: String.raw`\(100\)`,
+      E: String.raw`\(110\)`,
     },
-    answer: "B",
-    solution:
-      "The semiperimeter is (13 + 14 + 15)/2 = 21. By Heron's formula, the area is the square root of 21 times 8 times 7 times 6, which is the square root of 7056, or 84. Since area equals inradius times semiperimeter, the inradius is 84/21 = 4.",
+    answer: "D",
+    solution: String.raw`Every five-digit palindrome has the form \(\overline{abcba}\), where \(a\in\{1,\ldots,9\}\) and \(b,c\in\{0,\ldots,9\}\). Divisibility by \(9\) requires
+\[
+2a+2b+c\equiv0\pmod9.
+\]
+For each of the \(90\) choices of \((a,b)\), there is normally one digit \(c\) with the required residue. There is a second choice precisely when that residue is \(0\), because then both \(c=0\) and \(c=9\) work. This occurs when \(a+b\equiv0\pmod9\). There are eight pairs \((1,8),\ldots,(8,1)\), plus \((9,0)\) and \((9,9)\), for \(10\) extra choices. Thus the total is
+\[
+90+10=\boxed{100}.
+\]`,
   },
   {
     id: "CH-0016",
     division: "Mu",
-    topic: "Counting",
-    difficulty: 3,
-    question:
-      "How many three-digit positive integers have hundreds digit 2 and no repeated digits?",
+    topic: "Improper Integrals",
+    difficulty: 5,
+    question: String.raw`Evaluate
+\[
+\int_0^\infty\frac{dx}{x^2+6x+13}.
+\]`,
     choices: {
-      A: "56",
-      B: "63",
-      C: "64",
-      D: "72",
-      E: "81",
+      A: String.raw`\(\tan^{-1}\!\left(\frac23\right)\)`,
+      B: String.raw`\(\frac12\tan^{-1}\!\left(\frac23\right)\)`,
+      C: String.raw`\(\frac12\tan^{-1}\!\left(\frac32\right)\)`,
+      D: String.raw`\(\frac\pi4\)`,
+      E: String.raw`\(\frac\pi2-\frac12\tan^{-1}\!\left(\frac23\right)\)`,
     },
-    answer: "D",
-    solution:
-      "The hundreds digit is fixed as 2. The tens digit can be any of the other 9 digits, including 0. After that choice, the units digit can be any of the 8 unused digits. Therefore, there are 9 times 8 = 72 integers.",
+    answer: "B",
+    solution: String.raw`Complete the square in the denominator:
+\[
+x^2+6x+13=(x+3)^2+4.
+\]
+Thus
+\[
+\int_0^\infty\frac{dx}{(x+3)^2+2^2}
+=\frac12\left[\tan^{-1}\left(\frac{x+3}{2}\right)\right]_0^\infty
+=\frac12\left(\frac\pi2-\tan^{-1}\frac32\right).
+\]
+The positive angles \(\tan^{-1}(3/2)\) and \(\tan^{-1}(2/3)\) are complementary, so the value is
+\[
+\boxed{\frac12\tan^{-1}\left(\frac23\right)}.
+\]`,
   },
   {
     id: "CH-0017",
     division: "Alpha",
-    topic: "Probability",
-    difficulty: 3,
-    question:
-      "A bag contains 4 red marbles and 3 blue marbles. Two marbles are drawn without replacement. What is the probability that exactly one marble is red?",
+    topic: "Trigonometric Equations",
+    difficulty: 4,
+    question: String.raw`How many solutions does
+\[
+\sin(3x)=\sin x
+\]
+have on the interval \(0\le x<2\pi\)?`,
     choices: {
-      A: "3/7",
-      B: "1/2",
-      C: "4/7",
-      D: "2/3",
-      E: "5/7",
+      A: String.raw`\(4\)`,
+      B: String.raw`\(5\)`,
+      C: String.raw`\(6\)`,
+      D: String.raw`\(7\)`,
+      E: String.raw`\(8\)`,
     },
     answer: "C",
-    solution:
-      "There are 7 choose 2 = 21 equally likely pairs of marbles. To get exactly one red marble, choose 1 of the 4 red marbles and 1 of the 3 blue marbles, giving 4 times 3 = 12 pairs. The probability is 12/21 = 4/7.",
+    solution: String.raw`Move all terms to one side and use the difference identity:
+\[
+\sin(3x)-\sin x=2\cos(2x)\sin x=0.
+\]
+The equation \(\sin x=0\) gives \(x=0,\pi\), contributing two solutions. The equation \(\cos(2x)=0\) gives
+\[
+x=\frac\pi4+\frac{k\pi}{2},
+\]
+which contributes \(\frac\pi4,\frac{3\pi}4,\frac{5\pi}4,\frac{7\pi}4\), four more solutions. These sets do not overlap, so there are \(2+4=\boxed{6}\) solutions.`,
   },
   {
     id: "CH-0018",
     division: "Theta",
-    topic: "Number Theory",
-    difficulty: 4,
-    question:
-      "How many ordered pairs (x, y) of positive integers satisfy x^2 - y^2 = 45?",
+    topic: "Polynomials",
+    difficulty: 5,
+    question: String.raw`The roots of
+\[
+x^3-3x+1=0
+\]
+are \(a,b,c\). Compute \((a^2+1)(b^2+1)(c^2+1)\).`,
     choices: {
-      A: "2",
-      B: "3",
-      C: "4",
-      D: "5",
-      E: "6",
+      A: String.raw`\(9\)`,
+      B: String.raw`\(13\)`,
+      C: String.raw`\(17\)`,
+      D: String.raw`\(21\)`,
+      E: String.raw`\(25\)`,
     },
-    answer: "B",
-    solution:
-      "Factor the equation as (x - y)(x + y) = 45. The positive factor pairs (1, 45), (3, 15), and (5, 9) give (x, y) = (23, 22), (9, 6), and (7, 2), respectively. Thus, there are 3 ordered pairs.",
+    answer: "C",
+    solution: String.raw`Let \(P(x)=x^3-3x+1=(x-a)(x-b)(x-c)\). For each root \(r\),
+\[
+(i-r)(-i-r)=r^2+1.
+\]
+Multiplying this identity for \(r=a,b,c\) gives
+\[
+(a^2+1)(b^2+1)(c^2+1)=P(i)P(-i).
+\]
+Now
+\[
+P(i)=i^3-3i+1=1-4i,
+\qquad
+P(-i)=1+4i.
+\]
+Therefore the requested product is
+\[
+(1-4i)(1+4i)=1+16=\boxed{17}.
+\]`,
   },
   {
     id: "CH-0019",
     division: "Mu",
-    topic: "Algebra",
-    difficulty: 2,
-    question:
-      "What value of x satisfies 5(x - 2) = 3x + 14?",
+    topic: "Derivatives",
+    difficulty: 4,
+    question: String.raw`Suppose \(f\) is twice differentiable and
+\[
+f(1)=2,\qquad f'(1)=-1,\qquad f''(1)=3.
+\]
+If \(g(x)=x^2f(1/x)\), what is \(g''(1)\)?`,
     choices: {
-      A: "8",
-      B: "10",
-      C: "12",
-      D: "14",
-      E: "16",
+      A: String.raw`\(3\)`,
+      B: String.raw`\(5\)`,
+      C: String.raw`\(7\)`,
+      D: String.raw`\(9\)`,
+      E: String.raw`\(11\)`,
     },
-    answer: "C",
-    solution:
-      "Expand the left side to get 5x - 10 = 3x + 14. Subtracting 3x and adding 10 gives 2x = 24, so x = 12.",
+    answer: "D",
+    solution: String.raw`Let \(u=1/x\). Differentiating once gives
+\[
+g'(x)=2xf(u)-f'(u).
+\]
+Differentiate again, remembering that \(u'=-1/x^2\):
+\[
+g''(x)=2f(u)-\frac{2}{x}f'(u)+\frac{1}{x^2}f''(u).
+\]
+At \(x=1\), we also have \(u=1\), so
+\[
+g''(1)=2f(1)-2f'(1)+f''(1)
+=2(2)-2(-1)+3
+=\boxed{9}.
+\]`,
   },
   {
     id: "CH-0020",
     division: "Alpha",
-    topic: "Sequences",
-    difficulty: 3,
-    question:
-      "In an arithmetic sequence, the third term is 11 and the eighth term is 31. What is the twelfth term?",
+    topic: "Logarithms",
+    difficulty: 5,
+    question: String.raw`The equation
+\[
+\log_2x+\log_x2=\frac52
+\]
+has two positive real solutions. What is their product?`,
     choices: {
-      A: "39",
-      B: "43",
-      C: "45",
-      D: "47",
-      E: "51",
+      A: String.raw`\(2\sqrt2\)`,
+      B: String.raw`\(4\)`,
+      C: String.raw`\(2+\sqrt2\)`,
+      D: String.raw`\(4\sqrt2\)`,
+      E: String.raw`\(8\)`,
     },
     answer: "D",
-    solution:
-      "From the third term to the eighth term are 5 equal steps, so the common difference is (31 - 11)/5 = 4. The twelfth term is 4 steps after the eighth term, so it equals 31 + 4 times 4 = 47.",
+    solution: String.raw`Let \(u=\log_2x\). By the reciprocal identity, \(\log_x2=1/u\). The equation becomes
+\[
+u+\frac1u=\frac52
+\quad\Longrightarrow\quad
+2u^2-5u+2=0.
+\]
+Thus \(u=2\) or \(u=\frac12\), giving \(x=4\) or \(x=\sqrt2\). Both satisfy the logarithm domain restrictions. Their product is
+\[
+4\cdot\sqrt2=\boxed{4\sqrt2}.
+\]`,
   },
   {
     id: "CH-0021",
     division: "Theta",
-    topic: "Polynomials",
-    difficulty: 4,
-    question:
-      "What is the remainder when x^2026 is divided by x^2 + x + 1?",
+    topic: "Combinatorics",
+    difficulty: 5,
+    question: String.raw`How many subsets of \(\{1,2,\ldots,10\}\) contain no two consecutive integers?`,
     choices: {
-      A: "x",
-      B: "1",
-      C: "x + 1",
-      D: "-x - 1",
-      E: "0",
+      A: String.raw`\(89\)`,
+      B: String.raw`\(120\)`,
+      C: String.raw`\(132\)`,
+      D: String.raw`\(144\)`,
+      E: String.raw`\(155\)`,
     },
-    answer: "A",
-    solution:
-      "Because x^3 - 1 = (x - 1)(x^2 + x + 1), we have x^3 congruent to 1 modulo x^2 + x + 1. Since 2026 has remainder 1 when divided by 3, x^2026 has the same remainder as x.",
+    answer: "D",
+    solution: String.raw`Let \(A_n\) be the number of valid subsets of \(\{1,2,\ldots,n\}\). A valid subset either omits \(n\), leaving any of the \(A_{n-1}\) valid subsets, or includes \(n\), which forces it to omit \(n-1\) and leaves any of the \(A_{n-2}\) valid subsets. Hence
+\[
+A_n=A_{n-1}+A_{n-2}.
+\]
+The initial values are \(A_0=1\) and \(A_1=2\). Continuing the recurrence gives
+\[
+1,2,3,5,8,13,21,34,55,89,144.
+\]
+Therefore \(A_{10}=\boxed{144}\).`,
   },
 ] as const satisfies readonly ChallengeQuestion[];
 
