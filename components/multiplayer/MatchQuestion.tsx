@@ -169,8 +169,13 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       setNow(serverClock.now(performance.now()));
       refreshRound.current();
     };
+    const recoverWhenVisible = () => {
+      if (document.visibilityState === "visible") recover();
+    };
     window.addEventListener("online", recover);
     window.addEventListener("focus", recover);
+    window.addEventListener("pageshow", recoverWhenVisible);
+    document.addEventListener("visibilitychange", recoverWhenVisible);
     return () => {
       stopped = true;
       refreshRound.current = () => undefined;
@@ -179,6 +184,8 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       if (eventTimer !== null) window.clearTimeout(eventTimer);
       window.removeEventListener("online", recover);
       window.removeEventListener("focus", recover);
+      window.removeEventListener("pageshow", recoverWhenVisible);
+      document.removeEventListener("visibilitychange", recoverWhenVisible);
       unsubscribe();
     };
   }, [round.roomId, router, serverClock]);

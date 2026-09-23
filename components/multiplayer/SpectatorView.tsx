@@ -80,7 +80,14 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
     const leave = () => {
       fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true });
     };
+    const reconnect = () => {
+      if (document.visibilityState === "visible") void loadState();
+    };
     window.addEventListener("pagehide", leave);
+    window.addEventListener("pageshow", reconnect);
+    window.addEventListener("focus", reconnect);
+    window.addEventListener("online", reconnect);
+    document.addEventListener("visibilitychange", reconnect);
     return () => {
       stopped = true;
       refreshState.current = () => undefined;
@@ -88,6 +95,10 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
       window.clearInterval(heartbeat);
       unsubscribe();
       window.removeEventListener("pagehide", leave);
+      window.removeEventListener("pageshow", reconnect);
+      window.removeEventListener("focus", reconnect);
+      window.removeEventListener("online", reconnect);
+      document.removeEventListener("visibilitychange", reconnect);
       fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true });
     };
   }, [router, state.roomId]);

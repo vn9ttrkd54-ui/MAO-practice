@@ -68,6 +68,10 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
       void fetch(endpoint, { method: "DELETE", keepalive: true });
     }
 
+    function reconnect() {
+      if (document.visibilityState === "visible") void pollLobby();
+    }
+
     function disconnectForOutsideLink(event: MouseEvent) {
       if (navigatingToGame.current || !(event.target instanceof Element)) return;
       const link = event.target.closest("a[href]");
@@ -80,7 +84,11 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
     }
 
     window.addEventListener("pagehide", disconnect);
+    window.addEventListener("pageshow", reconnect);
     window.addEventListener("popstate", disconnect);
+    window.addEventListener("focus", reconnect);
+    window.addEventListener("online", reconnect);
+    document.addEventListener("visibilitychange", reconnect);
     document.addEventListener("click", disconnectForOutsideLink, true);
     return () => {
       stopped = true;
@@ -88,7 +96,11 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
       window.clearInterval(heartbeat);
       unsubscribe();
       window.removeEventListener("pagehide", disconnect);
+      window.removeEventListener("pageshow", reconnect);
       window.removeEventListener("popstate", disconnect);
+      window.removeEventListener("focus", reconnect);
+      window.removeEventListener("online", reconnect);
+      document.removeEventListener("visibilitychange", reconnect);
       document.removeEventListener("click", disconnectForOutsideLink, true);
     };
   }, [lobby.room.id, router]);

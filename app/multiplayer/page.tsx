@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { KeyRound, Plus, Trophy, Users, ArrowUpRight, Timer } from "lucide-react";
 import styles from "./lobby.module.css";
 
@@ -26,10 +27,40 @@ async function retryFutureJwt<T>(operation: () => Promise<T>): Promise<T> {
   }
 }
 
+interface MultiplayerLoadResult<T> {
+  data: T;
+  failed: boolean;
+}
+
+async function loadMultiplayerData<T>(operation: () => Promise<T>, fallback: T): Promise<MultiplayerLoadResult<T>> {
+  try {
+    return { data: await retryFutureJwt(operation), failed: false };
+  } catch (error) {
+    unstable_rethrow(error);
+    console.error("Multiplayer data refresh failed", error);
+    return { data: fallback, failed: true };
+  }
+}
+
 export default async function MultiplayerPage({ searchParams }: MultiplayerPageProps) {
-  const [{ error }, supabase, publicRooms, ongoingMatches, activeRooms, profile, ratingLeaderboard, recentMatches] = await Promise.all([
-    searchParams, createClient(), retryFutureJwt(listPublicRooms), retryFutureJwt(listOngoingPublicMatches), retryFutureJwt(listMyActiveMultiplayerRooms), retryFutureJwt(getMultiplayerProfile), retryFutureJwt(getMultiplayerRatingLeaderboard), retryFutureJwt(listRecentMultiplayerMatches),
+  const [{ error }, supabase, publicRoomsResult, ongoingMatchesResult, activeRoomsResult, profileResult, ratingLeaderboardResult, recentMatchesResult] = await Promise.all([
+    searchParams,
+    createClient(),
+    loadMultiplayerData(listPublicRooms, []),
+    loadMultiplayerData(listOngoingPublicMatches, []),
+    loadMultiplayerData(listMyActiveMultiplayerRooms, []),
+    loadMultiplayerData(getMultiplayerProfile, null),
+    loadMultiplayerData(getMultiplayerRatingLeaderboard, []),
+    loadMultiplayerData(listRecentMultiplayerMatches, []),
   ]);
+  const publicRooms = publicRoomsResult.data;
+  const ongoingMatches = ongoingMatchesResult.data;
+  const activeRooms = activeRoomsResult.data;
+  const profile = profileResult.data;
+  const ratingLeaderboard = ratingLeaderboardResult.data;
+  const recentMatches = recentMatchesResult.data;
+  const refreshFailed = [publicRoomsResult, ongoingMatchesResult, activeRoomsResult, profileResult, ratingLeaderboardResult, recentMatchesResult]
+    .some((result) => result.failed);
   const { data: { user } } = await supabase.auth.getUser();
   const orderedPublicRooms = [...publicRooms].sort((a, b) =>
     divisionOrder[a.settings.division] - divisionOrder[b.settings.division]
@@ -45,6 +76,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
   return <div className={rankPageClass(profile?.rankTier ?? "Novice")}><LiveRoomListRefresh /><main className={`${styles.lobby} mx-auto max-w-6xl px-5 py-8 sm:px-8`}>
     <header className={styles.header}><p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Multiplayer</p><h1 className="mt-1.5 text-3xl font-bold tracking-tight">Create or join a private room</h1><p className="mt-2 text-sm text-gray-600">Enter a code to join, or create a room with your own settings.</p></header>
     {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
+    {refreshFailed ? <div role="status" className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Some live multiplayer details are reconnecting. This page will refresh automatically.</div> : null}
 
     <div className="mt-6 grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
       <section className={`${styles.actionCard} rounded-2xl border bg-white p-5 shadow-sm`}><div className={styles.cardHeading}><span className={styles.iconTile}><KeyRound size={20} aria-hidden="true" /></span><h2 className="text-lg font-bold">Join with a code</h2></div><form action={joinPrivateRoomAction} className="mt-3 space-y-3"><label className="block text-sm font-semibold">Room code<input name="code" required minLength={8} maxLength={8} autoCapitalize="characters" placeholder="ABCD2345" className={`${fieldClass} uppercase tracking-widest`} /></label>{!user ? <label className="block text-sm font-semibold">Guest nickname<input name="guestNickname" required minLength={1} maxLength={20} placeholder="MathPlayer" className={fieldClass} /></label> : null}<PendingSubmitButton pendingText="Joining room…" className="w-full rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-gray-700">Join Room</PendingSubmitButton></form></section>
