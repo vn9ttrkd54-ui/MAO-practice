@@ -4222,4 +4222,772 @@ Answer: \boxed{B}.`,
 Area = \pi r^2 = \pi(1)^2 = \pi.
 Answer: \boxed{C}.`,
 },
+
+{
+  id: 20301,
+  number: 238,
+  division: "Alpha",
+  topic: "Number Theory",
+  difficulty: 2,
+  methods: [],
+  question: String.raw`For how many positive integer values of \(k\) are both \(\frac{k}{3}\) and \(3k\) three-digit integers?`,
+  choices: [String.raw`\(12\)`, String.raw`\(27\)`, String.raw`\(33\)`, String.raw`\(34\)`, "NOTA"],
+  answer: "A",
+  solution: String.raw`For \(\frac{k}{3}\) to be a three-digit integer,
+\[
+100\le \frac{k}{3}\le 999,
+\]
+so \(300\le k\le 2997\), and \(k\) must be divisible by \(3\). For \(3k\) to be three-digit,
+\[
+100\le 3k\le 999,
+\]
+which gives \(34\le k\le333\). Combining the bounds leaves the multiples of \(3\) from \(300\) through \(333\):
+\[
+300,303,\ldots,333.
+\]
+Their number is \(\frac{333-300}{3}+1=12\). Therefore the answer is \(\boxed{\text{A}}\).`,
+},
+
+{
+  id: 20302,
+  number: 239,
+  division: "Alpha",
+  topic: "Geometry",
+  difficulty: 2,
+  methods: [],
+  question: String.raw`For how many values of \(x\in[0,2\pi)\) does the triangle with vertices \((-5,0)\), \((5,0)\), and \((5\cos x,5\sin x)\) have area \(10\)?`,
+  choices: [String.raw`\(2\)`, String.raw`\(3\)`, String.raw`\(4\)`, String.raw`\(6\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`The segment joining \((-5,0)\) and \((5,0)\) is a horizontal base of length \(10\). The height from \((5\cos x,5\sin x)\) to the \(x\)-axis is \(|5\sin x|\). Hence
+\[
+\text{Area}=\frac12(10)|5\sin x|=25|\sin x|.
+\]
+Setting the area equal to \(10\) gives \(|\sin x|=\frac25\). On \([0,2\pi)\), a nonzero sine magnitude strictly below \(1\) occurs twice above and twice below the \(x\)-axis, for a total of \(4\) values. Therefore the answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20303,
+  number: 240,
+  division: "Alpha",
+  topic: "Number Theory",
+  difficulty: 3,
+  methods: [],
+  question: String.raw`The sum of the three largest prime divisors of \(15!-13!\) is \(X\). What is the sum of the digits of \(X\)?`,
+  choices: [String.raw`\(7\)`, String.raw`\(8\)`, String.raw`\(15\)`, String.raw`\(16\)`, "NOTA"],
+  answer: "A",
+  solution: String.raw`Factor out \(13!\):
+\[
+15!-13!=13!\bigl(15\cdot14-1\bigr)=13!\cdot209=13!\cdot11\cdot19.
+\]
+The prime divisors contributed by \(13!\) are at most \(13\), while the remaining factor contributes \(19\). Thus the three largest prime divisors are \(19\), \(13\), and \(11\). Their sum is
+\[
+X=19+13+11=43,
+\]
+whose digits sum to \(4+3=7\). Therefore the answer is \(\boxed{\text{A}}\).`,
+},
+
+{
+  id: 20304,
+  number: 241,
+  division: "Alpha",
+  topic: "Probability",
+  difficulty: 2,
+  methods: ["Conditional Probability"],
+  question: String.raw`A bin contains \(3\) red marbles and \(2\) green marbles. Marbles are drawn randomly, one at a time without replacement, until all \(3\) red marbles have been drawn or both green marbles have been drawn. What is the probability that all \(3\) red marbles are drawn first?`,
+  choices: [String.raw`\(\frac{3}{10}\)`, String.raw`\(\frac25\)`, String.raw`\(\frac12\)`, String.raw`\(\frac35\)`, "NOTA"],
+  answer: "B",
+  solution: String.raw`Imagine all five marbles placed in a uniformly random order. The third red marble appears before the second green marble exactly when a green marble is last: if the final marble is green, all three reds have already appeared when the first four draws end; if the final marble is red, both greens appear before the third red. Each marble is equally likely to occupy the final position, and \(2\) of the \(5\) marbles are green. Therefore
+\[
+P(\text{all reds first})=\frac25.
+\]
+The answer is \(\boxed{\text{B}}\).`,
+},
+
+{
+  id: 20305,
+  number: 242,
+  division: "Alpha",
+  topic: "Functions",
+  difficulty: 3,
+  methods: ["Nested Functions"],
+  question: String.raw`Let
+\[
+g(x)=\sqrt{\frac{x}{x-1}}
+\qquad\text{and}\qquad
+f(x)=\log_3(x-1).
+\]
+Find the sum of the integers less than or equal to \(10\) that lie in the domain of \(g(f(x))\).`,
+  choices: [String.raw`\(45\)`, String.raw`\(47\)`, String.raw`\(50\)`, String.raw`\(51\)`, "NOTA"],
+  answer: "B",
+  solution: String.raw`First, \(f(x)\) requires \(x>1\). The expression \(g(u)\) is defined when
+\[
+\frac{u}{u-1}\ge0
+\quad\text{and}\quad u\ne1,
+\]
+which gives \(u\le0\) or \(u>1\). Substituting \(u=\log_3(x-1)\):
+\[
+\log_3(x-1)\le0 \Longrightarrow 1<x\le2,
+\]
+and
+\[
+\log_3(x-1)>1 \Longrightarrow x>4.
+\]
+The qualifying integers at most \(10\) are \(2,5,6,7,8,9,10\), whose sum is \(47\). Therefore the answer is \(\boxed{\text{B}}\).`,
+},
+
+{
+  id: 20306,
+  number: 243,
+  division: "Alpha",
+  topic: "Geometry",
+  difficulty: 3,
+  methods: ["Point-to-Line Distance Formula"],
+  question: String.raw`A semicircle is inscribed in an isosceles triangle with base \(16\) and height \(15\), with the semicircle's diameter contained in the base of the triangle. What is the radius of the semicircle?`,
+  choices: [String.raw`\(4\sqrt3\)`, String.raw`\(\frac{17\sqrt3}{2}\)`, String.raw`\(\frac{64}{17}\)`, String.raw`\(\frac{120}{17}\)`, "NOTA"],
+  answer: "D",
+  solution: String.raw`Place the triangle's base endpoints at \((-8,0)\) and \((8,0)\), and its vertex at \((0,15)\). A sloping side has equation
+\[
+15x+8y-120=0.
+\]
+By symmetry, the center of the inscribed semicircle is \((0,0)\). Its radius is the perpendicular distance from this center to either sloping side:
+\[
+r=\frac{|15(0)+8(0)-120|}{\sqrt{15^2+8^2}}
+=\frac{120}{17}.
+\]
+Therefore the answer is \(\boxed{\text{D}}\).`,
+},
+
+{
+  id: 20307,
+  number: 244,
+  division: "Alpha",
+  topic: "Trigonometry",
+  difficulty: 4,
+  methods: ["Double-Angle Identity", "Trigonometric Identities"],
+  question: String.raw`Given
+\[
+8\sin^5k\cos k+1-8\sin k\cos^5k=0,
+\]
+find the smallest positive angle \(k\), in degrees, that satisfies the equation.`,
+  choices: [String.raw`\(7.5^\circ\)`, String.raw`\(15^\circ\)`, String.raw`\(37.5^\circ\)`, String.raw`\(75^\circ\)`, "NOTA"],
+  answer: "A",
+  solution: String.raw`Move the trigonometric terms to the other side and factor:
+\[
+1=8\sin k\cos k\bigl(\cos^4k-\sin^4k\bigr).
+\]
+Because \(\cos^4k-\sin^4k=(\cos^2k-\sin^2k)(\cos^2k+\sin^2k)=\cos(2k)\),
+\[
+1=8\sin k\cos k\cos(2k)=4\sin(2k)\cos(2k)=2\sin(4k).
+\]
+Thus \(\sin(4k)=\frac12\). The smallest positive possibility is \(4k=30^\circ\), so \(k=7.5^\circ\). Therefore the answer is \(\boxed{\text{A}}\).`,
+},
+
+{
+  id: 20308,
+  number: 245,
+  division: "Alpha",
+  topic: "Analytic Geometry",
+  difficulty: 2,
+  methods: ["Point-to-Line Distance Formula"],
+  question: String.raw`Let \(L\) be the locus of points equidistant from the point \((-1,0)\) and the line \(x=3\). If \((M,4)\) lies on \(L\), compute \(M\).`,
+  choices: [String.raw`\(-3\)`, String.raw`\(-1\)`, String.raw`\(4\sqrt2-1\)`, String.raw`\(4\sqrt2+1\)`, "NOTA"],
+  answer: "B",
+  solution: String.raw`The locus is a parabola with focus \((-1,0)\) and directrix \(x=3\). Its vertex is the midpoint \((1,0)\), and \(p=-2\), so its equation is
+\[
+y^2=4p(x-1)=-8(x-1).
+\]
+Substituting \((M,4)\) gives
+\[
+16=-8(M-1),
+\]
+so \(M-1=-2\) and \(M=-1\). Therefore the answer is \(\boxed{\text{B}}\).`,
+},
+
+{
+  id: 20309,
+  number: 246,
+  division: "Alpha",
+  topic: "Geometry",
+  difficulty: 3,
+  methods: ["Law of Cosines"],
+  question: String.raw`One side of a triangle has twice the length of another side, and the third side has length \(6\). If \(6\) is the longest side and one angle of the triangle is \(120^\circ\), then the product of the other two side lengths can be written as \(\frac{L}{U}\), where \(L\) and \(U\) are relatively prime positive integers. Compute \(L+U\).`,
+  choices: [String.raw`\(41\)`, String.raw`\(55\)`, String.raw`\(75\)`, String.raw`\(79\)`, "NOTA"],
+  answer: "D",
+  solution: String.raw`The longest side lies opposite the largest angle, so the side of length \(6\) is opposite the \(120^\circ\) angle. Let the other sides be \(x\) and \(2x\). By the Law of Cosines,
+\[
+6^2=x^2+(2x)^2-2(x)(2x)\cos120^\circ.
+\]
+Since \(\cos120^\circ=-\frac12\), this becomes \(36=7x^2\), so \(x^2=\frac{36}{7}\). The product of the other sides is
+\[
+x(2x)=2x^2=\frac{72}{7}.
+\]
+Thus \(L+U=72+7=79\), and the answer is \(\boxed{\text{D}}\).`,
+},
+
+{
+  id: 20310,
+  number: 247,
+  division: "Alpha",
+  topic: "Polynomials",
+  difficulty: 3,
+  methods: [],
+  question: String.raw`It is known that
+\[
+f(x)=3x^2+x^3-x^7
+\]
+has no negative real roots. How many nonreal roots does \(f\) have, counted with multiplicity?`,
+  choices: [String.raw`\(0\)`, String.raw`\(2\)`, String.raw`\(4\)`, String.raw`\(6\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`Factor
+\[
+f(x)=x^2(3+x-x^5).
+\]
+Thus \(x=0\) is a real root of multiplicity \(2\). In descending order, the remaining factor is \(-x^5+x+3\), whose signs change exactly once. By Descartes' Rule of Signs, it has exactly one positive real root. The problem states that there are no negative real roots. A degree-seven polynomial has seven complex roots counted with multiplicity, so the number of nonreal roots is
+\[
+7-2-1=4.
+\]
+Therefore the answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20311,
+  number: 248,
+  division: "Alpha",
+  topic: "Trigonometry",
+  difficulty: 4,
+  methods: ["Trigonometric Identities"],
+  question: String.raw`Find the smallest positive value of \(L\), in degrees, given that
+\[
+\sin(L-U)+\cos(L+U)=0
+\qquad\text{and}\qquad
+\tan U=\frac{1}{2026}.
+\]`,
+  choices: [String.raw`\(45^\circ\)`, String.raw`\(60^\circ\)`, String.raw`\(120^\circ\)`, String.raw`\(135^\circ\)`, "NOTA"],
+  answer: "D",
+  solution: String.raw`Expand the angle sums:
+\[
+\sin L\cos U-\cos L\sin U+\cos L\cos U-\sin L\sin U=0.
+\]
+Dividing by \(\cos L\cos U\) gives
+\[
+\tan L-\tan U+1-\tan L\tan U=0.
+\]
+Factor the left side:
+\[
+(1+\tan L)(1-\tan U)=0.
+\]
+Because \(\tan U=\frac1{2026}\ne1\), we must have \(\tan L=-1\). The smallest positive angle with tangent \(-1\) is \(135^\circ\). Therefore the answer is \(\boxed{\text{D}}\).`,
+},
+
+{
+  id: 20312,
+  number: 249,
+  division: "Alpha",
+  topic: "Probability",
+  difficulty: 3,
+  methods: ["Conditional Probability", "Binomial Theorem"],
+  question: String.raw`The Snowman flips \(5\) fair coins and Jwigs flips \(2\) fair coins. The probability that Jwigs obtains more heads than the Snowman can be written as \(\frac{L}{U}\), where \(L\) and \(U\) are relatively prime positive integers. Compute \(L+U\).`,
+  choices: [String.raw`\(7\)`, String.raw`\(17\)`, String.raw`\(33\)`, String.raw`\(39\)`, "NOTA"],
+  answer: "B",
+  solution: String.raw`Let \(J\) and \(S\) be the respective numbers of heads. Since \(J\le2\), the event \(J>S\) consists of
+\[
+(J,S)=(1,0),(2,0),(2,1).
+\]
+Using the binomial probabilities,
+\[
+P(J>S)
+=\frac{2}{4}\frac{1}{32}
++\frac{1}{4}\frac{1}{32}
++\frac{1}{4}\frac{5}{32}
+=\frac{8}{128}
+=\frac{1}{16}.
+\]
+Thus \(L+U=1+16=17\), and the answer is \(\boxed{\text{B}}\).`,
+},
+
+{
+  id: 20313,
+  number: 250,
+  division: "Alpha",
+  topic: "Combinatorics",
+  difficulty: 2,
+  methods: [],
+  question: String.raw`How many four-digit positive integers have four different digits, are multiples of \(5\), and have \(5\) as their largest digit?`,
+  choices: [String.raw`\(48\)`, String.raw`\(60\)`, String.raw`\(84\)`, String.raw`\(108\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`A multiple of \(5\) ends in \(0\) or \(5\).
+
+If the last digit is \(0\), the other three distinct digits must come from \(\{1,2,3,4,5\}\) and must include \(5\). Choose the other two digits in \(\binom42=6\) ways and arrange the three leading digits in \(3!=6\) ways, giving \(36\).
+
+If the last digit is \(5\), choose and arrange three digits from \(\{0,1,2,3,4\}\), but do not allow \(0\) in the thousands place. This gives
+\[
+5\cdot4\cdot3-1\cdot4\cdot3=60-12=48.
+\]
+The total is \(36+48=84\), so the answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20314,
+  number: 251,
+  division: "Alpha",
+  topic: "Geometry",
+  difficulty: 4,
+  methods: ["Pythagorean Theorem"],
+  question: String.raw`Trapezoid \(SNOW\) has parallel bases \(\overline{SN}\) and \(\overline{OW}\). Point \(R\) is the midpoint of \(\overline{SW}\), and \(\angle NOR\) is a right angle. If \(SN=NO=7\) and \(OW=18\), what is \(NR\)?`,
+  choices: [String.raw`\(\sqrt{193}\)`, String.raw`\(\sqrt{130}\)`, String.raw`\(\frac{\sqrt{674}}2\)`, String.raw`\(2\sqrt7\)`, "NOTA"],
+  answer: "A",
+  solution: String.raw`Let \(Q\) be the midpoint of \(\overline{NO}\). Since \(R\) and \(Q\) are the midpoints of the trapezoid's legs, \(\overline{RQ}\) is its midsegment. Therefore
+\[
+RQ=\frac{SN+OW}{2}=\frac{7+18}{2}=\frac{25}{2}.
+\]
+Also, \(OQ=\frac72\). Because \(\angle NOR=90^\circ\), triangle \(ROQ\) is right at \(O\), so
+\[
+RO=\sqrt{\left(\frac{25}{2}\right)^2-\left(\frac72\right)^2}=12.
+\]
+Finally, triangle \(NOR\) is right with legs \(NO=7\) and \(OR=12\). Hence
+\[
+NR=\sqrt{7^2+12^2}=\sqrt{193}.
+\]
+Therefore the answer is \(\boxed{\text{A}}\).`,
+},
+
+{
+  id: 20315,
+  number: 252,
+  division: "Alpha",
+  topic: "Complex Numbers",
+  difficulty: 2,
+  methods: ["Real and Imaginary Parts"],
+  question: String.raw`The two complex numbers whose squares equal \(5-12i\) are \(M+Ri\) and \(L+Ui\), where \(M,R,L,U\) are integers. Compute \(MR\).`,
+  choices: [String.raw`\(-12\)`, String.raw`\(-6\)`, String.raw`\(6\)`, String.raw`\(12\)`, "NOTA"],
+  answer: "B",
+  solution: String.raw`Write a square root as \(a+bi\). Then
+\[
+(a+bi)^2=(a^2-b^2)+2ab\,i=5-12i,
+\]
+so \(a^2-b^2=5\) and \(2ab=-12\). The integer solution is \(a=3\), \(b=-2\), giving one root \(3-2i\); the other is its negative, \(-3+2i\). For either root, the product of its real and imaginary coefficients is
+\[
+MR=(3)(-2)=(-3)(2)=-6.
+\]
+Therefore the answer is \(\boxed{\text{B}}\).`,
+},
+
+{
+  id: 20316,
+  number: 253,
+  division: "Alpha",
+  topic: "Number Theory",
+  difficulty: 4,
+  methods: ["Difference of Squares"],
+  question: String.raw`Evaluate
+\[
+\left\lfloor
+\frac{2027^3}{2025\cdot2026}
+-\frac{2025^3}{2026\cdot2027}
+\right\rfloor.
+\]`,
+  choices: [String.raw`\(2\)`, String.raw`\(4\)`, String.raw`\(7\)`, String.raw`\(8\)`, "NOTA"],
+  answer: "D",
+  solution: String.raw`Let \(x=2026\). Combining the two fractions gives
+\[
+\frac{(x+1)^4-(x-1)^4}{(x-1)x(x+1)}.
+\]
+The numerator simplifies to \(8x^3+8x=8x(x^2+1)\), so the expression equals
+\[
+\frac{8(x^2+1)}{x^2-1}
+=8+\frac{16}{x^2-1}.
+\]
+For \(x=2026\), the added fraction is strictly between \(0\) and \(1\). Therefore the floor is \(8\), and the answer is \(\boxed{\text{D}}\).`,
+},
+
+{
+  id: 20317,
+  number: 254,
+  division: "Alpha",
+  topic: "Conic Sections",
+  difficulty: 3,
+  methods: ["Completing the Square", "Asymptotes"],
+  question: String.raw`Find an equation of one asymptote of the hyperbola
+\[
+49y^2-4x^2+98y-48x-291=0.
+\]`,
+  choices: [String.raw`\(7x-2y=-40\)`, String.raw`\(7x-2y=44\)`, String.raw`\(2x-7y=19\)`, String.raw`\(2x-7y=-5\)`, "NOTA"],
+  answer: "D",
+  solution: String.raw`Complete both squares:
+\[
+49(y+1)^2-4(x+6)^2=196,
+\]
+so the standard form is
+\[
+\frac{(y+1)^2}{4}-\frac{(x+6)^2}{49}=1.
+\]
+Its asymptotes satisfy
+\[
+y+1=\pm\frac27(x+6).
+\]
+Using the positive sign gives \(7y+7=2x+12\), or
+\[
+2x-7y=-5.
+\]
+Therefore the answer is \(\boxed{\text{D}}\).`,
+},
+
+{
+  id: 20318,
+  number: 255,
+  division: "Alpha",
+  topic: "Polynomials",
+  difficulty: 2,
+  methods: ["Vieta's Formulas"],
+  question: String.raw`The roots of the polynomial \(g(x)\) are \(-5\), \(2\), \(3\), and \(7\). The constant term of \(g(x)\) is \(105\), and the degree of \(g\) is minimized. What is the sum of the coefficients of \(g(x)\)?`,
+  choices: [String.raw`\(-42\)`, String.raw`\(-36\)`, String.raw`\(36\)`, String.raw`\(42\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`The minimum-degree polynomial has the form
+\[
+g(x)=a(x+5)(x-2)(x-3)(x-7).
+\]
+Its constant term is \(-210a\), so \(-210a=105\) and \(a=-\frac12\). The sum of a polynomial's coefficients is \(g(1)\):
+\[
+g(1)=-\frac12(6)(-1)(-2)(-6)=36.
+\]
+Therefore the answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20319,
+  number: 256,
+  division: "Alpha",
+  topic: "Probability",
+  difficulty: 4,
+  methods: ["Conditional Probability"],
+  question: String.raw`Snow rolls a fair six-sided die three times. It is known that the positive difference between the first two rolls equals the third roll. What is the probability that at least one of the three rolls is \(3\)?`,
+  choices: [String.raw`\(\frac{5}{72}\)`, String.raw`\(\frac{7}{108}\)`, String.raw`\(\frac{7}{15}\)`, String.raw`\(\frac{8}{15}\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`Under the given condition, the first two rolls must be distinct, and then the third roll is uniquely determined by their difference. Thus there are \(6\cdot5=30\) equally likely valid ordered triples.
+
+There are \(6\) triples whose third roll is \(3\), corresponding to ordered first-roll pairs with difference \(3\). There are \(5\) valid triples with first roll \(3\) and \(5\) with second roll \(3\). The triples \((3,6,3)\) and \((6,3,3)\) have each been counted twice, so inclusion-exclusion gives
+\[
+6+5+5-2=14
+\]
+favorable triples. The conditional probability is
+\[
+\frac{14}{30}=\frac{7}{15}.
+\]
+Therefore the answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20320,
+  number: 257,
+  division: "Alpha",
+  topic: "Trigonometry",
+  difficulty: 3,
+  methods: ["Trigonometric Identities"],
+  question: String.raw`Given
+\[
+\sin x=-\frac5{13},\quad 0<x<\frac{3\pi}{2},
+\qquad
+\csc y=\frac{\sqrt{10}}3,\quad \frac\pi2<y<\pi,
+\]
+find \(\cos(x-y)\).`,
+  choices: [String.raw`\(-\frac{3\sqrt{10}}{130}\)`, String.raw`\(-\frac{27\sqrt{10}}{130}\)`, String.raw`\(\frac{27\sqrt{10}}{130}\)`, String.raw`\(\frac{-120+13\sqrt{10}}{130}\)`, "NOTA"],
+  answer: "A",
+  solution: String.raw`The restrictions place \(x\) in Quadrant III, so \(\cos x=-\frac{12}{13}\). They place \(y\) in Quadrant II. Since \(\sin y=\frac3{\sqrt{10}}\), we have \(\cos y=-\frac1{\sqrt{10}}\). Therefore
+\[
+\cos(x-y)=\cos x\cos y+\sin x\sin y
+=\frac{12}{13\sqrt{10}}-\frac{15}{13\sqrt{10}}
+=-\frac{3\sqrt{10}}{130}.
+\]
+Therefore the answer is \(\boxed{\text{A}}\).`,
+},
+
+{
+  id: 20321,
+  number: 258,
+  division: "Alpha",
+  topic: "Geometry",
+  difficulty: 5,
+  methods: ["Angle Bisector Theorem"],
+  question: String.raw`Triangle \(XYZ\) is inscribed in a circle. The angle bisector through \(X\) intersects \(\overline{YZ}\) at \(W\) and intersects the circle again at \(K\). If \(XY:XZ=4:1\) and \(XW\cdot WK=36\), what is the length of \(YZ\)?`,
+  choices: [String.raw`\(3\)`, String.raw`\(12\)`, String.raw`\(15\)`, String.raw`\(16\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`By the Angle Bisector Theorem,
+\[
+YW:WZ=XY:XZ=4:1.
+\]
+Write \(YW=4a\) and \(WZ=a\). The intersecting chords \(XK\) and \(YZ\) meet at \(W\), so
+\[
+XW\cdot WK=YW\cdot WZ.
+\]
+Thus \(36=(4a)(a)=4a^2\), giving \(a=3\). Therefore
+\[
+YZ=YW+WZ=4a+a=5a=15.
+\]
+The answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20322,
+  number: 259,
+  division: "Alpha",
+  topic: "Logs and Exponents",
+  difficulty: 3,
+  methods: ["Logarithms", "Vieta's Formulas"],
+  question: String.raw`What is the sum of the real solutions to
+\[
+7^{3x^2}\cdot5^x=11?
+\]`,
+  choices: [String.raw`\(\log_5 7\)`, String.raw`\(\frac{\log(1/5)}{\log7}\)`, String.raw`\(\frac{\log5}{3\log7}\)`, String.raw`\(-\frac{\log5}{3\log7}\)`, "NOTA"],
+  answer: "D",
+  solution: String.raw`Take logarithms of both sides:
+\[
+3x^2\log7+x\log5-\log11=0.
+\]
+This is a quadratic in \(x\). By Vieta's formulas, the sum of its roots is the negative coefficient of \(x\) divided by the coefficient of \(x^2\):
+\[
+-\frac{\log5}{3\log7}.
+\]
+The discriminant is positive, so both roots are real. Therefore the answer is \(\boxed{\text{D}}\).`,
+},
+
+{
+  id: 20323,
+  number: 260,
+  division: "Alpha",
+  topic: "Analytic Geometry",
+  difficulty: 3,
+  methods: ["Distance Formula"],
+  question: String.raw`A line intersects the graph of \(y=|x|\) at points \(L\) and \(U\). The midpoint of \(\overline{LU}\) is \((3,4)\). Find the length of \(\overline{LU}\).`,
+  choices: [String.raw`\(6\sqrt2\)`, String.raw`\(4\sqrt5\)`, String.raw`\(10\)`, String.raw`\(8\sqrt2\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`The two intersection points must lie on opposite branches of \(y=|x|\). Write them as \((a,a)\) and \((b,-b)\), where \(a\ge0\) and \(b\le0\). The midpoint condition gives
+\[
+\frac{a+b}{2}=3,
+\qquad
+\frac{a-b}{2}=4.
+\]
+Thus \(a+b=6\) and \(a-b=8\), so \(a=7\) and \(b=-1\). The points are \((7,7)\) and \((-1,1)\), and their distance is
+\[
+\sqrt{(7-(-1))^2+(7-1)^2}=\sqrt{8^2+6^2}=10.
+\]
+Therefore the answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20324,
+  number: 261,
+  division: "Alpha",
+  topic: "Trigonometry",
+  difficulty: 5,
+  methods: ["Trigonometric Identities", "Substitution"],
+  question: String.raw`Let \(S\) be the set of intersection points of the graphs
+\[
+y=5\sec x+2\sin(2x)
+\qquad\text{and}\qquad
+y=5\tan x+8\cos x
+\]
+on \([0,2\pi]\). Find the product of the \(y\)-coordinates of all points in \(S\).`,
+  choices: [String.raw`\(-\frac{49}{3}\)`, String.raw`\(-\frac{25}{3}\)`, String.raw`\(-\frac{16}{3}\)`, String.raw`\(-\frac43\)`, "NOTA"],
+  answer: "A",
+  solution: String.raw`At any intersection, \(\cos x\ne0\) because \(\sec x\) and \(\tan x\) must be defined. Set the expressions equal and multiply by \(\cos x\):
+\[
+5+4\sin x\cos^2x=5\sin x+8\cos^2x.
+\]
+With \(s=\sin x\) and \(\cos^2x=1-s^2\), this becomes
+\[
+4s^3-8s^2+s+3=0
+=(s-1)(2s-3)(2s+1).
+\]
+The value \(s=\frac32\) is impossible, and \(s=1\) occurs where \(\cos x=0\), outside the original domains. Thus \(\sin x=-\frac12\), giving \(x=\frac{7\pi}{6},\frac{11\pi}{6}\). The corresponding \(y\)-values are
+\[
+-\frac{7\sqrt3}{3}
+\quad\text{and}\quad
+\frac{7\sqrt3}{3}.
+\]
+Their product is \(-\frac{49}{3}\), so the answer is \(\boxed{\text{A}}\).`,
+},
+
+{
+  id: 20325,
+  number: 262,
+  division: "Alpha",
+  topic: "Algebra",
+  difficulty: 4,
+  methods: ["Difference of Squares"],
+  question: String.raw`For values of \(M\) and \(U\) for which it is defined, simplify
+\[
+\frac{(M^2-3^2-U^2)^2-4(3U)^2}
+{(M^2-U^2-6M+9)(M^2+3M+3U-U^2)}.
+\]`,
+  choices: [String.raw`\(1\)`, String.raw`\(\frac{M+U+3}{M+U}\)`, String.raw`\(\frac{M-U+3}{M-U}\)`, String.raw`\(\frac{M+U-9}{M+U+9}\)`, "NOTA"],
+  answer: "B",
+  solution: String.raw`Factor the numerator as a difference of squares:
+\[
+\begin{aligned}
+&(M^2-9-U^2)^2-(6U)^2\\
+&=(M^2-(U+3)^2)(M^2-(U-3)^2)\\
+&=(M-U-3)(M+U+3)(M-U+3)(M+U-3).
+\end{aligned}
+\]
+The denominator factors as
+\[
+\begin{aligned}
+M^2-U^2-6M+9&=(M-U-3)(M+U-3),\\
+M^2+3M+3U-U^2&=(M+U)(M-U+3).
+\end{aligned}
+\]
+Canceling the common factors, while retaining the original domain restrictions, leaves
+\[
+\frac{M+U+3}{M+U}.
+\]
+Therefore the answer is \(\boxed{\text{B}}\).`,
+},
+
+{
+  id: 20326,
+  number: 263,
+  division: "Alpha",
+  topic: "Geometry",
+  difficulty: 4,
+  methods: ["Shoelace Theorem"],
+  question: String.raw`In triangle \(WIG\), \(m\angle WIG=150^\circ\), \(WI=3\sqrt3\), and \(IG=4\). A line perpendicular to \(\overline{WI}\) is constructed through \(W\), and a line perpendicular to \(\overline{IG}\) is constructed through \(G\). The perpendicular lines intersect at \(J\). Find the area enclosed by quadrilateral \(JWIG\).`,
+  choices: [String.raw`\(13\sqrt3+21\)`, String.raw`\(50\sqrt3\)`, String.raw`\(\frac{91\sqrt3}{2}\)`, String.raw`\(\frac{109\sqrt3}{2}\)`, "NOTA"],
+  answer: "C",
+  solution: String.raw`Place \(I=(0,0)\) and \(W=(3\sqrt3,0)\). Since \(IG=4\) and its direction is \(150^\circ\),
+\[
+G=(4\cos150^\circ,4\sin150^\circ)=(-2\sqrt3,2).
+\]
+The line through \(W\) perpendicular to \(WI\) is \(x=3\sqrt3\). A direction perpendicular to \(IG\) is \((2,2\sqrt3)\), so the other line is
+\[
+(-2\sqrt3,2)+t(2,2\sqrt3).
+\]
+Setting its \(x\)-coordinate equal to \(3\sqrt3\) gives \(t=\frac{5\sqrt3}{2}\), hence \(J=(3\sqrt3,17)\). Applying the Shoelace Theorem to \(J,W,I,G\) gives
+\[
+\text{Area}=\frac12\left|-34\sqrt3-57\sqrt3\right|
+=\frac{91\sqrt3}{2}.
+\]
+Therefore the answer is \(\boxed{\text{C}}\).`,
+},
+
+{
+  id: 20327,
+  number: 264,
+  division: "Alpha",
+  topic: "Algebra",
+  difficulty: 4,
+  methods: ["Substitution"],
+  question: String.raw`Let \(S\) be the set of intersection points of
+\[
+xy-x+y-1=0
+\qquad\text{and}\qquad
+3x^2-y^2-2y=0.
+\]
+Find the sum of the \(y\)-coordinates of all points in \(S\).`,
+  choices: [String.raw`\(-3\)`, String.raw`\(-2\)`, String.raw`\(1\)`, String.raw`\(2\)`, "NOTA"],
+  answer: "E",
+  solution: String.raw`Factor the first equation:
+\[
+xy-x+y-1=(x+1)(y-1)=0.
+\]
+If \(x=-1\), the second equation becomes
+\[
+3-y^2-2y=0,
+\]
+so \(y=1\) or \(y=-3\). If \(y=1\), the second equation becomes \(3x^2-3=0\), so \(x=\pm1\). The distinct intersection points are
+\[
+(-1,-3),\quad(-1,1),\quad(1,1).
+\]
+Their \(y\)-coordinates sum to \(-3+1+1=-1\), which is not among choices A through D. Therefore the answer is \(\boxed{\text{E}}\).`,
+},
+
+{
+  id: 20328,
+  number: 265,
+  division: "Alpha",
+  topic: "Complex Numbers",
+  difficulty: 2,
+  methods: ["De Moivre's Theorem", "Arguments of Complex Numbers"],
+  question: String.raw`What is the smallest positive integer \(n\) for which
+\[
+(-3+i\sqrt3)^n
+\]
+is a real number?`,
+  choices: [String.raw`\(4\)`, String.raw`\(6\)`, String.raw`\(8\)`, String.raw`\(16\)`, "NOTA"],
+  answer: "B",
+  solution: String.raw`The number \(-3+i\sqrt3\) has modulus \(2\sqrt3\) and argument \(150^\circ=\frac{5\pi}{6}\). Thus
+\[
+(-3+i\sqrt3)^n=(2\sqrt3)^n
+\left(\cos\frac{5n\pi}{6}+i\sin\frac{5n\pi}{6}\right).
+\]
+This is real exactly when \(\frac{5n\pi}{6}\) is an integer multiple of \(\pi\), or equivalently when \(6\mid5n\). Since \(5\) and \(6\) are relatively prime, the smallest positive such \(n\) is \(6\). Therefore the answer is \(\boxed{\text{B}}\).`,
+},
+
+{
+  id: 20329,
+  number: 266,
+  division: "Alpha",
+  topic: "Matrices",
+  difficulty: 5,
+  methods: ["Matrix Inverse", "Determinant"],
+  question: String.raw`What is the entry in the third row and first column of the inverse of
+\[
+A=\begin{bmatrix}
+3&2&4\\
+0&5&1\\
+-2&5&-3
+\end{bmatrix}?
+\]`,
+  choices: [String.raw`\(-\frac5{12}\)`, String.raw`\(-\frac16\)`, String.raw`\(\frac12\)`, String.raw`\(\frac34\)`, "NOTA"],
+  answer: "A",
+  solution: String.raw`The \((3,1)\) entry of \(A^{-1}\) is \(\frac{C_{1,3}}{\det A}\). The relevant cofactor is
+\[
+C_{1,3}=\det\begin{bmatrix}0&5\\-2&5\end{bmatrix}=10.
+\]
+Expanding the determinant of \(A\) along the first row gives
+\[
+\det A
+=3(-20)-2(2)+4(10)
+=-24.
+\]
+Therefore
+\[
+(A^{-1})_{3,1}=\frac{10}{-24}=-\frac5{12}.
+\]
+The answer is \(\boxed{\text{A}}\).`,
+},
+
+{
+  id: 20330,
+  number: 267,
+  division: "Alpha",
+  topic: "Sequences",
+  difficulty: 2,
+  methods: [],
+  question: String.raw`The first \(102\) positive integers are placed into three rows of consecutive integers, snaking as shown:
+\[
+\begin{array}{cccccc}
+1&6&7&\cdots&102\\
+2&5&8&\cdots&101\\
+3&4&9&\cdots&100
+\end{array}
+\]
+What is the sum of the numbers in the first row?`,
+  choices: [String.raw`\(721\)`, String.raw`\(1648\)`, String.raw`\(1687\)`, String.raw`\(1751\)`, "NOTA"],
+  answer: "D",
+  solution: String.raw`The first row is the union of two arithmetic sequences:
+\[
+1,7,13,\ldots,97
+\]
+and
+\[
+6,12,18,\ldots,102.
+\]
+Each sequence has \(17\) terms. Their sums are
+\[
+\frac{17}{2}(1+97)=833
+\quad\text{and}\quad
+\frac{17}{2}(6+102)=918.
+\]
+Therefore the first-row sum is \(833+918=1751\), and the answer is \(\boxed{\text{D}}\).`,
+},
 ];
