@@ -31,7 +31,7 @@ test("new Challenge questions are difficult, LaTeX-formatted, and complete", () 
 
 test("new Challenge questions match each division's subject level", () => {
   const topicsByDivision = {
-    Mu: ["Limits", "Optimization", "Differential Equations", "Improper Integrals", "Derivatives"],
+    Mu: ["Limits", "Optimization", "Differential Equations", "Related Rates", "Derivatives"],
     Alpha: ["Trigonometry", "Polynomials", "Complex Numbers", "Trigonometric Equations", "Logarithms"],
     Theta: ["Functions", "Number Theory", "Counting", "Polynomials", "Combinatorics"],
   };

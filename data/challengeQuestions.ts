@@ -117,27 +117,30 @@ export const challengeQuestions = [
     difficulty: 4,
     question: String.raw`Evaluate
 \[
-\lim_{x\to 0}\frac{\displaystyle\int_0^{\sin x}\arctan(t)\,dt}{x^2}.
+\lim_{x\to0}\frac{\tan x-\sin x}{x^3}.
 \]`,
     choices: {
-      A: String.raw`\(0\)`,
-      B: String.raw`\(\frac14\)`,
-      C: String.raw`\(\frac12\)`,
-      D: String.raw`\(1\)`,
-      E: String.raw`\(2\)`,
+      A: String.raw`\(-\frac12\)`,
+      B: String.raw`\(0\)`,
+      C: String.raw`\(\frac16\)`,
+      D: String.raw`\(\frac13\)`,
+      E: String.raw`\(\frac12\)`,
     },
-    answer: "C",
-    solution: String.raw`Both the numerator and denominator approach \(0\). By the Fundamental Theorem of Calculus and the chain rule,
+    answer: "E",
+    solution: String.raw`Rewrite the numerator before taking the limit:
 \[
-\frac{d}{dx}\int_0^{\sin x}\arctan(t)\,dt
-=\arctan(\sin x)\cos x.
+\tan x-\sin x
+=\frac{\sin x}{\cos x}-\sin x
+=\frac{\sin x(1-\cos x)}{\cos x}.
 \]
-One application of L'Hopital's Rule still gives \(0/0\), so differentiate again:
+Therefore,
 \[
-\frac{d}{dx}\bigl(\arctan(\sin x)\cos x\bigr)
-=\frac{\cos^2x}{1+\sin^2x}-\arctan(\sin x)\sin x.
+\frac{\tan x-\sin x}{x^3}
+=\left(\frac{\sin x}{x}\right)
+ \left(\frac{1-\cos x}{x^2}\right)
+ \left(\frac1{\cos x}\right).
 \]
-At \(x=0\), this expression equals \(1\), while \(\frac{d^2}{dx^2}(x^2)=2\). Therefore the limit is \(\boxed{\frac12}\).`,
+The three factors approach \(1\), \(\frac12\), and \(1\), respectively. Their product is \(\boxed{\frac12}\).`,
   },
   {
     id: "CH-0008",
@@ -298,10 +301,8 @@ What is \(y(\ln\sqrt3)\)?`,
       E: String.raw`\(2\)`,
     },
     answer: "C",
-    solution: String.raw`Separate variables and use partial fractions:
+    solution: String.raw`Separating variables and applying partial fractions gives
 \[
-\int\frac{dy}{y(2-y)}=\int dx
-\quad\Longrightarrow\quad
 \frac12\ln\left(\frac{y}{2-y}\right)=x+C.
 \]
 The condition \(y(0)=1\) gives \(C=0\), so
@@ -374,33 +375,35 @@ For each of the \(90\) choices of \((a,b)\), there is normally one digit \(c\) w
   {
     id: "CH-0016",
     division: "Mu",
-    topic: "Improper Integrals",
-    difficulty: 5,
-    question: String.raw`Evaluate
+    topic: "Related Rates",
+    difficulty: 4,
+    question: String.raw`A point \((x,y)\) moves along the curve
 \[
-\int_0^\infty\frac{dx}{x^2+6x+13}.
-\]`,
+x^2+xy+y^2=7.
+\]
+At the instant when the point is \((1,2)\), \(\frac{dx}{dt}=2\). What is \(\frac{dy}{dt}\) at that instant?`,
     choices: {
-      A: String.raw`\(\tan^{-1}\!\left(\frac23\right)\)`,
-      B: String.raw`\(\frac12\tan^{-1}\!\left(\frac23\right)\)`,
-      C: String.raw`\(\frac12\tan^{-1}\!\left(\frac32\right)\)`,
-      D: String.raw`\(\frac\pi4\)`,
-      E: String.raw`\(\frac\pi2-\frac12\tan^{-1}\!\left(\frac23\right)\)`,
+      A: String.raw`\(-\frac85\)`,
+      B: String.raw`\(-\frac65\)`,
+      C: String.raw`\(-\frac45\)`,
+      D: String.raw`\(\frac45\)`,
+      E: String.raw`\(\frac85\)`,
     },
-    answer: "B",
-    solution: String.raw`Complete the square in the denominator:
+    answer: "A",
+    solution: String.raw`Differentiate the curve equation with respect to time:
 \[
-x^2+6x+13=(x+3)^2+4.
+2x\frac{dx}{dt}
++y\frac{dx}{dt}
++x\frac{dy}{dt}
++2y\frac{dy}{dt}=0.
 \]
-Thus
+Substitute \(x=1\), \(y=2\), and \(\frac{dx}{dt}=2\):
 \[
-\int_0^\infty\frac{dx}{(x+3)^2+2^2}
-=\frac12\left[\tan^{-1}\left(\frac{x+3}{2}\right)\right]_0^\infty
-=\frac12\left(\frac\pi2-\tan^{-1}\frac32\right).
+2(1)(2)+2(2)+1\frac{dy}{dt}+2(2)\frac{dy}{dt}=0.
 \]
-The positive angles \(\tan^{-1}(3/2)\) and \(\tan^{-1}(2/3)\) are complementary, so the value is
+Thus \(8+5\frac{dy}{dt}=0\), so
 \[
-\boxed{\frac12\tan^{-1}\left(\frac23\right)}.
+\frac{dy}{dt}=\boxed{-\frac85}.
 \]`,
   },
   {
