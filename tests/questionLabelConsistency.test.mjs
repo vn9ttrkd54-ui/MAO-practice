@@ -44,7 +44,7 @@ test("question-bank labels use canonical names", () => {
     "Eigenvalues", "Euler's Formula", "Even Functions", "Exponential Limits",
     "Fermat's Last Theorem", "First Derivative Test",
     "Expected Value", "First-Order Linear Equations", "Gaussian Integral", "Geometric Probability", "Geometric Sequence",
-    "Generating Functions", "Geometric Series", "Half-Angle", "Heron's Formula", "Homogeneous First-Order Equations",
+    "Generating Functions", "Geometric Series", "Half-Angle Identity", "Heron's Formula", "Homogeneous First-Order Equations",
     "Hyperbolic Functions", "Imaginary-Part Argument",
     "Implicit Differentiation", "Infinite Geometric Series", "Infinite Series",
     "Inclusion-Exclusion", "Integral Properties", "Integration by Parts", "Intermediate Value Theorem", "Inverse Functions",
@@ -68,4 +68,70 @@ test("question-bank labels use canonical names", () => {
 
   assert.deepEqual([...new Set(topics)].sort(), approvedTopics.sort());
   assert.deepEqual([...new Set(methods)].sort(), approvedMethods.sort());
+});
+
+test("specific trigonometric identity labels do not repeat the generic label", () => {
+  const alphaSource = sources.find(({ file }) => file === "alpha.ts")?.source ?? "";
+  const alphaMethodLists = [...alphaSource.matchAll(/methods:\s*\[([^\]]*)\]/g)].map(match =>
+    [...match[1].matchAll(/"([^"]+)"/g)].map(label => label[1]),
+  );
+  const specificIdentityMethods = new Set([
+    "Double-Angle Identity",
+    "Half-Angle Identity",
+    "Product-to-Sum Identity",
+    "Sum-to-Product Identity",
+  ]);
+
+  for (const labels of alphaMethodLists) {
+    const hasSpecificIdentity = labels.some(label => specificIdentityMethods.has(label));
+    assert.equal(
+      hasSpecificIdentity && labels.includes("Trigonometric Identities"),
+      false,
+      `Redundant trigonometric method labels: ${labels.join(", ")}`,
+    );
+  }
+});
+
+test("Alpha uses one canonical sequence-and-series topic", () => {
+  const alphaSource = sources.find(({ file }) => file === "alpha.ts")?.source ?? "";
+  const alphaTopics = [...alphaSource.matchAll(/topic:\s*"([^"]+)"/g)].map(match => match[1]);
+  const legacySequenceTopics = new Set(["Sequences", "Series", "Geometric Series"]);
+
+  assert.equal(alphaTopics.includes("Sequences and Series"), true);
+  assert.deepEqual(
+    [...new Set(alphaTopics.filter(topic => legacySequenceTopics.has(topic)))],
+    [],
+  );
+});
+
+test("Alpha questions use the most specific established topic when unambiguous", () => {
+  const alphaSource = sources.find(({ file }) => file === "alpha.ts")?.source ?? "";
+  const alphaBlocks = alphaSource.split(/(?=\n\s*\{\s*\n\s*id:\s*\d+)/);
+  const topicsById = new Map(
+    alphaBlocks.flatMap(block => {
+      const id = block.match(/id:\s*(\d+)/)?.[1];
+      const topic = block.match(/topic:\s*"([^"]+)"/)?.[1];
+      return id && topic ? [[Number(id), topic]] : [];
+    }),
+  );
+  const expectedTopics = new Map([
+    [20043, "Polynomials"],
+    [20062, "Limits"],
+    [20111, "Logs and Exponents"],
+    [20221, "Logs and Exponents"],
+    [20226, "Binomial Expansion"],
+    [20229, "Logs and Exponents"],
+    [20233, "Sequences and Series"],
+    [20237, "Sequences and Series"],
+    [20244, "Inequalities"],
+    [20255, "Binomial Expansion"],
+    [20258, "Sequences and Series"],
+    [20294, "Optimization"],
+    [20325, "Simplification"],
+    [20327, "Systems of Equations"],
+  ]);
+
+  for (const [id, topic] of expectedTopics) {
+    assert.equal(topicsById.get(id), topic, `Alpha ${id} should use topic "${topic}"`);
+  }
 });

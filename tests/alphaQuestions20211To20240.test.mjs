@@ -41,7 +41,7 @@ test("methods are canonical techniques and not duplicate topic labels", () => {
     }
   }
   assert.deepEqual(questions.find(question => question.id === 20233).methods, ["Mathematical Induction"]);
-  assert.deepEqual(questions.find(question => question.id === 20215).methods, ["Trigonometric Identities", "Half-Angle"]);
+  assert.deepEqual(questions.find(question => question.id === 20215).methods, ["Half-Angle Identity"]);
   assert.deepEqual(questions.find(question => question.id === 20220).methods, ["Nested Functions"]);
   assert.deepEqual(questions.find(question => question.id === 20222).methods, ["Asymptotes"]);
 });
