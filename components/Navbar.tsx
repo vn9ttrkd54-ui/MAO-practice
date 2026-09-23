@@ -11,9 +11,15 @@ export default async function Navbar() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const desktopLinkClass =
+    "font-semibold text-slate-700 transition-colors hover:text-blue-700 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600";
+
   return (
-    <nav className="relative z-50 flex w-full items-center justify-between border-b bg-white px-4 py-4 sm:px-6">
-      <Link href="/" className="min-w-0 text-lg font-bold sm:text-xl">
+    <nav
+      aria-label="Primary navigation"
+      className="sticky top-0 z-50 flex min-h-[72px] w-full items-center justify-between border-b border-slate-300 bg-white/95 px-4 py-3.5 shadow-[0_3px_12px_rgba(15,23,42,0.10)] backdrop-blur sm:px-7"
+    >
+      <Link href="/" className="min-w-0 text-lg font-bold text-slate-950 sm:text-xl">
         <span className="flex items-center gap-2.5">
           <Image
             src="/icon.svg"
@@ -27,20 +33,25 @@ export default async function Navbar() {
         </span>
       </Link>
 
-      <div className="hidden items-center gap-6 md:flex">
-        <Link href="/practice">Practice</Link>
-        <Link href="/challenge">Challenge</Link>
-        <Link href="/multiplayer">Multiplayer</Link>
+      <div className="hidden items-center gap-7 text-[15px] md:flex">
+        <Link href="/practice" className={desktopLinkClass}>Practice</Link>
+        <Link href="/challenge" className={desktopLinkClass}>Challenge</Link>
+        <Link href="/multiplayer" className={desktopLinkClass}>Multiplayer</Link>
 
         {user ? (
           <>
-            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/dashboard" className={desktopLinkClass}>Dashboard</Link>
             <LogoutButton />
           </>
         ) : (
           <>
-            <Link href="/login">Login</Link>
-            <Link href="/signup">Sign Up</Link>
+            <Link href="/login" className={desktopLinkClass}>Login</Link>
+            <Link
+              href="/signup"
+              className="rounded-md bg-slate-950 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-blue-600"
+            >
+              Sign Up
+            </Link>
           </>
         )}
       </div>
