@@ -197,7 +197,7 @@ export default function LlamaTutor({
   }
 
   return (
-    <aside className="fixed bottom-6 right-6 z-40 hidden lg:block">
+    <aside className="fixed bottom-6 right-6 z-[60] hidden lg:block">
       {open ? (
         <section id="llama-tutor-panel" className="mb-3 flex h-[min(620px,calc(100vh-10rem))] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-xl border border-slate-300 bg-white shadow-2xl" aria-label="Llama Tutor">
           <header className="flex items-center justify-between border-b border-slate-200 bg-slate-950 px-4 py-3 text-white">
