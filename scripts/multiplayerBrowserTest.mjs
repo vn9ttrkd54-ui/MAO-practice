@@ -85,7 +85,9 @@ async function runPlayer(player) {
         const revealedAt = Date.now();
         console.log(`[${elapsed()}] ${name} loaded question ${questionNumber} at ${timer}`);
 
-        const answer = page.getByRole("button", { name: /^A(?:\.|\s)/ }).first();
+        const answer = page.locator("section button").filter({
+          has: page.locator("span:first-child").filter({ hasText: /^A$/ }),
+        }).first();
         await answer.waitFor({ state: "visible", timeout: 15_000 });
         await answer.waitFor({ state: "attached", timeout: 15_000 });
         await page.waitForFunction(
