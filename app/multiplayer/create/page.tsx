@@ -32,10 +32,10 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
 
         {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
 
-        <form action={createPrivateRoomAction} className={`${styles.form} mt-7 grid gap-5 sm:grid-cols-2`}>
-          {!user ? <label className="block text-sm font-semibold sm:col-span-2">Your guest nickname
-            <input name="guestNickname" required minLength={1} maxLength={20} placeholder="MathPlayer" className={fieldClass} />
-          </label> : null}
+        {!user ? <div className="mt-7 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-950">
+          <p>Sign in to host a private room. Guests can still join with a room code.</p>
+          <Link href="/login" className="mt-3 inline-flex font-semibold text-blue-700 hover:underline">Sign in</Link>
+        </div> : <form action={createPrivateRoomAction} className={`${styles.form} mt-7 grid gap-5 sm:grid-cols-2`}>
           <label className="block text-sm font-semibold"><span id="division-label" className={styles.label}><Layers size={16} aria-hidden="true" />Division</span>
             <select name="division" aria-labelledby="division-label" className={fieldClass}><option>Mu</option><option>Alpha</option><option>Theta</option></select>
           </label>
@@ -49,7 +49,7 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
             <select name="mode" aria-labelledby="mode-label" defaultValue="unranked" className={fieldClass}><option value="unranked">Unranked</option><option value="ranked">Ranked (5+ questions)</option></select>
           </label>
           <PendingSubmitButton pendingText="Creating room…" className="mt-1 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white shadow-md shadow-blue-600/15 hover:bg-blue-700 sm:col-span-2">Create Room<ArrowUpRight size={18} aria-hidden="true" /></PendingSubmitButton>
-        </form>
+        </form>}
       </section>
     </main>
     </div>

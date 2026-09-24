@@ -29,7 +29,7 @@ test('database account authorization matrix', async (t) => {
       create function realtime.send(payload jsonb,event text,topic text,private boolean) returns void language plpgsql as $$ begin return; end $$;`);
     const directory = new URL('../../supabase/migrations/', import.meta.url);
     for (const name of (await readdir(directory)).filter(n => n.endsWith('.sql')).sort()) {
-      if (name.startsWith('035_')) continue; // Hosted pg_cron only, not an authorization migration.
+      if (name.startsWith('035_') || name.startsWith('050_')) continue; // Hosted pg_cron only.
       try { await db.exec(await readFile(new URL(name, directory), 'utf8')); }
       catch (error) { throw new Error(`Migration ${name}: ${error.message}`, { cause: error }); }
     }
@@ -92,7 +92,7 @@ test('database account authorization matrix', async (t) => {
       });
     });
     await t.test('challenge answers and statistics are private, while the public leaderboard is limited', async () => {
-      await db.exec("insert into daily_challenges(challenge_date,question_id,division) values(current_date,'AUTH-TEST','Mu')");
+      await db.exec("insert into daily_challenges(challenge_date,question_id,division) values(current_date,'AUTH-TEST','Mu') on conflict (challenge_date,division) do update set question_id=excluded.question_id");
       for (let n = 1; n <= 4; n++) await db.query("select submit_challenge_attempt($1,current_date,'AUTH-TEST','C',true)", [uid(n)]);
       for (const n of [0, 1, 2, 3, 4]) await asUser(n, async () => {
         assert.equal(await scalar("select count(*)::int from daily_challenges where question_id='AUTH-TEST'"), 1);
@@ -150,6 +150,78 @@ test('database account authorization matrix', async (t) => {
       for (const fn of functions) for (const role of ['anon', 'authenticated']) {
         assert.equal(await scalar("select has_function_privilege($1,$2::oid,'EXECUTE')", [role, fn.oid]), false, `${role}: ${fn.proname}`);
       }
+    });
+    await t.test('private room creation is atomic, account-limited, and rate-limited', async () => {
+      const create = (user, code) => scalar(
+        'select create_private_multiplayer_room($1,$2,\'unranked\',\'Mu\',5,60)',
+        [uid(user), code],
+      );
+      const first = await create(1, 'LIFE0001');
+      assert.equal(await scalar('select count(*)::int from multiplayer_players where room_id=$1 and user_id=$2 and is_host', [first, uid(1)]), 1);
+      await assert.rejects(create(1, 'LIFE0002'), /Close or finish/);
+      assert.equal(await scalar('select count(*)::int from multiplayer_room_creations where user_id=$1', [uid(1)]), 1);
+      const other = await create(2, 'LIFE0003');
+      assert.ok(other);
+      await db.query('update multiplayer_rooms set capacity=1 where id=$1', [other]);
+      await assert.rejects(db.query("insert into multiplayer_players(room_id,guest_nickname,reconnect_token_hash) values($1,'Extra Guest','test-hash')", [other]), /private room is full/);
+      await db.query('update multiplayer_rooms set capacity=2 where id=$1', [other]);
+      await db.query("insert into multiplayer_players(room_id,guest_nickname,reconnect_token_hash) values($1,'Extra Guest','test-hash')", [other]);
+      await db.query("update multiplayer_rooms set status='countdown' where id=$1", [other]);
+      await assert.rejects(db.query('insert into multiplayer_players(room_id,user_id) values($1,$2)', [other, uid(3)]), /no longer accepting players/);
+      await db.query('update multiplayer_rooms set status=\'cancelled\' where id=$1', [first]);
+      const second = await create(1, 'LIFE0004');
+      await db.query('update multiplayer_rooms set status=\'cancelled\' where id=$1', [second]);
+      const third = await create(1, 'LIFE0005');
+      await db.query('update multiplayer_rooms set status=\'cancelled\' where id=$1', [third]);
+      await assert.rejects(create(1, 'LIFE0006'), /up to 3 rooms every 10 minutes/);
+      assert.equal(await scalar('select count(*)::int from multiplayer_room_creations where user_id=$1', [uid(1)]), 3);
+    });
+    await t.test('result receipts delete completed rooms but preserve private match history', async () => {
+      const room = await scalar('select create_private_multiplayer_room($1,$2,\'unranked\',\'Alpha\',5,60)', [uid(3), 'LIFE0007']);
+      const host = await scalar('select host_player_id from multiplayer_rooms where id=$1', [room]);
+      const guest = await scalar('insert into multiplayer_players(room_id,user_id) values($1,$2) returning id', [room, uid(4)]);
+      await db.query('update multiplayer_rooms set status=\'completed\',started_at=clock_timestamp(),completed_at=clock_timestamp() where id=$1', [room]);
+      await db.query(`insert into multiplayer_match_results
+        (room_id,player_id,user_id,placement,final_score,ranked,completion_factor)
+        values($1,$2,$3,1,100,false,1),($1,$4,$5,2,50,false,1)`,
+      [room, host, uid(3), guest, uid(4)]);
+      await db.query('update multiplayer_rooms set results_finalized_at=clock_timestamp() where id=$1', [room]);
+      assert.equal(await scalar('select count(*)::int from multiplayer_match_history where room_id=$1', [room]), 2);
+      assert.equal(await scalar('select acknowledge_multiplayer_result($1,$2)', [room, host]), true);
+      assert.equal(await scalar('select count(*)::int from multiplayer_rooms where id=$1', [room]), 1);
+      assert.equal(await scalar('select acknowledge_multiplayer_result($1,$2)', [room, guest]), true);
+      assert.equal(await scalar('select count(*)::int from multiplayer_rooms where id=$1', [room]), 0);
+      assert.equal(await scalar('select count(*)::int from multiplayer_match_history where room_id=$1', [room]), 2);
+      assert.equal(await scalar('select acknowledge_multiplayer_result($1,$2)', [room, host]), false);
+      for (const n of [3, 4]) await asUser(n, async () => {
+        assert.deepEqual((await db.query('select user_id from multiplayer_match_history where room_id=$1', [room])).rows, [{ user_id: uid(n) }]);
+        await assert.rejects(db.query('delete from multiplayer_match_history where room_id=$1', [room]), error => error.code === '42501');
+      });
+    });
+    await t.test('cleanup removes abandoned rooms and expired creation records in bounded batches', async () => {
+      const stale = await scalar('select create_private_multiplayer_room($1,$2,\'unranked\',\'Theta\',5,60)', [uid(4), 'LIFE0008']);
+      await db.query('update multiplayer_rooms set created_at=clock_timestamp()-interval \'2 hours\' where id=$1', [stale]);
+      await db.query('update multiplayer_players set connected=false where room_id=$1', [stale]);
+      assert.ok(await scalar('select cleanup_multiplayer_rooms()') >= 1);
+      assert.equal(await scalar('select count(*)::int from multiplayer_rooms where id=$1', [stale]), 0);
+      const finalized = await scalar('select create_private_multiplayer_room($1,$2,\'unranked\',\'Theta\',5,60)', [uid(3), 'LIFE0009']);
+      const player = await scalar('select host_player_id from multiplayer_rooms where id=$1', [finalized]);
+      await db.query('update multiplayer_rooms set status=\'completed\',started_at=clock_timestamp(),completed_at=clock_timestamp() where id=$1', [finalized]);
+      await db.query('insert into multiplayer_match_results(room_id,player_id,user_id,placement,final_score,ranked,completion_factor) values($1,$2,$3,1,0,false,1)', [finalized, player, uid(3)]);
+      await db.query('update multiplayer_rooms set results_finalized_at=clock_timestamp()-interval \'3 minutes\' where id=$1', [finalized]);
+      await db.query('select cleanup_multiplayer_rooms()');
+      assert.equal(await scalar('select count(*)::int from multiplayer_rooms where id=$1', [finalized]), 0);
+      assert.equal(await scalar('select count(*)::int from multiplayer_match_history where room_id=$1', [finalized]), 1);
+      const unfinished = await scalar('select create_private_multiplayer_room($1,$2,\'unranked\',\'Theta\',5,60)', [uid(4), 'LIFE0010']);
+      await db.query(`update multiplayer_rooms set status='completed',
+        created_at=clock_timestamp()-interval '4 hours',
+        started_at=clock_timestamp()-interval '3 hours',
+        completed_at=clock_timestamp()-interval '3 hours' where id=$1`, [unfinished]);
+      await db.query('select cleanup_multiplayer_rooms()');
+      assert.equal(await scalar('select count(*)::int from multiplayer_rooms where id=$1', [unfinished]), 0);
+      await db.query('update multiplayer_room_creations set created_at=clock_timestamp()-interval \'2 days\' where user_id=$1', [uid(4)]);
+      await db.query('select cleanup_multiplayer_rooms()');
+      assert.equal(await scalar('select count(*)::int from multiplayer_room_creations where user_id=$1', [uid(4)]), 0);
     });
   } finally { await db.close(); }
 });

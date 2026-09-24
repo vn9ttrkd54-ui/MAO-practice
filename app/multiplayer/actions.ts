@@ -19,7 +19,6 @@ export async function createPrivateRoomAction(formData: FormData) {
   let roomId: string;
   try {
     const room = await createPrivateRoom({
-      guestNickname: value(formData, "guestNickname"),
       settings: {
         division: value(formData, "division") as Division,
         questionCount: Number(value(formData, "questionCount")),

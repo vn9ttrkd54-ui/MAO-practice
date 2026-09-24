@@ -205,7 +205,6 @@ export interface MultiplayerRatingLeaderboardEntry {
 
 export interface CreatePrivateRoomInput {
   settings: MultiplayerRoomSettings;
-  guestNickname?: string;
 }
 
 export interface JoinPrivateRoomInput {

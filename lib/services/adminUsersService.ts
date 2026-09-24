@@ -42,7 +42,7 @@ export async function getAdminUserDetails(userId: string) {
     }
     if((data?.length ?? 0)<1000) break;
   }
-  const { data: matches, error } = await db.from("multiplayer_match_results").select("placement,final_score,ranked,previous_rp,new_rp,finalized_at").eq("user_id",userId).order("finalized_at",{ascending:false}).limit(10);
+  const { data: matches, error } = await db.from("multiplayer_match_history").select("placement,final_score,ranked,previous_rp,new_rp,finalized_at").eq("user_id",userId).order("finalized_at",{ascending:false}).limit(10);
   if(error) throw new Error("Unable to load recent matches.");
   return { byDivision,matches:matches ?? [] };
 }

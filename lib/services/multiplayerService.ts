@@ -191,6 +191,7 @@ async function addPlayer(room: RoomRow, guestNickname?: string, isHost = false) 
 
   if (error) {
     if (error.code === "23505") throw new Error("That account or nickname is already in this room.");
+    if (error.code === "P0001") throw new Error(error.message);
     throw new Error("Unable to join the private room right now.");
   }
 
@@ -210,29 +211,27 @@ async function addPlayer(room: RoomRow, guestNickname?: string, isHost = false) 
 
 export async function createPrivateRoom(input: CreatePrivateRoomInput): Promise<MultiplayerRoom> {
   validateSettings(input.settings);
+  const user = await currentUser();
+  if (!user) throw new Error("Sign in to create a private room.");
   const admin = createAdminClient();
-  let room: RoomRow | null = null;
-
-  for (let attempt = 0; attempt < 5 && !room; attempt += 1) {
-    const { data, error } = await admin.from("multiplayer_rooms").insert({
-      code: generateRoomCode(), visibility: "private", mode: input.settings.mode,
-      division: input.settings.division, question_count: input.settings.questionCount,
-      seconds_per_question: input.settings.secondsPerQuestion, capacity: 30,
-    }).select("*").single<RoomRow>();
-    if (!error) room = data;
-    else if (error.code !== "23505") throw new Error("Unable to create the private room right now.");
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const { data: roomId, error } = await admin.rpc("create_private_multiplayer_room", {
+      p_user_id: user.id,
+      p_code: generateRoomCode(),
+      p_mode: input.settings.mode,
+      p_division: input.settings.division,
+      p_question_count: input.settings.questionCount,
+      p_seconds_per_question: input.settings.secondsPerQuestion,
+    });
+    if (error?.code === "23505") continue;
+    if (error?.code === "P0001") throw new Error(error.message);
+    if (error || typeof roomId !== "string") throw new Error("Unable to create the private room right now.");
+    const { data: room, error: readError } = await admin.from("multiplayer_rooms")
+      .select("*").eq("id", roomId).single<RoomRow>();
+    if (readError || !room) throw new Error("Unable to load your new room right now.");
+    return mapRoom(room, 1);
   }
-  if (!room) throw new Error("Unable to create a unique room code. Please try again.");
-
-  try {
-    const { player } = await addPlayer(room, input.guestNickname, true);
-    const { data: updated, error } = await admin.from("multiplayer_rooms").update({ host_player_id: player.playerId }).eq("id", room.id).select("*").single<RoomRow>();
-    if (error) throw error;
-    return mapRoom(updated, 1);
-  } catch (error) {
-    await admin.from("multiplayer_rooms").delete().eq("id", room.id);
-    throw error;
-  }
+  throw new Error("Unable to create a unique room code. Please try again.");
 }
 
 export async function joinPrivateRoom(input: JoinPrivateRoomInput): Promise<MultiplayerRoom> {
@@ -684,6 +683,12 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
     spectatorMode = true;
   } else if (access.room.status !== "completed") {
     return null;
+  } else {
+    const { data: receipt, error } = await admin.from("multiplayer_result_receipts")
+      .select("player_id").eq("room_id", roomId)
+      .eq("player_id", access.currentPlayer.playerId).maybeSingle();
+    if (error) throw new Error("Unable to load match results right now.");
+    if (receipt) return null;
   }
 
   await finalizeCompletedMatch(roomId);
@@ -752,23 +757,46 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
   };
 }
 
+export async function hasAcknowledgedMultiplayerResult(roomId: string): Promise<boolean> {
+  const access = await getMultiplayerRoom(roomId, false);
+  if (!access) return false;
+  const { data, error } = await createAdminClient().from("multiplayer_result_receipts")
+    .select("player_id").eq("room_id", roomId)
+    .eq("player_id", access.currentPlayer.playerId).maybeSingle();
+  if (error) throw new Error("Unable to check match results right now.");
+  return Boolean(data);
+}
+
+export async function acknowledgeMultiplayerResult(roomId: string): Promise<boolean> {
+  const access = await getMultiplayerRoom(roomId, false);
+  if (!access || access.room.status !== "completed") return false;
+  const { data, error } = await createAdminClient().rpc("acknowledge_multiplayer_result", {
+    p_room_id: roomId,
+    p_player_id: access.currentPlayer.playerId,
+  });
+  if (error) throw new Error("Unable to confirm result delivery.");
+  return data === true;
+}
+
 export async function listRecentMultiplayerMatches(): Promise<MultiplayerMatchHistoryEntry[]> {
   const user = await currentUser();
   if (!user) return [];
   const admin = createAdminClient();
-  const { data, error } = await admin.from("multiplayer_match_results").select("room_id, placement, final_score, ranked, previous_rp, new_rp, finalized_at").eq("user_id", user.id).order("finalized_at", { ascending: false }).limit(10);
+  const { data, error } = await admin.from("multiplayer_match_history")
+    .select("room_id, division, question_count, placement, final_score, ranked, previous_rp, new_rp, finalized_at")
+    .eq("user_id", user.id).order("finalized_at", { ascending: false }).limit(10);
   if (error) throw new Error("Unable to load recent matches right now.");
-  const results = data ?? [];
-  if (results.length === 0) return [];
-  const roomIds = results.map((result) => result.room_id);
-  const { data: rooms, error: roomsError } = await admin.from("multiplayer_rooms").select("id, division, question_count").in("id", roomIds);
-  if (roomsError) throw new Error(`Unable to load recent match details: ${roomsError.message}`);
-  const roomById = new Map((rooms ?? []).map((room) => [room.id, room]));
-  return results.flatMap((result) => {
-    const room = roomById.get(result.room_id);
-    if (!room) return [];
-    return [{ roomId: result.room_id, division: room.division, questionCount: room.question_count, placement: result.placement, score: result.final_score, ranked: result.ranked, rpChange: result.previous_rp === null || result.new_rp === null ? null : result.new_rp - result.previous_rp, completedAt: new Date(result.finalized_at).getTime() } as MultiplayerMatchHistoryEntry];
-  });
+  return (data ?? []).map((result) => ({
+    roomId: result.room_id,
+    division: result.division as MultiplayerMatchHistoryEntry["division"],
+    questionCount: result.question_count,
+    placement: result.placement,
+    score: result.final_score,
+    ranked: result.ranked,
+    rpChange: result.previous_rp === null || result.new_rp === null
+      ? null : result.new_rp - result.previous_rp,
+    completedAt: new Date(result.finalized_at).getTime(),
+  }));
 }
 
 export async function listPublicRooms(): Promise<MultiplayerPublicRoom[]> {
