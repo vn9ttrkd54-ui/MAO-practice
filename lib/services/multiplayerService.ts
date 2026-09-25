@@ -691,7 +691,15 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
     if (receipt) return null;
   }
 
-  await finalizeCompletedMatch(roomId);
+  const { data: finalizedRoom, error: finalizationError } = await admin.from("multiplayer_rooms")
+    .select("results_finalized_at").eq("id", roomId).maybeSingle();
+  if (finalizationError || !finalizedRoom) throw new Error("Unable to load match results right now.");
+  if (!finalizedRoom.results_finalized_at) {
+    // The scheduled worker finalizes the match. Only the host provides an
+    // on-demand fallback so a full room does not queue on the same row lock.
+    if (spectatorMode || !access!.currentPlayer.isHost) return null;
+    await finalizeCompletedMatch(roomId);
+  }
 
   const [resultResponse, resultsResponse, playersResponse, submissionsResponse, matchQuestionsResponse] = await Promise.all([
     spectatorMode ? Promise.resolve({ data: null }) : admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).eq("player_id", access!.currentPlayer.playerId).maybeSingle(),

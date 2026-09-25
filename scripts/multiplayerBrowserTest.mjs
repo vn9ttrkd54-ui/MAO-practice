@@ -31,7 +31,12 @@ async function joinPlayer(index) {
   page.on("pageerror", (error) => failures.push(`${name}: page error: ${error.message}`));
   const acceptedQuestions = new Set();
   const transientFailures = [];
+  const timings = { finalAnswerAt: null, completedSignalAt: null, resultsRouteAt: null, podiumAt: null, detailsAt: null };
   page.on("response", (response) => {
+    if (response.request().method() === "GET" && response.status() === 204
+      && /\/round(?:\?|$)/.test(response.url()) && timings.completedSignalAt === null) {
+      timings.completedSignalAt = Date.now();
+    }
     if (response.request().method() === "POST" && response.url().endsWith("/round")) {
       if (response.ok()) {
         try { acceptedQuestions.add(response.request().postDataJSON().questionId); } catch {}
@@ -46,7 +51,7 @@ async function joinPlayer(index) {
   await page.getByLabel("Guest nickname").fill(name);
   await page.getByRole("button", { name: "Join Room" }).click();
   await page.waitForURL(/\/multiplayer\/room\//, { timeout: joinTimeoutMs });
-  players.push({ context, page, name, questionLoads: [], countdowns: new Map(), acceptedQuestions, transientFailures });
+  players.push({ context, page, name, questionLoads: [], countdowns: new Map(), acceptedQuestions, transientFailures, timings });
   console.log(`[${elapsed()}] ${name} joined`);
 }
 
@@ -57,8 +62,15 @@ async function runPlayer(player) {
   const deadline = Date.now() + matchTimeoutMs;
 
   while (Date.now() < deadline) {
+    if (finalAnswerSubmittedAt !== null) {
+      if (player.timings.resultsRouteAt === null && page.url().endsWith("/results")) player.timings.resultsRouteAt = Date.now();
+      if (player.timings.podiumAt === null && await page.getByText("MATCH COMPLETE", { exact: true }).isVisible().catch(() => false)) {
+        player.timings.podiumAt = Date.now();
+      }
+    }
     const results = page.getByRole("heading", { name: /You placed|Final results/ });
     if (await results.isVisible().catch(() => false)) {
+      player.timings.detailsAt = Date.now();
       const expected = player.questionLoads.length;
       if (player.acceptedQuestions.size < expected) failures.push(`${name}: only ${player.acceptedQuestions.size}/${expected} answers confirmed`);
       for (const [question, numbers] of player.countdowns) {
@@ -108,7 +120,10 @@ async function runPlayer(player) {
         console.log(`[${elapsed()}] ${name} enabled question ${questionNumber} after ${enabledDelayMs}ms at ${enabledTimer}`);
         await answer.click();
         await page.getByRole("button", { name: "Submit Answer" }).click();
-        if (questionNumber === totalQuestions) finalAnswerSubmittedAt = Date.now();
+        if (questionNumber === totalQuestions) {
+          finalAnswerSubmittedAt = Date.now();
+          player.timings.finalAnswerAt = finalAnswerSubmittedAt;
+        }
         // Keep observing countdowns and later rounds while the app retries.
         // A single aborted attempt is not the outcome of a submission.
         console.log(`[${elapsed()}] ${name} submitted question ${questionNumber}`);
@@ -146,6 +161,17 @@ try {
       ? `${Math.min(...enabledDelays)}ms-${Math.max(...enabledDelays)}ms`
       : "unknown";
     console.log(`Question ${questionNumber}: ${loads.length}/${playerCount} loaded; timer range ${timerRange}; enable delay ${enabledDelayRange}`);
+  }
+  console.log("Final-results timing:");
+  for (const [label, from, to] of [
+    ["Final answer -> completion signal", "finalAnswerAt", "completedSignalAt"],
+    ["Completion signal -> results route", "completedSignalAt", "resultsRouteAt"],
+    ["Results route -> podium", "resultsRouteAt", "podiumAt"],
+    ["Podium -> full results", "podiumAt", "detailsAt"],
+  ]) {
+    const delays = players.map((player) => player.timings[from] !== null && player.timings[to] !== null
+      ? player.timings[to] - player.timings[from] : null).filter(Number.isFinite);
+    console.log(`${label}: ${delays.length}/${playerCount}; ${delays.length ? `${Math.min(...delays)}ms-${Math.max(...delays)}ms` : "unknown"}`);
   }
   if (failures.length > 0) {
     console.error(`Failures (${failures.length}):`);
