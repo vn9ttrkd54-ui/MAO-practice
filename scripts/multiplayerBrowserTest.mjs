@@ -53,6 +53,7 @@ async function joinPlayer(index) {
 async function runPlayer(player) {
   const { page, name } = player;
   let lastQuestion = 0;
+  let finalAnswerSubmittedAt = null;
   const deadline = Date.now() + matchTimeoutMs;
 
   while (Date.now() < deadline) {
@@ -68,6 +69,11 @@ async function runPlayer(player) {
       return;
     }
 
+    if (finalAnswerSubmittedAt !== null && Date.now() - finalAnswerSubmittedAt > 90_000) {
+      const headings = await page.getByRole("heading").allTextContents().catch(() => []);
+      throw new Error(`Final results did not appear within 90s (url: ${page.url()}, headings: ${JSON.stringify(headings.slice(0, 5))})`);
+    }
+
     const countdown = (await page.getByText(/^Next question in \d+s$/).allTextContents())[0] ?? null;
     if (countdown) {
       const seconds = Number(countdown.match(/(\d+)s/)[1]);
@@ -78,6 +84,7 @@ async function runPlayer(player) {
     if (await heading.isVisible().catch(() => false)) {
       const text = await heading.textContent();
       const questionNumber = Number(text?.match(/Question (\d+)/)?.[1] ?? 0);
+      const totalQuestions = Number(text?.match(/of (\d+)/)?.[1] ?? 0);
       if (questionNumber > lastQuestion) {
         if (questionNumber > lastQuestion + 1) failures.push(`${name}: skipped from question ${lastQuestion} to ${questionNumber}`);
         lastQuestion = questionNumber;
@@ -101,6 +108,7 @@ async function runPlayer(player) {
         console.log(`[${elapsed()}] ${name} enabled question ${questionNumber} after ${enabledDelayMs}ms at ${enabledTimer}`);
         await answer.click();
         await page.getByRole("button", { name: "Submit Answer" }).click();
+        if (questionNumber === totalQuestions) finalAnswerSubmittedAt = Date.now();
         // Keep observing countdowns and later rounds while the app retries.
         // A single aborted attempt is not the outcome of a submission.
         console.log(`[${elapsed()}] ${name} submitted question ${questionNumber}`);

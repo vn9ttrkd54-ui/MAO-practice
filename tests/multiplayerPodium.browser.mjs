@@ -50,7 +50,30 @@ try {
     assert.equal(requests.some(url => url.includes("/api/")), false);
     await page.close();
   }
-  console.log(`PASS: 3→2→1, winner-only, 2.5 seconds each, upright badges, no Skip, results transition, mobile, reduced motion, no API requests. Screenshot: ${join(dir, "winner.png")}`);
+
+  const receiptPage = await browser.newPage();
+  const receiptVisibility = [];
+  const acknowledged = receiptPage.waitForResponse(
+    response => response.url().endsWith("/results/acknowledge"),
+    { timeout: 15_000 },
+  );
+  await receiptPage.route("**/api/multiplayer/rooms/fixture-room/results/acknowledge", async route => {
+    receiptVisibility.push(await receiptPage.getByRole("heading", { name: "Existing final results" }).isVisible());
+    await route.fulfill({ status: 204, body: "" });
+  });
+  await receiptPage.clock.install();
+  await receiptPage.clock.pauseAt(new Date());
+  await receiptPage.goto(`http://127.0.0.1:${server.address().port}/?players=5&receipt=1`);
+  for (const place of [3, 2, 1]) {
+    await receiptPage.getByRole("region", { name: `Place ${place}`, exact: true }).waitFor();
+    assert.deepEqual(receiptVisibility, []);
+    await receiptPage.clock.fastForward(2500);
+  }
+  await receiptPage.getByRole("heading", { name: "Existing final results" }).waitFor();
+  await acknowledged;
+  assert.deepEqual(receiptVisibility, [true]);
+  await receiptPage.close();
+  console.log(`PASS: 3→2→1, winner-only, 2.5 seconds each, upright badges, no Skip, results transition, receipt after reveal, mobile, reduced motion. Screenshot: ${join(dir, "winner.png")}`);
 } finally {
   await browser.close();
   await new Promise(resolve => server.close(resolve));

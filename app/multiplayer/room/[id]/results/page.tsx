@@ -11,7 +11,7 @@ interface ResultsPageProps { params: Promise<{ id: string }> }
 export default async function ResultsPage({ params }: ResultsPageProps) {
   const { id } = await params;
   const result = await getMultiplayerMatchResult(id).catch(() => null);
-  if (result) return <><ResultDeliveryReceipt roomId={id} enabled={result.viewerMode === "player"} /><PodiumReveal key={id} players={result.finalLeaderboard}><MatchResults result={result} /></PodiumReveal></>;
+  if (result) return <PodiumReveal key={id} players={result.finalLeaderboard}><ResultDeliveryReceipt roomId={id} enabled={result.viewerMode === "player"} /><MatchResults result={result} /></PodiumReveal>;
   if (await hasAcknowledgedMultiplayerResult(id)) notFound();
   const access = await getMultiplayerRoom(id);
   if (!access) notFound();
