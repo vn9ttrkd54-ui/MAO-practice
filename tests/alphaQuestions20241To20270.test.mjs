@@ -82,11 +82,15 @@ test("difficulty ratings keep paired direct-identity questions aligned", () => {
 });
 
 test("all second-set Alpha formulas compile with KaTeX", () => {
-  const mathCommands = /\\(?:frac|sqrt|sum|det|begin|vec|sin|cos|tan|ln|pi|lambda|operatorname|boxed|text|triangle|overline|cdot|pm|ge|le|in|perp|parallel|displaystyle|sinh|cosh)/;
+  const mathDelimiter = /\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/g;
   for (const question of questions) {
     for (const value of [question.question, ...question.choices, question.solution]) {
-      if (mathCommands.test(value)) {
-        assert.doesNotThrow(() => katex.renderToString(value, { throwOnError: true }), "Alpha " + question.number);
+      assert.doesNotMatch(value.replace(mathDelimiter, ""), /\\/, "Alpha " + question.number);
+      for (const match of value.matchAll(mathDelimiter)) {
+        assert.doesNotThrow(() => katex.renderToString(match[1] ?? match[2], {
+          displayMode: match[1] !== undefined,
+          throwOnError: true,
+        }), "Alpha " + question.number);
       }
     }
   }

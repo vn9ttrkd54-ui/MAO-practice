@@ -3681,7 +3681,7 @@ By the Fundamental Theorem of Calculus,
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 5,
-    methods: ["Trigonometric Substitution", "Integral Properties"],
+    methods: ["Trigonometric Substitution"],
     question: String.raw`Given that
 \[\int_{-\pi/2}^{\pi/2}\ln|\cos t|\,dt=-\pi\ln2,\]
 what is

@@ -385,7 +385,7 @@ so \(m+n=14+30=\boxed{44}\).`,
 for \(-1\le x\le1\).`,
     choices: ["25", "41", "40", "30", "NOTA"],
     answer: "B",
-    solution: String.raw`Let \(x=\sin\theta\), where \(-\frac\pi2\le\theta\le\frac\pi2\). Then \(\sqrt{1-x^2}=\cos\theta\\), so the expression is
+    solution: String.raw`Let \(x=\sin\theta\), where \(-\frac\pi2\le\theta\le\frac\pi2\). Then \(\sqrt{1-x^2}=\cos\theta\), so the expression is
 \[\left(4\sin\theta+5\cos\theta\right)^2.\]
 The maximum of \(4\sin\theta+5\cos\theta\) is
 \[\sqrt{4^2+5^2}=\sqrt{41}.\]
@@ -1503,9 +1503,9 @@ Adding and simplifying yields
      solution: String.raw`By the angle-addition identity, the left side equals \(\sin(7x)\).
   By sum-to-product, the right side equals \(2\sin(7x)\cos(3x)\).
   So the equation becomes \(\sin(7x)=2\sin(7x)\cos(3x)\), i.e., \(\sin(7x)(1-2\cos(3x))=0\).
-  \textbf{Case 1:} \(\sin(7x)=0\). Then \(x=\frac{\pi n}{7}\) for \(n\in\{0,1,\ldots,13\}\).
+  \(\textbf{Case 1:}\) \(\sin(7x)=0\). Then \(x=\frac{\pi n}{7}\) for \(n\in\{0,1,\ldots,13\}\).
   Sum \(=\frac{\pi}{7}\cdot\frac{13\cdot14}{2}=13\pi\).
-  \textbf{Case 2:} \(\cos(3x)=\frac{1}{2}\). Then \(x=\frac{\pi}{9}+\frac{2\pi k}{3}\) or \(x=\frac{5\pi}{9}+\frac{2\pi k}{3}\) for \(k\in\{0,1,2\}\).
+  \(\textbf{Case 2:}\) \(\cos(3x)=\frac{1}{2}\). Then \(x=\frac{\pi}{9}+\frac{2\pi k}{3}\) or \(x=\frac{5\pi}{9}+\frac{2\pi k}{3}\) for \(k\in\{0,1,2\}\).
   Sum \(=3\!\left(\frac{\pi}{9}+\frac{5\pi}{9}\right)+2\cdot\frac{2\pi}{3}(0+1+2)=2\pi+4\pi=6\pi\).
   Total sum \(=13\pi+6\pi=\boxed{19\pi}\).`,
   },
@@ -1521,8 +1521,8 @@ Adding and simplifying yields
    topic: "Trigonometry",
    difficulty: 1,
    methods: ["Trigonometric Identities"],
-   question: String.raw`Simplify \sec^2 x + \csc^2 x.`,
-   choices: [String.raw`\sec^2 x\csc^2 x`, String.raw`\tan^2 x+\cot^2 x`, String.raw`\tan^2 x+\cot^2 x+1`, "1", "NOTA"],
+   question: String.raw`Simplify \(\sec^2 x + \csc^2 x\).`,
+   choices: [String.raw`\(\sec^2 x\csc^2 x\)`, String.raw`\(\tan^2 x+\cot^2 x\)`, String.raw`\(\tan^2 x+\cot^2 x+1\)`, "1", "NOTA"],
    answer: "A",
    solution: String.raw`\[\sec^2 x+\csc^2 x=\frac{1}{\cos^2 x}+\frac{1}{\sin^2 x}=\frac{\sin^2 x+\cos^2 x}{\cos^2 x\sin^2 x}=\frac{1}{\cos^2 x\sin^2 x}=\boxed{\sec^2 x\csc^2 x}.\]`,
 },
@@ -1537,10 +1537,10 @@ Adding and simplifying yields
    topic: "Trigonometry",
    difficulty: 1,
    methods: [],
-   question: String.raw`Let A be the length of the period of y=\sin x. Let B be the length of the period of y=\tan x. Find the value of A-2B.`,
-   choices: [String.raw`-2\pi`, String.raw`-\pi`, "0", String.raw`\pi`, "NOTA"],
+   question: String.raw`Let A be the length of the period of \(y=\sin x\). Let B be the length of the period of \(y=\tan x\). Find the value of A-2B.`,
+   choices: [String.raw`\(-2\pi\)`, String.raw`\(-\pi\)`, "0", String.raw`\(\pi\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`The period of \sin x is A=2\pi and the period of \tan x is B=\pi.
+   solution: String.raw`The period of \(\sin x\) is \(A=2\pi\) and the period of \(\tan x\) is \(B=\pi\).
 \[A-2B=2\pi-2\pi=\boxed{0}.\]`,
 },
 
@@ -1554,12 +1554,12 @@ Adding and simplifying yields
    topic: "Trigonometry",
    difficulty: 1,
    methods: [],
-   question: String.raw`A right triangle has a hypotenuse of length 2 and an angle with measure \dfrac{\pi}{7}. Which of the following is \textbf{not} one of the side lengths of the triangle?`,
-   choices: [String.raw`2\tan\dfrac{\pi}{7}`, String.raw`2\cos\dfrac{\pi}{7}`, String.raw`2\sin\dfrac{\pi}{7}`, "2", "NOTA"],
+   question: String.raw`A right triangle has a hypotenuse of length 2 and an angle with measure \(\dfrac{\pi}{7}\). Which of the following is \(\textbf{not}\) one of the side lengths of the triangle?`,
+   choices: [String.raw`\(2\tan\dfrac{\pi}{7}\)`, String.raw`\(2\cos\dfrac{\pi}{7}\)`, String.raw`\(2\sin\dfrac{\pi}{7}\)`, "2", "NOTA"],
    answer: "A",
-   solution: String.raw`In a right triangle with hypotenuse 2 and an angle \pi/7:
-the two legs are 2\sin(\pi/7) (opposite) and 2\cos(\pi/7) (adjacent), and the hypotenuse is 2. These correspond to choices C, B, and D.
-2\tan(\pi/7) is not a side length of this triangle, so the answer is \boxed{A}.`,
+   solution: String.raw`In a right triangle with hypotenuse 2 and an angle \(\pi/7\):
+the two legs are \(2\sin(\pi/7)\) (opposite) and \(2\cos(\pi/7)\) (adjacent), and the hypotenuse is 2. These correspond to choices C, B, and D.
+\(2\tan(\pi/7)\) is not a side length of this triangle, so the answer is \(\boxed{A}\).`,
 },
 
 
@@ -1572,12 +1572,12 @@ the two legs are 2\sin(\pi/7) (opposite) and 2\cos(\pi/7) (adjacent), and the hy
    topic: "Trigonometry",
    difficulty: 1,
    methods: [],
-   question: String.raw`Solve for all x on the interval \left[-\dfrac{\pi}{2},\dfrac{\pi}{2}\right]: (\tan x)^2-3=0.`,
-   choices: [String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{3}`, String.raw`-\dfrac{\pi}{6},\,\dfrac{\pi}{6}`, String.raw`-\dfrac{\pi}{3},\,\dfrac{\pi}{3}`, "NOTA"],
+   question: String.raw`Solve for all x on the interval \(\left[-\dfrac{\pi}{2},\dfrac{\pi}{2}\right]\): \((\tan x)^2-3=0\).`,
+   choices: [String.raw`\(\dfrac{\pi}{6}\)`, String.raw`\(\dfrac{\pi}{3}\)`, String.raw`\(-\dfrac{\pi}{6},\,\dfrac{\pi}{6}\)`, String.raw`\(-\dfrac{\pi}{3},\,\dfrac{\pi}{3}\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`Rearrange: \tan^2 x=3, so \tan x=\pm\sqrt{3}.
-On [-\pi/2,\,\pi/2]: \tan x=\sqrt{3}\Rightarrow x=\pi/3 and \tan x=-\sqrt{3}\Rightarrow x=-\pi/3.
-The solutions are \boxed{x=-\dfrac{\pi}{3},\,\dfrac{\pi}{3}}.`,
+   solution: String.raw`Rearrange: \(\tan^2 x=3\), so \(\tan x=\pm\sqrt{3}\).
+On \([-\pi/2,\,\pi/2]\): \(\tan x=\sqrt{3}\Rightarrow x=\pi/3\) and \(\tan x=-\sqrt{3}\Rightarrow x=-\pi/3\).
+The solutions are \(\boxed{x=-\dfrac{\pi}{3},\,\dfrac{\pi}{3}}\).`,
 },
 
 
@@ -1590,19 +1590,19 @@ The solutions are \boxed{x=-\dfrac{\pi}{3},\,\dfrac{\pi}{3}}.`,
    topic: "Parametric",
    difficulty: 2,
    methods: [],
-   question: String.raw`Of the following pairs of parametric equations, how many lie completely on the line x+y=1 when graphed on the xy-plane?
-I.\quad x(t)=\sin^2 t,\quad y(t)=\cos^2 t
-II.\quad x(t)=-\tan^2 t,\quad y(t)=\sec^2 t
-III.\quad x(t)=\csc^2 t,\quad y(t)=\sec^2 t
-IV.\quad x(t)=\csc^2 t,\quad y(t)=-\cot^2 t`,
+   question: String.raw`Of the following pairs of parametric equations, how many lie completely on the line \(x+y=1\) when graphed on the xy-plane?
+\(I.\quad x(t)=\sin^2 t,\quad y(t)=\cos^2 t\)
+\(II.\quad x(t)=-\tan^2 t,\quad y(t)=\sec^2 t\)
+\(III.\quad x(t)=\csc^2 t,\quad y(t)=\sec^2 t\)
+\(IV.\quad x(t)=\csc^2 t,\quad y(t)=-\cot^2 t\)`,
    choices: ["0", "1", "2", "3", "NOTA"],
    answer: "D",
    solution: String.raw`Check each pair by computing x(t)+y(t):
-I: \sin^2 t+\cos^2 t=1 \checkmark \quad (Pythagorean identity).
-II: -\tan^2 t+\sec^2 t=1 \checkmark \quad (since \sec^2 t-\tan^2 t=1).
-III: \csc^2 t+\sec^2 t\neq 1 in general (both terms are \geq 1). \times
-IV: \csc^2 t-\cot^2 t=1 \checkmark \quad (since \csc^2 t-\cot^2 t=1).
-Three pairs (I, II, IV) lie on the line x+y=1. Answer: \boxed{3}.`,
+I: \(\sin^2 t+\cos^2 t=1 \checkmark \quad\) (Pythagorean identity).
+II: \(-\tan^2 t+\sec^2 t=1 \checkmark\) (since \(\sec^2 t-\tan^2 t=1\)).
+III: \(\csc^2 t+\sec^2 t\neq 1\) in general (both terms are \(\geq 1\)). \(\times\)
+IV: \(\csc^2 t-\cot^2 t=1 \checkmark\) (since \(\csc^2 t-\cot^2 t=1\)).
+Three pairs (I, II, IV) lie on the line \(x+y=1\). Answer: \(\boxed{3}\).`,
 },
 
 
@@ -1615,14 +1615,14 @@ Three pairs (I, II, IV) lie on the line x+y=1. Answer: \boxed{3}.`,
    topic: "Logs and Exponents",
    difficulty: 2,
    methods: [],
-   question: String.raw`Which of the following conditions regarding two real-valued variables, x and y, does \textbf{not} necessarily imply x^y=1?`,
+   question: String.raw`Which of the following conditions regarding two real-valued variables, x and y, does \(\textbf{not}\) necessarily imply \(x^y=1\)?`,
    choices: [String.raw`\(x=1\)`, String.raw`\(y=0,\ x\neq 0\)`, String.raw`\(x=-1\), \(y\) is an even integer`, String.raw`\(x=-1\), \(y\) is an odd integer`, "NOTA"],
    answer: "D",
-   solution: String.raw`A) 1^y=1 for all y. Always implies x^y=1.
-B) x^0=1 for all x\neq 0. Always implies x^y=1.
-C) (-1)^{\text{even}}=1. Always implies x^y=1.
-D) (-1)^{\text{odd}}=-1\neq 1. Does \textbf{not} imply x^y=1.
-The answer is \boxed{D}.`,
+   solution: String.raw`\(A) 1^y=1\) for all y. Always implies \(x^y=1\).
+\(B) x^0=1\) for all \(x\neq 0\). Always implies \(x^y=1\).
+\(C) (-1)^{\text{even}}=1\). Always implies \(x^y=1\).
+\(D) (-1)^{\text{odd}}=-1\neq 1\). Does \(\textbf{not}\) imply \(x^y=1\).
+The answer is \(\boxed{D}\).`,
 },
 
 
@@ -1635,11 +1635,11 @@ The answer is \boxed{D}.`,
    topic: "Functions",
    difficulty: 1,
    methods: [],
-   question: String.raw`Given f(x)=2\tan^{-1}x, find the range of f(x).`,
-   choices: [String.raw`\left(-\dfrac{\pi}{2},\dfrac{\pi}{2}\right)`, String.raw`\left[-\dfrac{\pi}{2},\dfrac{\pi}{2}\right]`, String.raw`(-\pi,\pi)`, String.raw`[-\pi,\pi]`, "NOTA"],
+   question: String.raw`Given \(f(x)=2\tan^{-1}x\), find the range of f(x).`,
+   choices: [String.raw`\(\left(-\dfrac{\pi}{2},\dfrac{\pi}{2}\right)\)`, String.raw`\(\left[-\dfrac{\pi}{2},\dfrac{\pi}{2}\right]\)`, String.raw`\((-\pi,\pi)\)`, String.raw`\([-\pi,\pi]\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`The range of \tan^{-1}x is \left(-\dfrac{\pi}{2},\dfrac{\pi}{2}\right) (open interval, since \pm\pi/2 are not achieved).
-Multiplying by 2: the range of f(x)=2\tan^{-1}x is \boxed{(-\pi,\pi)}.`,
+   solution: String.raw`The range of \(\tan^{-1}x\) is \(\left(-\dfrac{\pi}{2},\dfrac{\pi}{2}\right)\) (open interval, since \(\pm\pi/2\) are not achieved).
+Multiplying by 2: the range of \(f(x)=2\tan^{-1}x\) is \(\boxed{(-\pi,\pi)}\).`,
 },
 
 
@@ -1652,12 +1652,12 @@ Multiplying by 2: the range of f(x)=2\tan^{-1}x is \boxed{(-\pi,\pi)}.`,
    topic: "Conic Sections",
    difficulty: 2,
    methods: [],
-   question: String.raw`Let (a,b) be the center of the conic given by the equation x^2-4y+6=-y^2-10x+8. Find the value of a-b.`,
+   question: String.raw`Let (a,b) be the center of the conic given by the equation \(x^2-4y+6=-y^2-10x+8\). Find the value of a-b.`,
    choices: [String.raw`-14`, String.raw`-7`, String.raw`7`, String.raw`14`, "NOTA"],
    answer: "B",
-   solution: String.raw`Rearrange: x^2+10x+y^2-4y=2.
-Complete the square: (x+5)^2-25+(y-2)^2-4=2, so (x+5)^2+(y-2)^2=31.
-The center is (-5,2), giving a-b=-5-2=\boxed{-7}.`,
+   solution: String.raw`Rearrange: \(x^2+10x+y^2-4y=2\).
+Complete the square: \((x+5)^2-25+(y-2)^2-4=2\), so \((x+5)^2+(y-2)^2=31\).
+The center is (-5,2), giving \(a-b=-5-2=\boxed{-7}\).`,
 },
 
 
@@ -1671,10 +1671,10 @@ The center is (-5,2), giving a-b=-5-2=\boxed{-7}.`,
    difficulty: 3,
    methods: [],
    question: String.raw`The following four functions have various symmetries. Let S have an initial value of 0. Add 1 to S for each function symmetric with respect to the x-axis. Add 2 to S for each function symmetric with respect to the y-axis. Add 3 to S for each function symmetric with respect to the origin. Compute S.
-I.\quad a(x)=x\sin x
-II.\quad b(x)=|x|\cos x+x^3
-III.\quad c(x)=0 if x\geq 0;\ c(x)=1 if x<0
-IV.\quad d(x)=[x]+c(x), where c(x) is defined above and [x] denotes the greatest integer \leq x`,
+\(I.\quad a(x)=x\sin x\)
+\(II.\quad b(x)=|x|\cos x+x^3\)
+\(III.\quad c(x)=0\) if \(x\geq 0\); \(c(x)=1\) if \(x<0\)
+\(IV.\quad d(x)=[x]+c(x)\), where c(x) is defined above and [x] denotes the greatest integer \(\leq x\)`,
    choices: ["2", "3", "4", "5", "NOTA"],
    answer: "A",
    solution: String.raw`I. \(a(-x)=(-x)\sin(-x)=x\sin x=a(x)\), so \(a\) is even and has y-axis symmetry. Add 2.
@@ -1694,11 +1694,11 @@ Therefore \(S=2+0+0+0=\boxed{2}\).`,
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Trigonometric Identities"],
-   question: String.raw`Compute the value of \cos(36^{\circ})+2\cos^2(72^{\circ}).`,
-   choices: ["-1", "0", String.raw`\sin 18^{\circ}`, "1", "NOTA"],
+   question: String.raw`Compute the value of \(\cos(36^{\circ})+2\cos^2(72^{\circ})\).`,
+   choices: ["-1", "0", String.raw`\(\sin 18^{\circ}\)`, "1", "NOTA"],
    answer: "D",
-   solution: String.raw`Note \cos(72^{\circ})=\sin(18^{\circ}), so 2\cos^2(72^{\circ})=2\sin^2(18^{\circ}).
-By the double-angle identity: \cos(36^{\circ})=1-2\sin^2(18^{\circ}).
+   solution: String.raw`Note \(\cos(72^{\circ})=\sin(18^{\circ})\), so \(2\cos^2(72^{\circ})=2\sin^2(18^{\circ})\).
+By the double-angle identity: \(\cos(36^{\circ})=1-2\sin^2(18^{\circ})\).
 \[\cos(36^{\circ})+2\cos^2(72^{\circ})=1-2\sin^2(18^{\circ})+2\sin^2(18^{\circ})=\boxed{1}.\]`,
 },
 
@@ -1712,7 +1712,7 @@ By the double-angle identity: \cos(36^{\circ})=1-2\sin^2(18^{\circ}).
    topic: "Trigonometry",
    difficulty: 4,
    methods: [],
-   question: String.raw`Find the number of solutions to the equation \sin x=\sin(1000x) on the interval (0,\pi).`,
+   question: String.raw`Find the number of solutions to the equation \(\sin x=\sin(1000x)\) on the interval \((0,\pi)\).`,
    choices: ["998", "999", "1000", "1001", "NOTA"],
    answer: "B",
    solution: String.raw`Use \(\sin A=\sin B\), which holds when \(A=B+2k\pi\) or \(A=\pi-B+2k\pi\).
@@ -1734,8 +1734,8 @@ The two families do not overlap, so the total number of solutions is \(499+500=\
    topic: "Conic Sections",
    difficulty: 2,
    methods: [],
-   question: String.raw`Consider the equation x^2+kxy+y^2=25. The value of k may be any real number. As k ranges from 0 to \infty, which of the following conic sections will the graph of the equation above \textbf{never} be?
-\textit{(Note: "Ellipse" refers to a non-circular ellipse.)}`,
+   question: String.raw`Consider the equation \(x^2+kxy+y^2=25\). The value of k may be any real number. As k ranges from 0 to \(\infty\), which of the following conic sections will the graph of the equation above \(\textbf{never}\) be?
+\(\textit{(Note: "Ellipse" refers to a non-circular ellipse.)}\)`,
    choices: ["ellipse", "parabola", "hyperbola", "circle", "NOTA"],
    answer: "B",
    solution: String.raw`For \(Ax^2+Bxy+Cy^2=25\), the discriminant is \(B^2-4AC=k^2-4\).
@@ -1756,7 +1756,7 @@ Therefore the graph is never a parabola, so the answer is \(\boxed{\text{parabol
    topic: "Polynomials",
    difficulty: 4,
    methods: [],
-   question: String.raw`A fourth-degree polynomial f(x) with leading coefficient 1 has the property that f(k)=k for k=1,2,3,4. Compute f(5).`,
+   question: String.raw`A fourth-degree polynomial f(x) with leading coefficient 1 has the property that \(f(k)=k\) for \(k=1,2,3,4\). Compute f(5).`,
    choices: ["5", "19", "24", "29", "NOTA"],
    answer: "D",
    solution: String.raw`The polynomial f(x)-x has roots 1,2,3,4 and leading coefficient 1, so:
@@ -1774,15 +1774,15 @@ Therefore the graph is never a parabola, so the answer is \(\boxed{\text{parabol
    topic: "Trigonometry",
    difficulty: 3,
    methods: ["Law of Cosines"],
-   question: String.raw`A triangle ABC has a right angle at B. Points D and E lie on \overline{AC} such that AD=DE=EC. Given BD^2+BE^2=15, find AC^2.`,
+   question: String.raw`A triangle ABC has a right angle at B. Points D and E lie on \(\overline{AC}\) such that \(AD=DE=EC\). Given \(BD^2+BE^2=15\), find \(AC^2\).`,
    choices: ["25", "26", "27", "28", "NOTA"],
    answer: "C",
-   solution: String.raw`Let AB=c, BC=a, AC=b, BD=d, BE=e. Since D and E trisect AC: AD=DE=EC=b/3.
-Apply the Law of Cosines in \triangle ABD (noting \cos\angle CAB=c/b, so b\cos A=c):
+   solution: String.raw`Let \(AB=c, BC=a, AC=b, BD=d, BE=e\). Since D and E trisect AC: \(AD=DE=EC=b/3\).
+Apply the Law of Cosines in \(\triangle ABD\) (noting \(\cos\angle CAB=c/b\), so \(b\cos A=c\)):
 \[d^2=\tfrac{b^2}{9}+c^2-2\cdot\tfrac{b}{3}\cdot c\cdot\tfrac{c}{b}=\tfrac{b^2}{9}+\tfrac{c^2}{3}.\]
-Similarly in \triangle CBE (noting b\cos C=a):
+Similarly in \(\triangle CBE\) (noting \(b\cos C=a\)):
 \[e^2=\tfrac{b^2}{9}+\tfrac{a^2}{3}.\]
-Adding: d^2+e^2=\dfrac{2b^2}{9}+\dfrac{a^2+c^2}{3}=\dfrac{2b^2}{9}+\dfrac{b^2}{3}=\dfrac{5b^2}{9}=15.
+Adding: \(d^2+e^2=\dfrac{2b^2}{9}+\dfrac{a^2+c^2}{3}=\dfrac{2b^2}{9}+\dfrac{b^2}{3}=\dfrac{5b^2}{9}=15\).
 \[b^2=27,\quad AC^2=\boxed{27}.\]`,
 },
 
@@ -1797,9 +1797,9 @@ Adding: d^2+e^2=\dfrac{2b^2}{9}+\dfrac{a^2+c^2}{3}=\dfrac{2b^2}{9}+\dfrac{b^2}{3
    difficulty: 3,
    methods: ["Double-Angle Identity"],
    question: String.raw`In an isosceles triangle, the length of the base is 2 and the lengths of the legs are 3. Find the sine of the vertex angle.`,
-   choices: [String.raw`\dfrac{2\sqrt{2}}{9}`, String.raw`\dfrac{1}{3}`, String.raw`\dfrac{4\sqrt{2}}{9}`, String.raw`\dfrac{2}{3}`, "NOTA"],
+   choices: [String.raw`\(\dfrac{2\sqrt{2}}{9}\)`, String.raw`\(\dfrac{1}{3}\)`, String.raw`\(\dfrac{4\sqrt{2}}{9}\)`, String.raw`\(\dfrac{2}{3}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`Let the vertex angle be 2\theta. The altitude to the base bisects it, creating a right triangle with hypotenuse 3 and opposite side 1 (half the base).
+   solution: String.raw`Let the vertex angle be \(2\theta\). The altitude to the base bisects it, creating a right triangle with hypotenuse 3 and opposite side 1 (half the base).
 \[\sin\theta=\frac{1}{3},\quad \cos\theta=\frac{\sqrt{9-1}}{3}=\frac{2\sqrt{2}}{3}.\]
 \[\sin(2\theta)=2\sin\theta\cos\theta=2\cdot\frac{1}{3}\cdot\frac{2\sqrt{2}}{3}=\boxed{\frac{4\sqrt{2}}{9}}.\]`,
 },
@@ -1814,13 +1814,13 @@ Adding: d^2+e^2=\dfrac{2b^2}{9}+\dfrac{a^2+c^2}{3}=\dfrac{2b^2}{9}+\dfrac{b^2}{3
    topic: "Limits",
    difficulty: 3,
    methods: [],
-   question: String.raw`The function f(x) is a rational function, and the function g(x) is a cubic polynomial such that f(x)=\dfrac{g(x)}{x^2-1}. As x\to 1, f(x)\to 5. As x\to -1, f(x)\to 9. Find the value of g(0).`,
+   question: String.raw`The function f(x) is a rational function, and the function g(x) is a cubic polynomial such that \(f(x)=\dfrac{g(x)}{x^2-1}\). As \(x\to 1, f(x)\to 5\). As \(x\to\) -1, \(f(x)\to 9\). Find the value of g(0).`,
    choices: [String.raw`-7`, String.raw`-3`, String.raw`3`, String.raw`7`, "NOTA"],
    answer: "A",
-   solution: String.raw`Since the limits of f(x) are finite at x=\pm 1, (x-1) and (x+1) must both divide g(x).
-Write g(x)=(ax+b)(x-1)(x+1)=(ax+b)(x^2-1).
-Then f(x)=ax+b (for x\neq\pm 1). The limits give: a+b=5 and -a+b=9.
-Solving: b=7, a=-2.
+   solution: String.raw`Since the limits of f(x) are finite at \(x=\pm 1\), (x-1) and (x+1) must both divide g(x).
+Write \(g(x)=(ax+b)(x-1)(x+1)=(ax+b)(x^2-1)\).
+Then \(f(x)=ax+b\) (for \(x\neq\pm 1)\). The limits give: \(a+b=5\) and \(-a+b=9\).
+Solving: \(b=7, a=-2\).
 \[g(0)=(a\cdot 0+b)(0-1)(0+1)=b\cdot(-1)=-7.\quad\boxed{g(0)=-7}.\]`,
 },
 
@@ -1835,12 +1835,12 @@ Solving: b=7, a=-2.
    difficulty: 3,
    methods: [],
    question: String.raw`Two stakes are nailed into the ground, 8 meters apart. The ends of a 10-meter-long inextensible rope are tied to these stakes. A robot is tied to the rope such that the robot may move along the rope but remains attached to it, and may move in any direction not restricted by the rope. Find the area (in square meters) of the region in which the robot may travel.`,
-   choices: [String.raw`15\pi`, String.raw`16\pi`, String.raw`60\pi`, String.raw`80\pi`, "NOTA"],
+   choices: [String.raw`\(15\pi\)`, String.raw`\(16\pi\)`, String.raw`\(60\pi\)`, String.raw`\(80\pi\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`The constraint (sum of distances \leq 10) describes the interior of an ellipse with foci at the stakes.
-The major axis has length 2a=10\Rightarrow a=5. The distance between foci is 2c=8\Rightarrow c=4.
+   solution: String.raw`The constraint (sum of distances \(\leq 10)\) describes the interior of an ellipse with foci at the stakes.
+The major axis has length \(2a=10\Rightarrow a=5\). The distance between foci is \(2c=8\Rightarrow c=4\).
 \[b^2=a^2-c^2=25-16=9\Rightarrow b=3.\]
-Area of ellipse =\pi ab=\pi(5)(3)=\boxed{15\pi} square meters.`,
+Area of ellipse \(=\pi ab=\pi(5)(3)=\boxed{15\pi}\) square meters.`,
 },
 
 
@@ -1853,15 +1853,15 @@ Area of ellipse =\pi ab=\pi(5)(3)=\boxed{15\pi} square meters.`,
    topic: "Trigonometry",
    difficulty: 5,
    methods: ["Trigonometric Identities"],
-   question: String.raw`Find a value for \theta that satisfies the given equation:
+   question: String.raw`Find a value for \(\theta\) that satisfies the given equation:
 \[\tan\theta=\frac{\tan\!\left(\dfrac{5\pi}{36}\right)-1}{\tan\!\left(\dfrac{\pi}{9}\right)-1}.\]`,
-   choices: [String.raw`\dfrac{\pi}{36}`, String.raw`\dfrac{2\pi}{9}`, String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{4}`, "NOTA"],
+   choices: [String.raw`\(\dfrac{\pi}{36}\)`, String.raw`\(\dfrac{2\pi}{9}\)`, String.raw`\(\dfrac{\pi}{6}\)`, String.raw`\(\dfrac{\pi}{4}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Using \tan(\pi/4)=1 and the addition formula \tan(\pi/9+5\pi/36)=\tan(\pi/4)=1:
+   solution: String.raw`Using \(\tan(\pi/4)=1\) and the addition formula \(\tan(\pi/9+5\pi/36)=\tan(\pi/4)=1\):
 \[1=\frac{\tan(\pi/9)+\tan(5\pi/36)}{1-\tan(\pi/9)\tan(5\pi/36)}.\]
-This gives \tan(5\pi/36)=\dfrac{1-\tan(\pi/9)}{1+\tan(\pi/9)}. Substituting:
+This gives \(\tan(5\pi/36)=\dfrac{1-\tan(\pi/9)}{1+\tan(\pi/9)}\). Substituting:
 \[\tan\theta=\frac{\dfrac{1-\tan(\pi/9)}{1+\tan(\pi/9)}-1}{\tan(\pi/9)-1}=\frac{-2\tan(\pi/9)}{(1+\tan(\pi/9))(\tan(\pi/9)-1)}=\frac{2\tan(\pi/9)}{1-\tan^2(\pi/9)}=\tan\!\left(\frac{2\pi}{9}\right).\]
-Therefore \theta=\boxed{\dfrac{2\pi}{9}}.`,
+Therefore \(\theta=\boxed{\dfrac{2\pi}{9}}\).`,
 },
 
 
@@ -1874,14 +1874,14 @@ Therefore \theta=\boxed{\dfrac{2\pi}{9}}.`,
    topic: "Conic Sections",
    difficulty: 2,
    methods: [],
-   question: String.raw`Find the sum of the slopes of the asymptotes of the hyperbola given by 5x^2-10x-4y^2+16y-31=0.`,
-   choices: [String.raw`\dfrac{\sqrt{5}}{2}`, String.raw`\dfrac{5}{4}`, String.raw`\sqrt{5}`, String.raw`\dfrac{5}{2}`, "NOTA"],
+   question: String.raw`Find the sum of the slopes of the asymptotes of the hyperbola given by \(5x^2-10x-4y^2+16y-31=0\).`,
+   choices: [String.raw`\(\dfrac{\sqrt{5}}{2}\)`, String.raw`\(\dfrac{5}{4}\)`, String.raw`\(\sqrt{5}\)`, String.raw`\(\dfrac{5}{2}\)`, "NOTA"],
    answer: "E",
-   solution: String.raw`Complete the square: 5(x-1)^2-4(y-2)^2=20, i.e., \dfrac{(x-1)^2}{4}-\dfrac{(y-2)^2}{5}=1.
-This is a horizontal hyperbola with a^2=4, b^2=5.
-Asymptotes: y-2=\pm\dfrac{\sqrt{5}}{2}(x-1), with slopes +\dfrac{\sqrt{5}}{2} and -\dfrac{\sqrt{5}}{2}.
-Sum of slopes =\dfrac{\sqrt{5}}{2}+\left(-\dfrac{\sqrt{5}}{2}\right)=0.
-Since 0 is not among choices A--D, the answer is \boxed{\text{NOTA}}.`,
+   solution: String.raw`Complete the square: \(5(x-1)^2-4(y-2)^2=20\), i.e., \(\dfrac{(x-1)^2}{4}-\dfrac{(y-2)^2}{5}=1\).
+This is a horizontal hyperbola with \(a^2=4, b^2=5\).
+Asymptotes: \(y-2=\pm\dfrac{\sqrt{5}}{2}(x-1)\), with slopes \(+\dfrac{\sqrt{5}}{2}\) and \(-\dfrac{\sqrt{5}}{2}\).
+Sum of slopes \(=\dfrac{\sqrt{5}}{2}+\left(-\dfrac{\sqrt{5}}{2}\right)=0\).
+Since 0 is not among choices A--D, the answer is \(\boxed{\text{NOTA}}\).`,
 },
 
 
@@ -1894,14 +1894,14 @@ Since 0 is not among choices A--D, the answer is \boxed{\text{NOTA}}.`,
    topic: "Trigonometry",
    difficulty: 3,
    methods: [],
-   question: String.raw`Let x and y be measures of acute angles such that \sin(3x-y)-\cos(2x+2y)=2. Find the value of x.`,
-   choices: [String.raw`\dfrac{\pi}{12}`, String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{4}`, String.raw`\dfrac{\pi}{3}`, "NOTA"],
+   question: String.raw`Let x and y be measures of acute angles such that \(\sin(3x-y)-\cos(2x+2y)=2\). Find the value of x.`,
+   choices: [String.raw`\(\dfrac{\pi}{12}\)`, String.raw`\(\dfrac{\pi}{6}\)`, String.raw`\(\dfrac{\pi}{4}\)`, String.raw`\(\dfrac{\pi}{3}\)`, "NOTA"],
    answer: "C",
    solution: String.raw`For the sum of a sine and a negative cosine to equal 2 (the maximum possible), we need:
-\sin(3x-y)=1 and \cos(2x+2y)=-1.
-So 3x-y=\pi/2 and 2x+2y=\pi\Rightarrow x+y=\pi/2.
-From x+y=\pi/2: y=\pi/2-x. Substituting: 3x-(\pi/2-x)=\pi/2\Rightarrow 4x=\pi\Rightarrow x=\pi/4.
-Verify: x=y=\pi/4 (both acute). \boxed{x=\pi/4}.`,
+\(\sin(3x-y)=1\) and \(\cos(2x+2y)=-1\).
+So \(3x-y=\pi/2\) and \(2x+2y=\pi\Rightarrow x+y=\pi/2\).
+From \(x+y=\pi/2\): \(y=\pi/2-x\). Substituting: \(3x-(\pi/2-x)=\pi/2\Rightarrow 4x=\pi\Rightarrow x=\pi/4\).
+Verify: \(x=y=\pi/4\) (both acute). \(\boxed{x=\pi/4}\).`,
 },
 
 
@@ -1914,10 +1914,10 @@ Verify: x=y=\pi/4 (both acute). \boxed{x=\pi/4}.`,
    topic: "Logs and Exponents",
    difficulty: 2,
    methods: [],
-   question: String.raw`A radioactive substance has a half-life of 24 years. A sample of this substance decays over a period of k years to 75\% of its original amount. Compute the value of k.`,
-   choices: [String.raw`48-24\log_2 3`, "12", "18", "48", "NOTA"],
+   question: String.raw`A radioactive substance has a half-life of 24 years. A sample of this substance decays over a period of k years to 75% of its original amount. Compute the value of k.`,
+   choices: [String.raw`\(48-24\log_2 3\)`, "12", "18", "48", "NOTA"],
    answer: "A",
-   solution: String.raw`The decay model: A(t)=A_0\left(\dfrac{1}{2}\right)^{t/24}. Set A(k)=\dfrac{3}{4}A_0:
+   solution: String.raw`The decay model: \(A(t)=A_0\left(\dfrac{1}{2}\right)^{t/24}\). Set \(A(k)=\dfrac{3}{4}A_0\):
 \[\left(\frac{1}{2}\right)^{k/24}=\frac{3}{4}\implies \frac{k}{24}\ln\!\frac{1}{2}=\ln\frac{3}{4}.\]
 \[\frac{k}{24}(-\ln 2)=\ln 3-2\ln 2\implies k=\frac{24(2\ln 2-\ln 3)}{\ln 2}=48-\frac{24\ln 3}{\ln 2}=\boxed{48-24\log_2 3}.\]`,
 },
@@ -1932,13 +1932,13 @@ Verify: x=y=\pi/4 (both acute). \boxed{x=\pi/4}.`,
    topic: "Geometry",
    difficulty: 3,
    methods: [],
-   question: String.raw`Consider a circle with radius 3, inside which two radii are drawn to form a sector with central angle \dfrac{\pi}{3}. A second circle is drawn such that it is tangent to both radii and internally tangent to the first circle. Find the radius of the second circle.`,
-   choices: ["1", String.raw`\dfrac{3\sqrt{3}-3}{2}`, String.raw`\dfrac{2\sqrt{3}}{3}`, String.raw`\sqrt{3}`, "NOTA"],
+   question: String.raw`Consider a circle with radius 3, inside which two radii are drawn to form a sector with central angle \(\dfrac{\pi}{3}\). A second circle is drawn such that it is tangent to both radii and internally tangent to the first circle. Find the radius of the second circle.`,
+   choices: ["1", String.raw`\(\dfrac{3\sqrt{3}-3}{2}\)`, String.raw`\(\dfrac{2\sqrt{3}}{3}\)`, String.raw`\(\sqrt{3}\)`, "NOTA"],
    answer: "A",
    solution: String.raw`Let r be the radius and x the distance from the large circle's center to the small circle's center.
-Internal tangency: x+r=3.
-The sector has half-angle \pi/6. The small circle is tangent to both radii, so \sin(\pi/6)=r/x\Rightarrow 1/2=r/x\Rightarrow x=2r.
-Substituting: 2r+r=3\Rightarrow r=\boxed{1}.`,
+Internal tangency: \(x+r=3\).
+The sector has half-angle \(\pi/6\). The small circle is tangent to both radii, so \(\sin(\pi/6)=r/x\Rightarrow 1/2=r/x\Rightarrow x=2r\).
+Substituting: \(2r+r=3\Rightarrow r=\boxed{1}\).`,
 },
 
 
@@ -1951,15 +1951,15 @@ Substituting: 2r+r=3\Rightarrow r=\boxed{1}.`,
    topic: "Functions",
    difficulty: 5,
    methods: ["Double-Angle Identity"],
-   question: String.raw`Let f(x)=2x and g(x)=\dfrac{x}{4-x^2}. Given h^1(x)=4g(f(x)) and h^n(x)=h\!\left(h^{n-1}(x)\right), find h^{100}(\sqrt{3}).`,
-   choices: [String.raw`-\sqrt{3}`, String.raw`-\dfrac{\sqrt{3}}{3}`, String.raw`\dfrac{\sqrt{3}}{3}`, String.raw`\sqrt{3}`, "NOTA"],
+   question: String.raw`Let \(f(x)=2x\) and \(g(x)=\dfrac{x}{4-x^2}\). Given \(h^1(x)=4g(f(x))\) and \(h^n(x)=h\!\left(h^{n-1}(x)\right)\), find \(h^{100}(\sqrt{3})\).`,
+   choices: [String.raw`\(-\sqrt{3}\)`, String.raw`\(-\dfrac{\sqrt{3}}{3}\)`, String.raw`\(\dfrac{\sqrt{3}}{3}\)`, String.raw`\(\sqrt{3}\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`Compute h(x)=4g(f(x))=4\cdot\dfrac{2x}{4-(2x)^2}=\dfrac{8x}{4-4x^2}=\dfrac{2x}{1-x^2}.
-This is the double-angle formula for tangent: \dfrac{2\tan\theta}{1-\tan^2\theta}=\tan(2\theta).
-Setting x=\tan\theta: h(\tan\theta)=\tan(2\theta), so h^n(\tan\theta)=\tan(2^n\theta).
-Since \sqrt{3}=\tan(\pi/3): h^{100}(\sqrt{3})=\tan\!\left(\dfrac{2^{100}\pi}{3}\right).
-Now 2^{100}\bmod 3: since 2\equiv -1\pmod{3}, 2^{100}\equiv(-1)^{100}=1\pmod{3}.
-So \dfrac{2^{100}\pi}{3}=k\pi+\dfrac{\pi}{3} for some integer k, and \tan\!\left(k\pi+\dfrac{\pi}{3}\right)=\tan\!\left(\dfrac{\pi}{3}\right)=\boxed{\sqrt{3}}.`,
+   solution: String.raw`Compute \(h(x)=4g(f(x))=4\cdot\dfrac{2x}{4-(2x)^2}=\dfrac{8x}{4-4x^2}=\dfrac{2x}{1-x^2}\).
+This is the double-angle formula for tangent: \(\dfrac{2\tan\theta}{1-\tan^2\theta}=\tan(2\theta)\).
+Setting \(x=\tan\theta\): \(h(\tan\theta)=\tan(2\theta)\), so \(h^n(\tan\theta)=\tan(2^n\theta)\).
+Since \(\sqrt{3}=\tan(\pi/3)\): \(h^{100}(\sqrt{3})=\tan\!\left(\dfrac{2^{100}\pi}{3}\right)\).
+Now \(2^{100}\bmod 3\): since \(2\equiv -1\pmod{3}, 2^{100}\equiv(-1)^{100}=1\pmod{3}\).
+So \(\dfrac{2^{100}\pi}{3}=k\pi+\dfrac{\pi}{3}\) for some integer k, and \(\tan\!\left(k\pi+\dfrac{\pi}{3}\right)=\tan\!\left(\dfrac{\pi}{3}\right)=\boxed{\sqrt{3}}\).`,
 },
 
 
@@ -1972,12 +1972,12 @@ So \dfrac{2^{100}\pi}{3}=k\pi+\dfrac{\pi}{3} for some integer k, and \tan\!\left
    topic: "Trigonometry",
    difficulty: 3,
    methods: [],
-   question: String.raw`Find all real solutions for x: \sin^2 x=\cos^2 x.`,
-   choices: [String.raw`\dfrac{\pi}{4}+2k\pi, where k is an integer`, String.raw`\dfrac{\pi}{4}+k\pi, where k is an integer`, String.raw`\dfrac{\pi}{4}+\dfrac{k\pi}{2}, where k is an integer`, String.raw`\dfrac{\pi}{4},\dfrac{3\pi}{4},\dfrac{5\pi}{4},\ldots`, "NOTA"],
+   question: String.raw`Find all real solutions for x: \(\sin^2 x=\cos^2 x\).`,
+   choices: [String.raw`\(\dfrac{\pi}{4}+2k\pi\), where \(k\) is an integer`, String.raw`\(\dfrac{\pi}{4}+k\pi\), where \(k\) is an integer`, String.raw`\(\dfrac{\pi}{4}+\dfrac{k\pi}{2}\), where \(k\) is an integer`, String.raw`\(\dfrac{\pi}{4},\dfrac{3\pi}{4},\dfrac{5\pi}{4},\ldots\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`\sin^2 x=\cos^2 x\Rightarrow\sin^2 x-\cos^2 x=0\Rightarrow-\cos(2x)=0\Rightarrow\cos(2x)=0.
-So 2x=\dfrac{\pi}{2}+k\pi\Rightarrow x=\dfrac{\pi}{4}+\dfrac{k\pi}{2} for integer k.
-The answer is \boxed{C}.`,
+   solution: String.raw`\(\sin^2 x=\cos^2 x\Rightarrow\sin^2 x-\cos^2 x=0\Rightarrow-\cos(2x)=0\Rightarrow\cos(2x)=0\).
+So \(2x=\dfrac{\pi}{2}+k\pi\Rightarrow x=\dfrac{\pi}{4}+\dfrac{k\pi}{2}\) for integer k.
+The answer is \(\boxed{C}\).`,
 },
 
 
@@ -1990,8 +1990,8 @@ The answer is \boxed{C}.`,
    topic: "Trigonometry",
    difficulty: 2,
    methods: [],
-   question: String.raw`A sinusoidal function has a vertical shift of magnitude 3 and amplitude of 5. Which of the following could \textbf{not} be this function?`,
-   choices: [String.raw`f(x)=5\sin x-3`, String.raw`f(x)=-5\cos(3x-\pi)+3`, String.raw`f(x)=10\sin x\cos x+3`, String.raw`f(x)=5\cos x-3`, "NOTA"],
+   question: String.raw`A sinusoidal function has a vertical shift of magnitude 3 and amplitude of 5. Which of the following could \(\textbf{not}\) be this function?`,
+   choices: [String.raw`\(f(x)=5\sin x-3\)`, String.raw`\(f(x)=-5\cos(3x-\pi)+3\)`, String.raw`\(f(x)=10\sin x\cos x+3\)`, String.raw`\(f(x)=5\cos x-3\)`, "NOTA"],
    answer: "E",
    solution: String.raw`A) \(5\sin x-3\): amplitude 5 and vertical shift \(-3\). \(\checkmark\)
 B) \(-5\cos(3x-\pi)+3\): amplitude 5 and vertical shift \(+3\). \(\checkmark\)
@@ -2010,14 +2010,14 @@ All four choices qualify, so the answer is \(\boxed{\text{NOTA}}\).`,
    topic: "Functions",
    difficulty: 2,
    methods: [],
-   question: String.raw`Let \Delta be an operator such that \Delta(f(x))=f(x+1)-f(x). Furthermore, \Delta^1(f(x))=\Delta(f(x)) and for n\geq 2, \Delta^n(f(x))=\Delta(\Delta^{n-1}(f(x))).
-Let g(x)=\Delta(x^3)+\Delta((x-1)^3). Compute g(1).`,
+   question: String.raw`Let \(\Delta\) be an operator such that \(\Delta(f(x))=f(x+1)-f(x)\). Furthermore, \(\Delta^1(f(x))=\Delta(f(x))\) and for \(n\geq 2, \Delta^n(f(x))=\Delta(\Delta^{n-1}(f(x)))\).
+Let \(g(x)=\Delta(x^3)+\Delta((x-1)^3)\). Compute g(1).`,
    choices: ["2", "7", "8", "9", "NOTA"],
    answer: "C",
-   solution: String.raw`\Delta(x^3)=(x+1)^3-x^3=3x^2+3x+1.
-\Delta((x-1)^3)=x^3-(x-1)^3=3x^2-3x+1.
-g(x)=\Delta(x^3)+\Delta((x-1)^3)=(x+1)^3-(x-1)^3.
-g(1)=2^3-0^3=8-0=\boxed{8}.`,
+   solution: String.raw`\(\Delta(x^3)=(x+1)^3-x^3=3x^2+3x+1\).
+\(\Delta((x-1)^3)=x^3-(x-1)^3=3x^2-3x+1\).
+\(g(x)=\Delta(x^3)+\Delta((x-1)^3)=(x+1)^3-(x-1)^3\).
+\(g(1)=2^3-0^3=8-0=\boxed{8}\).`,
 },
 
 
@@ -2030,13 +2030,13 @@ g(1)=2^3-0^3=8-0=\boxed{8}.`,
    topic: "Functions",
    difficulty: 3,
    methods: [],
-   question: String.raw`Let \Delta be an operator such that \Delta(f(x))=f(x+1)-f(x). Furthermore, \Delta^1(f(x))=\Delta(f(x)) and for n\geq 2, \Delta^n(f(x))=\Delta(\Delta^{n-1}(f(x))).
-Given that f(x) is a polynomial and \Delta^k(f(x))=c, where c is a non-zero constant, find the degree of f(x).`,
+   question: String.raw`Let \(\Delta\) be an operator such that \(\Delta(f(x))=f(x+1)-f(x)\). Furthermore, \(\Delta^1(f(x))=\Delta(f(x))\) and for \(n\geq 2, \Delta^n(f(x))=\Delta(\Delta^{n-1}(f(x)))\).
+Given that f(x) is a polynomial and \(\Delta^k(f(x))=c\), where c is a non-zero constant, find the degree of f(x).`,
    choices: [String.raw`c`, String.raw`k-1`, String.raw`k`, String.raw`k+1`, "NOTA"],
    answer: "C",
-   solution: String.raw`Each application of \Delta reduces the degree of a polynomial by exactly 1: if f has degree n, then \Delta(f) has degree n-1.
+   solution: String.raw`Each application of \(\Delta\) reduces the degree of a polynomial by exactly 1: if f has degree n, then \(\Delta(f)\) has degree n-1.
 After k applications, the degree has been reduced to 0 (a non-zero constant c).
-Therefore f(x) has degree \boxed{k}.`,
+Therefore f(x) has degree \(\boxed{k}\).`,
 },
 
 
@@ -2049,14 +2049,14 @@ Therefore f(x) has degree \boxed{k}.`,
    topic: "Functions",
    difficulty: 2,
    methods: [],
-   question: String.raw`Which of the following functions is \textbf{not} monotonic on its domain?`,
-   choices: [String.raw`a(x)=x^3,\quad x\in(-\infty,\infty)`, String.raw`b(x)=\sin(2x),\quad x\in\left(-\dfrac{\pi}{4},\dfrac{\pi}{4}\right)`, String.raw`c(x)=\arctan(x),\quad x\in(-\infty,\infty)`, String.raw`d(x)=\ln(x^2),\quad x\in(0,\infty)`, "NOTA"],
+   question: String.raw`Which of the following functions is \(\textbf{not}\) monotonic on its domain?`,
+   choices: [String.raw`\(a(x)=x^3,\quad x\in(-\infty,\infty)\)`, String.raw`\(b(x)=\sin(2x),\quad x\in\left(-\dfrac{\pi}{4},\dfrac{\pi}{4}\right)\)`, String.raw`\(c(x)=\arctan(x),\quad x\in(-\infty,\infty)\)`, String.raw`\(d(x)=\ln(x^2),\quad x\in(0,\infty)\)`, "NOTA"],
    answer: "E",
-   solution: String.raw`A) x^3 is strictly increasing on all of \mathbb{R}. Monotonic.
-B) \sin(2x) on (-\pi/4,\pi/4): the argument 2x\in(-\pi/2,\pi/2), where \sin is strictly increasing. Monotonic.
-C) \arctan(x) is strictly increasing on all of \mathbb{R}. Monotonic.
-D) On (0,\infty): \ln(x^2)=2\ln x, which is strictly increasing. Monotonic.
-All four functions are monotonic, so the answer is \boxed{\text{NOTA}}.`,
+   solution: String.raw`\(A) x^3\) is strictly increasing on all of \(\mathbb{R}\). Monotonic.
+\(B) \sin(2x)\) on \((-\pi/4,\pi/4)\): the argument \(2x\in(-\pi/2,\pi/2)\), where \(\sin\) is strictly increasing. Monotonic.
+\(C) \arctan(x)\) is strictly increasing on all of \(\mathbb{R}\). Monotonic.
+D) On \((0,\infty)\): \(\ln(x^2)=2\ln x\), which is strictly increasing. Monotonic.
+All four functions are monotonic, so the answer is \(\boxed{\text{NOTA}}\).`,
 },
 
 
@@ -2069,13 +2069,13 @@ All four functions are monotonic, so the answer is \boxed{\text{NOTA}}.`,
    topic: "Matrices",
    difficulty: 2,
    methods: ["Determinant"],
-   question: String.raw`For the 3\times 3 matrix \begin{pmatrix}A&B&C\\D&E&F\\G&H&I\end{pmatrix}, Jack says the determinant equals AEI+BFG+CDH-(CEG+BDI+AFH). Jim says the determinant equals A\begin{vmatrix}E&F\\H&I\end{vmatrix}-B\begin{vmatrix}D&F\\G&I\end{vmatrix}+C\begin{vmatrix}D&E\\G&H\end{vmatrix}. Who is correct?`,
+   question: String.raw`For the \(3\times 3\) matrix \(\begin{pmatrix}A&B&C\\D&E&F\\G&H&I\end{pmatrix}\), Jack says the determinant equals AEI+BFG+CDH-(CEG+BDI+AFH). Jim says the determinant equals \(A\begin{vmatrix}E&F\\H&I\end{vmatrix}-B\begin{vmatrix}D&F\\G&I\end{vmatrix}+C\begin{vmatrix}D&E\\G&H\end{vmatrix}\). Who is correct?`,
    choices: ["Jack", "Jim", "neither", "both", "NOTA"],
    answer: "D",
-   solution: String.raw`Jack's formula is the Sarrus' rule (diagonal method) for a 3\times 3 determinant: correct.
+   solution: String.raw`Jack's formula is the Sarrus' rule (diagonal method) for a \(3\times 3\) determinant: correct.
 Jim's formula is cofactor expansion along the first row: also correct.
 Expanding Jim's expression yields exactly Jack's expression.
-Both methods are valid. Answer: \boxed{\text{both}}.`,
+Both methods are valid. Answer: \(\boxed{\text{both}}\).`,
 },
 
 
@@ -2088,8 +2088,8 @@ Both methods are valid. Answer: \boxed{\text{both}}.`,
    topic: "Conic Sections",
    difficulty: 1,
    methods: [],
-   question: String.raw`Identify the following non-degenerate conic section: x^2+xy+y^2+x+y=0.
-\textit{(Note: "Ellipse" refers to a non-circular ellipse.)}`,
+   question: String.raw`Identify the following non-degenerate conic section: \(x^2+xy+y^2+x+y=0\).
+\(\textit{(Note: "Ellipse" refers to a non-circular ellipse.)}\)`,
    choices: ["circle", "ellipse", "parabola", "hyperbola", "NOTA"],
    answer: "B",
    solution: String.raw`For the general conic \(Ax^2+Bxy+Cy^2+Dx+Ey+F=0\), the discriminant is \(B^2-4AC\).
@@ -2105,13 +2105,13 @@ Because the \(xy\)-term is nonzero, the conic is rotated and is not a circle. Th
    topic: "Conic Sections",
    difficulty: 3,
    methods: [],
-   question: String.raw`Find the length of the chord of the hyperbola \dfrac{x^2}{16}-\dfrac{y^2}{36}=1 cut by the vertical line passing through a focus.`,
-   choices: ["9", "12", String.raw`9\sqrt{2}`, "18", "NOTA"],
+   question: String.raw`Find the length of the chord of the hyperbola \(\dfrac{x^2}{16}-\dfrac{y^2}{36}=1\) cut by the vertical line passing through a focus.`,
+   choices: ["9", "12", String.raw`\(9\sqrt{2}\)`, "18", "NOTA"],
    answer: "D",
-   solution: String.raw`For \dfrac{x^2}{16}-\dfrac{y^2}{36}=1, we have a^2=16, b^2=36, so c^2=16+36=52 and the foci are at (\pm 2\sqrt{13},\,0).
-Substituting x=2\sqrt{13} into the hyperbola equation:
+   solution: String.raw`For \(\dfrac{x^2}{16}-\dfrac{y^2}{36}=1\), we have \(a^2=16, b^2=36\), so \(c^2=16+36=52\) and the foci are at \((\pm 2\sqrt{13},\,0)\).
+Substituting \(x=2\sqrt{13}\) into the hyperbola equation:
 \[\frac{52}{16}-\frac{y^2}{36}=1 \implies \frac{y^2}{36}=\frac{52}{16}-1=\frac{36}{16} \implies y^2=81 \implies y=\pm 9.\]
-The chord has length 9-(-9)=\boxed{18}.`,
+The chord has length \(9-(-9)=\boxed{18}\).`,
 },
 
 
@@ -2124,12 +2124,12 @@ The chord has length 9-(-9)=\boxed{18}.`,
    topic: "Matrices",
    difficulty: 2,
    methods: ["Determinant"],
-   question: String.raw`Find \det\begin{pmatrix}2004&2005&2006\\2003&2004&2005\\2002&2003&2004\end{pmatrix}.`,
+   question: String.raw`Find \(\det\begin{pmatrix}2004&2005&2006\\2003&2004&2005\\2002&2003&2004\end{pmatrix}\).`,
    choices: ["1", "0", "-1", "2", "NOTA"],
    answer: "B",
    solution: String.raw`Subtract row 2 from row 1 and row 3 from row 2:
 \[R_1\leftarrow R_1-R_2:\;(1,1,1),\quad R_2\leftarrow R_2-R_3:\;(1,1,1).\]
-Now rows 1 and 2 are identical, so \det=\boxed{0}.`,
+Now rows 1 and 2 are identical, so \(\det=\boxed{0}\).`,
 },
 
 
@@ -2142,10 +2142,10 @@ Now rows 1 and 2 are identical, so \det=\boxed{0}.`,
    topic: "Matrices",
    difficulty: 1,
    methods: ["Matrix Multiplication"],
-   question: String.raw`Compute \begin{bmatrix}\sin x & \cos x\end{bmatrix}\begin{bmatrix}\sin x\\\cos x\end{bmatrix}.`,
-   choices: [String.raw`[0]`, String.raw`[\sin x\cos x]`, String.raw`[1]`, String.raw`[2]`, "NOTA"],
+   question: String.raw`Compute \(\begin{bmatrix}\sin x & \cos x\end{bmatrix}\begin{bmatrix}\sin x\\\cos x\end{bmatrix}\).`,
+   choices: [String.raw`[0]`, String.raw`\([\sin x\cos x]\)`, String.raw`[1]`, String.raw`[2]`, "NOTA"],
    answer: "C",
-   solution: String.raw`Multiplying a 1\times 2 matrix by a 2\times 1 matrix gives a 1\times 1 matrix:
+   solution: String.raw`Multiplying a \(1\times 2\) matrix by a \(2\times 1\) matrix gives a \(1\times 1\) matrix:
 \[\begin{bmatrix}\sin x & \cos x\end{bmatrix}\begin{bmatrix}\sin x\\\cos x\end{bmatrix}=[\sin^2 x+\cos^2 x]=\boxed{[1]}.\]`,
 },
 
@@ -2159,12 +2159,12 @@ Now rows 1 and 2 are identical, so \det=\boxed{0}.`,
    topic: "Polar",
    difficulty: 2,
    methods: ["Law of Cosines"],
-   question: String.raw`Find the distance between the polar points \left(4,\,\dfrac{5\pi}{3}\right) and \left(-\sqrt{2},\,\dfrac{5\pi}{4}\right).`,
-   choices: [String.raw`\sqrt{6+4\sqrt{3}}`, String.raw`\sqrt{12+4\sqrt{3}}`, String.raw`\sqrt{14+4\sqrt{3}}`, String.raw`\sqrt{16+4\sqrt{3}}`, "NOTA"],
+   question: String.raw`Find the distance between the polar points \(\left(4,\,\dfrac{5\pi}{3}\right)\) and \(\left(-\sqrt{2},\,\dfrac{5\pi}{4}\right)\).`,
+   choices: [String.raw`\(\sqrt{6+4\sqrt{3}}\)`, String.raw`\(\sqrt{12+4\sqrt{3}}\)`, String.raw`\(\sqrt{14+4\sqrt{3}}\)`, String.raw`\(\sqrt{16+4\sqrt{3}}\)`, "NOTA"],
    answer: "C",
    solution: String.raw`Convert to rectangular coordinates.
-Point 1: r=4, \theta=\frac{5\pi}{3}: x=4\cos\!\frac{5\pi}{3}=4\cdot\frac{1}{2}=2, y=4\sin\!\frac{5\pi}{3}=4\cdot\!\left(-\frac{\sqrt{3}}{2}\right)=-2\sqrt{3}. So P_1=(2,-2\sqrt{3}).
-Point 2: r=-\sqrt{2}, \theta=\frac{5\pi}{4}: x=(-\sqrt{2})\cos\!\frac{5\pi}{4}=(-\sqrt{2})\!\left(-\frac{\sqrt{2}}{2}\right)=1, y=(-\sqrt{2})\sin\!\frac{5\pi}{4}=(-\sqrt{2})\!\left(-\frac{\sqrt{2}}{2}\right)=1. So P_2=(1,1).
+Point 1: \(r=4, \theta=\frac{5\pi}{3}\): \(x=4\cos\!\frac{5\pi}{3}=4\cdot\frac{1}{2}=2, y=4\sin\!\frac{5\pi}{3}=4\cdot\!\left(-\frac{\sqrt{3}}{2}\right)=-2\sqrt{3}\). So \(P_1=(2,-2\sqrt{3})\).
+Point 2: \(r=-\sqrt{2}, \theta=\frac{5\pi}{4}\): \(x=(-\sqrt{2})\cos\!\frac{5\pi}{4}=(-\sqrt{2})\!\left(-\frac{\sqrt{2}}{2}\right)=1, y=(-\sqrt{2})\sin\!\frac{5\pi}{4}=(-\sqrt{2})\!\left(-\frac{\sqrt{2}}{2}\right)=1\). So \(P_2=(1,1)\).
 \[d=\sqrt{(2-1)^2+(-2\sqrt{3}-1)^2}=\sqrt{1+(4\cdot 3+4\sqrt{3}+1)}=\boxed{\sqrt{14+4\sqrt{3}}}.\]`,
 },
 
@@ -2178,10 +2178,10 @@ Point 2: r=-\sqrt{2}, \theta=\frac{5\pi}{4}: x=(-\sqrt{2})\cos\!\frac{5\pi}{4}=(
    topic: "Matrices",
    difficulty: 2,
    methods: ["Determinant", "Logarithms"],
-   question: String.raw`Find \det\begin{pmatrix}\log_2 6 & 1\\\ln e & \log_{36} 16\end{pmatrix}.`,
-   choices: ["0", "1", "2", String.raw`\log_2 6`, "NOTA"],
+   question: String.raw`Find \(\det\begin{pmatrix}\log_2 6 & 1\\\ln e & \log_{36} 16\end{pmatrix}\).`,
+   choices: ["0", "1", "2", String.raw`\(\log_2 6\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Note \ln e=1 and \log_{36}16=\dfrac{\log 16}{\log 36}=\dfrac{4\log 2}{2\log 6}=\dfrac{2}{\log_2 6}.
+   solution: String.raw`Note \(\ln e=1\) and \(\log_{36}16=\dfrac{\log 16}{\log 36}=\dfrac{4\log 2}{2\log 6}=\dfrac{2}{\log_2 6}\).
 \[\det=(\log_2 6)\cdot\frac{2}{\log_2 6}-1\cdot 1=2-1=\boxed{1}.\]`,
 },
 
@@ -2195,11 +2195,11 @@ Point 2: r=-\sqrt{2}, \theta=\frac{5\pi}{4}: x=(-\sqrt{2})\cos\!\frac{5\pi}{4}=(
    topic: "Sequences and Series",
    difficulty: 5,
    methods: ["Rationalization", "Telescoping"],
-   question: String.raw`Evaluate \displaystyle\sum_{k=4}^{120}\frac{1}{k\sqrt{k+1}+(k+1)\sqrt{k}}.`,
-   choices: [String.raw`\dfrac{9}{22}`, String.raw`\dfrac{7}{20}`, String.raw`\dfrac{1}{2}`, String.raw`\dfrac{1}{11}`, "NOTA"],
+   question: String.raw`Evaluate \(\displaystyle\sum_{k=4}^{120}\frac{1}{k\sqrt{k+1}+(k+1)\sqrt{k}}\).`,
+   choices: [String.raw`\(\dfrac{9}{22}\)`, String.raw`\(\dfrac{7}{20}\)`, String.raw`\(\dfrac{1}{2}\)`, String.raw`\(\dfrac{1}{11}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Factor the denominator: k\sqrt{k+1}+(k+1)\sqrt{k}=\sqrt{k}\,\sqrt{k+1}\!\left(\sqrt{k}+\sqrt{k+1}\right).
-Rationalize by multiplying by \dfrac{\sqrt{k+1}-\sqrt{k}}{\sqrt{k+1}-\sqrt{k}}:
+   solution: String.raw`Factor the denominator: \(k\sqrt{k+1}+(k+1)\sqrt{k}=\sqrt{k}\,\sqrt{k+1}\!\left(\sqrt{k}+\sqrt{k+1}\right)\).
+Rationalize by multiplying by \(\dfrac{\sqrt{k+1}-\sqrt{k}}{\sqrt{k+1}-\sqrt{k}}\):
 \[\frac{1}{k\sqrt{k+1}+(k+1)\sqrt{k}}=\frac{\sqrt{k+1}-\sqrt{k}}{\sqrt{k}\,\sqrt{k+1}\cdot 1}=\frac{1}{\sqrt{k}}-\frac{1}{\sqrt{k+1}}.\]
 The sum telescopes:
 \[\sum_{k=4}^{120}\!\left(\frac{1}{\sqrt{k}}-\frac{1}{\sqrt{k+1}}\right)=\frac{1}{\sqrt{4}}-\frac{1}{\sqrt{121}}=\frac{1}{2}-\frac{1}{11}=\boxed{\frac{9}{22}}.\]`,
@@ -2215,13 +2215,13 @@ The sum telescopes:
    topic: "Polar",
    difficulty: 1,
    methods: [],
-   question: String.raw`Express -1+\sqrt{3}\,i in polar form.`,
-   choices: [String.raw`2\!\left(\cos\dfrac{\pi}{3}+i\sin\dfrac{\pi}{3}\right)`, String.raw`2\!\left(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\right)`, String.raw`\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}`, String.raw`2\!\left(\cos\dfrac{4\pi}{3}+i\sin\dfrac{4\pi}{3}\right)`, "NOTA"],
+   question: String.raw`Express \(-1+\sqrt{3}\,i\) in polar form.`,
+   choices: [String.raw`\(2\!\left(\cos\dfrac{\pi}{3}+i\sin\dfrac{\pi}{3}\right)\)`, String.raw`\(2\!\left(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\right)\)`, String.raw`\(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\)`, String.raw`\(2\!\left(\cos\dfrac{4\pi}{3}+i\sin\dfrac{4\pi}{3}\right)\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`The modulus is r=\sqrt{(-1)^2+(\sqrt{3})^2}=\sqrt{4}=2.
-The argument: the point (-1,\sqrt{3}) is in quadrant II, so
-\theta=\pi-\arctan\!\left(\dfrac{\sqrt{3}}{1}\right)=\pi-\dfrac{\pi}{3}=\dfrac{2\pi}{3}.
-Thus -1+\sqrt{3}\,i=\boxed{2\!\left(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\right)}.`,
+   solution: String.raw`The modulus is \(r=\sqrt{(-1)^2+(\sqrt{3})^2}=\sqrt{4}=2\).
+The argument: the point \((-1,\sqrt{3})\) is in quadrant II, so
+\(\theta=\pi-\arctan\!\left(\dfrac{\sqrt{3}}{1}\right)=\pi-\dfrac{\pi}{3}=\dfrac{2\pi}{3}\).
+Thus \(-1+\sqrt{3}\,i=\boxed{2\!\left(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\right)}\).`,
 },
 
 
@@ -2234,13 +2234,13 @@ Thus -1+\sqrt{3}\,i=\boxed{2\!\left(\cos\dfrac{2\pi}{3}+i\sin\dfrac{2\pi}{3}\rig
    topic: "Sequences and Series",
    difficulty: 4,
    methods: ["Logarithms"],
-   question: String.raw`Evaluate \displaystyle\sum_{n=1}^{45}\log\!\left(2^{2n-1}\cdot\tan(2n-1)^{\circ}\right).`,
-   choices: ["2025", String.raw`45\log 2`, String.raw`900\log 2`, String.raw`2025\log 2`, "NOTA"],
+   question: String.raw`Evaluate \(\displaystyle\sum_{n=1}^{45}\log\!\left(2^{2n-1}\cdot\tan(2n-1)^{\circ}\right)\).`,
+   choices: ["2025", String.raw`\(45\log 2\)`, String.raw`\(900\log 2\)`, String.raw`\(2025\log 2\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`Split using log rules: \sum_{n=1}^{45}(2n-1)\log 2+\sum_{n=1}^{45}\log\tan(2n-1)^{\circ}.
-The angles (2n-1)^{\circ} for n=1,\ldots,45 are 1^{\circ},3^{\circ},\ldots,89^{\circ}. Since \tan\theta\cdot\tan(90^{\circ}-\theta)=1, the product of all these tangents equals 1, so \sum_{n=1}^{45}\log\tan(2n-1)^{\circ}=0.
-The sum of exponents: \sum_{n=1}^{45}(2n-1)=45^2=2025.
-Therefore the total is \boxed{2025\log 2}.`,
+   solution: String.raw`Split using log rules: \(\sum_{n=1}^{45}(2n-1)\log 2+\sum_{n=1}^{45}\log\tan(2n-1)^{\circ}\).
+The angles \((2n-1)^{\circ}\) for \(n=1,\ldots,45\) are \(1^{\circ},3^{\circ},\ldots,89^{\circ}\). Since \(\tan\theta\cdot\tan(90^{\circ}-\theta)=1\), the product of all these tangents equals 1, so \(\sum_{n=1}^{45}\log\tan(2n-1)^{\circ}=0\).
+The sum of exponents: \(\sum_{n=1}^{45}(2n-1)=45^2=2025\).
+Therefore the total is \(\boxed{2025\log 2}\).`,
 },
 
 
@@ -2253,10 +2253,10 @@ Therefore the total is \boxed{2025\log 2}.`,
    topic: "Trigonometry",
    difficulty: 1,
    methods: [],
-   question: String.raw`Find \dfrac{1}{\cos 45^{\circ}}+\dfrac{1}{\sin 45^{\circ}}.`,
-   choices: [String.raw`\sqrt{2}`, String.raw`\sqrt{2}+1`, "2", String.raw`2\sqrt{2}`, "NOTA"],
+   question: String.raw`Find \(\dfrac{1}{\cos 45^{\circ}}+\dfrac{1}{\sin 45^{\circ}}\).`,
+   choices: [String.raw`\(\sqrt{2}\)`, String.raw`\(\sqrt{2}+1\)`, "2", String.raw`\(2\sqrt{2}\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`\cos 45^{\circ}=\sin 45^{\circ}=\dfrac{\sqrt{2}}{2}, so
+   solution: String.raw`\(\cos 45^{\circ}=\sin 45^{\circ}=\dfrac{\sqrt{2}}{2}\), so
 \[\frac{1}{\cos 45^{\circ}}+\frac{1}{\sin 45^{\circ}}=\frac{2}{\sqrt{2}}+\frac{2}{\sqrt{2}}=\sqrt{2}+\sqrt{2}=\boxed{2\sqrt{2}}.\]`,
 },
 
@@ -2270,13 +2270,13 @@ Therefore the total is \boxed{2025\log 2}.`,
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Trigonometric Identities"],
-   question: String.raw`Find the smallest positive solution (in degrees) to \dfrac{1}{1+\sin 2x}+\dfrac{1}{1-\sin 2x}=\dfrac{8}{3}.`,
-   choices: [String.raw`15^{\circ}`, String.raw`22.5^{\circ}`, String.raw`30^{\circ}`, String.raw`45^{\circ}`, "NOTA"],
+   question: String.raw`Find the smallest positive solution (in degrees) to \(\dfrac{1}{1+\sin 2x}+\dfrac{1}{1-\sin 2x}=\dfrac{8}{3}\).`,
+   choices: [String.raw`\(15^{\circ}\)`, String.raw`\(22.5^{\circ}\)`, String.raw`\(30^{\circ}\)`, String.raw`\(45^{\circ}\)`, "NOTA"],
    answer: "A",
    solution: String.raw`Combine the fractions:
 \[\frac{(1-\sin 2x)+(1+\sin 2x)}{(1+\sin 2x)(1-\sin 2x)}=\frac{2}{1-\sin^2 2x}=\frac{2}{\cos^2 2x}=\frac{8}{3}.\]
-So \cos^2 2x=\dfrac{3}{4}, giving \cos 2x=\pm\dfrac{\sqrt{3}}{2}.
-The smallest positive x: 2x=30^{\circ}\Rightarrow x=\boxed{15^{\circ}}.`,
+So \(\cos^2 2x=\dfrac{3}{4}\), giving \(\cos 2x=\pm\dfrac{\sqrt{3}}{2}\).
+The smallest positive x: \(2x=30^{\circ}\Rightarrow x=\boxed{15^{\circ}}\).`,
 },
 
 
@@ -2289,13 +2289,13 @@ The smallest positive x: 2x=30^{\circ}\Rightarrow x=\boxed{15^{\circ}}.`,
    topic: "Conic Sections",
    difficulty: 2,
    methods: [],
-   question: String.raw`If (5-2m)x^2+(m-1)y^2-4x+6y+2m=0 is a circle, find its radius.`,
-   choices: [String.raw`\sqrt{3}`, "3", "2", "9", "NOTA"],
+   question: String.raw`If \((5-2m)x^2+(m-1)y^2-4x+6y+2m=0\) is a circle, find its radius.`,
+   choices: [String.raw`\(\sqrt{3}\)`, "3", "2", "9", "NOTA"],
    answer: "B",
-   solution: String.raw`For a circle the coefficients of x^2 and y^2 must be equal:
+   solution: String.raw`For a circle the coefficients of \(x^2\) and \(y^2\) must be equal:
 \[5-2m=m-1\implies 6=3m\implies m=2.\]
-The equation becomes x^2+y^2-4x+6y+4=0, i.e., (x-2)^2+(y+3)^2=4+9-4=9.
-The radius is r=\sqrt{9}=\boxed{3}.`,
+The equation becomes \(x^2+y^2-4x+6y+4=0\), i.e., \((x-2)^2+(y+3)^2=4+9-4=9\).
+The radius is \(r=\sqrt{9}=\boxed{3}\).`,
 },
 
 
@@ -2308,10 +2308,10 @@ The radius is r=\sqrt{9}=\boxed{3}.`,
    topic: "Functions",
    difficulty: 2,
    methods: ["Even Functions"],
-   question: String.raw`If f(x)=\dfrac{3x^2+(a-2)x+3}{1-x^2} is an even function, find a^2\cdot f(a).`,
+   question: String.raw`If \(f(x)=\dfrac{3x^2+(a-2)x+3}{1-x^2}\) is an even function, find \(a^2\cdot\) f(a).`,
    choices: ["-20", "-16", "12", "20", "NOTA"],
    answer: "A",
-   solution: String.raw`An even function satisfies f(-x)=f(x). The numerator 3x^2+(a-2)x+3 must be even, so its odd part must vanish: a-2=0\Rightarrow a=2.
+   solution: String.raw`An even function satisfies \(f(-x)=f(x)\). The numerator \(3x^2+(a-2)x+3\) must be even, so its odd part must vanish: \(a-2=0\Rightarrow a=2\).
 \[f(x)=\frac{3x^2+3}{1-x^2}=\frac{3(x^2+1)}{1-x^2}.\]
 \[f(2)=\frac{3(4+1)}{1-4}=\frac{15}{-3}=-5.\]
 \[a^2\cdot f(a)=4\cdot(-5)=\boxed{-20}.\]`,
@@ -2327,14 +2327,14 @@ The radius is r=\sqrt{9}=\boxed{3}.`,
    topic: "Trigonometry",
    difficulty: 3,
    methods: ["Trigonometric Identities"],
-   question: String.raw`If a+b=\dfrac{\pi}{3}, evaluate (\sin a-\sin b)^2+(\cos a+\cos b)^2.`,
-   choices: ["1", "2", String.raw`\sqrt{3}`, "3", "NOTA"],
+   question: String.raw`If \(a+b=\dfrac{\pi}{3}\), evaluate \((\sin a-\sin b)^2+(\cos a+\cos b)^2\).`,
+   choices: ["1", "2", String.raw`\(\sqrt{3}\)`, "3", "NOTA"],
    answer: "D",
    solution: String.raw`Expand:
 \[(\sin a-\sin b)^2+(\cos a+\cos b)^2\]
 \[=\sin^2 a-2\sin a\sin b+\sin^2 b+\cos^2 a+2\cos a\cos b+\cos^2 b\]
 \[=1+1+2(\cos a\cos b-\sin a\sin b)=2+2\cos(a+b).\]
-With a+b=\dfrac{\pi}{3}: 2+2\cos\dfrac{\pi}{3}=2+2\cdot\dfrac{1}{2}=\boxed{3}.`,
+With \(a+b=\dfrac{\pi}{3}\): \(2+2\cos\dfrac{\pi}{3}=2+2\cdot\dfrac{1}{2}=\boxed{3}\).`,
 },
 
 
@@ -2347,12 +2347,12 @@ With a+b=\dfrac{\pi}{3}: 2+2\cos\dfrac{\pi}{3}=2+2\cdot\dfrac{1}{2}=\boxed{3}.`,
    topic: "Polynomials",
    difficulty: 3,
    methods: ["Vieta's Formulas"],
-   question: String.raw`The roots of x^3+4ax^2+bx+2-3a=0 satisfy \sum x_n=\prod(2x_n). Find a.`,
-   choices: [String.raw`-\dfrac{4}{7}`, String.raw`\dfrac{2}{7}`, String.raw`\dfrac{4}{7}`, String.raw`\dfrac{8}{7}`, "NOTA"],
+   question: String.raw`The roots of \(x^3+4ax^2+bx+2-3a=0\) satisfy \(\sum x_n=\prod(2x_n)\). Find a.`,
+   choices: [String.raw`\(-\dfrac{4}{7}\)`, String.raw`\(\dfrac{2}{7}\)`, String.raw`\(\dfrac{4}{7}\)`, String.raw`\(\dfrac{8}{7}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`By Vieta's formulas for x^3+4ax^2+bx+(2-3a)=0:
-\sum x_n=-4a and \prod x_n=-(2-3a)=3a-2.
-The condition \sum x_n=\prod(2x_n)=8\prod x_n gives:
+   solution: String.raw`By Vieta's formulas for \(x^3+4ax^2+bx+(2-3a)=0\):
+\(\sum x_n=-4a\) and \(\prod x_n=-(2-3a)=3a-2\).
+The condition \(\sum x_n=\prod(2x_n)=8\prod x_n\) gives:
 \[-4a=8(3a-2)\implies -4a=24a-16\implies 16=28a\implies a=\boxed{\frac{4}{7}}.\]`,
 },
 
@@ -2366,10 +2366,10 @@ The condition \sum x_n=\prod(2x_n)=8\prod x_n gives:
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Trigonometric Identities"],
-   question: String.raw`If \sin 25^{\circ}=a, find \sin 40^{\circ} in terms of a.`,
-   choices: [String.raw`2a^2-1`, String.raw`2a\sqrt{1-a^2}`, String.raw`1-2a^2`, String.raw`a\sqrt{1-a^2}`, "NOTA"],
+   question: String.raw`If \(\sin 25^{\circ}=a\), find \(\sin 40^{\circ}\) in terms of a.`,
+   choices: [String.raw`\(2a^2-1\)`, String.raw`\(2a\sqrt{1-a^2}\)`, String.raw`\(1-2a^2\)`, String.raw`\(a\sqrt{1-a^2}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`\sin 40^{\circ}=\cos 50^{\circ}=\cos(2\cdot 25^{\circ})=1-2\sin^2 25^{\circ}=\boxed{1-2a^2}.`,
+   solution: String.raw`\(\sin 40^{\circ}=\cos 50^{\circ}=\cos(2\cdot 25^{\circ})=1-2\sin^2 25^{\circ}=\boxed{1-2a^2}\).`,
 },
 
 
@@ -2382,16 +2382,16 @@ The condition \sum x_n=\prod(2x_n)=8\prod x_n gives:
    topic: "Trigonometry",
    difficulty: 1,
    methods: [],
-   question: String.raw`Which of the following has the greatest value: \sin 250^{\circ}, \cos 300^{\circ}, \tan 100^{\circ}, \cot 260^{\circ}, \tan 80^{\circ}?`,
-   choices: [String.raw`\tan 80^{\circ}`, String.raw`\cos 300^{\circ}`, String.raw`\cot 260^{\circ}`, String.raw`\tan 100^{\circ}`, String.raw`\sin 250^{\circ}`],
+   question: String.raw`Which of the following has the greatest value: \(\sin 250^{\circ}, \cos 300^{\circ}, \tan 100^{\circ}, \cot 260^{\circ}, \tan 80^{\circ}\)?`,
+   choices: [String.raw`\(\tan 80^{\circ}\)`, String.raw`\(\cos 300^{\circ}\)`, String.raw`\(\cot 260^{\circ}\)`, String.raw`\(\tan 100^{\circ}\)`, String.raw`\(\sin 250^{\circ}\)`],
    answer: "A",
    solution: String.raw`Evaluate each approximately:
-\sin 250^{\circ}=-\cos 20^{\circ}\approx -0.94 (negative).
-\cos 300^{\circ}=\cos(-60^{\circ})=0.5.
-\tan 100^{\circ}=-\tan 80^{\circ}\approx -5.67 (negative).
-\cot 260^{\circ}=\tan 10^{\circ}\approx 0.18.
-\tan 80^{\circ}\approx 5.67.
-The greatest value is \boxed{\tan 80^{\circ}}.`,
+\(\sin 250^{\circ}=-\cos 20^{\circ}\approx\) -0.94 (negative).
+\(\cos 300^{\circ}=\cos(-60^{\circ})=0.5\).
+\(\tan 100^{\circ}=-\tan 80^{\circ}\approx\) -5.67 (negative).
+\(\cot 260^{\circ}=\tan 10^{\circ}\approx 0.18\).
+\(\tan 80^{\circ}\approx 5.67\).
+The greatest value is \(\boxed{\tan 80^{\circ}}\).`,
 },
 
 
@@ -2404,11 +2404,11 @@ The greatest value is \boxed{\tan 80^{\circ}}.`,
    topic: "Probability",
    difficulty: 3,
    methods: [],
-   question: String.raw`Esha and Harshitha are 2 of 12 people chosen to stand in a row of 7. What is the probability that both are chosen \textit{and} are standing adjacent to each other?`,
-   choices: [String.raw`\dfrac{1}{22}`, String.raw`\dfrac{2}{11}`, String.raw`\dfrac{1}{11}`, String.raw`\dfrac{3}{22}`, "NOTA"],
+   question: String.raw`Esha and Harshitha are 2 of 12 people chosen to stand in a row of 7. What is the probability that both are chosen \(\textit{and}\) are standing adjacent to each other?`,
+   choices: [String.raw`\(\dfrac{1}{22}\)`, String.raw`\(\dfrac{2}{11}\)`, String.raw`\(\dfrac{1}{11}\)`, String.raw`\(\dfrac{3}{22}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`Total arrangements of 7 from 12: P(12,7)=12!/5!=3{,}991{,}680.
-Favorable: choose one of the 6 adjacent position pairs for Esha and Harshitha, arrange them within that pair in 2 orders, and fill the remaining 5 positions with an ordered selection from the other 10 people in P(10,5)=10!/5!=30{,}240 ways.
+   solution: String.raw`Total arrangements of 7 from 12: \(P(12,7)=12!/5!=3{,}991{,}680\).
+Favorable: choose one of the 6 adjacent position pairs for Esha and Harshitha, arrange them within that pair in 2 orders, and fill the remaining 5 positions with an ordered selection from the other 10 people in \(P(10,5)=10!/5!=30{,}240\) ways.
 \[P=\frac{2\cdot 6\cdot P(10,5)}{P(12,7)}=\frac{2\cdot 6\cdot 30240}{3991680}=\frac{362880}{3991680}=\boxed{\frac{1}{11}}.\]`,
 },
 
@@ -2422,10 +2422,10 @@ Favorable: choose one of the 6 adjacent position pairs for Esha and Harshitha, a
    topic: "Limits",
    difficulty: 2,
    methods: [],
-   question: String.raw`Evaluate \displaystyle\lim_{x\to 1}\frac{x^4-4x^3+6x^2-4x+1}{x-1}.`,
+   question: String.raw`Evaluate \(\displaystyle\lim_{x\to 1}\frac{x^4-4x^3+6x^2-4x+1}{x-1}\).`,
    choices: ["4", "0", "1", "-4", "NOTA"],
    answer: "B",
-   solution: String.raw`Recognize the numerator: x^4-4x^3+6x^2-4x+1=(x-1)^4.
+   solution: String.raw`Recognize the numerator: \(x^4-4x^3+6x^2-4x+1=(x-1)^4\).
 \[\lim_{x\to 1}\frac{(x-1)^4}{x-1}=\lim_{x\to 1}(x-1)^3=0^3=\boxed{0}.\]`,
 },
 
@@ -2439,12 +2439,12 @@ Favorable: choose one of the 6 adjacent position pairs for Esha and Harshitha, a
    topic: "Limits",
    difficulty: 2,
    methods: [],
-   question: String.raw`Evaluate \displaystyle\lim_{x\to 1}\left(\frac{x^3-1}{x-1}\right)^{\!\frac{x^2-1}{x-1}}.`,
+   question: String.raw`Evaluate \(\displaystyle\lim_{x\to 1}\left(\frac{x^3-1}{x-1}\right)^{\!\frac{x^2-1}{x-1}}\).`,
    choices: ["3", "1", "6", "9", "NOTA"],
    answer: "D",
-   solution: String.raw`As x\to 1:
+   solution: String.raw`As \(x\to 1\):
 \[\frac{x^3-1}{x-1}=x^2+x+1\to 3,\qquad \frac{x^2-1}{x-1}=x+1\to 2.\]
-Therefore \displaystyle\lim_{x\to 1}\left(x^2+x+1\right)^{x+1}=3^2=\boxed{9}.`,
+Therefore \(\displaystyle\lim_{x\to 1}\left(x^2+x+1\right)^{x+1}=3^2=\boxed{9}\).`,
 },
 
 
@@ -2457,10 +2457,10 @@ Therefore \displaystyle\lim_{x\to 1}\left(x^2+x+1\right)^{x+1}=3^2=\boxed{9}.`,
    topic: "Polynomials",
    difficulty: 3,
    methods: ["Synthetic Division"],
-   question: String.raw`P(x)=3x^4+6x^3+5x^2+8x-4 is divided by (x+2), yielding quotient Q(x). Find the sum of the coefficients of Q(3x-1).`,
+   question: String.raw`\(P(x)=3x^4+6x^3+5x^2+8x-4\) is divided by (x+2), yielding quotient Q(x). Find the sum of the coefficients of Q(3x-1).`,
    choices: ["56", "14", "28", "32", "NOTA"],
    answer: "D",
-   solution: String.raw`Q(x)=3x^3+5x-2 via synthetic division. The sum of coefficients of a polynomial f equals f(1). For Q(3x-1), substitute x=1: Q(3\cdot 1-1)=Q(2).
+   solution: String.raw`\(Q(x)=3x^3+5x-2\) via synthetic division. The sum of coefficients of a polynomial f equals f(1). For Q(3x-1), substitute \(x=1\): \(Q(3\cdot 1-1)=Q(2)\).
 \[Q(2)=3(2^3)+5(2)-2=24+10-2=\boxed{32}.\]`,
 },
 
@@ -2474,13 +2474,13 @@ Therefore \displaystyle\lim_{x\to 1}\left(x^2+x+1\right)^{x+1}=3^2=\boxed{9}.`,
    topic: "Polynomials",
    difficulty: 3,
    methods: ["Remainder Theorem"],
-   question: String.raw`A polynomial P(x) satisfies P(3)=2 and P(-3)=8. Find the remainder when P(x) is divided by x^2-9.`,
+   question: String.raw`A polynomial P(x) satisfies \(P(3)=2\) and \(P(-3)=8\). Find the remainder when P(x) is divided by \(x^2-9\).`,
    choices: [String.raw`5+x`, String.raw`x-5`, String.raw`5-x`, String.raw`x+5`, "NOTA"],
    answer: "C",
-   solution: String.raw`The remainder R(x)=ax+b satisfies R(3)=P(3) and R(-3)=P(-3):
+   solution: String.raw`The remainder \(R(x)=ax+b\) satisfies \(R(3)=P(3)\) and \(R(-3)=P(-3)\):
 \[3a+b=2\quad\text{and}\quad -3a+b=8.\]
-Adding: 2b=10\Rightarrow b=5. Subtracting: 6a=-6\Rightarrow a=-1.
-R(x)=-x+5=\boxed{5-x}.`,
+Adding: \(2b=10\Rightarrow b=5\). Subtracting: \(6a=-6\Rightarrow a=-1\).
+\(R(x)=-x+5=\boxed{5-x}\).`,
 },
 
 
@@ -2493,15 +2493,15 @@ R(x)=-x+5=\boxed{5-x}.`,
    topic: "Simplification",
    difficulty: 3,
    methods: [],
-   question: String.raw`Which of the following is a possible value of \left(\dfrac{x^3-y^3}{xy}+3y-3x\right)\cdot\dfrac{x+y}{\dfrac{y}{x}+\dfrac{x}{y}-2}+y^2, where x\neq y, x,y\neq 0, and x is a positive integer.`,
+   question: String.raw`Which of the following is a possible value of \(\left(\dfrac{x^3-y^3}{xy}+3y-3x\right)\cdot\dfrac{x+y}{\dfrac{y}{x}+\dfrac{x}{y}-2}+y^2\), where \(x\neq y, x,y\neq 0\), and x is a positive integer.`,
    choices: ["3", "16", "22", "30", "NOTA"],
    answer: "B",
-   solution: String.raw`Factor the first factor's bracket: \dfrac{x^3-y^3}{xy}+3(y-x)=\dfrac{(x-y)(x^2+xy+y^2)-3xy(x-y)}{xy}=\dfrac{(x-y)^3}{xy}.
-The denominator of the second factor: \dfrac{y}{x}+\dfrac{x}{y}-2=\dfrac{x^2+y^2-2xy}{xy}=\dfrac{(x-y)^2}{xy}.
+   solution: String.raw`Factor the first factor's bracket: \(\dfrac{x^3-y^3}{xy}+3(y-x)=\dfrac{(x-y)(x^2+xy+y^2)-3xy(x-y)}{xy}=\dfrac{(x-y)^3}{xy}\).
+The denominator of the second factor: \(\dfrac{y}{x}+\dfrac{x}{y}-2=\dfrac{x^2+y^2-2xy}{xy}=\dfrac{(x-y)^2}{xy}\).
 Multiplying:
 \[\frac{(x-y)^3}{xy}\cdot\frac{(x+y)\cdot xy}{(x-y)^2}=(x-y)(x+y)=x^2-y^2.\]
-Adding y^2: x^2-y^2+y^2=x^2.
-Since x is a positive integer, x^2 is a perfect square. The only perfect square among the choices is \boxed{16} (with x=4).`,
+Adding \(y^2\): \(x^2-y^2+y^2=x^2\).
+Since x is a positive integer, \(x^2\) is a perfect square. The only perfect square among the choices is \(\boxed{16}\) (with \(x=4)\).`,
 },
 
 
@@ -2514,12 +2514,12 @@ Since x is a positive integer, x^2 is a perfect square. The only perfect square 
    topic: "Simplification",
    difficulty: 2,
    methods: [],
-   question: String.raw`Given b=a+c, simplify \left(1+\dfrac{a^2-b^2-c^2}{2bc}\right)\div\dfrac{a+b-c}{2bc}.`,
+   question: String.raw`Given \(b=a+c\), simplify \(\left(1+\dfrac{a^2-b^2-c^2}{2bc}\right)\div\dfrac{a+b-c}{2bc}\).`,
    choices: ["0", "1", String.raw`2c`, String.raw`2bc`, "NOTA"],
    answer: "A",
-   solution: String.raw`Combine the numerator: 1+\dfrac{a^2-b^2-c^2}{2bc}=\dfrac{2bc+a^2-b^2-c^2}{2bc}=\dfrac{a^2-(b-c)^2}{2bc}=\dfrac{(a-b+c)(a+b-c)}{2bc}.
-With b=a+c: a-b+c=a-(a+c)+c=0.
-So the numerator equals 0, and the entire expression is \boxed{0}.`,
+   solution: String.raw`Combine the numerator: \(1+\dfrac{a^2-b^2-c^2}{2bc}=\dfrac{2bc+a^2-b^2-c^2}{2bc}=\dfrac{a^2-(b-c)^2}{2bc}=\dfrac{(a-b+c)(a+b-c)}{2bc}\).
+With \(b=a+c\): \(a-b+c=a-(a+c)+c=0\).
+So the numerator equals 0, and the entire expression is \(\boxed{0}\).`,
 },
 
 
@@ -2532,11 +2532,11 @@ So the numerator equals 0, and the entire expression is \boxed{0}.`,
    topic: "Logs and Exponents",
    difficulty: 3,
    methods: [],
-   question: String.raw`If \log_3 5=a, find \log_{75} 45.`,
-   choices: [String.raw`\dfrac{1+a}{a+2}`, String.raw`\dfrac{2+a}{2a+1}`, String.raw`\dfrac{a+2}{a+1}`, String.raw`\dfrac{2a+1}{a+2}`, "NOTA"],
+   question: String.raw`If \(\log_3 5=a\), find \(\log_{75} 45\).`,
+   choices: [String.raw`\(\dfrac{1+a}{a+2}\)`, String.raw`\(\dfrac{2+a}{2a+1}\)`, String.raw`\(\dfrac{a+2}{a+1}\)`, String.raw`\(\dfrac{2a+1}{a+2}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Express everything in terms of \log 3. Let \log 3=1 (unit) and \log 5=a.
-\log 45=\log(9\cdot 5)=2+a and \log 75=\log(25\cdot 3)=2a+1.
+   solution: String.raw`Express everything in terms of \(\log 3\). Let \(\log 3=1\) (unit) and \(\log 5=a\).
+\(\log 45=\log(9\cdot 5)=2+a\) and \(\log 75=\log(25\cdot 3)=2a+1\).
 \[\log_{75}45=\frac{\log 45}{\log 75}=\boxed{\frac{2+a}{2a+1}}.\]`,
 },
 
@@ -2550,10 +2550,10 @@ So the numerator equals 0, and the entire expression is \boxed{0}.`,
    topic: "Complex Numbers",
    difficulty: 2,
    methods: ["De Moivre's Theorem", "Rationalization"],
-   question: String.raw`Evaluate \left(\dfrac{1-i}{1+i}\right)^{12}.`,
+   question: String.raw`Evaluate \(\left(\dfrac{1-i}{1+i}\right)^{12}\).`,
    choices: ["-1", String.raw`i`, "1", String.raw`-i`, "NOTA"],
    answer: "C",
-   solution: String.raw`Simplify the base: \dfrac{1-i}{1+i}=\dfrac{(1-i)^2}{(1+i)(1-i)}=\dfrac{1-2i+i^2}{2}=\dfrac{-2i}{2}=-i.
+   solution: String.raw`Simplify the base: \(\dfrac{1-i}{1+i}=\dfrac{(1-i)^2}{(1+i)(1-i)}=\dfrac{1-2i+i^2}{2}=\dfrac{-2i}{2}=-i\).
 \[\left(-i\right)^{12}=\left((-i)^4\right)^3=\left(i^4\right)^3=1^3=\boxed{1}.\]`,
 },
 
@@ -2567,12 +2567,12 @@ So the numerator equals 0, and the entire expression is \boxed{0}.`,
    topic: "Complex Numbers",
    difficulty: 2,
    methods: [],
-   question: String.raw`If \dfrac{1-i}{z}=\dfrac{1+i}{z+i}, find |z|.`,
-   choices: [String.raw`\dfrac{\sqrt{2}}{2}`, String.raw`\sqrt{2}`, "1", String.raw`\dfrac{1}{2}`, "NOTA"],
+   question: String.raw`If \(\dfrac{1-i}{z}=\dfrac{1+i}{z+i}\), find |z|.`,
+   choices: [String.raw`\(\dfrac{\sqrt{2}}{2}\)`, String.raw`\(\sqrt{2}\)`, "1", String.raw`\(\dfrac{1}{2}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Cross-multiply: (1-i)(z+i)=(1+i)z.
+   solution: String.raw`Cross-multiply: \((1-i)(z+i)=(1+i)z\).
 \[(1-i)z+(1-i)i=(1+i)z \implies (1-i)i=(1+i)z-(1-i)z=2iz.\]
-(1-i)i=i-i^2=i+1=1+i, so 2iz=1+i\Rightarrow z=\dfrac{1+i}{2i}=\dfrac{(1+i)(-i)}{2}=\dfrac{-i+1}{2}=\dfrac{1-i}{2}.
+\((1-i)i=i-i^2=i+1=1+i\), so \(2iz=1+i\Rightarrow z=\dfrac{1+i}{2i}=\dfrac{(1+i)(-i)}{2}=\dfrac{-i+1}{2}=\dfrac{1-i}{2}\).
 \[|z|=\frac{|1-i|}{2}=\frac{\sqrt{2}}{2}=\boxed{\frac{\sqrt{2}}{2}}.\]`,
 },
 
@@ -2586,13 +2586,13 @@ So the numerator equals 0, and the entire expression is \boxed{0}.`,
    topic: "Trigonometry",
    difficulty: 3,
    methods: ["Trigonometric Identities"],
-   question: String.raw`Find T=\arcsin\!\dfrac{1}{\sqrt{10}}+\arcsin\!\dfrac{3}{\sqrt{10}}.`,
-   choices: [String.raw`\dfrac{\pi}{6}`, String.raw`\dfrac{\pi}{4}`, String.raw`\dfrac{\pi}{3}`, String.raw`\dfrac{\pi}{2}`, "NOTA"],
+   question: String.raw`Find \(T=\arcsin\!\dfrac{1}{\sqrt{10}}+\arcsin\!\dfrac{3}{\sqrt{10}}\).`,
+   choices: [String.raw`\(\dfrac{\pi}{6}\)`, String.raw`\(\dfrac{\pi}{4}\)`, String.raw`\(\dfrac{\pi}{3}\)`, String.raw`\(\dfrac{\pi}{2}\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`Let \alpha=\arcsin\!\dfrac{1}{\sqrt{10}} and \beta=\arcsin\!\dfrac{3}{\sqrt{10}}.
-Then \sin\alpha=\dfrac{1}{\sqrt{10}} and \cos\alpha=\dfrac{3}{\sqrt{10}} (first quadrant).
-But \cos\alpha=\dfrac{3}{\sqrt{10}}=\sin\beta, so \alpha+\beta=\dfrac{\pi}{2}.
-Therefore T=\boxed{\dfrac{\pi}{2}}.`,
+   solution: String.raw`Let \(\alpha=\arcsin\!\dfrac{1}{\sqrt{10}}\) and \(\beta=\arcsin\!\dfrac{3}{\sqrt{10}}\).
+Then \(\sin\alpha=\dfrac{1}{\sqrt{10}}\) and \(\cos\alpha=\dfrac{3}{\sqrt{10}}\) (first quadrant).
+But \(\cos\alpha=\dfrac{3}{\sqrt{10}}=\sin\beta\), so \(\alpha+\beta=\dfrac{\pi}{2}\).
+Therefore \(T=\boxed{\dfrac{\pi}{2}}\).`,
 },
 
 
@@ -2605,8 +2605,8 @@ Therefore T=\boxed{\dfrac{\pi}{2}}.`,
    topic: "Vectors",
    difficulty: 1,
    methods: [],
-   question: String.raw`Find the magnitude of the vector \langle -1,\,3,\,4\rangle.`,
-   choices: [String.raw`\sqrt{14}`, String.raw`\sqrt{24}`, String.raw`\sqrt{26}`, String.raw`\sqrt{30}`, "NOTA"],
+   question: String.raw`Find the magnitude of the vector \(\langle -1,\,3,\,4\rangle\).`,
+   choices: [String.raw`\(\sqrt{14}\)`, String.raw`\(\sqrt{24}\)`, String.raw`\(\sqrt{26}\)`, String.raw`\(\sqrt{30}\)`, "NOTA"],
    answer: "C",
    solution: String.raw`\[|\langle -1,3,4\rangle|=\sqrt{(-1)^2+3^2+4^2}=\sqrt{1+9+16}=\boxed{\sqrt{26}}.\]`,
 },
@@ -2621,16 +2621,16 @@ Therefore T=\boxed{\dfrac{\pi}{2}}.`,
    topic: "Vectors",
    difficulty: 2,
    methods: ["Cross Product"],
-   question: String.raw`Find a unit vector in the direction of \langle 1,-2,1\rangle\times\langle -2,1,2\rangle.`,
-   choices: [String.raw`\dfrac{\sqrt{2}}{10}\langle 5,4,3\rangle`, String.raw`\dfrac{1}{5\sqrt{2}}\langle 5,4,3\rangle`, String.raw`\dfrac{1}{\sqrt{50}}\langle -5,-4,3\rangle`, String.raw`\dfrac{1}{\sqrt{50}}\langle -5,4,-3\rangle`, "NOTA"],
+   question: String.raw`Find a unit vector in the direction of \(\langle 1,-2,1\rangle\times\langle -2,1,2\rangle\).`,
+   choices: [String.raw`\(\dfrac{\sqrt{2}}{10}\langle 5,4,3\rangle\)`, String.raw`\(\dfrac{1}{5\sqrt{2}}\langle 5,4,3\rangle\)`, String.raw`\(\dfrac{1}{\sqrt{50}}\langle -5,-4,3\rangle\)`, String.raw`\(\dfrac{1}{\sqrt{50}}\langle -5,4,-3\rangle\)`, "NOTA"],
    answer: "E",
    solution: String.raw`Compute the cross product:
 \[\langle 1,-2,1\rangle\times\langle -2,1,2\rangle=\begin{vmatrix}\mathbf{i}&\mathbf{j}&\mathbf{k}\\1&-2&1\\-2&1&2\end{vmatrix}\]
 \[=\mathbf{i}[(-2)(2)-(1)(1)]-\mathbf{j}[(1)(2)-(1)(-2)]+\mathbf{k}[(1)(1)-(-2)(-2)]\]
 \[=\mathbf{i}(-4-1)-\mathbf{j}(2+2)+\mathbf{k}(1-4)=\langle -5,-4,-3\rangle.\]
-Magnitude: \sqrt{25+16+9}=\sqrt{50}=5\sqrt{2}.
-Unit vector: \dfrac{1}{5\sqrt{2}}\langle -5,-4,-3\rangle=\dfrac{\sqrt{2}}{10}\langle -5,-4,-3\rangle.
-This does not match any of choices A--D, so the answer is \boxed{\text{NOTA}}.`,
+Magnitude: \(\sqrt{25+16+9}=\sqrt{50}=5\sqrt{2}\).
+Unit vector: \(\dfrac{1}{5\sqrt{2}}\langle -5,-4,-3\rangle=\dfrac{\sqrt{2}}{10}\langle -5,-4,-3\rangle\).
+This does not match any of choices A--D, so the answer is \(\boxed{\text{NOTA}}\).`,
 },
 
 {
@@ -2640,14 +2640,14 @@ This does not match any of choices A--D, so the answer is \boxed{\text{NOTA}}.`,
    topic: "Trigonometry",
    difficulty: 1,
    methods: ["Trigonometric Identities"],
-   question: String.raw`Which of the following gives a pair of values which are \textbf{NOT} equal?`,
-   choices: [String.raw`\cos(25^\circ) and \cos(-25^\circ)`, String.raw`\sin(25^\circ) and \cos(65^\circ)`, String.raw`\sin(-25^\circ) and -\sin(25^\circ)`, String.raw`\sin(25^\circ) and -\sin(155^\circ)`, "NOTA"],
+   question: String.raw`Which of the following gives a pair of values which are \(\textbf{NOT}\) equal?`,
+   choices: [String.raw`\(\cos(25^\circ)\) and \(\cos(-25^\circ)\)`, String.raw`\(\sin(25^\circ)\) and \(\cos(65^\circ)\)`, String.raw`\(\sin(-25^\circ)\) and \(-\sin(25^\circ)\)`, String.raw`\(\sin(25^\circ)\) and \(-\sin(155^\circ)\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`A is true: cosine is an even function, so \cos(-25^\circ)=\cos(25^\circ).
-B is true: \cos(65^\circ)=\sin(90^\circ-65^\circ)=\sin(25^\circ).
-C is true: sine is an odd function, so \sin(-25^\circ)=-\sin(25^\circ).
-D: \sin(155^\circ)=\sin(180^\circ-155^\circ)=\sin(25^\circ), so -\sin(155^\circ)=-\sin(25^\circ)\neq\sin(25^\circ).
-Answer: \boxed{D}.`,
+   solution: String.raw`A is true: cosine is an even function, so \(\cos(-25^\circ)=\cos(25^\circ)\).
+B is true: \(\cos(65^\circ)=\sin(90^\circ-65^\circ)=\sin(25^\circ)\).
+C is true: sine is an odd function, so \(\sin(-25^\circ)=-\sin(25^\circ)\).
+D: \(\sin(155^\circ)=\sin(180^\circ-155^\circ)=\sin(25^\circ)\), so \(-\sin(155^\circ)=-\sin(25^\circ)\neq\sin(25^\circ)\).
+Answer: \(\boxed{D}\).`,
 },
 
 
@@ -2659,11 +2659,11 @@ Answer: \boxed{D}.`,
    topic: "Trigonometry",
    difficulty: 2,
    methods: [],
-   question: String.raw`In \triangle PQR, PQ=8, PR=10, and angle P is obtuse such that \tan P=-\dfrac{3}{4}. Give the area of \triangle PQR.`,
+   question: String.raw`In \(\triangle PQR, PQ=8, PR=10\), and angle P is obtuse such that \(\tan P=-\dfrac{3}{4}\). Give the area of \(\triangle PQR\).`,
    choices: ["20", "24", "48", "52", "NOTA"],
    answer: "B",
-   solution: String.raw`With \tan P = -\dfrac{3}{4} and P obtuse (second quadrant): \sin P = \dfrac{3}{5}, \cos P = -\dfrac{4}{5}.
-Area = \dfrac{1}{2}\cdot PQ\cdot PR\cdot\sin P = \dfrac{1}{2}(8)(10)\!\cdot\!\dfrac{3}{5} = 40\cdot\dfrac{3}{5} = \boxed{24}.`,
+   solution: String.raw`With \(\tan P = -\dfrac{3}{4}\) and P obtuse (second quadrant): \(\sin P = \dfrac{3}{5}, \cos P = -\dfrac{4}{5}\).
+Area \(= \dfrac{1}{2}\cdot PQ\cdot PR\cdot\sin P = \dfrac{1}{2}(8)(10)\!\cdot\!\dfrac{3}{5} = 40\cdot\dfrac{3}{5} = \boxed{24}\).`,
 },
 
 
@@ -2675,12 +2675,12 @@ Area = \dfrac{1}{2}\cdot PQ\cdot PR\cdot\sin P = \dfrac{1}{2}(8)(10)\!\cdot\!\df
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Law of Cosines"],
-   question: String.raw`In \triangle PQR, PQ=8, PR=10, and angle P is obtuse such that \tan P=-\dfrac{3}{4}. Find the length of side \overline{QR}.`,
-   choices: [String.raw`14\sqrt{3}`, "16", String.raw`2\sqrt{73}`, "14", "NOTA"],
+   question: String.raw`In \(\triangle PQR, PQ=8, PR=10\), and angle P is obtuse such that \(\tan P=-\dfrac{3}{4}\). Find the length of side \(\overline{QR}\).`,
+   choices: [String.raw`\(14\sqrt{3}\)`, "16", String.raw`\(2\sqrt{73}\)`, "14", "NOTA"],
    answer: "C",
-   solution: String.raw`By the Law of Cosines with \cos P = -\dfrac{4}{5}:
+   solution: String.raw`By the Law of Cosines with \(\cos P = -\dfrac{4}{5}\):
 \[QR^2 = PQ^2+PR^2-2\cdot PQ\cdot PR\cdot\cos P = 64+100-2(8)(10)\!\left(-\tfrac{4}{5}\right).\]
-QR = \boxed{2\sqrt{73}}.`,
+\(QR = \boxed{2\sqrt{73}}\).`,
 },
 
 
@@ -2692,13 +2692,13 @@ QR = \boxed{2\sqrt{73}}.`,
    topic: "Conic Sections",
    difficulty: 3,
    methods: [],
-   question: String.raw`A parabola has focus at coordinates (-1,5) and vertex at coordinates (-1,-7). If the equation of the parabola is written as f(x)=ax^2+bx+c, find the value of 3\cdot f(3).`,
+   question: String.raw`A parabola has focus at coordinates (-1,5) and vertex at coordinates (-1,-7). If the equation of the parabola is written as \(f(x)=ax^2+bx+c\), find the value of \(3\cdot\) f(3).`,
    choices: [String.raw`-20`, String.raw`-17`, "16", "31", "NOTA"],
    answer: "A",
-   solution: String.raw`The vertex is (-1,-7) and focus is (-1,5); the parabola opens upward with p=12.
-Equation: (x+1)^2=4(12)(y+7)=48(y+7), so f(x)=\dfrac{(x+1)^2}{48}-7.
-f(3)=\dfrac{(3+1)^2}{48}-7=\dfrac{16}{48}-7=\dfrac{1}{3}-7=-\dfrac{20}{3}.
-3\cdot f(3)=3\!\cdot\!\left(-\dfrac{20}{3}\right)=\boxed{-20}.`,
+   solution: String.raw`The vertex is (-1,-7) and focus is (-1,5); the parabola opens upward with \(p=12\).
+Equation: \((x+1)^2=4(12)(y+7)=48(y+7)\), so \(f(x)=\dfrac{(x+1)^2}{48}-7\).
+\(f(3)=\dfrac{(3+1)^2}{48}-7=\dfrac{16}{48}-7=\dfrac{1}{3}-7=-\dfrac{20}{3}\).
+\(3\cdot f(3)=3\!\cdot\!\left(-\dfrac{20}{3}\right)=\boxed{-20}\).`,
 },
 
 
@@ -2710,12 +2710,12 @@ f(3)=\dfrac{(3+1)^2}{48}-7=\dfrac{16}{48}-7=\dfrac{1}{3}-7=-\dfrac{20}{3}.
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Half-Angle Identity"],
-   question: String.raw`If \cos\theta=\dfrac{1}{3} and 0<\theta<\dfrac{\pi}{2}, find \sin\!\left(\dfrac{1}{2}\theta\right).`,
-   choices: [String.raw`\dfrac{\sqrt{7}}{6}`, String.raw`\dfrac{\sqrt{3}}{3}`, String.raw`\dfrac{\sqrt{7}}{9}`, String.raw`\dfrac{\sqrt{2}}{6}`, "NOTA"],
+   question: String.raw`If \(\cos\theta=\dfrac{1}{3}\) and \(0<\theta<\dfrac{\pi}{2}\), find \(\sin\!\left(\dfrac{1}{2}\theta\right)\).`,
+   choices: [String.raw`\(\dfrac{\sqrt{7}}{6}\)`, String.raw`\(\dfrac{\sqrt{3}}{3}\)`, String.raw`\(\dfrac{\sqrt{7}}{9}\)`, String.raw`\(\dfrac{\sqrt{2}}{6}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Using the half-angle formula: \sin\!\left(\dfrac{\theta}{2}\right)=\sqrt{\dfrac{1-\cos\theta}{2}}.
+   solution: String.raw`Using the half-angle formula: \(\sin\!\left(\dfrac{\theta}{2}\right)=\sqrt{\dfrac{1-\cos\theta}{2}}\).
 \[\sin\!\left(\dfrac{\theta}{2}\right)=\sqrt{\dfrac{1-\tfrac{1}{3}}{2}}=\sqrt{\dfrac{\tfrac{2}{3}}{2}}=\sqrt{\dfrac{1}{3}}=\dfrac{1}{\sqrt{3}}=\dfrac{\sqrt{3}}{3}.\]
-Answer: \boxed{\dfrac{\sqrt{3}}{3}}.`,
+Answer: \(\boxed{\dfrac{\sqrt{3}}{3}}\).`,
 },
 
 
@@ -2728,12 +2728,12 @@ Answer: \boxed{\dfrac{\sqrt{3}}{3}}.`,
    difficulty: 4,
    methods: [],
    question: String.raw`Two fixed vertical poles are 20 yards apart in a field, and a dog (Ralph) has his collar attached to a 30-yard-long rope whose endpoints are attached to each pole, 3 ft above ground. Ralph's collar is also 3 ft above ground. Discounting the dimensions of the dog and the poles, find the maximum area that the dog can roam on the ground, in square yards. Assume the poles are perpendicular to the field and the field is planar.`,
-   choices: [String.raw`25\pi\sqrt{3}`, String.raw`75\pi\sqrt{3}`, String.raw`75\pi\sqrt{5}`, String.raw`150\pi\sqrt{5}`, "NOTA"],
+   choices: [String.raw`\(25\pi\sqrt{3}\)`, String.raw`\(75\pi\sqrt{3}\)`, String.raw`\(75\pi\sqrt{5}\)`, String.raw`\(150\pi\sqrt{5}\)`, "NOTA"],
    answer: "C",
    solution: String.raw`The locus of points where the rope endpoints are fixed forms an ellipse with foci at the two poles.
-The rope has total length 2a=30, so a=15. The distance between poles is 2c=20, so c=10.
-b^2=a^2-c^2=225-100=125, giving b=5\sqrt{5}.
-The area of the ellipse is \pi ab=\pi(15)(5\sqrt{5})=\boxed{75\pi\sqrt{5}} sq yards.`,
+The rope has total length \(2a=30\), so \(a=15\). The distance between poles is \(2c=20\), so \(c=10\).
+\(b^2=a^2-c^2=225-100=125\), giving \(b=5\sqrt{5}\).
+The area of the ellipse is \(\pi ab=\pi(15)(5\sqrt{5})=\boxed{75\pi\sqrt{5}} sq\) yards.`,
 },
 
 
@@ -2745,13 +2745,13 @@ The area of the ellipse is \pi ab=\pi(15)(5\sqrt{5})=\boxed{75\pi\sqrt{5}} sq ya
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Trigonometric Identities"],
-   question: String.raw`Given 2\tan^2 x - \sec^2 x = 0 for 0\le x < 2\pi, give the sum of the values of x.`,
-   choices: [String.raw`4.5\pi`, String.raw`4\pi`, String.raw`3\pi`, String.raw`2\pi`, "NOTA"],
+   question: String.raw`Given \(2\tan^2 x - \sec^2 x = 0\) for \(0\le x < 2\pi\), give the sum of the values of x.`,
+   choices: [String.raw`\(4.5\pi\)`, String.raw`\(4\pi\)`, String.raw`\(3\pi\)`, String.raw`\(2\pi\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Rewrite: 2\tan^2 x=\sec^2 x, i.e.\ \dfrac{2\sin^2 x}{\cos^2 x}=\dfrac{1}{\cos^2 x}.
-So 2\sin^2 x=1 (where the expressions are defined), giving \sin^2 x=\dfrac{1}{2}, |\sin x|=\dfrac{\sqrt{2}}{2}.
-Solutions on [0,2\pi): x=\dfrac{\pi}{4},\dfrac{3\pi}{4},\dfrac{5\pi}{4},\dfrac{7\pi}{4}.
-Sum =\dfrac{\pi}{4}+\dfrac{3\pi}{4}+\dfrac{5\pi}{4}+\dfrac{7\pi}{4}=\dfrac{16\pi}{4}=\boxed{4\pi}.`,
+   solution: String.raw`Rewrite: \(2\tan^2 x=\sec^2 x\), i.e. \(\dfrac{2\sin^2 x}{\cos^2 x}=\dfrac{1}{\cos^2 x}\).
+So \(2\sin^2 x=1\) (where the expressions are defined), giving \(\sin^2 x=\dfrac{1}{2}, |\sin x|=\dfrac{\sqrt{2}}{2}\).
+Solutions on \([0,2\pi)\): \(x=\dfrac{\pi}{4},\dfrac{3\pi}{4},\dfrac{5\pi}{4},\dfrac{7\pi}{4}\).
+Sum \(=\dfrac{\pi}{4}+\dfrac{3\pi}{4}+\dfrac{5\pi}{4}+\dfrac{7\pi}{4}=\dfrac{16\pi}{4}=\boxed{4\pi}\).`,
 },
 
 
@@ -2763,14 +2763,14 @@ Sum =\dfrac{\pi}{4}+\dfrac{3\pi}{4}+\dfrac{5\pi}{4}+\dfrac{7\pi}{4}=\dfrac{16\pi
    topic: "Functions",
    difficulty: 2,
    methods: ["Asymptotes"],
-   question: String.raw`f(x)=\dfrac{\log(x)-1}{\log^2(x)-1} is graphed on the xy-plane for x\ge0. Which of the following is a vertical asymptote of the graph?
-I. x=0 \quad II. x=-1 \quad III. x=\dfrac{1}{10} \quad IV. x=10`,
+   question: String.raw`\(f(x)=\dfrac{\log(x)-1}{\log^2(x)-1}\) is graphed on the xy-plane for \(x\ge0\). Which of the following is a vertical asymptote of the graph?
+I. \(x=0 \quad II\). \(x=-1 \quad\) III. \(x=\dfrac{1}{10} \quad IV\). \(x=10\)`,
    choices: ["IV only", "I, II only", "III only", "III, IV only", "NOTA"],
    answer: "C",
-   solution: String.raw`Factor: f(x)=\dfrac{\log x-1}{(\log x-1)(\log x+1)}=\dfrac{1}{\log x+1} for \log x\neq1 (i.e.\ x\neq10, which is a removable discontinuity).
-Vertical asymptote where \log x+1=0\Rightarrow\log x=-1\Rightarrow x=10^{-1}=\dfrac{1}{10}.
-x=0 is not in the domain but is not an asymptote of the simplified form.
-Answer: \boxed{\text{III only}}.`,
+   solution: String.raw`Factor: \(f(x)=\dfrac{\log x-1}{(\log x-1)(\log x+1)}=\dfrac{1}{\log x+1}\) for \(\log x\neq1\) (i.e. \(x\neq10\), which is a removable discontinuity).
+Vertical asymptote where \(\log x+1=0\Rightarrow\log x=-1\Rightarrow x=10^{-1}=\dfrac{1}{10}\).
+\(x=0\) is not in the domain but is not an asymptote of the simplified form.
+Answer: \(\boxed{\text{III only}}\).`,
 },
 
 
@@ -2782,12 +2782,12 @@ Answer: \boxed{\text{III only}}.`,
    topic: "Conic Sections",
    difficulty: 2,
    methods: [],
-   question: String.raw`Consider the graph of C_1 with equation x^2+y^2-10x+2y-10=0. A point P on C_1 is the point on the graph with the least possible distance to point Q(-1,7). What is the distance PQ?`,
+   question: String.raw`Consider the graph of \(C_1\) with equation \(x^2+y^2-10x+2y-10=0\). A point P on \(C_1\) is the point on the graph with the least possible distance to point Q(-1,7). What is the distance PQ?`,
    choices: ["10", "8", "6", "4", "NOTA"],
    answer: "D",
-   solution: String.raw`Complete the square: (x-5)^2+(y+1)^2=36. Circle with center (5,-1) and radius 6.
-Distance from center to Q(-1,7): \sqrt{(5-(-1))^2+(-1-7)^2}=\sqrt{36+64}=\sqrt{100}=10.
-Minimum distance from Q to the circle: 10-6=\boxed{4}.`,
+   solution: String.raw`Complete the square: \((x-5)^2+(y+1)^2=36\). Circle with center (5,-1) and radius 6.
+Distance from center to Q(-1,7): \(\sqrt{(5-(-1))^2+(-1-7)^2}=\sqrt{36+64}=\sqrt{100}=10\).
+Minimum distance from Q to the circle: \(10-6=\boxed{4}\).`,
 },
 
 
@@ -2801,13 +2801,13 @@ Minimum distance from Q to the circle: 10-6=\boxed{4}.`,
    methods: ["Nested Functions"],
    question: String.raw`The expression
 \[\sqrt{\frac{\tan(x)}{3}-\sqrt{\frac{\tan(x)}{3}-\sqrt{\frac{\tan(x)}{3}-\cdots}}}\]
-has value \dfrac{1}{2}, over -\dfrac{\pi}{2}<x<\dfrac{\pi}{2}. Find \sec^2 x.`,
-   choices: [String.raw`\dfrac{3}{4}`, String.raw`\dfrac{97}{81}`, String.raw`\dfrac{25}{16}`, String.raw`\dfrac{97}{16}`, "NOTA"],
+has value \(\dfrac{1}{2}\), over \(-\dfrac{\pi}{2}<x<\dfrac{\pi}{2}\). Find \(\sec^2 x\).`,
+   choices: [String.raw`\(\dfrac{3}{4}\)`, String.raw`\(\dfrac{97}{81}\)`, String.raw`\(\dfrac{25}{16}\)`, String.raw`\(\dfrac{97}{16}\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`Let y denote the nested radical. Then y=\sqrt{\dfrac{\tan x}{3}-y}, so y^2=\dfrac{\tan x}{3}-y.
-With y=\dfrac{1}{2}: \dfrac{1}{4}=\dfrac{\tan x}{3}-\dfrac{1}{2}, giving \dfrac{\tan x}{3}=\dfrac{3}{4}, so \tan x=\dfrac{9}{4}.
-\sec^2 x=1+\tan^2 x=1+\dfrac{81}{16}=\dfrac{97}{16}.
-Answer: \boxed{\dfrac{97}{16}}.`,
+   solution: String.raw`Let y denote the nested radical. Then \(y=\sqrt{\dfrac{\tan x}{3}-y}\), so \(y^2=\dfrac{\tan x}{3}-y\).
+With \(y=\dfrac{1}{2}\): \(\dfrac{1}{4}=\dfrac{\tan x}{3}-\dfrac{1}{2}\), giving \(\dfrac{\tan x}{3}=\dfrac{3}{4}\), so \(\tan x=\dfrac{9}{4}\).
+\(\sec^2 x=1+\tan^2 x=1+\dfrac{81}{16}=\dfrac{97}{16}\).
+Answer: \(\boxed{\dfrac{97}{16}}\).`,
 },
 
 
@@ -2819,12 +2819,12 @@ Answer: \boxed{\dfrac{97}{16}}.`,
    topic: "Logs and Exponents",
    difficulty: 2,
    methods: ["Substitution"],
-   question: String.raw`If e^{2x}-3e^x=10 is solved over the real numbers, then x=`,
-   choices: [String.raw`\ln 5`, String.raw`2\ln 2`, String.raw`\ln 3`, String.raw`1-\ln 2`, "NOTA"],
+   question: String.raw`If \(e^{2x}-3e^x=10\) is solved over the real numbers, then \(x=\)`,
+   choices: [String.raw`\(\ln 5\)`, String.raw`\(2\ln 2\)`, String.raw`\(\ln 3\)`, String.raw`\(1-\ln 2\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Let u=e^x: u^2-3u-10=0\Rightarrow(u-5)(u+2)=0.
-Since e^x>0, we take u=5, giving e^x=5, x=\ln5.
-Answer: \boxed{\ln 5}.`,
+   solution: String.raw`Let \(u=e^x\): \(u^2-3u-10=0\Rightarrow(u-5)(u+2)=0\).
+Since \(e^x>0\), we take \(u=5\), giving \(e^x=5, x=\ln5\).
+Answer: \(\boxed{\ln 5}\).`,
 },
 
 
@@ -2836,12 +2836,12 @@ Answer: \boxed{\ln 5}.`,
    topic: "Conic Sections",
    difficulty: 3,
    methods: ["Asymptotes"],
-   question: String.raw`The graph of \dfrac{(y-k)^2}{a^2}-\dfrac{(x-h)^2}{b^2}=1 has asymptotes with equations 2x+3y=-4 and 2x-3y=8. Give the sum h-k.`,
+   question: String.raw`The graph of \(\dfrac{(y-k)^2}{a^2}-\dfrac{(x-h)^2}{b^2}=1\) has asymptotes with equations \(2x+3y=-4\) and \(2x-3y=8\). Give the sum h-k.`,
    choices: ["3", "1", "0", String.raw`-1`, "NOTA"],
    answer: "A",
    solution: String.raw`The asymptotes intersect at the center (h,k).
-Solve: 2x+3y=-4 and 2x-3y=8. Adding: 4x=4\Rightarrow x=1. Then 3y=-6\Rightarrow y=-2.
-Center: (h,k)=(1,-2). h-k=1-(-2)=\boxed{3}.`,
+Solve: \(2x+3y=-4\) and \(2x-3y=8\). Adding: \(4x=4\Rightarrow x=1\). Then \(3y=-6\Rightarrow y=-2\).
+Center: \((h,k)=(1,-2)\). \(h-k=1-(-2)=\boxed{3}\).`,
 },
 
 
@@ -2853,13 +2853,13 @@ Center: (h,k)=(1,-2). h-k=1-(-2)=\boxed{3}.`,
    topic: "Conic Sections",
    difficulty: 3,
    methods: ["Asymptotes"],
-   question: String.raw`The graph of \dfrac{(y-k)^2}{a^2}-\dfrac{(x-h)^2}{b^2}=1 has asymptotes with equations 2x+3y=-4 and 2x-3y=8. If the conjugate axis of the graph has length 6, tell the distance between the foci of the graph.`,
-   choices: [String.raw`2\sqrt{13}`, String.raw`4\sqrt{2}`, String.raw`2\sqrt{39}`, String.raw`4\sqrt{19}`, "NOTA"],
+   question: String.raw`The graph of \(\dfrac{(y-k)^2}{a^2}-\dfrac{(x-h)^2}{b^2}=1\) has asymptotes with equations \(2x+3y=-4\) and \(2x-3y=8\). If the conjugate axis of the graph has length 6, tell the distance between the foci of the graph.`,
+   choices: [String.raw`\(2\sqrt{13}\)`, String.raw`\(4\sqrt{2}\)`, String.raw`\(2\sqrt{39}\)`, String.raw`\(4\sqrt{19}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`The asymptotes have slopes \pm\dfrac{2}{3}=\pm\dfrac{a}{b}, so a=2k, b=3k for some k.
-Conjugate axis =2b=6\Rightarrow b=3\Rightarrow k=1\Rightarrow a=2.
-c^2=a^2+b^2=4+9=13, so c=\sqrt{13} and the distance between foci is 2c=2\sqrt{13}.
-Answer: \boxed{2\sqrt{13}}.`,
+   solution: String.raw`The asymptotes have slopes \(\pm\dfrac{2}{3}=\pm\dfrac{a}{b}\), so \(a=2k, b=3k\) for some k.
+Conjugate axis \(=2b=6\Rightarrow b=3\Rightarrow k=1\Rightarrow a=2\).
+\(c^2=a^2+b^2=4+9=13\), so \(c=\sqrt{13}\) and the distance between foci is \(2c=2\sqrt{13}\).
+Answer: \(\boxed{2\sqrt{13}}\).`,
 },
 
 
@@ -2871,12 +2871,12 @@ Answer: \boxed{2\sqrt{13}}.`,
    topic: "Vectors",
    difficulty: 2,
    methods: ["Dot Product"],
-   question: String.raw`What is the angle between the vectors \langle-1,3\rangle and \langle6,12\rangle, both of which are in standard position?`,
-   choices: [String.raw`\dfrac{\pi}{3}`, String.raw`\dfrac{\pi}{4}`, String.raw`\arccos\!\left(\dfrac{\sqrt{5}}{2}\right)`, String.raw`\dfrac{5\pi}{4}`, "NOTA"],
+   question: String.raw`What is the angle between the vectors \(\langle-1,3\rangle\) and \(\langle6,12\rangle\), both of which are in standard position?`,
+   choices: [String.raw`\(\dfrac{\pi}{3}\)`, String.raw`\(\dfrac{\pi}{4}\)`, String.raw`\(\arccos\!\left(\dfrac{\sqrt{5}}{2}\right)\)`, String.raw`\(\dfrac{5\pi}{4}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`\cos\theta=\dfrac{\langle-1,3\rangle\cdot\langle6,12\rangle}{|\langle-1,3\rangle||\langle6,12\rangle|}=\dfrac{-6+36}{\sqrt{10}\cdot\sqrt{180}}=\dfrac{30}{\sqrt{1800}}=\dfrac{30}{30\sqrt{2}}=\dfrac{1}{\sqrt{2}}.
-\theta=\dfrac{\pi}{4}.
-Answer: \boxed{\dfrac{\pi}{4}}.`,
+   solution: String.raw`\(\cos\theta=\dfrac{\langle-1,3\rangle\cdot\langle6,12\rangle}{|\langle-1,3\rangle||\langle6,12\rangle|}=\dfrac{-6+36}{\sqrt{10}\cdot\sqrt{180}}=\dfrac{30}{\sqrt{1800}}=\dfrac{30}{30\sqrt{2}}=\dfrac{1}{\sqrt{2}}\).
+\(\theta=\dfrac{\pi}{4}\).
+Answer: \(\boxed{\dfrac{\pi}{4}}\).`,
 },
 
 
@@ -2888,14 +2888,14 @@ Answer: \boxed{\dfrac{\pi}{4}}.`,
    topic: "Polar",
    difficulty: 3,
    methods: [],
-   question: String.raw`The polar graph of r^2=9\sin(2\theta) intersects the polar graph of r=2\cos\theta at how many points?`,
+   question: String.raw`The polar graph of \(r^2=9\sin(2\theta)\) intersects the polar graph of \(r=2\cos\theta\) at how many points?`,
    choices: ["0", "1", "2", "3", "NOTA"],
    answer: "C",
-   solution: String.raw`r^2=9\sin(2\theta) is a lemniscate; r=2\cos\theta is a circle.
-Substituting r=2\cos\theta into the lemniscate: 4\cos^2\theta=9\sin(2\theta)=18\sin\theta\cos\theta.
-Either \cos\theta=0 (pole, r=0) or 4\cos\theta=18\sin\theta\Rightarrow\tan\theta=\dfrac{2}{9}.
-\tan\theta=\dfrac{2}{9} gives one solution in [0,\pi/2]; checking with the lemniscate gives one intersection.
-Including the pole (verified as a common point) gives \boxed{2} intersection points.`,
+   solution: String.raw`\(r^2=9\sin(2\theta)\) is a lemniscate; \(r=2\cos\theta\) is a circle.
+Substituting \(r=2\cos\theta\) into the lemniscate: \(4\cos^2\theta=9\sin(2\theta)=18\sin\theta\cos\theta\).
+Either \(\cos\theta=0\) (pole, \(r=0)\) or \(4\cos\theta=18\sin\theta\Rightarrow\tan\theta=\dfrac{2}{9}\).
+\(\tan\theta=\dfrac{2}{9}\) gives one solution in \([0,\pi/2]\); checking with the lemniscate gives one intersection.
+Including the pole (verified as a common point) gives \(\boxed{2}\) intersection points.`,
 },
 
 
@@ -2907,13 +2907,13 @@ Including the pole (verified as a common point) gives \boxed{2} intersection poi
    topic: "Binomial Expansion",
    difficulty: 1,
    methods: ["Binomial Theorem"],
-   question: String.raw`Give the coefficient of the fourth term of the expansion of \left(2x+\dfrac{1}{2x^2}\right)^{10}, if the first term is (2x)^{10}.`,
+   question: String.raw`Give the coefficient of the fourth term of the expansion of \(\left(2x+\dfrac{1}{2x^2}\right)^{10}\), if the first term is \((2x)^{10}\).`,
    choices: ["120", "1920", "3840", "7680", "NOTA"],
    answer: "B",
-   solution: String.raw`The kth term (with first term at k=1) is \binom{10}{k-1}(2x)^{10-(k-1)}\!\left(\dfrac{1}{2x^2}\right)^{k-1}.
-For k=4 (fourth term): \binom{10}{3}(2x)^7\!\left(\dfrac{1}{2x^2}\right)^3=\binom{10}{3}\cdot2^7\cdot x^7\cdot\dfrac{1}{8x^6}.
-=120\cdot128\cdot\dfrac{1}{8}\cdot x=120\cdot16\cdot x=1920x.
-Coefficient: \boxed{1920}.`,
+   solution: String.raw`The kth term (with first term at \(k=1)\) is \(\binom{10}{k-1}(2x)^{10-(k-1)}\!\left(\dfrac{1}{2x^2}\right)^{k-1}\).
+For \(k=4\) (fourth term): \(\binom{10}{3}(2x)^7\!\left(\dfrac{1}{2x^2}\right)^3=\binom{10}{3}\cdot2^7\cdot x^7\cdot\dfrac{1}{8x^6}\).
+\(=120\cdot128\cdot\dfrac{1}{8}\cdot x=120\cdot16\cdot x=1920x\).
+Coefficient: \(\boxed{1920}\).`,
 },
 
 
@@ -2925,12 +2925,12 @@ Coefficient: \boxed{1920}.`,
    topic: "Functions",
    difficulty: 2,
    methods: [],
-   question: String.raw`The population of deer in a small forest is given by d(t)=\left\lfloor\dfrac{120}{4+100e^{-t}}\right\rfloor at t days after January 1, 2017, for domain and range over whole numbers. \lfloor x\rfloor is the greatest integer less than or equal to x. As the value of t in days approaches December of 2020, how many deer are in the small forest?`,
+   question: String.raw`The population of deer in a small forest is given by \(d(t)=\left\lfloor\dfrac{120}{4+100e^{-t}}\right\rfloor\) at t days after January 1, 2017, for domain and range over whole numbers. \(\lfloor x\rfloor\) is the greatest integer less than or equal to x. As the value of t in days approaches December of 2020, how many deer are in the small forest?`,
    choices: ["120", "30", "20", "1", "NOTA"],
    answer: "B",
    solution: String.raw`December 2020 is approximately 3(365)+334 to 4(365) days, roughly 1400–1460 days.
-As t\to\infty: 100e^{-t}\to0, so d(t)\to\left\lfloor\dfrac{120}{4}\right\rfloor=\lfloor30\rfloor=30.
-At t\approx1460: 100e^{-1460}\approx0, so the population is \boxed{30} deer.`,
+As \(t\to\infty\): \(100e^{-t}\to0\), so \(d(t)\to\left\lfloor\dfrac{120}{4}\right\rfloor=\lfloor30\rfloor=30\).
+At \(t\approx1460\): \(100e^{-1460}\approx0\), so the population is \(\boxed{30}\) deer.`,
 },
 
 
@@ -2942,12 +2942,12 @@ At t\approx1460: 100e^{-1460}\approx0, so the population is \boxed{30} deer.`,
    topic: "Conic Sections",
    difficulty: 3,
    methods: [],
-   question: String.raw`A parabola has directrix equation 3x-4y=8 and vertex (0,4). What is the distance between the focus and the directrix?`,
+   question: String.raw`A parabola has directrix equation \(3x-4y=8\) and vertex (0,4). What is the distance between the focus and the directrix?`,
    choices: ["2.4", "4.8", "9.6", "19.2", "NOTA"],
    answer: "C",
-   solution: String.raw`Distance from vertex (0,4) to the directrix 3x-4y-8=0:
-p=\dfrac{|3(0)-4(4)-8|}{\sqrt{9+16}}=\dfrac{|-24|}{5}=\dfrac{24}{5}=4.8.
-The distance from focus to directrix is 2p=2(4.8)=\boxed{9.6}.`,
+   solution: String.raw`Distance from vertex (0,4) to the directrix \(3x-4y-8=0\):
+\(p=\dfrac{|3(0)-4(4)-8|}{\sqrt{9+16}}=\dfrac{|-24|}{5}=\dfrac{24}{5}=4.8\).
+The distance from focus to directrix is \(2p=2(4.8)=\boxed{9.6}\).`,
 },
 
 
@@ -2959,13 +2959,13 @@ The distance from focus to directrix is 2p=2(4.8)=\boxed{9.6}.`,
    topic: "Logs and Exponents",
    difficulty: 3,
    methods: [],
-   question: String.raw`For the equation 2\log_3(x)+\log_9(x)=-\dfrac{5}{2} solved over the real numbers, find the positive real value of (27x) to the power of \left(x+\dfrac{1}{6}\right).`,
-   choices: [String.raw`\dfrac{1}{9}`, String.raw`\dfrac{1}{3}`, "3", "9", "NOTA"],
+   question: String.raw`For the equation \(2\log_3(x)+\log_9(x)=-\dfrac{5}{2}\) solved over the real numbers, find the positive real value of (27x) to the power of \(\left(x+\dfrac{1}{6}\right)\).`,
+   choices: [String.raw`\(\dfrac{1}{9}\)`, String.raw`\(\dfrac{1}{3}\)`, "3", "9", "NOTA"],
    answer: "C",
-   solution: String.raw`Convert to \log_3: \log_9(x)=\dfrac{\log_3 x}{2}. So 2\log_3 x+\dfrac{\log_3 x}{2}=\dfrac{5\log_3 x}{2}=-\dfrac{5}{2}.
-\log_3 x=-1\Rightarrow x=\dfrac{1}{3}.
-27x=27\cdot\dfrac{1}{3}=9. \quad x+\dfrac{1}{6}=\dfrac{1}{3}+\dfrac{1}{6}=\dfrac{1}{2}.
-(27x)^{x+1/6}=9^{1/2}=\boxed{3}.`,
+   solution: String.raw`Convert to \(\log_3\): \(\log_9(x)=\dfrac{\log_3 x}{2}\). So \(2\log_3 x+\dfrac{\log_3 x}{2}=\dfrac{5\log_3 x}{2}=-\dfrac{5}{2}\).
+\(\log_3 x=-1\Rightarrow x=\dfrac{1}{3}\).
+\(27x=27\cdot\dfrac{1}{3}=9\). \(\quad x+\dfrac{1}{6}=\dfrac{1}{3}+\dfrac{1}{6}=\dfrac{1}{2}\).
+\((27x)^{x+1/6}=9^{1/2}=\boxed{3}\).`,
 },
 
 
@@ -2977,12 +2977,12 @@ The distance from focus to directrix is 2p=2(4.8)=\boxed{9.6}.`,
    topic: "Polynomials",
    difficulty: 2,
    methods: ["Rational Root Theorem"],
-   question: String.raw`f(x)=2x^3-11x^2-x+30 has zeros x_1, x_2, and x_3. Give the least possible value of \left(4^{x_1}\right)\!\left(4^{x_2}\right).`,
-   choices: [String.raw`\dfrac{1}{8}`, String.raw`\dfrac{1}{4}`, "2", "32", "NOTA"],
+   question: String.raw`\(f(x)=2x^3-11x^2-x+30\) has zeros \(x_1, x_2\), and \(x_3\). Give the least possible value of \(\left(4^{x_1}\right)\!\left(4^{x_2}\right)\).`,
+   choices: [String.raw`\(\dfrac{1}{8}\)`, String.raw`\(\dfrac{1}{4}\)`, "2", "32", "NOTA"],
    answer: "C",
-   solution: String.raw`Factor: f(x)=(x-2)(2x^2-7x-15)=(x-2)(2x+3)(x-5). Zeros: 2,\,-\dfrac{3}{2},\,5.
-(4^{x_1})(4^{x_2})=4^{x_1+x_2}. To minimize, take the two smallest zeros: -\dfrac{3}{2} and 2.
-x_1+x_2=-\dfrac{3}{2}+2=\dfrac{1}{2}. \quad 4^{1/2}=\boxed{2}.`,
+   solution: String.raw`Factor: \(f(x)=(x-2)(2x^2-7x-15)=(x-2)(2x+3)(x-5)\). Zeros: \(2,\,-\dfrac{3}{2},\,5\).
+\((4^{x_1})(4^{x_2})=4^{x_1+x_2}\). To minimize, take the two smallest zeros: \(-\dfrac{3}{2}\) and 2.
+\(x_1+x_2=-\dfrac{3}{2}+2=\dfrac{1}{2}\). \(\quad 4^{1/2}=\boxed{2}\).`,
 },
 
 
@@ -2994,14 +2994,14 @@ x_1+x_2=-\dfrac{3}{2}+2=\dfrac{1}{2}. \quad 4^{1/2}=\boxed{2}.`,
    topic: "Complex Numbers",
    difficulty: 4,
    methods: ["De Moivre's Theorem"],
-   question: String.raw`Which is \textbf{NOT} a fourth root of -8+8i\sqrt{3}?`,
-   choices: [String.raw`\sqrt{3}+i`, String.raw`-1+i\sqrt{3}`, String.raw`-1-i\sqrt{3}`, String.raw`1-i\sqrt{3}`, "NOTA"],
+   question: String.raw`Which is \(\textbf{NOT}\) a fourth root of \(-8+8i\sqrt{3}\)?`,
+   choices: [String.raw`\(\sqrt{3}+i\)`, String.raw`\(-1+i\sqrt{3}\)`, String.raw`\(-1-i\sqrt{3}\)`, String.raw`\(1-i\sqrt{3}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`-8+8i\sqrt{3}=16\operatorname{cis}\!\left(\dfrac{2\pi}{3}\right).
-Fourth roots: 16^{1/4}\operatorname{cis}\!\left(\dfrac{2\pi/3+2\pi k}{4}\right)=2\operatorname{cis}\!\left(\dfrac{\pi}{6}+\dfrac{\pi k}{2}\right) for k=0,1,2,3.
-k=0: 2\operatorname{cis}(\pi/6)=\sqrt{3}+i ✓ (A). \quad k=1: 2\operatorname{cis}(2\pi/3)=-1+i\sqrt{3} ✓ (B).
-k=2: 2\operatorname{cis}(7\pi/6)=-\sqrt{3}-i. \quad k=3: 2\operatorname{cis}(5\pi/3)=1-i\sqrt{3} ✓ (D).
--1-i\sqrt{3} is not among the four roots. Answer: \boxed{C}.`,
+   solution: String.raw`\(-8+8i\sqrt{3}=16\operatorname{cis}\!\left(\dfrac{2\pi}{3}\right)\).
+Fourth roots: \(16^{1/4}\operatorname{cis}\!\left(\dfrac{2\pi/3+2\pi k}{4}\right)=2\operatorname{cis}\!\left(\dfrac{\pi}{6}+\dfrac{\pi k}{2}\right)\) for \(k=0,1,2,3\).
+\(k=0\): \(2\operatorname{cis}(\pi/6)=\sqrt{3}+i\) ✓ (A). \(\quad k=1\): \(2\operatorname{cis}(2\pi/3)=-1+i\sqrt{3}\) ✓ (B).
+\(k=2\): \(2\operatorname{cis}(7\pi/6)=-\sqrt{3}-i\). \(\quad k=3\): \(2\operatorname{cis}(5\pi/3)=1-i\sqrt{3}\) ✓ (D).
+\(-1-i\sqrt{3}\) is not among the four roots. Answer: \(\boxed{C}\).`,
 },
 
 
@@ -3013,12 +3013,12 @@ k=2: 2\operatorname{cis}(7\pi/6)=-\sqrt{3}-i. \quad k=3: 2\operatorname{cis}(5\p
    topic: "Polar",
    difficulty: 3,
    methods: [],
-   question: String.raw`For y^3=2x and 0<\theta<\dfrac{\pi}{2}, which is a polar representation of the equation?`,
-   choices: [String.raw`r=\sqrt[3]{2}\tan\theta\sec^2\theta`, String.raw`r^2=2\tan\theta\sec^2\theta`, String.raw`r=2\cot\theta\csc^2\theta`, String.raw`r^2=2\cot\theta\csc^2\theta`, "NOTA"],
+   question: String.raw`For \(y^3=2x\) and \(0<\theta<\dfrac{\pi}{2}\), which is a polar representation of the equation?`,
+   choices: [String.raw`\(r=\sqrt[3]{2}\tan\theta\sec^2\theta\)`, String.raw`\(r^2=2\tan\theta\sec^2\theta\)`, String.raw`\(r=2\cot\theta\csc^2\theta\)`, String.raw`\(r^2=2\cot\theta\csc^2\theta\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`Substitute x=r\cos\theta and y=r\sin\theta:
-(r\sin\theta)^3=2(r\cos\theta)\Rightarrow r^3\sin^3\theta=2r\cos\theta\Rightarrow r^2=\dfrac{2\cos\theta}{\sin^3\theta}=2\cot\theta\csc^2\theta.
-Answer: \boxed{r^2=2\cot\theta\csc^2\theta}.`,
+   solution: String.raw`Substitute \(x=r\cos\theta\) and \(y=r\sin\theta\):
+\((r\sin\theta)^3=2(r\cos\theta)\Rightarrow r^3\sin^3\theta=2r\cos\theta\Rightarrow r^2=\dfrac{2\cos\theta}{\sin^3\theta}=2\cot\theta\csc^2\theta\).
+Answer: \(\boxed{r^2=2\cot\theta\csc^2\theta}\).`,
 },
 
 
@@ -3032,12 +3032,12 @@ Answer: \boxed{r^2=2\cot\theta\csc^2\theta}.`,
    methods: ["Mathematical Induction"],
    question: String.raw`If our task is to prove by Mathematical Induction that
 \[P(n)=1^2+2^2+3^2+\cdots+n^2=\frac{1}{6}n(n+1)(2n+1),\]
-our first step is to say 1^2=\dfrac{1}{6}(1)(1+1)(2\cdot1+1)=1, and say the formula works for n=1. What is our 2^{\text{nd}} step?`,
-   choices: [String.raw`Verify that \dfrac{1}{6}(2)(2+1)(4+1)\neq2^2`, String.raw`Find values for which (n+1)^2=\dfrac{1}{6}n(n+1)(2n+1)`, String.raw`Add \dfrac{1}{6}(2)(2+1)(4+1) to \dfrac{1}{6}n(n+1)(2n+1)`, String.raw`Show that \dfrac{1}{6}(n+1)(n+2)(2n+3) is equal to P(n)+1`, "NOTA"],
+our first step is to say \(1^2=\dfrac{1}{6}(1)(1+1)(2\cdot1+1)=1\), and say the formula works for \(n=1\). What is our \(2^{\text{nd}}\) step?`,
+   choices: [String.raw`Verify that \(\dfrac{1}{6}(2)(2+1)(4+1)\neq2^2\)`, String.raw`Find values for which \((n+1)^2=\dfrac{1}{6}n(n+1)(2n+1)\)`, String.raw`Add \(\dfrac{1}{6}(2)(2+1)(4+1)\) to \(\dfrac{1}{6}n(n+1)(2n+1)\)`, String.raw`Show that \(\dfrac{1}{6}(n+1)(n+2)(2n+3)\) is equal to \(P(n)+1\)`, "NOTA"],
    answer: "E",
-   solution: String.raw`In mathematical induction, after verifying the base case (n=1), the second step is:
-assume P(n) holds (induction hypothesis), then show P(n+1) follows — i.e.\ show 1^2+2^2+\cdots+n^2+(n+1)^2=\dfrac{1}{6}(n+1)(n+2)(2n+3).
-None of choices A–D describes this correctly. Answer: \boxed{\text{NOTA}}.`,
+   solution: String.raw`In mathematical induction, after verifying the base case \((n=1)\), the second step is:
+assume P(n) holds (induction hypothesis), then show P(n+1) follows — i.e. show \(1^2+2^2+\cdots+n^2+(n+1)^2=\dfrac{1}{6}(n+1)(n+2)(2n+3)\).
+None of choices A–D describes this correctly. Answer: \(\boxed{\text{NOTA}}\).`,
 },
 
 
@@ -3049,14 +3049,14 @@ None of choices A–D describes this correctly. Answer: \boxed{\text{NOTA}}.`,
    topic: "Probability",
    difficulty: 3,
    methods: [],
-   question: String.raw`A lotto game has the following rules: every week, three different numbers from the set \{1,2,3,\ldots,20\} are randomly chosen by the lotto officials. These are the "winning numbers." Players each buy a ticket with 3 different numbers of their choice from the same set. What is the probability that a player matches at least two of the winning numbers on the player's ticket to the winning numbers, in any order?`,
-   choices: [String.raw`\dfrac{13}{285}`, String.raw`\dfrac{17}{380}`, String.raw`\dfrac{1}{380}`, String.raw`\dfrac{26}{285}`, "NOTA"],
+   question: String.raw`A lotto game has the following rules: every week, three different numbers from the set \(\{1,2,3,\ldots,20\}\) are randomly chosen by the lotto officials. These are the "winning numbers." Players each buy a ticket with 3 different numbers of their choice from the same set. What is the probability that a player matches at least two of the winning numbers on the player's ticket to the winning numbers, in any order?`,
+   choices: [String.raw`\(\dfrac{13}{285}\)`, String.raw`\(\dfrac{17}{380}\)`, String.raw`\(\dfrac{1}{380}\)`, String.raw`\(\dfrac{26}{285}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Total ways to choose 3 from 20: \binom{20}{3}=1140.
-P(\text{exactly }2)=\dfrac{\binom{3}{2}\binom{17}{1}}{\binom{20}{3}}=\dfrac{3\cdot17}{1140}=\dfrac{51}{1140}.
-P(\text{exactly }3)=\dfrac{\binom{3}{3}}{\binom{20}{3}}=\dfrac{1}{1140}.
-P(\text{at least }2)=\dfrac{52}{1140}=\dfrac{13}{285}.
-Answer: \boxed{\dfrac{13}{285}}.`,
+   solution: String.raw`Total ways to choose 3 from 20: \(\binom{20}{3}=1140\).
+\(P(\text{exactly }2)=\dfrac{\binom{3}{2}\binom{17}{1}}{\binom{20}{3}}=\dfrac{3\cdot17}{1140}=\dfrac{51}{1140}\).
+\(P(\text{exactly }3)=\dfrac{\binom{3}{3}}{\binom{20}{3}}=\dfrac{1}{1140}\).
+\(P(\text{at least }2)=\dfrac{52}{1140}=\dfrac{13}{285}\).
+Answer: \(\boxed{\dfrac{13}{285}}\).`,
 },
 
 
@@ -3068,14 +3068,14 @@ Answer: \boxed{\dfrac{13}{285}}.`,
    topic: "Conic Sections",
    difficulty: 3,
    methods: [],
-   question: String.raw`The graphs of 9(x-5)^2+25(y-3)^2=225 and x^2+y^2-10x-6y+25=0 intersect at two points. Find the distance between the two points.`,
-   choices: ["10", "6", String.raw`3\sqrt{3}`, String.raw`3\sqrt{2}`, "NOTA"],
+   question: String.raw`The graphs of \(9(x-5)^2+25(y-3)^2=225\) and \(x^2+y^2-10x-6y+25=0\) intersect at two points. Find the distance between the two points.`,
+   choices: ["10", "6", String.raw`\(3\sqrt{3}\)`, String.raw`\(3\sqrt{2}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Ellipse: \dfrac{(x-5)^2}{25}+\dfrac{(y-3)^2}{9}=1, center (5,3), a=5, b=3.
-Circle: (x-5)^2+(y-3)^2=9, center (5,3), radius 3.
-Both have the same center. The circle's radius equals the ellipse's semi-minor axis b=3.
-Substituting the circle into the ellipse: -16(x-5)^2=0\Rightarrow x=5.
-Then (y-3)^2=9\Rightarrow y=0 or y=6. Points: (5,0) and (5,6), distance =\boxed{6}.`,
+   solution: String.raw`Ellipse: \(\dfrac{(x-5)^2}{25}+\dfrac{(y-3)^2}{9}=1\), center (5,3), \(a=5, b=3\).
+Circle: \((x-5)^2+(y-3)^2=9\), center (5,3), radius 3.
+Both have the same center. The circle's radius equals the ellipse's semi-minor axis \(b=3\).
+Substituting the circle into the ellipse: \(-16(x-5)^2=0\Rightarrow x=5\).
+Then \((y-3)^2=9\Rightarrow y=0\) or \(y=6\). Points: (5,0) and (5,6), distance \(=\boxed{6}\).`,
 },
 
 
@@ -3087,13 +3087,13 @@ Then (y-3)^2=9\Rightarrow y=0 or y=6. Points: (5,0) and (5,6), distance =\boxed{
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Trigonometric Identities"],
-   question: String.raw`For \cos\alpha=\dfrac{1}{4} and 0<\alpha<\dfrac{\pi}{2}, and \sin\beta=\dfrac{-1}{4} and \dfrac{\pi}{2}<\beta<\dfrac{3\pi}{2}, find the value of \cos(\alpha-\beta).`,
-   choices: [String.raw`-\dfrac{\sqrt{15}}{8}`, "0", String.raw`\dfrac{\sqrt{15}}{4}`, String.raw`\dfrac{\sqrt{15}}{8}`, "NOTA"],
+   question: String.raw`For \(\cos\alpha=\dfrac{1}{4}\) and \(0<\alpha<\dfrac{\pi}{2}\), and \(\sin\beta=\dfrac{-1}{4}\) and \(\dfrac{\pi}{2}<\beta<\dfrac{3\pi}{2}\), find the value of \(\cos(\alpha-\beta)\).`,
+   choices: [String.raw`\(-\dfrac{\sqrt{15}}{8}\)`, "0", String.raw`\(\dfrac{\sqrt{15}}{4}\)`, String.raw`\(\dfrac{\sqrt{15}}{8}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`\sin\alpha=\dfrac{\sqrt{15}}{4} (since \alpha is in Q1).
-\beta with \sin\beta=-\dfrac{1}{4} and \dfrac{\pi}{2}<\beta<\dfrac{3\pi}{2}: \beta is in Q3, so \cos\beta=-\dfrac{\sqrt{15}}{4}.
-\cos(\alpha-\beta)=\cos\alpha\cos\beta+\sin\alpha\sin\beta=\dfrac{1}{4}\!\cdot\!\left(-\dfrac{\sqrt{15}}{4}\right)+\dfrac{\sqrt{15}}{4}\!\cdot\!\left(-\dfrac{1}{4}\right)=-\dfrac{\sqrt{15}}{16}-\dfrac{\sqrt{15}}{16}=-\dfrac{\sqrt{15}}{8}.
-Answer: \boxed{-\dfrac{\sqrt{15}}{8}}.`,
+   solution: String.raw`\(\sin\alpha=\dfrac{\sqrt{15}}{4}\) (since \(\alpha\) is in Q1).
+\(\beta\) with \(\sin\beta=-\dfrac{1}{4}\) and \(\dfrac{\pi}{2}<\beta<\dfrac{3\pi}{2}\): \(\beta\) is in Q3, so \(\cos\beta=-\dfrac{\sqrt{15}}{4}\).
+\(\cos(\alpha-\beta)=\cos\alpha\cos\beta+\sin\alpha\sin\beta=\dfrac{1}{4}\!\cdot\!\left(-\dfrac{\sqrt{15}}{4}\right)+\dfrac{\sqrt{15}}{4}\!\cdot\!\left(-\dfrac{1}{4}\right)=-\dfrac{\sqrt{15}}{16}-\dfrac{\sqrt{15}}{16}=-\dfrac{\sqrt{15}}{8}\).
+Answer: \(\boxed{-\dfrac{\sqrt{15}}{8}}\).`,
 },
 
 
@@ -3108,10 +3108,10 @@ Answer: \boxed{-\dfrac{\sqrt{15}}{8}}.`,
    question: String.raw`If the sum of the first n positive integers is 150 less than the sum of the first 3n positive integers, what is the sum of the first 5n positive integers?`,
    choices: ["520", "505", "510", "465", "NOTA"],
    answer: "D",
-   solution: String.raw`\dfrac{1}{2}n(n+1)=\dfrac{1}{2}(3n)(3n+1)-150.
-n(n+1)=3n(3n+1)-300\Rightarrow n^2+n=9n^2+3n-300\Rightarrow8n^2+2n-300=0\Rightarrow4n^2+n-150=0.
-(4n+25)(n-6)=0\Rightarrow n=6.
-Sum of first 5n=30 integers: \dfrac{1}{2}(30)(31)=\boxed{465}.`,
+   solution: String.raw`\(\dfrac{1}{2}n(n+1)=\dfrac{1}{2}(3n)(3n+1)-150\).
+\(n(n+1)=3n(3n+1)-300\Rightarrow n^2+n=9n^2+3n-300\Rightarrow8n^2+2n-300=0\Rightarrow4n^2+n-150=0\).
+\((4n+25)(n-6)=0\Rightarrow n=6\).
+Sum of first \(5n=30\) integers: \(\dfrac{1}{2}(30)(31)=\boxed{465}\).`,
 },
 
 
@@ -3124,12 +3124,12 @@ Sum of first 5n=30 integers: \dfrac{1}{2}(30)(31)=\boxed{465}.`,
    difficulty: 2,
    methods: [],
    question: String.raw`In a group of 50 girls, each girl is either blonde or brunette, and each has either blue eyes or brown eyes. There are 14 blue-eyed blondes. There are 31 brunettes. 18 of the girls are brown-eyed. What is the probability of choosing a girl from this group at random and getting a brown-eyed brunette?`,
-   choices: [String.raw`\dfrac{1}{10}`, String.raw`\dfrac{7}{50}`, String.raw`\dfrac{9}{25}`, String.raw`\dfrac{13}{50}`, "NOTA"],
+   choices: [String.raw`\(\dfrac{1}{10}\)`, String.raw`\(\dfrac{7}{50}\)`, String.raw`\(\dfrac{9}{25}\)`, String.raw`\(\dfrac{13}{50}\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`14 blue-eyed blondes (given). Total girls =50, brunettes =31, so blondes =19.
-Brown-eyed blondes =19-14=5. Brown-eyed total =18, so brown-eyed brunettes =18-5=13.
-P(\text{brown-eyed brunette})=\dfrac{13}{50}.
-Answer: \boxed{\dfrac{13}{50}}.`,
+   solution: String.raw`14 blue-eyed blondes (given). Total girls \(=50\), brunettes \(=31\), so blondes \(=19\).
+Brown-eyed blondes \(=19-14=5\). Brown-eyed total \(=18\), so brown-eyed brunettes \(=18-5=13\).
+\(P(\text{brown-eyed brunette})=\dfrac{13}{50}\).
+Answer: \(\boxed{\dfrac{13}{50}}\).`,
 },
 
 
@@ -3141,12 +3141,12 @@ Answer: \boxed{\dfrac{13}{50}}.`,
    topic: "Trigonometry",
    difficulty: 3,
    methods: [],
-   question: String.raw`A Ferris wheel has a seat at point P at time t=0, which is 3 feet above ground. The maximum height of P is 303 ft above ground. Point P makes a complete rotation and is back at its original position every 1.5 minutes. If the distance of point P above ground is given by d(t)=-R\cos(St)+U, for t minutes and d in feet, with R>0, S>0, find the value of R+\dfrac{6S}{\pi}+3U.`,
+   question: String.raw`A Ferris wheel has a seat at point P at time \(t=0\), which is 3 feet above ground. The maximum height of P is 303 ft above ground. Point P makes a complete rotation and is back at its original position every 1.5 minutes. If the distance of point P above ground is given by \(d(t)=-R\cos(St)+U\), for t minutes and d in feet, with R>0, S>0, find the value of \(R+\dfrac{6S}{\pi}+3U\).`,
    choices: ["309", "454", "617", "615", "NOTA"],
    answer: "C",
-   solution: String.raw`Since d(0)=-R+U=3, the starting height is the minimum: U-R=3. Also, the maximum gives U+R=303. Adding: 2U=306\Rightarrow U=153. Subtracting: 2R=300\Rightarrow R=150.
-Period =\dfrac{2\pi}{S}=1.5\Rightarrow S=\dfrac{4\pi}{3}.
-R+\dfrac{6S}{\pi}+3U=150+\dfrac{6\cdot(4\pi/3)}{\pi}+3(153)=150+8+459=\boxed{617}.`,
+   solution: String.raw`Since \(d(0)=-R+U=3\), the starting height is the minimum: \(U-R=3\). Also, the maximum gives \(U+R=303\). Adding: \(2U=306\Rightarrow U=153\). Subtracting: \(2R=300\Rightarrow R=150\).
+Period \(=\dfrac{2\pi}{S}=1.5\Rightarrow S=\dfrac{4\pi}{3}\).
+\(R+\dfrac{6S}{\pi}+3U=150+\dfrac{6\cdot(4\pi/3)}{\pi}+3(153)=150+8+459=\boxed{617}\).`,
 },
 
 
@@ -3158,13 +3158,13 @@ R+\dfrac{6S}{\pi}+3U=150+\dfrac{6\cdot(4\pi/3)}{\pi}+3(153)=150+8+459=\boxed{617
    topic: "Functions",
    difficulty: 3,
    methods: ["Substitution", "Vieta's Formulas"],
-   question: String.raw`If f\!\left(\dfrac{x}{2}\right)=x^2-x-1, find the sum of the values of z so that f(2z)=1.`,
-   choices: [String.raw`-\dfrac{1}{2}`, String.raw`-\dfrac{1}{4}`, String.raw`\dfrac{1}{4}`, String.raw`\dfrac{1}{2}`, "NOTA"],
+   question: String.raw`If \(f\!\left(\dfrac{x}{2}\right)=x^2-x-1\), find the sum of the values of z so that \(f(2z)=1\).`,
+   choices: [String.raw`\(-\dfrac{1}{2}\)`, String.raw`\(-\dfrac{1}{4}\)`, String.raw`\(\dfrac{1}{4}\)`, String.raw`\(\dfrac{1}{2}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`Let u=x/2, so x=2u: f(u)=(2u)^2-2u-1=4u^2-2u-1.
-f(2z)=4(2z)^2-2(2z)-1=16z^2-4z-1.
-Set =1: 16z^2-4z-2=0\Rightarrow8z^2-2z-1=0.
-By Vieta's formulas, sum of roots =\dfrac{2}{8}=\boxed{\dfrac{1}{4}}.`,
+   solution: String.raw`Let \(u=x/2\), so \(x=2u\): \(f(u)=(2u)^2-2u-1=4u^2-2u-1\).
+\(f(2z)=4(2z)^2-2(2z)-1=16z^2-4z-1\).
+Set \(=1\): \(16z^2-4z-2=0\Rightarrow8z^2-2z-1=0\).
+By Vieta's formulas, sum of roots \(=\dfrac{2}{8}=\boxed{\dfrac{1}{4}}\).`,
 },
 
 
@@ -3183,8 +3183,8 @@ By Vieta's formulas, sum of roots =\dfrac{2}{8}=\boxed{\dfrac{1}{4}}.`,
 Adding two odd numbers yields an even; adding an odd and an even yields an odd.
 So S is the sum of 1 even number and 13117531 odd numbers.
 Since 13117531 is odd, the sum of that many odd numbers is odd.
-Thus S = \text{even} + \text{odd} = \text{odd}, so S cannot end in 2, 4, 6, or 8.
-Answer: \boxed{E} (NOTA).`,
+Thus \(S = \text{even} + \text{odd} = \text{odd}\), so S cannot end in 2, 4, 6, or 8.
+Answer: \(\boxed{E}\) (NOTA).`,
 },
 
 
@@ -3195,15 +3195,15 @@ Answer: \boxed{E} (NOTA).`,
    topic: "Vectors",
    difficulty: 3,
    methods: ["Dot Product"],
-   question: String.raw`Vectors \vec{J}, \vec{K}, and \vec{L} can be expressed as: \vec{J}=2\vec{i}+4\vec{j}-6\vec{k}, \vec{K}=3\vec{i}+6\vec{j}+5\vec{k}, \vec{L}=2\vec{k}+4\vec{j}-6\vec{i}. Which of the following are true?
-I. \vec{J}\cdot\vec{K}<\vec{K}\cdot\vec{L} \quad II. \vec{J}\parallel\vec{L} \quad III. \vec{J}\perp\vec{K}`,
+   question: String.raw`Vectors \(\vec{J}, \vec{K}\), and \(\vec{L}\) can be expressed as: \(\vec{J}=2\vec{i}+4\vec{j}-6\vec{k}, \vec{K}=3\vec{i}+6\vec{j}+5\vec{k}, \vec{L}=2\vec{k}+4\vec{j}-6\vec{i}\). Which of the following are true?
+I. \(\vec{J}\cdot\vec{K}<\vec{K}\cdot\vec{L} \quad II\). \(\vec{J}\parallel\vec{L} \quad\) III. \(\vec{J}\perp\vec{K}\)`,
    choices: ["I only", "II, III", "I, III", "I, II, III", "NOTA"],
    answer: "C",
-   solution: String.raw`Rewrite \vec{L}=-6\vec{i}+4\vec{j}+2\vec{k}.
-I: \vec{J}\cdot\vec{K}=(2)(3)+(4)(6)+(-6)(5)=6+24-30=0. \vec{K}\cdot\vec{L}=(3)(-6)+(6)(4)+(5)(2)=-18+24+10=16. So 0<16. \textbf{True.}
-II: \vec{J}=(2,4,-6) and \vec{L}=(-6,4,2) are not scalar multiples of each other. \textbf{False.}
-III: \vec{J}\cdot\vec{K}=0, so \vec{J}\perp\vec{K}. \textbf{True.}
-Answer: I and III, \boxed{C}.`,
+   solution: String.raw`Rewrite \(\vec{L}=-6\vec{i}+4\vec{j}+2\vec{k}\).
+I: \(\vec{J}\cdot\vec{K}=(2)(3)+(4)(6)+(-6)(5)=6+24-30=0\). \(\vec{K}\cdot\vec{L}=(3)(-6)+(6)(4)+(5)(2)=-18+24+10=16\). So 0<16. \(\textbf{True.}\)
+II: \(\vec{J}=(2,4,-6)\) and \(\vec{L}=(-6,4,2)\) are not scalar multiples of each other. \(\textbf{False.}\)
+III: \(\vec{J}\cdot\vec{K}=0\), so \(\vec{J}\perp\vec{K}\). \(\textbf{True.}\)
+Answer: I and III, \(\boxed{C}\).`,
 },
 
 
@@ -3214,13 +3214,13 @@ Answer: I and III, \boxed{C}.`,
    topic: "Logs and Exponents",
    difficulty: 2,
    methods: [],
-   question: String.raw`Find the sum of the solutions to \ln(2\sin x)+\ln(\sin x-1)=\ln(\sin x-1) for x\in[0,2\pi).`,
-   choices: [String.raw`\pi`, String.raw`\frac{3\pi}{2}`, String.raw`\frac{2\pi}{3}`, String.raw`\frac{4\pi}{3}`, "NOTA"],
+   question: String.raw`Find the sum of the solutions to \(\ln(2\sin x)+\ln(\sin x-1)=\ln(\sin\) x-1) for \(x\in[0,2\pi)\).`,
+   choices: [String.raw`\(\pi\)`, String.raw`\(\frac{3\pi}{2}\)`, String.raw`\(\frac{2\pi}{3}\)`, String.raw`\(\frac{4\pi}{3}\)`, "NOTA"],
    answer: "E",
-   solution: String.raw`By inspection: \ln(\sin x - 1) requires \sin x - 1 > 0, i.e.\ \sin x > 1.
-But \sin x \le 1 for all real x, so the domain of the equation is empty.
-There are no solutions. Answer: \boxed{E} (NOTA).
-(Algebraically: combining logs gives \ln(2\sin^2 x-2\sin x)=\ln(\sin x-1), yielding \sin x=\frac{1}{2} or 1, both extraneous.)`,
+   solution: String.raw`By inspection: \(\ln(\sin x - 1)\) requires \(\sin x - 1 > 0\), i.e. \(\sin x > 1\).
+But \(\sin x \le 1\) for all real x, so the domain of the equation is empty.
+There are no solutions. Answer: \(\boxed{E}\) (NOTA).
+(Algebraically: combining logs gives \(\ln(2\sin^2 x-2\sin x)=\ln(\sin\) x-1), yielding \(\sin x=\frac{1}{2}\) or 1, both extraneous.)`,
 },
 
 
@@ -3231,13 +3231,13 @@ There are no solutions. Answer: \boxed{E} (NOTA).
    topic: "Inequalities",
    difficulty: 3,
    methods: [],
-   question: String.raw`The solution set of the inequality \frac{2x^2+x-5}{x-5}-x<1 can be put in the form (-\infty,A)\cup(B,C). Find A+B+C.`,
+   question: String.raw`The solution set of the inequality \(\frac{2x^2+x-5}{x-5}-x<1\) can be put in the form \((-\infty,A)\cup(B,C)\). Find A+B+C.`,
    choices: ["0", "5", "10", "15", "NOTA"],
    answer: "A",
-   solution: String.raw`Domain restriction: x\ne 5. Set the expression equal to 1:
-\frac{2x^2+x-5}{x-5}-x=1\Rightarrow 2x^2+x-5-x(x-5)=x-5\Rightarrow x^2+5x=0\Rightarrow x(x+5)=0.
-Critical values: -5,\,0,\,5. Testing intervals via sign chart gives solution (-\infty,-5)\cup(0,5).
-So A=-5,\ B=0,\ C=5, and A+B+C=-5+0+5=\boxed{0}.`,
+   solution: String.raw`Domain restriction: \(x\ne 5\). Set the expression equal to 1:
+\(\frac{2x^2+x-5}{x-5}-x=1\Rightarrow 2x^2+x-5-x(x-5)=x-5\Rightarrow x^2+5x=0\Rightarrow x(x+5)=0\).
+Critical values: \(-5,0,5\). Testing intervals via sign chart gives solution \((-\infty,-5)\cup(0,5)\).
+So \(A=-5,\ B=0,\ C=5\), and \(A+B+C=-5+0+5=\boxed{0}\).`,
 },
 
 
@@ -3248,13 +3248,13 @@ So A=-5,\ B=0,\ C=5, and A+B+C=-5+0+5=\boxed{0}.`,
    topic: "Analytic Geometry",
    difficulty: 4,
    methods: ["Reflection"],
-   question: String.raw`Kamryn lives on Cortez Blvd.\ (y=16). She begins at her house and travels along the shortest path through the Caloosahatchee River (the x-axis) to Chipotle at (20,20), a total of exactly 39 units. What is the positive difference between the possible x-values of Kamryn's house?`,
+   question: String.raw`Kamryn lives on Cortez Blvd. \((y=16)\). She begins at her house and travels along the shortest path through the Caloosahatchee River (the x-axis) to Chipotle at (20,20), a total of exactly 39 units. What is the positive difference between the possible x-values of Kamryn's house?`,
    choices: ["10", "20", "30", "40", "NOTA"],
    answer: "C",
-   solution: String.raw`Reflect Chipotle (20,20) over the x-axis to C'=(20,-20).
-Let K=(x,16). The total path length equals |KC'|=39:
-(x-20)^2+(16+20)^2=39^2\Rightarrow(x-20)^2+1296=1521\Rightarrow(x-20)^2=225.
-x-20=\pm15\Rightarrow x=5 or x=35. Difference =35-5=\boxed{30}.`,
+   solution: String.raw`Reflect Chipotle (20,20) over the x-axis to \(C'=(20,-20)\).
+Let \(K=(x,16)\). The total path length equals \(|KC'|=39\):
+\((x-20)^2+(16+20)^2=39^2\Rightarrow(x-20)^2+1296=1521\Rightarrow(x-20)^2=225\).
+\(x-20=\pm15\Rightarrow x=5\) or \(x=35\). Difference \(=35-5=\boxed{30}\).`,
 },
 
 
@@ -3265,16 +3265,16 @@ x-20=\pm15\Rightarrow x=5 or x=35. Difference =35-5=\boxed{30}.`,
    topic: "Analytic Geometry",
    difficulty: 4,
    methods: ["Reflection"],
-   question: String.raw`Kamryn lives on Cortez Blvd.\ (y=16). She begins at her house and travels along the shortest path through the Caloosahatchee River (the x-axis) to Chipotle at (20,20), a total of exactly 39 units. If \theta is the angle formed by Kamryn's path towards the Caloosahatchee River and the river itself, then what is |\tan(\theta)|?`,
-   choices: [String.raw`\frac{36}{5}`, String.raw`\frac{18}{5}`, String.raw`\frac{12}{5}`, String.raw`\frac{9}{5}`, "NOTA"],
+   question: String.raw`Kamryn lives on Cortez Blvd. \((y=16)\). She begins at her house and travels along the shortest path through the Caloosahatchee River (the x-axis) to Chipotle at (20,20), a total of exactly 39 units. If \(\theta\) is the angle formed by Kamryn's path towards the Caloosahatchee River and the river itself, then what is \(|\tan(\theta)|\)?`,
+   choices: [String.raw`\(\frac{36}{5}\)`, String.raw`\(\frac{18}{5}\)`, String.raw`\(\frac{12}{5}\)`, String.raw`\(\frac{9}{5}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw` Reflect Chipotle (20,20) over the x-axis to C'=(20,-20).
-Let K=(x,16). The total path length equals |KC'|=39:
-(x-20)^2+(16+20)^2=39^2\Rightarrow(x-20)^2+1296=1521\Rightarrow(x-20)^2=225.
-x-20=\pm15\Rightarrow x=5 or x=35. Kamryn's house is at (5,16) (or (35,16)).
-The path goes toward C'=(20,-20).
-|\tan\theta| = |\text{slope}| = \left|\frac{16-(-20)}{5-20}\right| = \left|\frac{36}{-15}\right| = \frac{12}{5}.
-Answer: \boxed{\frac{12}{5}}.`,
+   solution: String.raw` Reflect Chipotle (20,20) over the x-axis to \(C'=(20,-20)\).
+Let \(K=(x,16)\). The total path length equals \(|KC'|=39\):
+\((x-20)^2+(16+20)^2=39^2\Rightarrow(x-20)^2+1296=1521\Rightarrow(x-20)^2=225\).
+\(x-20=\pm15\Rightarrow x=5\) or \(x=35\). Kamryn's house is at (5,16) (or (35,16)).
+The path goes toward \(C'=(20,-20)\).
+\(|\tan\theta| = |\text{slope}| = \left|\frac{16-(-20)}{5-20}\right| = \left|\frac{36}{-15}\right| = \frac{12}{5}\).
+Answer: \(\boxed{\frac{12}{5}}\).`,
 },
 
 
@@ -3286,15 +3286,15 @@ Answer: \boxed{\frac{12}{5}}.`,
    difficulty: 4,
    methods: ["Shoelace Theorem"],
    question: String.raw`Let a figure be defined by connecting straight lines in the order (2,10),(-6,4),(9,-6),(-3,-15), then back to (2,10). What is the area enclosed by this figure?`,
-   choices: [String.raw`\frac{85}{2}`, "85", String.raw`\frac{157}{2}`, "157", "NOTA"],
+   choices: [String.raw`\(\frac{85}{2}\)`, "85", String.raw`\(\frac{157}{2}\)`, "157", "NOTA"],
    answer: "E",
    solution: String.raw`The figure is self-intersecting, so the shoelace theorem cannot be applied directly.
-The line through (-6,4) and (9,-6) is y=-\frac{2}{3}x; the line through (2,10) and (-3,-15) is y=5x. They intersect at (0,0).
+The line through (-6,4) and (9,-6) is \(y=-\frac{2}{3}x\); the line through (2,10) and (-3,-15) is \(y=5x\). They intersect at (0,0).
 Split the enclosed region into two triangles at the origin. For the triangle with vertices (0,0),(-6,4),(2,10),
-A_1=\frac{1}{2}|(-6)(10)-(4)(2)|=34.
+\(A_1=\frac{1}{2}|(-6)(10)-(4)(2)|=34\).
 For the triangle with vertices (0,0),(9,-6),(-3,-15),
-A_2=\frac{1}{2}|(9)(-15)-(-6)(-3)|=\frac{153}{2}.
-Thus A=34+\frac{153}{2}=\frac{221}{2}, which matches none of the choices. Answer: \boxed{E} (NOTA).`,
+\(A_2=\frac{1}{2}|(9)(-15)-(-6)(-3)|=\frac{153}{2}\).
+Thus \(A=34+\frac{153}{2}=\frac{221}{2}\), which matches none of the choices. Answer: \(\boxed{E}\) (NOTA).`,
 },
 
 
@@ -3305,12 +3305,12 @@ Thus A=34+\frac{153}{2}=\frac{221}{2}, which matches none of the choices. Answer
    topic: "Functions",
    difficulty: 2,
    methods: ["Asymptotes"],
-   question: String.raw`How many asymptotes does the function f(x)=\frac{x+5}{\sqrt{x^2-9}} have?`,
+   question: String.raw`How many asymptotes does the function \(f(x)=\frac{x+5}{\sqrt{x^2-9}}\) have?`,
    choices: ["2", "3", "4", "5", "NOTA"],
    answer: "C",
-   solution: String.raw`Vertical asymptotes: \sqrt{x^2-9}=0\Rightarrow x=\pm3. Both are non-removable. \#\text{VA}=2.
-Horizontal asymptotes: \lim_{x\to+\infty}f(x)=1 and \lim_{x\to-\infty}f(x)=-1. \#\text{HA}=2.
-No oblique asymptotes. Total =2+2=\boxed{4}.`,
+   solution: String.raw`Vertical asymptotes: \(\sqrt{x^2-9}=0\Rightarrow x=\pm3\). Both are non-removable. \(\#\text{VA}=2\).
+Horizontal asymptotes: \(\lim_{x\to+\infty}f(x)=1\) and \(\lim_{x\to-\infty}f(x)=-1\). \(\#\text{HA}=2\).
+No oblique asymptotes. Total \(=2+2=\boxed{4}\).`,
 },
 
 
@@ -3321,14 +3321,14 @@ No oblique asymptotes. Total =2+2=\boxed{4}.`,
    topic: "Polar",
    difficulty: 3,
    methods: [],
-   question: String.raw`Let R be the region bounded above by r=-\frac{25}{12\cos\theta-13}, 0\le\theta<\pi, and bounded below by y=0. What is the area enclosed by R?`,
-   choices: [String.raw`30\pi`, String.raw`60\pi`, String.raw`\frac{65\pi}{2}`, String.raw`65\pi`, "NOTA"],
+   question: String.raw`Let R be the region bounded above by \(r=-\frac{25}{12\cos\theta-13}, 0\le\theta<\pi\), and bounded below by \(y=0\). What is the area enclosed by R?`,
+   choices: [String.raw`\(30\pi\)`, String.raw`\(60\pi\)`, String.raw`\(\frac{65\pi}{2}\)`, String.raw`\(65\pi\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`Multiply: r(12\cos\theta-13)=-25\Rightarrow 12r\cos\theta-13r=-25\Rightarrow 25+12x=13r.
-Squaring: (25+12x)^2=169(x^2+y^2)\Rightarrow 625+600x+144x^2=169x^2+169y^2.
-\Rightarrow 25x^2-600x+169y^2=625\Rightarrow 25(x-12)^2+169y^2=4225.
-\Rightarrow \frac{(x-12)^2}{169}+\frac{y^2}{25}=1: upper semi-ellipse, a=13, b=5.
-Area =\frac{1}{2}\pi ab=\frac{1}{2}\pi(13)(5)=\boxed{\frac{65\pi}{2}}.`,
+   solution: String.raw`Multiply: \(r(12\cos\theta-13)=-25\Rightarrow 12r\cos\theta-13r=-25\Rightarrow 25+12x=13r\).
+Squaring: \((25+12x)^2=169(x^2+y^2)\Rightarrow 625+600x+144x^2=169x^2+169y^2\).
+\(\Rightarrow 25x^2-600x+169y^2=625\Rightarrow 25(x-12)^2+169y^2=4225\).
+\(\Rightarrow \frac{(x-12)^2}{169}+\frac{y^2}{25}=1\): upper semi-ellipse, \(a=13, b=5\).
+Area \(=\frac{1}{2}\pi ab=\frac{1}{2}\pi(13)(5)=\boxed{\frac{65\pi}{2}}\).`,
 },
 
 
@@ -3339,16 +3339,16 @@ Area =\frac{1}{2}\pi ab=\frac{1}{2}\pi(13)(5)=\boxed{\frac{65\pi}{2}}.`,
    topic: "Matrices",
    difficulty: 3,
    methods: ["Determinant", "Row Operations"],
-   question: String.raw`Evaluate: \begin{vmatrix}7&5&0&-10\\6&-1&4&7\\13&8&-2&-4\\4&3&0&-6\end{vmatrix}.`,
+   question: String.raw`Evaluate: \(\begin{vmatrix}7&5&0&-10\\6&-1&4&7\\13&8&-2&-4\\4&3&0&-6\end{vmatrix}\).`,
    choices: ["-174", "174", "-58", "58", "NOTA"],
    answer: "D",
-   solution: String.raw`Scale R_1\to3R_1, which multiplies the determinant by 3. Then apply R_1\to R_1-5R_4, which does not change the determinant:
-\begin{bmatrix}21&15&0&-30\\6&-1&4&7\\13&8&-2&-4\\4&3&0&-6\end{bmatrix}
-\longrightarrow
-\begin{bmatrix}1&0&0&0\\6&-1&4&7\\13&8&-2&-4\\4&3&0&-6\end{bmatrix}.
+   solution: String.raw`Scale \(R_1\to3R_1\), which multiplies the determinant by 3. Then apply \(R_1\to R_1-5R_4\), which does not change the determinant:
+\(\begin{bmatrix}21&15&0&-30\\6&-1&4&7\\13&8&-2&-4\\4&3&0&-6\end{bmatrix}\)
+\(\longrightarrow\)
+\(\begin{bmatrix}1&0&0&0\\6&-1&4&7\\13&8&-2&-4\\4&3&0&-6\end{bmatrix}\).
 Expanding along the first row gives
-3\det(A)=\begin{vmatrix}-1&4&7\\8&-2&-4\\3&0&-6\end{vmatrix}=174.
-Therefore, \det(A)=\frac{174}{3}=\boxed{58}.`,
+\(3\det(A)=\begin{vmatrix}-1&4&7\\8&-2&-4\\3&0&-6\end{vmatrix}=174\).
+Therefore, \(\det(A)=\frac{174}{3}=\boxed{58}\).`,
 },
 
 
@@ -3359,12 +3359,12 @@ Therefore, \det(A)=\frac{174}{3}=\boxed{58}.`,
    topic: "Sequences and Series",
    difficulty: 3,
    methods: ["Telescoping", "Partial Fractions"],
-   question: String.raw`Evaluate the series: \displaystyle\sum_{n=1}^{\infty}\frac{5760}{n^2+2n}.`,
+   question: String.raw`Evaluate the series: \(\displaystyle\sum_{n=1}^{\infty}\frac{5760}{n^2+2n}\).`,
    choices: ["2880", "4320", "5760", "8640", "NOTA"],
    answer: "B",
-   solution: String.raw`\frac{5760}{n^2+2n}=\frac{5760}{n(n+2)}=\frac{2880}{n}-\frac{2880}{n+2} (partial fractions).
+   solution: String.raw`\(\frac{5760}{n^2+2n}=\frac{5760}{n(n+2)}=\frac{2880}{n}-\frac{2880}{n+2}\) (partial fractions).
 This is a telescoping series:
-2880\!\left[\!\left(1-\frac{1}{3}\right)+\left(\frac{1}{2}-\frac{1}{4}\right)+\left(\frac{1}{3}-\frac{1}{5}\right)+\cdots\right]=2880\!\left(1+\frac{1}{2}\right)=2880\cdot\frac{3}{2}=\boxed{4320}.`,
+\(2880\!\left[\!\left(1-\frac{1}{3}\right)+\left(\frac{1}{2}-\frac{1}{4}\right)+\left(\frac{1}{3}-\frac{1}{5}\right)+\cdots\right]=2880\!\left(1+\frac{1}{2}\right)=2880\cdot\frac{3}{2}=\boxed{4320}\).`,
 },
 
 
@@ -3378,9 +3378,9 @@ This is a telescoping series:
    question: String.raw`How many integer values of x are there such that 4|x-5|+5<1?`,
    choices: ["1", "2", "3", "4", "NOTA"],
    answer: "E",
-   solution: String.raw`4|x-5|+5<1\Rightarrow 4|x-5|<-4\Rightarrow|x-5|<-1.
-An absolute value is always \ge0, so this is impossible.
-There are no solutions. Answer: \boxed{E} (NOTA).`,
+   solution: String.raw`\(4|x-5|+5<1\Rightarrow 4|x-5|<-4\Rightarrow|x-5|<-1\).
+An absolute value is always \(\ge0\), so this is impossible.
+There are no solutions. Answer: \(\boxed{E}\) (NOTA).`,
 },
 
 
@@ -3391,15 +3391,15 @@ There are no solutions. Answer: \boxed{E} (NOTA).`,
    topic: "Vectors",
    difficulty: 4,
    methods: ["Cross Product", "Planes"],
-   question: String.raw`The vector equation of plane \pi is: \vec{r}=(3+4t+s)\vec{i}+(5+7t+3s)\vec{j}+(2+6t+8s)\vec{k}
-where s and t are real parameters. The Cartesian equation is Ax+By+Cz+D=0. Find \frac{A+B}{D-C}.`,
+   question: String.raw`The vector equation of plane \(\pi\) is: \(\vec{r}=(3+4t+s)\vec{i}+(5+7t+3s)\vec{j}+(2+6t+8s)\vec{k}\)
+where s and t are real parameters. The Cartesian equation is \(Ax+By+Cz+D=0\). Find \(\frac{A+B}{D-C}\).`,
    choices: ["12", "-12", "64", "-64", "NOTA"],
    answer: "A",
-   solution: String.raw`Direction vectors: \vec{d_1}=(4,7,6), \vec{d_2}=(1,3,8).
-Normal \vec{n}=\vec{d_1}\times\vec{d_2}:
-\vec{n}=\bigl(7\cdot8-6\cdot3,\;6\cdot1-4\cdot8,\;4\cdot3-7\cdot1\bigr)=(38,-26,5).
-Point (3,5,2): 38(3)-26(5)+5(2)+D=0\Rightarrow114-130+10+D=0\Rightarrow D=6.
-\frac{A+B}{D-C}=\frac{38+(-26)}{6-5}=\frac{12}{1}=\boxed{12}.`,
+   solution: String.raw`Direction vectors: \(\vec{d_1}=(4,7,6), \vec{d_2}=(1,3,8)\).
+Normal \(\vec{n}=\vec{d_1}\times\vec{d_2}\):
+\(\vec{n}=\bigl(7\cdot8-6\cdot3,\;6\cdot1-4\cdot8,\;4\cdot3-7\cdot1\bigr)=(38,-26,5)\).
+Point (3,5,2): \(38(3)-26(5)+5(2)+D=0\Rightarrow114-130+10+D=0\Rightarrow D=6\).
+\(\frac{A+B}{D-C}=\frac{38+(-26)}{6-5}=\frac{12}{1}=\boxed{12}\).`,
 },
 
 
@@ -3411,12 +3411,12 @@ Point (3,5,2): 38(3)-26(5)+5(2)+D=0\Rightarrow114-130+10+D=0\Rightarrow D=6.
    difficulty: 2,
    methods: [],
    question: String.raw`A computer generates a 3-digit number uniformly at random. What is the probability that the digits are in strictly decreasing order (540 is an example, 422 is not)?`,
-   choices: [String.raw`\frac{3}{25}`, String.raw`\frac{2}{15}`, String.raw`\frac{1}{6}`, String.raw`\frac{1}{3}`, "NOTA"],
+   choices: [String.raw`\(\frac{3}{25}\)`, String.raw`\(\frac{2}{15}\)`, String.raw`\(\frac{1}{6}\)`, String.raw`\(\frac{1}{3}\)`, "NOTA"],
    answer: "B",
    solution: String.raw`The digits must be distinct and can be arranged in exactly one decreasing order.
-Number of ways to choose 3 distinct digits from 0--9: \binom{10}{3}=120.
+Number of ways to choose 3 distinct digits from 0--9: \(\binom{10}{3}=120\).
 Total 3-digit numbers: 900.
-Probability =\frac{120}{900}=\boxed{\frac{2}{15}}.`,
+Probability \(=\frac{120}{900}=\boxed{\frac{2}{15}}\).`,
 },
 
 
@@ -3427,12 +3427,12 @@ Probability =\frac{120}{900}=\boxed{\frac{2}{15}}.`,
    topic: "Binomial Expansion",
    difficulty: 3,
    methods: ["Multinomial Theorem"],
-   question: String.raw`Find the coefficient of the x^3y term in the trinomial expansion (3x-2y-5z)^4.`,
+   question: String.raw`Find the coefficient of the \(x^3y\) term in the trinomial expansion \((3x-2y-5z)^4\).`,
    choices: ["54", "-54", "216", "-216", "NOTA"],
    answer: "D",
-   solution: String.raw`There is no z-term needed, so set z=0: expand (3x-2y)^4.
-The x^3y term: \binom{4}{3}(3x)^3(-2y)^1=4\cdot27\cdot(-2)\cdot x^3y=-216x^3y.
-Coefficient =\boxed{-216}.`,
+   solution: String.raw`There is no z-term needed, so set \(z=0\): expand \((3x-2y)^4\).
+The \(x^3y\) term: \(\binom{4}{3}(3x)^3(-2y)^1=4\cdot27\cdot(-2)\cdot x^3y=-216x^3y\).
+Coefficient \(=\boxed{-216}\).`,
 },
 
 
@@ -3443,11 +3443,11 @@ Coefficient =\boxed{-216}.`,
    topic: "Sequences and Series",
    difficulty: 2,
    methods: ["Generating Functions"],
-   question: String.raw`If the sequence is 1,2,4,8,16,\ldots, which of the following is the generating function?`,
-   choices: [String.raw`\frac{1}{1-x}`, String.raw`\frac{1}{1+2x}`, String.raw`\frac{1}{1-2x}`, String.raw`\frac{1}{1+x}`, "NOTA"],
+   question: String.raw`If the sequence is \(1,2,4,8,16,\ldots\), which of the following is the generating function?`,
+   choices: [String.raw`\(\frac{1}{1-x}\)`, String.raw`\(\frac{1}{1+2x}\)`, String.raw`\(\frac{1}{1-2x}\)`, String.raw`\(\frac{1}{1+x}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`f(x)=1+2x+4x^2+8x^3+\cdots=\sum_{n=0}^{\infty}(2x)^n=\frac{1}{1-2x} (geometric series, ratio 2x).
-Answer: \boxed{\frac{1}{1-2x}}.`,
+   solution: String.raw`\(f(x)=1+2x+4x^2+8x^3+\cdots=\sum_{n=0}^{\infty}(2x)^n=\frac{1}{1-2x}\) (geometric series, ratio 2x).
+Answer: \(\boxed{\frac{1}{1-2x}}\).`,
 },
 
 
@@ -3458,11 +3458,11 @@ Answer: \boxed{\frac{1}{1-2x}}.`,
    topic: "Sequences and Series",
    difficulty: 2,
    methods: ["Generating Functions"],
-   question: String.raw`If the sequence is 1,0,1,0,1,0,\ldots, which of the following is the generating function?`,
-   choices: [String.raw`\frac{1}{1-2x^2}`, String.raw`\frac{1}{1+2x^2}`, String.raw`\frac{1}{1+x^2}`, String.raw`\frac{1}{1-x^2}`, "NOTA"],
+   question: String.raw`If the sequence is \(1,0,1,0,1,0,\ldots\), which of the following is the generating function?`,
+   choices: [String.raw`\(\frac{1}{1-2x^2}\)`, String.raw`\(\frac{1}{1+2x^2}\)`, String.raw`\(\frac{1}{1+x^2}\)`, String.raw`\(\frac{1}{1-x^2}\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`f(x)=1+x^2+x^4+x^6+\cdots=\sum_{n=0}^{\infty}(x^2)^n=\frac{1}{1-x^2} (geometric, ratio x^2).
-Answer: \boxed{\frac{1}{1-x^2}}.`,
+   solution: String.raw`\(f(x)=1+x^2+x^4+x^6+\cdots=\sum_{n=0}^{\infty}(x^2)^n=\frac{1}{1-x^2}\) (geometric, ratio \(x^2)\).
+Answer: \(\boxed{\frac{1}{1-x^2}}\).`,
 },
 
 
@@ -3473,11 +3473,11 @@ Answer: \boxed{\frac{1}{1-x^2}}.`,
    topic: "Sequences and Series",
    difficulty: 2,
    methods: ["Binomial Theorem", "Generating Functions"],
-   question: String.raw`If a_n=\binom{100}{n} and a_n=0 for n>100, which is the generating function?`,
-   choices: [String.raw`\frac{1}{1+x^{100}}`, String.raw`(x+1)^{100}`, String.raw`(x+2)^{100}`, String.raw`\frac{2}{1+2x^{100}}`, "NOTA"],
+   question: String.raw`If \(a_n=\binom{100}{n}\) and \(a_n=0\) for n>100, which is the generating function?`,
+   choices: [String.raw`\(\frac{1}{1+x^{100}}\)`, String.raw`\((x+1)^{100}\)`, String.raw`\((x+2)^{100}\)`, String.raw`\(\frac{2}{1+2x^{100}}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`f(x)=\sum_{n=0}^{100}\binom{100}{n}x^n=(x+1)^{100} by the Binomial Theorem.
-Answer: \boxed{(x+1)^{100}}.`,
+   solution: String.raw`\(f(x)=\sum_{n=0}^{100}\binom{100}{n}x^n=(x+1)^{100}\) by the Binomial Theorem.
+Answer: \(\boxed{(x+1)^{100}}\).`,
 },
 
 
@@ -3488,14 +3488,14 @@ Answer: \boxed{(x+1)^{100}}.`,
    topic: "Geometry",
    difficulty: 4,
    methods: ["Law of Cosines"],
-   question: String.raw`Suppose there exists a parallelogram ABCD such that AB=9, BC=7, and diagonal BD=14. What is the length of diagonal \overline{AC}?`,
-   choices: ["8", "9", String.raw`\sqrt{66}`, String.raw`4\sqrt{5}`, "NOTA"],
+   question: String.raw`Suppose there exists a parallelogram ABCD such that \(AB=9, BC=7\), and diagonal \(BD=14\). What is the length of diagonal \(\overline{AC}\)?`,
+   choices: ["8", "9", String.raw`\(\sqrt{66}\)`, String.raw`\(4\sqrt{5}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`In \triangle BCD (with BC=7, CD=AB=9, BD=14):
-\cos(\angle BCD)=\frac{7^2+9^2-14^2}{2(7)(9)}=\frac{49+81-196}{126}=\frac{-66}{126}=-\frac{11}{21}.
-Since \angle ABC+\angle BCD=180°, \cos(\angle ABC)=\frac{11}{21}.
-AC^2=AB^2+BC^2-2(AB)(BC)\cos(\angle ABC)=81+49-2(9)(7)\cdot\frac{11}{21}=130-66=64.
-AC=\boxed{8}.`,
+   solution: String.raw`In \(\triangle BCD\) (with \(BC=7, CD=AB=9, BD=14)\):
+\(\cos(\angle BCD)=\frac{7^2+9^2-14^2}{2(7)(9)}=\frac{49+81-196}{126}=\frac{-66}{126}=-\frac{11}{21}\).
+Since \(\angle ABC+\angle BCD=180^\circ, \cos(\angle ABC)=\frac{11}{21}\).
+\(AC^2=AB^2+BC^2-2(AB)(BC)\cos(\angle ABC)=81+49-2(9)(7)\cdot\frac{11}{21}=130-66=64\).
+\(AC=\boxed{8}\).`,
 },
 
 
@@ -3506,13 +3506,13 @@ AC=\boxed{8}.`,
    topic: "Matrices",
    difficulty: 3,
    methods: ["Eigenvalues"],
-   question: String.raw`If A=\begin{bmatrix}2&1\\3&4\end{bmatrix} and the two distinct eigenvalues are \lambda_1 and \lambda_2, find S=\lambda_1\lambda_2+\lambda_1+\lambda_2.`,
+   question: String.raw`If \(A=\begin{bmatrix}2&1\\3&4\end{bmatrix}\) and the two distinct eigenvalues are \(\lambda_1\) and \(\lambda_2\), find \(S=\lambda_1\lambda_2+\lambda_1+\lambda_2\).`,
    choices: ["11", "17", "-1", "1", "NOTA"],
    answer: "A",
-   solution: String.raw`\det(A-\lambda I)=(2-\lambda)(4-\lambda)-3=\lambda^2-6\lambda+5=0.
-(\lambda-1)(\lambda-5)=0\Rightarrow\lambda_1=1,\ \lambda_2=5.
-S=\lambda_1\lambda_2+\lambda_1+\lambda_2=5+1+5=\boxed{11}.
-(Alternatively: \lambda_1\lambda_2=\det(A)=5; \lambda_1+\lambda_2=\operatorname{tr}(A)=6; S=5+6=11.)`,
+   solution: String.raw`\(\det(A-\lambda I)=(2-\lambda)(4-\lambda)-3=\lambda^2-6\lambda+5=0\).
+\((\lambda-1)(\lambda-5)=0\Rightarrow\lambda_1=1,\ \lambda_2=5\).
+\(S=\lambda_1\lambda_2+\lambda_1+\lambda_2=5+1+5=\boxed{11}\).
+(Alternatively: \(\lambda_1\lambda_2=\det(A)=5\); \(\lambda_1+\lambda_2=\operatorname{tr}(A)=6\); \(S=5+6=11.)\)`,
 },
 
 
@@ -3523,14 +3523,14 @@ S=\lambda_1\lambda_2+\lambda_1+\lambda_2=5+1+5=\boxed{11}.
    topic: "Number Theory",
    difficulty: 2,
    methods: ["Base Conversion"],
-   question: String.raw`The number 856_9 can be put into the form X_3. Let S = (number of digits in X) + (sum of digits of X). Find S.`,
+   question: String.raw`The number \(856_9\) can be put into the form \(X_3\). Let \(S =\) (number of digits in X) + (sum of digits of X). Find S.`,
    choices: ["14", "15", "16", "17", "NOTA"],
    answer: "B",
-   solution: String.raw`Convert to base 10: 856_9=8(81)+5(9)+6=648+45+6=699.
+   solution: String.raw`Convert to base 10: \(856_9=8(81)+5(9)+6=648+45+6=699\).
 Convert 699 to base 3:
-699=2(243)+2(81)+1(27)+2(9)+2(3)+0(1)=221220_3.
-Number of digits in 221220_3: 6. Sum of digits: 2+2+1+2+2+0=9.
-S=6+9=\boxed{15}.`,
+\(699=2(243)+2(81)+1(27)+2(9)+2(3)+0(1)=221220_3\).
+Number of digits in \(221220_3\): 6. Sum of digits: \(2+2+1+2+2+0=9\).
+\(S=6+9=\boxed{15}\).`,
 },
 
 
@@ -3541,13 +3541,13 @@ S=6+9=\boxed{15}.`,
    topic: "Polynomials",
    difficulty: 3,
    methods: ["Vieta's Formulas"],
-   question: String.raw`Let f(x)=4x^4-5x^5+3x^3+5x+2x^2+7x-1. Let the roots be r_1,r_2,r_3,r_4,r_5. Find \frac{1}{r_1}+\frac{1}{r_2}+\frac{1}{r_3}+\frac{1}{r_4}+\frac{1}{r_5}.`,
+   question: String.raw`Let \(f(x)=4x^4-5x^5+3x^3+5x+2x^2+7x-1\). Let the roots be \(r_1,r_2,r_3,r_4,r_5\). Find \(\frac{1}{r_1}+\frac{1}{r_2}+\frac{1}{r_3}+\frac{1}{r_4}+\frac{1}{r_5}\).`,
    choices: ["12", "-12", "7", "-7", "NOTA"],
    answer: "A",
-   solution: String.raw`Rewrite in descending order: f(x)=-5x^5+4x^4+3x^3+2x^2+12x-1 (combining 5x+7x=12x).
-By Vieta's: r_1r_2r_3r_4r_5=(-1)^5\cdot\frac{-1}{-5}=-\frac{1}{5}.
-Sum of products of 4 roots: e_4=(-1)^4\cdot\frac{12}{-5}=-\frac{12}{5}.
-\sum\frac{1}{r_i}=\frac{e_4}{e_5}=\frac{-12/5}{-1/5}=\boxed{12}.`,
+   solution: String.raw`Rewrite in descending order: \(f(x)=-5x^5+4x^4+3x^3+2x^2+12x-1\) (combining \(5x+7x=12x)\).
+By Vieta's: \(r_1r_2r_3r_4r_5=(-1)^5\cdot\frac{-1}{-5}=-\frac{1}{5}\).
+Sum of products of 4 roots: \(e_4=(-1)^4\cdot\frac{12}{-5}=-\frac{12}{5}\).
+\(\sum\frac{1}{r_i}=\frac{e_4}{e_5}=\frac{-12/5}{-1/5}=\boxed{12}\).`,
 },
 
 
@@ -3559,13 +3559,13 @@ Sum of products of 4 roots: e_4=(-1)^4\cdot\frac{12}{-5}=-\frac{12}{5}.
    difficulty: 3,
    methods: ["Cross Product", "Scalar Triple Product"],
    question: String.raw`Dialga is at (5,1,2), Palkia is at (-2,3,5), Giratina is at (0,0,0), and Arceus is at (4,5,-1). Find the volume of the tetrahedron they form.`,
-   choices: ["166", "83", String.raw`\frac{83}{3}`, String.raw`\frac{83}{2}`, "NOTA"],
+   choices: ["166", "83", String.raw`\(\frac{83}{3}\)`, String.raw`\(\frac{83}{2}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`Using Giratina as origin, edge vectors: \vec{v_1}=(5,1,2), \vec{v_2}=(-2,3,5), \vec{v_3}=(4,5,-1).
-V=\frac{1}{6}\left|\det[\vec{v_1},\vec{v_2},\vec{v_3}]\right|.
-\det=5(3(-1)-5\cdot5)-1((-2)(-1)-5\cdot4)+2((-2)(5)-3\cdot4)
-=5(-28)-1(-18)+2(-22)=-140+18-44=-166.
-V=\frac{1}{6}(166)=\boxed{\frac{83}{3}}.`,
+   solution: String.raw`Using Giratina as origin, edge vectors: \(\vec{v_1}=(5,1,2), \vec{v_2}=(-2,3,5), \vec{v_3}=(4,5,-1)\).
+\(V=\frac{1}{6}\left|\det[\vec{v_1},\vec{v_2},\vec{v_3}]\right|\).
+\(\det=5(3(-1)-5\cdot5)-1((-2)(-1)-5\cdot4)+2((-2)(5)-3\cdot4)\)
+\(=5(-28)-1(-18)+2(-22)=-140+18-44=-166\).
+\(V=\frac{1}{6}(166)=\boxed{\frac{83}{3}}\).`,
 },
 
 
@@ -3576,14 +3576,14 @@ V=\frac{1}{6}(166)=\boxed{\frac{83}{3}}.`,
    topic: "Number Theory",
    difficulty: 1,
    methods: ["Fermat's Last Theorem"],
-   question: String.raw`Describe the solution set (x,y,z) for x^n+y^n=z^n for positive integers x,y,z and n>2. (Each choice is a phrase, followed by what it means.)
+   question: String.raw`Describe the solution set (x,y,z) for \(x^n+y^n=z^n\) for positive integers x,y,z and n>2. (Each choice is a phrase, followed by what it means.)
 A: *silence* (infinite solutions). B: 'TAKE THAT!' (finite but >1 solutions).
 C: 'HOLD IT!' (exactly one solution). D: 'OBJECTION!' (no solutions). E: NOTA`,
    choices: ["*silence* (infinite solutions)", "TAKE THAT! (finite, >1 solutions)", "HOLD IT! (exactly one solution)", "OBJECTION! (no solutions)", "NOTA"],
    answer: "D",
-   solution: String.raw`This is \textbf{Fermat's Last Theorem}: there are no positive integer solutions to
-x^n+y^n=z^n for n>2. Proven by Andrew Wiles in 1995.
-Answer: 'OBJECTION!' \Rightarrow\boxed{D}.`,
+   solution: String.raw`This is \(\textbf{Fermat's Last Theorem}\): there are no positive integer solutions to
+\(x^n+y^n=z^n\) for n>2. Proven by Andrew Wiles in 1995.
+Answer: 'OBJECTION!' \(\Rightarrow\boxed{D}\).`,
 },
 
 
@@ -3594,14 +3594,14 @@ Answer: 'OBJECTION!' \Rightarrow\boxed{D}.`,
    topic: "Polynomials",
    difficulty: 4,
    methods: ["Completing the Square", "Quadratic Formula", "Conjugates"],
-   question: String.raw`The roots of f(x)=4x^4+16x^2+25 can be expressed as A\pm Bi and C\pm Di. Find |A|+|B|+|C|+|D|.`,
+   question: String.raw`The roots of \(f(x)=4x^4+16x^2+25\) can be expressed as \(A\pm Bi\) and \(C\pm Di\). Find |A|+|B|+|C|+|D|.`,
    choices: ["8", "6", "4", "2", "NOTA"],
    answer: "C",
-   solution: String.raw`4x^4+16x^2+25=4x^4+20x^2+25-4x^2=(2x^2+5)^2-(2x)^2
-=(2x^2-2x+5)(2x^2+2x+5)=0.
-For 2x^2-2x+5=0: x=\frac{2\pm\sqrt{4-40}}{4}=\frac{2\pm6i}{4}=\frac{1}{2}\pm\frac{3}{2}i.
-For 2x^2+2x+5=0: x=\frac{-2\pm\sqrt{4-40}}{4}=\frac{-2\pm6i}{4}=-\frac{1}{2}\pm\frac{3}{2}i.
-|A|+|B|+|C|+|D|=\frac{1}{2}+\frac{3}{2}+\frac{1}{2}+\frac{3}{2}=\boxed{4}.`,
+   solution: String.raw`\(4x^4+16x^2+25=4x^4+20x^2+25-4x^2=(2x^2+5)^2-(2x)^2\)
+\(=(2x^2-2x+5)(2x^2+2x+5)=0\).
+For \(2x^2-2x+5=0\): \(x=\frac{2\pm\sqrt{4-40}}{4}=\frac{2\pm6i}{4}=\frac{1}{2}\pm\frac{3}{2}i\).
+For \(2x^2+2x+5=0\): \(x=\frac{-2\pm\sqrt{4-40}}{4}=\frac{-2\pm6i}{4}=-\frac{1}{2}\pm\frac{3}{2}i\).
+\(|A|+|B|+|C|+|D|=\frac{1}{2}+\frac{3}{2}+\frac{1}{2}+\frac{3}{2}=\boxed{4}\).`,
 },
 
 
@@ -3612,12 +3612,12 @@ For 2x^2+2x+5=0: x=\frac{-2\pm\sqrt{4-40}}{4}=\frac{-2\pm6i}{4}=-\frac{1}{2}\pm\
    topic: "Complex Numbers",
    difficulty: 2,
    methods: ["Hyperbolic Functions", "Euler's Formula"],
-   question: String.raw`\sinh(x) is defined as \frac{e^x-e^{-x}}{2} and \cosh(x) as \frac{e^x+e^{-x}}{2}. Which of the following expresses \sinh(x) in terms of trigonometric functions only?`,
-   choices: [String.raw`-i\sin(ix)`, String.raw`i\sin(ix)`, String.raw`-\cos(ix)`, String.raw`\cos(ix)`, "NOTA"],
+   question: String.raw`\(\sinh(x)\) is defined as \(\frac{e^x-e^{-x}}{2}\) and \(\cosh(x)\) as \(\frac{e^x+e^{-x}}{2}\). Which of the following expresses \(\sinh(x)\) in terms of trigonometric functions only?`,
+   choices: [String.raw`\(-i\sin(ix)\)`, String.raw`\(i\sin(ix)\)`, String.raw`\(-\cos(ix)\)`, String.raw`\(\cos(ix)\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Using e^{i\theta}=\cos\theta+i\sin\theta: \sin(ix)=\frac{e^{i(ix)}-e^{-i(ix)}}{2i}=\frac{e^{-x}-e^{x}}{2i}.
--i\sin(ix)=-i\cdot\frac{e^{-x}-e^x}{2i}=\frac{e^x-e^{-x}}{2}=\sinh(x).
-Answer: \boxed{-i\sin(ix)}.`,
+   solution: String.raw`Using \(e^{i\theta}=\cos\theta+i\sin\theta\): \(\sin(ix)=\frac{e^{i(ix)}-e^{-i(ix)}}{2i}=\frac{e^{-x}-e^{x}}{2i}\).
+\(-i\sin(ix)=-i\cdot\frac{e^{-x}-e^x}{2i}=\frac{e^x-e^{-x}}{2}=\sinh(x)\).
+Answer: \(\boxed{-i\sin(ix)}\).`,
 },
 
 
@@ -3628,11 +3628,11 @@ Answer: \boxed{-i\sin(ix)}.`,
    topic: "Complex Numbers",
    difficulty: 2,
    methods: ["Hyperbolic Functions", "Euler's Formula"],
-   question: String.raw`Which of the following expresses \cosh(x) in terms of trigonometric functions only?`,
-   choices: [String.raw`-i\sin(ix)`, String.raw`i\sin(ix)`, String.raw`-\cos(ix)`, String.raw`\cos(ix)`, "NOTA"],
+   question: String.raw`Which of the following expresses \(\cosh(x)\) in terms of trigonometric functions only?`,
+   choices: [String.raw`\(-i\sin(ix)\)`, String.raw`\(i\sin(ix)\)`, String.raw`\(-\cos(ix)\)`, String.raw`\(\cos(ix)\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`\cos(ix)=\frac{e^{i(ix)}+e^{-i(ix)}}{2}=\frac{e^{-x}+e^{x}}{2}=\cosh(x).
-Answer: \boxed{\cos(ix)}.`,
+   solution: String.raw`\(\cos(ix)=\frac{e^{i(ix)}+e^{-i(ix)}}{2}=\frac{e^{-x}+e^{x}}{2}=\cosh(x)\).
+Answer: \(\boxed{\cos(ix)}\).`,
 },
 
 
@@ -3643,11 +3643,11 @@ Answer: \boxed{\cos(ix)}.`,
    topic: "Hyperbolic Functions",
    difficulty: 2,
    methods: ["Hyperbolic Functions"],
-   question: String.raw`Which represents the hyperbolic analog to the Pythagorean identity \sin^2(x)+\cos^2(x)=1?`,
-   choices: [String.raw`\cosh^2(x)+\sinh^2(x)=1`, String.raw`\cosh^2(x)+\sinh^2(x)=-1`, String.raw`\sinh^2(x)-\cosh^2(x)=1`, String.raw`\cosh^2(x)-\sinh^2(x)=1`, "NOTA"],
+   question: String.raw`Which represents the hyperbolic analog to the Pythagorean identity \(\sin^2(x)+\cos^2(x)=1\)?`,
+   choices: [String.raw`\(\cosh^2(x)+\sinh^2(x)=1\)`, String.raw`\(\cosh^2(x)+\sinh^2(x)=-1\)`, String.raw`\(\sinh^2(x)-\cosh^2(x)=1\)`, String.raw`\(\cosh^2(x)-\sinh^2(x)=1\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`\cosh^2(x)=\frac{e^{2x}+2+e^{-2x}}{4}, \quad \sinh^2(x)=\frac{e^{2x}-2+e^{-2x}}{4}.
-\cosh^2(x)-\sinh^2(x)=\frac{4}{4}=\boxed{1}.`,
+   solution: String.raw`\(\cosh^2(x)=\frac{e^{2x}+2+e^{-2x}}{4}, \quad \sinh^2(x)=\frac{e^{2x}-2+e^{-2x}}{4}\).
+\(\cosh^2(x)-\sinh^2(x)=\frac{4}{4}=\boxed{1}\).`,
 },
 
 
@@ -3658,15 +3658,15 @@ Answer: \boxed{\cos(ix)}.`,
    topic: "Geometry",
    difficulty: 4,
    methods: ["Pythagorean Theorem"],
-   question: String.raw`Define: T = number of diagonals in a regular icosagon; I = hypotenuse of a right triangle with legs 65 and 72;
-M\pi = volume of a frustum with height 3, radii 4 and 8; Z = number of letters in the name of the author of \textit{The Elements}.
-If a variable's value is \ge100, add it (start from 0); if <100, subtract it. Find the resultant value.`,
+   question: String.raw`Define: \(T =\) number of diagonals in a regular icosagon; \(I =\) hypotenuse of a right triangle with legs 65 and 72;
+\(M\pi =\) volume of a frustum with height 3, radii 4 and 8; \(Z =\) number of letters in the name of the author of \(\textit{The Elements}\).
+If a variable's value is \(\ge100\), add it (start from 0); if <100, subtract it. Find the resultant value.`,
    choices: ["178", "179", "348", "349", "NOTA"],
    answer: "B",
-   solution: String.raw`T=\frac{20\cdot17}{2}=170\ge100: add. Running total: +170.
-I=\sqrt{65^2+72^2}=\sqrt{4225+5184}=\sqrt{9409}=97<100: subtract. Total: 170-97=73.
-M\pi=\frac{\pi h}{3}(r_1^2+r_1r_2+r_2^2)=\frac{3\pi}{3}(16+32+64)=112\pi, so M=112\ge100: add. Total: 73+112=185.
-Z=|\text{Euclid}|=6<100: subtract. Total: 185-6=\boxed{179}.`,
+   solution: String.raw`\(T=\frac{20\cdot17}{2}=170\ge100\): add. Running total: +170.
+\(I=\sqrt{65^2+72^2}=\sqrt{4225+5184}=\sqrt{9409}=97<100\): subtract. Total: \(170-97=73\).
+\(M\pi=\frac{\pi h}{3}(r_1^2+r_1r_2+r_2^2)=\frac{3\pi}{3}(16+32+64)=112\pi\), so \(M=112\ge100\): add. Total: \(73+112=185\).
+\(Z=|\text{Euclid}|=6<100\): subtract. Total: \(185-6=\boxed{179}\).`,
 },
 
 
@@ -3677,14 +3677,14 @@ Z=|\text{Euclid}|=6<100: subtract. Total: 185-6=\boxed{179}.`,
    topic: "Sequences and Series",
    difficulty: 5,
    methods: ["Telescoping"],
-   question: String.raw`Given a and b are relatively prime: \displaystyle\sum_{n=1}^{187}\operatorname{arccot}(2n^2)=\arctan\!\left(\frac{a}{b}\right). What is 2a+3b?`,
+   question: String.raw`Given a and b are relatively prime: \(\displaystyle\sum_{n=1}^{187}\operatorname{arccot}(2n^2)=\arctan\!\left(\frac{a}{b}\right)\). What is 2a+3b?`,
    choices: ["937", "938", "939", "940", "NOTA"],
    answer: "B",
-   solution: String.raw`Compute partial sums: S_1=\operatorname{arccot}(2).
-S_2=\operatorname{arccot}(2)+\operatorname{arccot}(8). Using \cot(S_2)=\frac{(2)(8)-1}{2+8}=\frac{15}{10}=\frac{3}{2}, so S_2=\operatorname{arccot}\!\left(\frac{3}{2}\right).
-S_3=\operatorname{arccot}\!\left(\frac{4}{3}\right), S_4=\operatorname{arccot}\!\left(\frac{5}{4}\right). Pattern: S_n=\operatorname{arccot}\!\left(\frac{n+1}{n}\right)=\arctan\!\left(\frac{n}{n+1}\right).
-S_{187}=\arctan\!\left(\frac{187}{188}\right), so a=187, b=188, \gcd(187,188)=1 \checkmark.
-2a+3b=2(187)+3(188)=374+564=\boxed{938}.`,
+   solution: String.raw`Compute partial sums: \(S_1=\operatorname{arccot}(2)\).
+\(S_2=\operatorname{arccot}(2)+\operatorname{arccot}(8)\). Using \(\cot(S_2)=\frac{(2)(8)-1}{2+8}=\frac{15}{10}=\frac{3}{2}\), so \(S_2=\operatorname{arccot}\!\left(\frac{3}{2}\right)\).
+\(S_3=\operatorname{arccot}\!\left(\frac{4}{3}\right), S_4=\operatorname{arccot}\!\left(\frac{5}{4}\right)\). Pattern: \(S_n=\operatorname{arccot}\!\left(\frac{n+1}{n}\right)=\arctan\!\left(\frac{n}{n+1}\right)\).
+\(S_{187}=\arctan\!\left(\frac{187}{188}\right)\), so \(a=187, b=188, \gcd(187,188)=1 \checkmark\).
+\(2a+3b=2(187)+3(188)=374+564=\boxed{938}\).`,
 },
 
 
@@ -3695,13 +3695,13 @@ S_{187}=\arctan\!\left(\frac{187}{188}\right), so a=187, b=188, \gcd(187,188)=1 
    topic: "Complex Numbers",
    difficulty: 2,
    methods: ["De Moivre's Theorem"],
-   question: String.raw`If x + \frac{1}{x} = 0, find x^6 + \frac{1}{x^6}.`,
+   question: String.raw`If \(x + \frac{1}{x} = 0\), find \(x^6 + \frac{1}{x^6}\).`,
    choices: [String.raw`-2`, String.raw`-1`, "0", "1", "NOTA"],
    answer: "A",
-   solution: String.raw`From x + \frac{1}{x} = 0 we get x^2 = -1, so x = \pm i.
-Then x^6 = (x^2)^3 = (-1)^3 = -1 and \frac{1}{x^6} = \frac{1}{-1} = -1.
-Thus x^6 + \frac{1}{x^6} = -1 + (-1) = -2.
-Answer: \boxed{A}.`,
+   solution: String.raw`From \(x + \frac{1}{x} = 0\) we get \(x^2 =\) -1, so \(x = \pm i\).
+Then \(x^6 = (x^2)^3 = (-1)^3 =\) -1 and \(\frac{1}{x^6} = \frac{1}{-1} =\) -1.
+Thus \(x^6 + \frac{1}{x^6} =\) -1 + (-1) \(=\) -2.
+Answer: \(\boxed{A}\).`,
 },
 
 
@@ -3713,15 +3713,15 @@ Answer: \boxed{A}.`,
    difficulty: 3,
    methods: ["Double-Angle Identity"],
    question: String.raw`A wheel with diameter 2 ft rolls along the underside of a plank. The base of the wheel is 3 ft from the point where the plank contacts the ground (the ground and the plank are tangent to the wheel). Find the slope of the plank from the ground.`,
-   choices: [String.raw`\frac{1}{3}`, String.raw`\frac{1}{2}`, String.raw`\frac{3}{4}`, String.raw`\frac{4}{3}`, "NOTA"],
+   choices: [String.raw`\(\frac{1}{3}\)`, String.raw`\(\frac{1}{2}\)`, String.raw`\(\frac{3}{4}\)`, String.raw`\(\frac{4}{3}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`The wheel has radius 1 ft. Let \phi be half the angle the plank makes with the ground. The wheel's center lies on the angle bisector, and the right triangle formed by the contact point on the ground, the center, and the plank's contact point gives
-\tan\phi=\frac{1}{3}.
+   solution: String.raw`The wheel has radius 1 ft. Let \(\phi\) be half the angle the plank makes with the ground. The wheel's center lies on the angle bisector, and the right triangle formed by the contact point on the ground, the center, and the plank's contact point gives
+\(\tan\phi=\frac{1}{3}\).
 The plank's slope is therefore
-\tan(2\phi)=\frac{2\tan\phi}{1-\tan^2\phi}
-=\frac{2\cdot\frac{1}{3}}{1-\frac{1}{9}}
-=\frac{3}{4}.
-Answer: \boxed{C}.`,
+\(\tan(2\phi)=\frac{2\tan\phi}{1-\tan^2\phi}\)
+\(=\frac{2\cdot\frac{1}{3}}{1-\frac{1}{9}}\)
+\(=\frac{3}{4}\).
+Answer: \(\boxed{C}\).`,
 },
 
 
@@ -3732,13 +3732,13 @@ Answer: \boxed{C}.`,
    topic: "Vectors",
    difficulty: 2,
    methods: ["Dot Product", "Trigonometric Identities"],
-   question: String.raw`Let \vec{u} = \langle \sin 20°, \cos 40° \rangle and \vec{v} = \langle \sin(-40°), \cos 20° \rangle. Find \vec{u} \cdot \vec{v}.`,
-   choices: ["0", String.raw`\frac{1}{2}`, String.raw`\frac{\sqrt{3}}{2}`, "1", "NOTA"],
+   question: String.raw`Let \(\vec{u} = \langle \sin 20^\circ, \cos 40^\circ \rangle\) and \(\vec{v} = \langle \sin(-40^\circ), \cos 20^\circ \rangle\). Find \(\vec{u} \cdot \vec{v}\).`,
+   choices: ["0", String.raw`\(\frac{1}{2}\)`, String.raw`\(\frac{\sqrt{3}}{2}\)`, "1", "NOTA"],
    answer: "B",
-   solution: String.raw`\vec{u} \cdot \vec{v} = \sin 20° \cdot \sin(-40°) + \cos 40° \cdot \cos 20°.
-= -\sin 20° \sin 40° + \cos 40° \cos 20°
-= \cos(40° + 20°) = \cos 60° = \frac{1}{2}.
-Answer: \boxed{B}.`,
+   solution: String.raw`\(\vec{u} \cdot \vec{v} = \sin 20^\circ \cdot \sin(-40^\circ) + \cos 40^\circ \cdot \cos 20^\circ\).
+\(= -\sin 20^\circ \sin 40^\circ + \cos 40^\circ \cos 20^\circ\)
+\(= \cos(40^\circ + 20^\circ) = \cos 60^\circ = \frac{1}{2}\).
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -3749,13 +3749,13 @@ Answer: \boxed{B}.`,
    topic: "Trigonometry",
    difficulty: 2,
    methods: ["Double-Angle Identity"],
-   question: String.raw`Find \sin(2\tan^{-1} 5).`,
-   choices: [String.raw`\frac{1}{13}`, String.raw`\frac{5}{13}`, String.raw`\frac{10}{13}`, String.raw`\frac{12}{13}`, "NOTA"],
+   question: String.raw`Find \(\sin(2\tan^{-1} 5)\).`,
+   choices: [String.raw`\(\frac{1}{13}\)`, String.raw`\(\frac{5}{13}\)`, String.raw`\(\frac{10}{13}\)`, String.raw`\(\frac{12}{13}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Let \theta = \tan^{-1} 5, so \tan\theta = 5.
-Draw a right triangle with opposite = 5, adjacent = 1, hypotenuse = \sqrt{26}.
-\sin(2\theta) = 2\sin\theta\cos\theta = 2 \cdot \frac{5}{\sqrt{26}} \cdot \frac{1}{\sqrt{26}} = \frac{10}{26} = \frac{5}{13}.
-Answer: \boxed{B}.`,
+   solution: String.raw`Let \(\theta = \tan^{-1} 5\), so \(\tan\theta = 5\).
+Draw a right triangle with opposite \(= 5\), adjacent \(= 1\), hypotenuse \(= \sqrt{26}\).
+\(\sin(2\theta) = 2\sin\theta\cos\theta = 2 \cdot \frac{5}{\sqrt{26}} \cdot \frac{1}{\sqrt{26}} = \frac{10}{26} = \frac{5}{13}\).
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -3766,12 +3766,12 @@ Answer: \boxed{B}.`,
    topic: "Polar",
    difficulty: 1,
    methods: [],
-   question: String.raw`Convert (\sqrt{2},\ 30°) from polar to rectangular coordinates.`,
-   choices: [String.raw`\left(\frac{\sqrt{6}}{2},\ \frac{\sqrt{2}}{2}\right)`, String.raw`\left(\frac{\sqrt{2}}{2},\ \frac{\sqrt{6}}{2}\right)`, String.raw`\left(\frac{\sqrt{3}}{2},\ \frac{1}{2}\right)`, String.raw`(\sqrt{6},\ \sqrt{2})`, "NOTA"],
+   question: String.raw`Convert \((\sqrt{2},\ 30^\circ)\) from polar to rectangular coordinates.`,
+   choices: [String.raw`\(\left(\frac{\sqrt{6}}{2},\ \frac{\sqrt{2}}{2}\right)\)`, String.raw`\(\left(\frac{\sqrt{2}}{2},\ \frac{\sqrt{6}}{2}\right)\)`, String.raw`\(\left(\frac{\sqrt{3}}{2},\ \frac{1}{2}\right)\)`, String.raw`\((\sqrt{6},\ \sqrt{2})\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`x = r\cos\theta = \sqrt{2}\cos 30° = \sqrt{2} \cdot \frac{\sqrt{3}}{2} = \frac{\sqrt{6}}{2}.
-y = r\sin\theta = \sqrt{2}\sin 30° = \sqrt{2} \cdot \frac{1}{2} = \frac{\sqrt{2}}{2}.
-Answer: \boxed{A}.`,
+   solution: String.raw`\(x = r\cos\theta = \sqrt{2}\cos 30^\circ = \sqrt{2} \cdot \frac{\sqrt{3}}{2} = \frac{\sqrt{6}}{2}\).
+\(y = r\sin\theta = \sqrt{2}\sin 30^\circ = \sqrt{2} \cdot \frac{1}{2} = \frac{\sqrt{2}}{2}\).
+Answer: \(\boxed{A}\).`,
 },
 
 
@@ -3782,14 +3782,14 @@ Answer: \boxed{A}.`,
    topic: "Algebra",
    difficulty: 1,
    methods: [],
-   question: String.raw`Find the sum of the real solutions to 6 + \sqrt{x} = x.`,
+   question: String.raw`Find the sum of the real solutions to \(6 + \sqrt{x} = x\).`,
    choices: ["4", "7", "9", "13", "NOTA"],
    answer: "C",
-   solution: String.raw`Isolate the radical: \sqrt{x} = x - 6. Square both sides: x = (x-6)^2 = x^2 - 12x + 36.
-Rearrange: x^2 - 13x + 36 = 0 \Rightarrow (x-4)(x-9) = 0 \Rightarrow x = 4 or x = 9.
-Check x = 4: 6 + \sqrt{4} = 6 + 2 = 8 \neq 4. Extraneous.
-Check x = 9: 6 + \sqrt{9} = 6 + 3 = 9. \checkmark
-The only solution is x = 9. Answer: \boxed{C}.`,
+   solution: String.raw`Isolate the radical: \(\sqrt{x} = x - 6\). Square both sides: \(x = (x-6)^2 = x^2 -\) 12x + 36.
+Rearrange: \(x^2 -\) 13x \(+ 36 = 0 \Rightarrow\) (x-4)(x-9) \(= 0 \Rightarrow x = 4\) or \(x = 9\).
+Check \(x = 4\): \(6 + \sqrt{4} = 6 + 2 = 8 \neq 4\). Extraneous.
+Check \(x = 9\): \(6 + \sqrt{9} = 6 + 3 = 9\). \(\checkmark\)
+The only solution is \(x = 9\). Answer: \(\boxed{C}\).`,
 },
 
 
@@ -3800,15 +3800,15 @@ The only solution is x = 9. Answer: \boxed{C}.`,
    topic: "Quadratics",
    difficulty: 2,
    methods: ["Discriminant Test"],
-   question: String.raw`Find the positive value of b such that bx^2 + 2x + 1 = x - b has exactly one real solution.`,
-   choices: [String.raw`\frac{\sqrt{2}-1}{2}`, String.raw`\frac{\sqrt{2}+1}{2}`, String.raw`\sqrt{2} - 1`, String.raw`\sqrt{2} + 1`, "NOTA"],
+   question: String.raw`Find the positive value of b such that \(bx^2 + 2x + 1 = x - b\) has exactly one real solution.`,
+   choices: [String.raw`\(\frac{\sqrt{2}-1}{2}\)`, String.raw`\(\frac{\sqrt{2}+1}{2}\)`, String.raw`\(\sqrt{2} - 1\)`, String.raw`\(\sqrt{2} + 1\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Rewrite: bx^2 + x + (b + 1) = 0.
+   solution: String.raw`Rewrite: \(bx^2 + x + (b + 1) = 0\).
 For exactly one real solution, the discriminant equals zero:
-\Delta = 1 - 4b(b+1) = 0 \Rightarrow 4b^2 + 4b - 1 = 0.
-By the quadratic formula: b = \frac{-4 \pm \sqrt{16 + 16}}{8} = \frac{-4 \pm 4\sqrt{2}}{8} = \frac{-1 \pm \sqrt{2}}{2}.
-Taking the positive root: b = \frac{\sqrt{2} - 1}{2}.
-Answer: \boxed{A}.`,
+\(\Delta = 1 -\) 4b(b+1) \(= 0 \Rightarrow 4b^2 + 4b - 1 = 0\).
+By the quadratic formula: \(b = \frac{-4 \pm \sqrt{16 + 16}}{8} = \frac{-4 \pm 4\sqrt{2}}{8} = \frac{-1 \pm \sqrt{2}}{2}\).
+Taking the positive root: \(b = \frac{\sqrt{2} - 1}{2}\).
+Answer: \(\boxed{A}\).`,
 },
 
 
@@ -3819,15 +3819,15 @@ Answer: \boxed{A}.`,
    topic: "Polynomials",
    difficulty: 2,
    methods: ["Conjugates"],
-   question: String.raw`Given that f(x) = x^4 - 4x^3 - 8x^2 - 16x - 48 has 2i as a root, find the sum of all roots of f(x).`,
+   question: String.raw`Given that f(x) \(= x^4 - 4x^3 - 8x^2 -\) 16x - 48 has 2i as a root, find the sum of all roots of f(x).`,
    choices: ["2", "3", "4", "6", "NOTA"],
    answer: "C",
    solution: String.raw`Since coefficients are real, -2i is also a root.
-(x - 2i)(x + 2i) = x^2 + 4 is a factor.
-Divide: f(x) \div (x^2 + 4) = x^2 - 4x - 12 = (x+2)(x-6).
-The four roots are 2i,\ -2i,\ -2,\ 6.
-Sum = 2i + (-2i) + (-2) + 6 = 4.
-Answer: \boxed{C}.`,
+(x - 2i)(x \(+ 2i) = x^2 + 4\) is a factor.
+Divide: f(x) \(\div (x^2 + 4) = x^2 - 4x - 12 =\) (x+2)(x-6).
+The four roots are 2i, -2i, -2, 6.
+Sum \(= 2i +\) (-2i) + (-2) \(+ 6 = 4\).
+Answer: \(\boxed{C}\).`,
 },
 
 
@@ -3839,17 +3839,17 @@ Answer: \boxed{C}.`,
    difficulty: 5,
    methods: [],
    question: String.raw`A circle of radius 1 and a downward-opening parabola whose latus rectum has length 1 are tangent at two points. Those two points of tangency and a point below form an equilateral triangle. Find the distance from the center of the circle to the vertex of the parabola.`,
-   choices: ["1", String.raw`\frac{5}{4}`, String.raw`\frac{3}{2}`, String.raw`\frac{7}{4}`, "NOTA"],
+   choices: ["1", String.raw`\(\frac{5}{4}\)`, String.raw`\(\frac{3}{2}\)`, String.raw`\(\frac{7}{4}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`Let the downward-opening parabola be y=-x^2+c; its latus rectum has length 1. By symmetry, write the circle's center as (0,k) and a tangency point as (t,c-t^2).
-The parabola has slope -2t there. The circle x^2+(y-k)^2=1 has slope -\frac{x}{y-k}, so tangency gives
--2t=-\frac{t}{c-t^2-k}\Rightarrow c-t^2-k=\frac{1}{2}.
+   solution: String.raw`Let the downward-opening parabola be \(y=-x^2+c\); its latus rectum has length 1. By symmetry, write the circle's center as (0,k) and a tangency point as \((t,c-t^2)\).
+The parabola has slope -2t there. The circle \(x^2+(y-k)^2=1\) has slope \(-\frac{x}{y-k}\), so tangency gives
+\(-2t=-\frac{t}{c-t^2-k}\Rightarrow c-t^2-k=\frac{1}{2}\).
 Because the tangency point is one radius from the center,
-t^2+\left(\frac{1}{2}\right)^2=1\Rightarrow t^2=\frac{3}{4}.
-Thus k=c-t^2-\frac{1}{2}=c-\frac{5}{4}. The distance from the center to the vertex (0,c) is therefore
-c-k=\boxed{\frac{5}{4}},
-so the answer is \frac{5}{4}.
-Answer: \boxed{B}.`,
+\(t^2+\left(\frac{1}{2}\right)^2=1\Rightarrow t^2=\frac{3}{4}\).
+Thus \(k=c-t^2-\frac{1}{2}=c-\frac{5}{4}\). The distance from the center to the vertex (0,c) is therefore
+\(c-k=\boxed{\frac{5}{4}}\),
+so the answer is \(\frac{5}{4}\).
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -3860,15 +3860,15 @@ Answer: \boxed{B}.`,
    topic: "Matrices",
    difficulty: 2,
    methods: [],
-   question: String.raw`Let A = \begin{bmatrix}1&0\\0&0\end{bmatrix}, B = \begin{bmatrix}0&1\\0&0\end{bmatrix}, C = \begin{bmatrix}0&0\\0&1\end{bmatrix}, D = \begin{bmatrix}0&0\\1&0\end{bmatrix}.
-Compute (ABCD)^{2020}.`,
-   choices: [String.raw`\begin{bmatrix}1&0\\0&0\end{bmatrix}`, String.raw`\begin{bmatrix}0&0\\0&1\end{bmatrix}`, String.raw`\begin{bmatrix}0&1\\0&0\end{bmatrix}`, String.raw`\begin{bmatrix}0&0\\1&0\end{bmatrix}`, "NOTA"],
+   question: String.raw`Let \(A = \begin{bmatrix}1&0\\0&0\end{bmatrix}, B = \begin{bmatrix}0&1\\0&0\end{bmatrix}, C = \begin{bmatrix}0&0\\0&1\end{bmatrix}, D = \begin{bmatrix}0&0\\1&0\end{bmatrix}\).
+Compute \((ABCD)^{2020}\).`,
+   choices: [String.raw`\(\begin{bmatrix}1&0\\0&0\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}0&0\\0&1\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}0&1\\0&0\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}0&0\\1&0\end{bmatrix}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Compute step by step: AB = \begin{bmatrix}0&1\\0&0\end{bmatrix}.
-ABC = AB \cdot C = \begin{bmatrix}0&1\\0&0\end{bmatrix}\begin{bmatrix}0&0\\0&1\end{bmatrix} = \begin{bmatrix}0&1\\0&0\end{bmatrix}.
-ABCD = \begin{bmatrix}0&1\\0&0\end{bmatrix}\begin{bmatrix}0&0\\1&0\end{bmatrix} = \begin{bmatrix}1&0\\0&0\end{bmatrix} = A.
-Since ABCD = A and A^2 = A (idempotent), (ABCD)^{2020} = A^{2020} = A = \begin{bmatrix}1&0\\0&0\end{bmatrix}.
-Answer: \boxed{A}.`,
+   solution: String.raw`Compute step by step: \(AB = \begin{bmatrix}0&1\\0&0\end{bmatrix}\).
+ABC \(= AB \cdot C = \begin{bmatrix}0&1\\0&0\end{bmatrix}\begin{bmatrix}0&0\\0&1\end{bmatrix} = \begin{bmatrix}0&1\\0&0\end{bmatrix}\).
+ABCD \(= \begin{bmatrix}0&1\\0&0\end{bmatrix}\begin{bmatrix}0&0\\1&0\end{bmatrix} = \begin{bmatrix}1&0\\0&0\end{bmatrix} = A\).
+Since ABCD \(= A\) and \(A^2 = A\) (idempotent), \((ABCD)^{2020} = A^{2020} = A = \begin{bmatrix}1&0\\0&0\end{bmatrix}\).
+Answer: \(\boxed{A}\).`,
 },
 
 
@@ -3879,14 +3879,14 @@ Answer: \boxed{A}.`,
    topic: "Logs and Exponents",
    difficulty: 3,
    methods: ["Change of Base"],
-   question: String.raw`The solution to 2^x = 3 \cdot 4^x can be written as x = -\frac{a\log b}{\log c}, where a,b,c are positive integers and a is as small as possible. Find b-c+a.`,
+   question: String.raw`The solution to \(2^x = 3 \cdot 4^x\) can be written as \(x = -\frac{a\log b}{\log c}\), where a,b,c are positive integers and a is as small as possible. Find b-c+a.`,
    choices: ["0", "2", "4", "6", "NOTA"],
    answer: "B",
-   solution: String.raw`2^x = 3 \cdot 4^x = 3 \cdot 2^{2x}.
-2^x \cdot 2^{-2x} = 3 \Rightarrow 2^{-x} = 3 \Rightarrow -x = \log_2 3.
-x = -\log_2 3 = -\frac{\log 3}{\log 2}.
-Thus a=1,\ b=3,\ c=2, and b-c+a=3-2+1=2.
-Answer: \boxed{B}.`,
+   solution: String.raw`\(2^x = 3 \cdot 4^x = 3 \cdot 2^{2x}\).
+\(2^x \cdot 2^{-2x} = 3 \Rightarrow 2^{-x} = 3 \Rightarrow\) -x \(= \log_2 3\).
+\(x = -\log_2 3 = -\frac{\log 3}{\log 2}\).
+Thus \(a=1,\ b=3,\ c=2\), and \(b-c+a=3-2+1=2\).
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -3897,12 +3897,12 @@ Answer: \boxed{B}.`,
    topic: "Polynomials",
    difficulty: 3,
    methods: [],
-   question: String.raw`If \sum_{n=0}^{4}(x+1)^n = A + Bx + Cx^2 + Dx^3 + Ex^4, find A + B + C + D + E.`,
+   question: String.raw`If \(\sum_{n=0}^{4}(x+1)^n = A + Bx + Cx^2 + Dx^3 + Ex^4\), find \(A+B+C+D+E\).`,
    choices: ["16", "25", "31", "32", "NOTA"],
    answer: "C",
-   solution: String.raw`Substituting x = 1: A + B + C + D + E = \sum_{n=0}^{4}(1+1)^n = \sum_{n=0}^{4} 2^n.
-= 1 + 2 + 4 + 8 + 16 = 31.
-Answer: \boxed{C}.`,
+   solution: String.raw`Substituting \(x = 1\): \(A + B + C + D + E = \sum_{n=0}^{4}(1+1)^n = \sum_{n=0}^{4} 2^n\).
+\(= 1 + 2 + 4 + 8 + 16 = 31\).
+Answer: \(\boxed{C}\).`,
 },
 
 
@@ -3913,13 +3913,13 @@ Answer: \boxed{C}.`,
    topic: "Logs and Exponents",
    difficulty: 2,
    methods: ["Asymptotes"],
-   question: String.raw`Find the vertical asymptote of y = \ln(\ln(\ln(x))).`,
-   choices: ["0", "1", String.raw`e`, String.raw`e^e`, "NOTA"],
+   question: String.raw`Find the vertical asymptote of \(y = \ln(\ln(\ln(x)))\).`,
+   choices: ["0", "1", String.raw`e`, String.raw`\(e^e\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`The outermost \ln requires its argument \ln(\ln(x)) > 0.
-\ln(\ln(x)) = 0 \Rightarrow \ln(x) = 1 \Rightarrow x = e.
-So y is defined for x > e, and the vertical asymptote is at x = e.
-Answer: \boxed{C}.`,
+   solution: String.raw`The outermost \(\ln\) requires its argument \(\ln(\ln(x)) > 0\).
+\(\ln(\ln(x)) = 0 \Rightarrow \ln(x) = 1 \Rightarrow x = e\).
+So y is defined for x > e, and the vertical asymptote is at \(x = e\).
+Answer: \(\boxed{C}\).`,
 },
 
 
@@ -3930,13 +3930,13 @@ Answer: \boxed{C}.`,
    topic: "Analytic Geometry",
    difficulty: 3,
    methods: [],
-   question: String.raw`The line 2y = x + k bisects the circle x^2 + y^2 - 12x - 10y = 2112. Find k.`,
+   question: String.raw`The line \(2y = x + k\) bisects the circle \(x^2 + y^2 -\) 12x - 10y \(= 2112\). Find k.`,
    choices: ["0", "2", "4", "6", "NOTA"],
    answer: "C",
-   solution: String.raw`Complete the square: (x-6)^2 + (y-5)^2 = 2112 + 36 + 25 = 2173.
+   solution: String.raw`Complete the square: \((x-6)^2 + (y-5)^2 = 2112 + 36 + 25 = 2173\).
 Center is (6, 5). A bisecting line must pass through the center.
-Substitute into 2y = x + k: 2(5) = 6 + k \Rightarrow k = 4.
-Answer: \boxed{C}.`,
+Substitute into \(2y = x + k\): 2(5) \(= 6 + k \Rightarrow k = 4\).
+Answer: \(\boxed{C}\).`,
 },
 
 
@@ -3947,15 +3947,15 @@ Answer: \boxed{C}.`,
    topic: "Vectors",
    difficulty: 2,
    methods: ["Cross Product", "Dot Product", "Scalar Triple Product"],
-   question: String.raw`Let \vec{a} = (\sqrt{2}, \sqrt{2}, 0), \vec{b} = (-3\sqrt{2}, 3\sqrt{2}, 0), \vec{c} = (-2\sqrt{3}, 0, 2). Find (\vec{a} \times \vec{b}) \cdot \vec{c}.`,
+   question: String.raw`Let \(\vec{a} = (\sqrt{2}, \sqrt{2}, 0), \vec{b} = (-3\sqrt{2}, 3\sqrt{2}, 0), \vec{c} = (-2\sqrt{3}, 0, 2)\). Find \((\vec{a} \times \vec{b}) \cdot \vec{c}\).`,
    choices: ["12", "18", "20", "24", "NOTA"],
    answer: "D",
-   solution: String.raw`|\vec{a}| = \sqrt{2+2} = 2, |\vec{b}| = \sqrt{18+18} = 6.
-\vec{a} \cdot \vec{b} = (\sqrt{2})(-3\sqrt{2}) + (\sqrt{2})(3\sqrt{2}) + 0 = -6 + 6 = 0, so \vec{a} \perp \vec{b}.
-|\vec{a} \times \vec{b}| = |\vec{a}||\vec{b}|\sin 90° = 12. Direction is +z: \vec{a} \times \vec{b} = (0, 0, 12).
-\vec{c} = (-2\sqrt{3}, 0, 2), |\vec{c}| = \sqrt{12+4} = 4.
-(\vec{a} \times \vec{b}) \cdot \vec{c} = 0(-2\sqrt{3}) + 0(0) + 12(2) = 24.
-Answer: \boxed{D}.`,
+   solution: String.raw`\(|\vec{a}| = \sqrt{2+2} = 2, |\vec{b}| = \sqrt{18+18} = 6\).
+\(\vec{a} \cdot \vec{b} = (\sqrt{2})(-3\sqrt{2}) + (\sqrt{2})(3\sqrt{2}) + 0 =\) -6 \(+ 6 = 0\), so \(\vec{a} \perp \vec{b}\).
+\(|\vec{a} \times \vec{b}| = |\vec{a}||\vec{b}|\sin 90^\circ = 12\). Direction is +z: \(\vec{a} \times \vec{b} = (0, 0, 12)\).
+\(\vec{c} = (-2\sqrt{3}, 0, 2), |\vec{c}| = \sqrt{12+4} = 4\).
+\((\vec{a} \times \vec{b}) \cdot \vec{c} = 0(-2\sqrt{3}) +\) 0(0) + 12(2) \(= 24\).
+Answer: \(\boxed{D}\).`,
 },
 
 
@@ -3966,18 +3966,18 @@ Answer: \boxed{D}.`,
    topic: "Trigonometry",
    difficulty: 3,
    methods: ["Law of Cosines"],
-   question: String.raw`In triangle ABC, angle A = 135°, a = 5, c = 1. Find the area of triangle ABC.`,
-   choices: [String.raw`\frac{3}{2}`, String.raw`\frac{5}{2}`, "3", String.raw`\frac{7}{2}`, "NOTA"],
+   question: String.raw`In triangle ABC, angle \(A = 135^\circ\), a \(= 5, c = 1\). Find the area of triangle ABC.`,
+   choices: [String.raw`\(\frac{3}{2}\)`, String.raw`\(\frac{5}{2}\)`, "3", String.raw`\(\frac{7}{2}\)`, "NOTA"],
    answer: "A",
    solution: String.raw`By the Law of Cosines,
-a^2=b^2+c^2-2bc\cos A.
-Substituting a=5,\ c=1,\ A=135^\circ gives
-25 = b^2 + 1 - 2b(1)(-\frac{\sqrt{2}}{2}) = b^2 + \sqrt{2}b + 1, so b^2 + \sqrt{2}b - 24 = 0.
-The positive solution is b=3\sqrt{2}. Therefore,
-\text{Area}=\frac{1}{2}bc\sin A
-=\frac{1}{2}(3\sqrt{2})(1)\left(\frac{\sqrt{2}}{2}\right)
-=\frac{3}{2}.
-Answer: \boxed{A}.`,
+\(a^2=b^2+c^2-2bc\cos A\).
+Substituting \(a=5,\ c=1,\ A=135^\circ\) gives
+\(25 = b^2 + 1 - 2b(1)(-\frac{\sqrt{2}}{2}) = b^2 + \sqrt{2}b + 1\), so \(b^2 + \sqrt{2}b - 24 = 0\).
+The positive solution is \(b=3\sqrt{2}\). Therefore,
+\(\text{Area}=\frac{1}{2}bc\sin A\)
+\(=\frac{1}{2}(3\sqrt{2})(1)\left(\frac{\sqrt{2}}{2}\right)\)
+\(=\frac{3}{2}\).
+Answer: \(\boxed{A}\).`,
 },
 
 
@@ -3988,13 +3988,13 @@ Answer: \boxed{A}.`,
    topic: "Conic Sections",
    difficulty: 1,
    methods: ["Discriminant Test"],
-   question: String.raw`Identify the type of conic section: x^2 + 2xy + 3y^2 + 4x + 5y = 0.`,
+   question: String.raw`Identify the type of conic section: \(x^2 +\) 2xy \(+ 3y^2 + 4x + 5y = 0\).`,
    choices: ["Circle", "Parabola", "Non-Circular Ellipse", "Hyperbola", "NOTA"],
    answer: "C",
-   solution: String.raw`For Ax^2 + Bxy + Cy^2 + \ldots = 0, here A=1, B=2, C=3.
-Discriminant: B^2 - 4AC = 4 - 12 = -8 < 0.
-Since B^2 - 4AC < 0 and A \neq C, the conic is a non-circular ellipse.
-Answer: \boxed{C}.`,
+   solution: String.raw`For \(Ax^2 +\) Bxy \(+ Cy^2 + \ldots = 0\), here \(A=1, B=2, C=3\).
+Discriminant: \(B^2 -\) 4AC \(= 4 - 12 =\) -8 < 0.
+Since \(B^2 -\) 4AC < 0 and \(A \neq C\), the conic is a non-circular ellipse.
+Answer: \(\boxed{C}\).`,
 },
 
 
@@ -4005,15 +4005,15 @@ Answer: \boxed{C}.`,
    topic: "Functions",
    difficulty: 3,
    methods: [],
-   question: String.raw`A function has discontinuities at x=A,B,C,D, where A<B<C<D.
-The function is f(x)=\frac{1}{(x+2)(2x-1)(2x-3)(x-2)}.
-Compute B(D-A)^C.`,
+   question: String.raw`A function has discontinuities at \(x=A,B,C,D\), where A<B<C<D.
+The function is \(f(x)=\frac{1}{(x+2)(2x-1)(2x-3)(x-2)}\).
+Compute \(B(D-A)^C\).`,
    choices: ["2", "4", "8", "16", "NOTA"],
    answer: "B",
-   solution: String.raw`Given A = -2, B = \frac{1}{2}, C = \frac{3}{2}, D = 2.
-D - A = 2 - (-2) = 4.
-B(D-A)^C = \frac{1}{2} \cdot 4^{3/2} = \frac{1}{2} \cdot 8 = 4.
-Answer: \boxed{B}.`,
+   solution: String.raw`Given \(A =\) -2, \(B = \frac{1}{2}, C = \frac{3}{2}, D = 2\).
+\(D - A = 2 -\) (-2) \(= 4\).
+\(B(D-A)^C = \frac{1}{2} \cdot 4^{3/2} = \frac{1}{2} \cdot 8 = 4\).
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -4024,14 +4024,14 @@ Answer: \boxed{B}.`,
    topic: "Complex Numbers",
    difficulty: 3,
    methods: ["Real and Imaginary Parts"],
-   question: String.raw`A complex sequence is defined by a_n=(n+i)^2=(b_n+c_n i)^2, where b_n and c_n are positive real sequences.
-The first few terms of \{a_n\} are 0+2i,\ 3+4i,\ 8+6i,\ 15+8i, \ldots
-Find b_{10} + c_{10}.`,
+   question: String.raw`A complex sequence is defined by \(a_n=(n+i)^2=(b_n+c_n i)^2\), where \(b_n\) and \(c_n\) are positive real sequences.
+The first few terms of \(\{a_n\}\) are 0+2i, 3+4i, 8+6i, 15+8i, \(\ldots\)
+Find \(b_{10} + c_{10}\).`,
    choices: ["11", "12", "13", "14", "NOTA"],
    answer: "A",
-   solution: String.raw`Because (b_n+c_ni)^2=(n+i)^2, we have b_n+c_ni=\pm(n+i). Since b_n and c_n are positive, b_n=n and c_n=1.
-b_{10} + c_{10} = 10 + 1 = 11.
-Answer: \boxed{A}.`,
+   solution: String.raw`Because \((b_n+c_ni)^2=(n+i)^2\), we have \(b_n+c_ni=\pm(n+i)\). Since \(b_n\) and \(c_n\) are positive, \(b_n=n\) and \(c_n=1\).
+\(b_{10} + c_{10} = 10 + 1 = 11\).
+Answer: \(\boxed{A}\).`,
 },
 
 
@@ -4042,12 +4042,12 @@ Answer: \boxed{A}.`,
    topic: "Limits",
    difficulty: 3,
    methods: ["Conjugates"],
-   question: String.raw`Evaluate \displaystyle\lim_{x \to \pi/4} \frac{1 - \sqrt{\tan x}}{1 - \tan x}.`,
-   choices: [String.raw`\frac{1}{2}`, String.raw`\frac{\sqrt{2}}{2}`, "1", String.raw`\frac{3}{2}`, "NOTA"],
+   question: String.raw`Evaluate \(\displaystyle\lim_{x \to \pi/4} \frac{1 - \sqrt{\tan x}}{1 - \tan x}\).`,
+   choices: [String.raw`\(\frac{1}{2}\)`, String.raw`\(\frac{\sqrt{2}}{2}\)`, "1", String.raw`\(\frac{3}{2}\)`, "NOTA"],
    answer: "A",
-   solution: String.raw`Let u = \tan x, so as x \to \pi/4, u \to 1.
-\lim_{u \to 1} \frac{1 - \sqrt{u}}{1 - u} = \lim_{u \to 1} \frac{1 - \sqrt{u}}{(1-\sqrt{u})(1+\sqrt{u})} = \lim_{u \to 1} \frac{1}{1 + \sqrt{u}} = \frac{1}{2}.
-Answer: \boxed{A}.`,
+   solution: String.raw`Let \(u = \tan x\), so as \(x \to \pi/4, u \to 1\).
+\(\lim_{u \to 1} \frac{1 - \sqrt{u}}{1 - u} = \lim_{u \to 1} \frac{1 - \sqrt{u}}{(1-\sqrt{u})(1+\sqrt{u})} = \lim_{u \to 1} \frac{1}{1 + \sqrt{u}} = \frac{1}{2}\).
+Answer: \(\boxed{A}\).`,
 },
 
 
@@ -4058,13 +4058,13 @@ Answer: \boxed{A}.`,
    topic: "Matrices",
    difficulty: 1,
    methods: ["Matrix Inverse"],
-   question: String.raw`Find the inverse of \begin{bmatrix}5&-3\\-3&2\end{bmatrix}.`,
-   choices: [String.raw`\begin{bmatrix}2&-3\\-3&5\end{bmatrix}`, String.raw`\begin{bmatrix}-2&3\\3&-5\end{bmatrix}`, String.raw`\begin{bmatrix}2&3\\3&5\end{bmatrix}`, String.raw`\begin{bmatrix}5&3\\3&2\end{bmatrix}`, "NOTA"],
+   question: String.raw`Find the inverse of \(\begin{bmatrix}5&-3\\-3&2\end{bmatrix}\).`,
+   choices: [String.raw`\(\begin{bmatrix}2&-3\\-3&5\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}-2&3\\3&-5\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}2&3\\3&5\end{bmatrix}\)`, String.raw`\(\begin{bmatrix}5&3\\3&2\end{bmatrix}\)`, "NOTA"],
    answer: "C",
-   solution: String.raw`For M = \begin{bmatrix}a&b\\c&d\end{bmatrix}, M^{-1} = \frac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}.
-\det(M) = (5)(2) - (-3)(-3) = 10 - 9 = 1.
-M^{-1} = \begin{bmatrix}2&3\\3&5\end{bmatrix}.
-Answer: \boxed{C}.`,
+   solution: String.raw`For \(M = \begin{bmatrix}a&b\\c&d\end{bmatrix}, M^{-1} = \frac{1}{ad-bc}\begin{bmatrix}d&-b\\-c&a\end{bmatrix}\).
+\(\det(M) =\) (5)(2) - (-3)(-3) \(= 10 - 9 = 1\).
+\(M^{-1} = \begin{bmatrix}2&3\\3&5\end{bmatrix}\).
+Answer: \(\boxed{C}\).`,
 },
 
 
@@ -4075,14 +4075,14 @@ Answer: \boxed{C}.`,
    topic: "Functions",
    difficulty: 2,
    methods: [],
-   question: String.raw`Let f(x) = \sqrt{e - |\pi - x|}. If the domain of f is [A, B], find B - A.`,
-   choices: [String.raw`e`, String.raw`\pi`, String.raw`e + \pi`, String.raw`2e`, "NOTA"],
+   question: String.raw`Let f(x) \(= \sqrt{e - |\pi - x|}\). If the domain of f is [A, B], find B - A.`,
+   choices: [String.raw`e`, String.raw`\(\pi\)`, String.raw`\(e + \pi\)`, String.raw`2e`, "NOTA"],
    answer: "D",
-   solution: String.raw`We need e - |\pi - x| \ge 0, i.e., |\pi - x| \le e.
--e \le \pi - x \le e \Rightarrow \pi - e \le x \le \pi + e.
-So A = \pi - e and B = \pi + e.
-B - A = (\pi + e) - (\pi - e) = 2e.
-Answer: \boxed{D}.`,
+   solution: String.raw`We need \(e - |\pi -\) x| \(\ge 0\), i.e., \(|\pi -\) x| \(\le e\).
+-e \(\le \pi - x \le e \Rightarrow \pi - e \le x \le \pi + e\).
+So \(A = \pi - e\) and \(B = \pi + e\).
+\(B - A = (\pi + e) - (\pi - e) = 2e\).
+Answer: \(\boxed{D}\).`,
 },
 
 
@@ -4093,13 +4093,13 @@ Answer: \boxed{D}.`,
    topic: "Analytic Geometry",
    difficulty: 2,
    methods: ["Optimization"],
-   question: String.raw`A rectangle has one corner at the origin and the opposite corner on the line y = -2x + 4 (with x > 0, y > 0). Find the maximum possible area of the rectangle.`,
+   question: String.raw`A rectangle has one corner at the origin and the opposite corner on the line \(y =\) -2x + 4 (with x > 0, y > 0). Find the maximum possible area of the rectangle.`,
    choices: ["1", "2", "3", "4", "NOTA"],
    answer: "B",
-   solution: String.raw`Area = xy = x(-2x + 4) = -2x^2 + 4x.
-This is a downward-opening parabola; maximum at x = -\frac{4}{2(-2)} = 1.
-Maximum area = -2(1)^2 + 4(1) = 2.
-Answer: \boxed{B}.`,
+   solution: String.raw`Area \(= xy =\) x(-2x \(+ 4) = -2x^2 + 4x\).
+This is a downward-opening parabola; maximum at \(x = -\frac{4}{2(-2)} = 1\).
+Maximum area \(= -2(1)^2 +\) 4(1) \(= 2\).
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -4110,14 +4110,14 @@ Answer: \boxed{B}.`,
    topic: "Optimization",
    difficulty: 2,
    methods: ["AM-GM"],
-   question: String.raw`Find the maximum value of f(x) = \frac{1}{e^x + e^{-x}}.`,
-   choices: ["1", String.raw`\frac{1}{2}`, String.raw`\frac{1}{e}`, String.raw`\frac{e}{2}`, "NOTA"],
+   question: String.raw`Find the maximum value of f(x) \(= \frac{1}{e^x + e^{-x}}\).`,
+   choices: ["1", String.raw`\(\frac{1}{2}\)`, String.raw`\(\frac{1}{e}\)`, String.raw`\(\frac{e}{2}\)`, "NOTA"],
    answer: "B",
-   solution: String.raw`By AM-GM inequality: e^x + e^{-x} \ge 2\sqrt{e^x \cdot e^{-x}} = 2.
-So f(x) = \frac{1}{e^x + e^{-x}} \le \frac{1}{2}.
-Equality holds when e^x = e^{-x}, i.e., x = 0.
-Maximum value is \frac{1}{2}.
-Answer: \boxed{B}.`,
+   solution: String.raw`By AM-GM inequality: \(e^x + e^{-x} \ge 2\sqrt{e^x \cdot e^{-x}} = 2\).
+So f(x) \(= \frac{1}{e^x + e^{-x}} \le \frac{1}{2}\).
+Equality holds when \(e^x = e^{-x}\), i.e., \(x = 0\).
+Maximum value is \(\frac{1}{2}\).
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -4131,9 +4131,9 @@ Answer: \boxed{B}.`,
    question: String.raw`A pizza restaurant offers 3 sizes and 5 toppings. A customer may choose at most 3 toppings. How many distinct pizzas can be ordered?`,
    choices: ["45", "60", "75", "78", "NOTA"],
    answer: "D",
-   solution: String.raw`Number of topping combinations: \binom{5}{0} + \binom{5}{1} + \binom{5}{2} + \binom{5}{3} = 1 + 5 + 10 + 10 = 26.
-With 3 sizes: total = 3 \times 26 = 78.
-Answer: \boxed{D}.`,
+   solution: String.raw`Number of topping combinations: \(\binom{5}{0} + \binom{5}{1} + \binom{5}{2} + \binom{5}{3} = 1 + 5 + 10 + 10 = 26\).
+With 3 sizes: total \(= 3 \times 26 = 78\).
+Answer: \(\boxed{D}\).`,
 },
 
 
@@ -4144,13 +4144,13 @@ Answer: \boxed{D}.`,
    topic: "Polar",
    difficulty: 3,
    methods: [],
-   question: String.raw`Which polar curve, when converted to parametric form x = x(\theta), y = y(\theta), gives x = \sin\theta and y = \sec\theta - \cos\theta?`,
-   choices: [String.raw`r = \sin\theta`, String.raw`r = \cos\theta`, String.raw`r = \cot\theta`, String.raw`r = \tan\theta`, "NOTA"],
+   question: String.raw`Which polar curve, when converted to parametric form \(x = x(\theta), y = y(\theta)\), gives \(x = \sin\theta\) and \(y = \sec\theta - \cos\theta\)?`,
+   choices: [String.raw`\(r = \sin\theta\)`, String.raw`\(r = \cos\theta\)`, String.raw`\(r = \cot\theta\)`, String.raw`\(r = \tan\theta\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`x = \sin\theta means r\cos\theta = \sin\theta, so x = r\cos\theta = \sin\theta... let's verify with r = \tan\theta.
-If r = \tan\theta = \frac{\sin\theta}{\cos\theta}, then x = r\cos\theta = \sin\theta \checkmark.
-y = r\sin\theta = \frac{\sin^2\theta}{\cos\theta} = \frac{1-\cos^2\theta}{\cos\theta} = \sec\theta - \cos\theta \checkmark.
-Answer: \boxed{D}.`,
+   solution: String.raw`\(x = \sin\theta\) means \(r\cos\theta = \sin\theta\), so \(x = r\cos\theta = \sin\theta\)... let's verify with \(r = \tan\theta\).
+If \(r = \tan\theta = \frac{\sin\theta}{\cos\theta}\), then \(x = r\cos\theta = \sin\theta \checkmark\).
+\(y = r\sin\theta = \frac{\sin^2\theta}{\cos\theta} = \frac{1-\cos^2\theta}{\cos\theta} = \sec\theta - \cos\theta \checkmark\).
+Answer: \(\boxed{D}\).`,
 },
 
 
@@ -4161,15 +4161,15 @@ Answer: \boxed{D}.`,
    topic: "Functions",
    difficulty: 4,
    methods: ["Asymptotes"],
-   question: String.raw`How many linear asymptotes (horizontal and vertical) does y = \frac{e^x}{1 - e^x} + \frac{1}{x^2 - x - 6} have?`,
+   question: String.raw`How many linear asymptotes (horizontal and vertical) does \(y = \frac{e^x}{1 - e^x} + \frac{1}{x^2 - x - 6}\) have?`,
    choices: ["1", "2", "3", "4", "NOTA"],
    answer: "E",
-   solution: String.raw`First term \frac{e^x}{1-e^x}: vertical asymptote at e^x = 1 \Rightarrow x = 0.
-As x \to +\infty: \frac{e^x}{1-e^x} \to -1 (horizontal asymptote y = -1).
-As x \to -\infty: \frac{e^x}{1-e^x} \to 0 (horizontal asymptote y = 0).
-Second term \frac{1}{x^2-x-6} = \frac{1}{(x-3)(x+2)}: vertical asymptotes at x = 3 and x = -2.
-Total: 3 vertical asymptotes (x = 0, 3, -2) and 2 horizontal (y = -1, 0) = 5 total
-Answer: \boxed{E}.`,
+   solution: String.raw`First term \(\frac{e^x}{1-e^x}\): vertical asymptote at \(e^x = 1 \Rightarrow x = 0\).
+As \(x \to +\infty\): \(\frac{e^x}{1-e^x} \to\) -1 (horizontal asymptote \(y =\) -1).
+As \(x \to -\infty\): \(\frac{e^x}{1-e^x} \to 0\) (horizontal asymptote \(y = 0)\).
+Second term \(\frac{1}{x^2-x-6} = \frac{1}{(x-3)(x+2)}\): vertical asymptotes at \(x = 3\) and \(x =\) -2.
+Total: 3 vertical asymptotes \((x = 0, 3\), -2) and 2 horizontal \((y =\) -1, \(0) = 5\) total
+Answer: \(\boxed{E}\).`,
 },
 
 
@@ -4180,14 +4180,14 @@ Answer: \boxed{E}.`,
    topic: "Complex Numbers",
    difficulty: 2,
    methods: ["De Moivre's Theorem"],
-   question: String.raw`Compute (1 + i)^{2020}.`,
-   choices: [String.raw`2^{1010}`, String.raw`i \cdot 2^{1010}`, String.raw`-i \cdot 2^{1010}`, String.raw`-(2^{1010})`, "NOTA"],
+   question: String.raw`Compute \((1 + i)^{2020}\).`,
+   choices: [String.raw`\(2^{1010}\)`, String.raw`\(i \cdot 2^{1010}\)`, String.raw`\(-i \cdot 2^{1010}\)`, String.raw`\(-(2^{1010})\)`, "NOTA"],
    answer: "D",
-   solution: String.raw`(1+i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i.
-(1+i)^{2020} = [(1+i)^2]^{1010} = (2i)^{1010} = 2^{1010} \cdot i^{1010}.
-i^{1010} = i^{4 \cdot 252 + 2} = (i^4)^{252} \cdot i^2 = 1 \cdot (-1) = -1.
-(1+i)^{2020} = 2^{1010} \cdot (-1) = -(2^{1010}).
-Answer: \boxed{D}.`,
+   solution: String.raw`\((1+i)^2 = 1 + 2i + i^2 = 1 + 2i - 1 = 2i\).
+\((1+i)^{2020} = [(1+i)^2]^{1010} = (2i)^{1010} = 2^{1010} \cdot i^{1010}\).
+\(i^{1010} = i^{4 \cdot 252 + 2} = (i^4)^{252} \cdot i^2 = 1 \cdot\) (-1) \(=\) -1.
+\((1+i)^{2020} = 2^{1010} \cdot\) (-1) \(= -(2^{1010})\).
+Answer: \(\boxed{D}\).`,
 },
 
 
@@ -4198,13 +4198,13 @@ Answer: \boxed{D}.`,
    topic: "Sequences and Series",
    difficulty: 1,
    methods: [],
-   question: String.raw`A government applies successive taxes to the original 10 Rupees at rates of 10\%, 5\%, 2.5\%, and so on indefinitely, with each rate half the preceding rate. Find the total tax collected.`,
+   question: String.raw`A government applies successive taxes to the original 10 Rupees at rates of 10%, 5%, 2.5%, and so on indefinitely, with each rate half the preceding rate. Find the total tax collected.`,
    choices: ["1", "2", "3", "4", "NOTA"],
    answer: "B",
    solution: String.raw`
-Total rate: 10\% + 5\% + 2.5\% + \cdots = \frac{10\%}{1 - \frac{1}{2}} = 20\%.
-Total tax = 10 \times 20\% = 2 Rupees.
-Answer: \boxed{B}.`,
+Total rate: \(10\%+5\%+2.5\%+\cdots=\frac{10\%}{1-\frac12}=20\%\).
+Total tax: \(10\times20\%=2\) Rupees.
+Answer: \(\boxed{B}\).`,
 },
 
 
@@ -4215,12 +4215,12 @@ Answer: \boxed{B}.`,
    topic: "Conic Sections",
    difficulty: 1,
    methods: [],
-   question: String.raw`Find the area enclosed by x^2 + y^2 = 1.`,
-   choices: ["1", String.raw`2\pi`, String.raw`\pi`, "2", "NOTA"],
+   question: String.raw`Find the area enclosed by \(x^2 + y^2 = 1\).`,
+   choices: ["1", String.raw`\(2\pi\)`, String.raw`\(\pi\)`, "2", "NOTA"],
    answer: "C",
-   solution: String.raw`x^2 + y^2 = 1 is the unit circle with radius r = 1.
-Area = \pi r^2 = \pi(1)^2 = \pi.
-Answer: \boxed{C}.`,
+   solution: String.raw`\(x^2 + y^2 = 1\) is the unit circle with radius \(r = 1\).
+Area \(= \pi r^2 = \pi(1)^2 = \pi\).
+Answer: \(\boxed{C}\).`,
 },
 
 {

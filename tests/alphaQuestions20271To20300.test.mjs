@@ -67,17 +67,21 @@ test("high-risk third-set answers agree with independent calculations", () => {
 
 test("answer annotations match the stored answer letters", () => {
   for (const question of questions) {
-    const annotation = [...question.solution.matchAll(/Answer:\s*\\boxed\{([A-E])\}/g)].at(-1);
+    const annotation = [...question.solution.matchAll(/Answer:\s*\\\(\\boxed\{([A-E])\}\\\)/g)].at(-1);
     assert.equal(annotation?.[1], question.answer, "Alpha " + question.number);
   }
 });
 
 test("all third-set Alpha formulas compile with KaTeX", () => {
-  const mathCommands = /\\(?:frac|sqrt|sum|det|begin|vec|sin|cos|tan|ln|pi|lambda|operatorname|boxed|text|triangle|overline|cdot|pm|ge|le|in|perp|parallel|displaystyle|sinh|cosh|binom|lfloor)/;
+  const mathDelimiter = /\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/g;
   for (const question of questions) {
     for (const value of [question.question, ...question.choices, question.solution]) {
-      if (mathCommands.test(value)) {
-        assert.doesNotThrow(() => katex.renderToString(value, { throwOnError: true }), "Alpha " + question.number);
+      assert.doesNotMatch(value.replace(mathDelimiter, ""), /\\/, "Alpha " + question.number);
+      for (const match of value.matchAll(mathDelimiter)) {
+        assert.doesNotThrow(() => katex.renderToString(match[1] ?? match[2], {
+          displayMode: match[1] !== undefined,
+          throwOnError: true,
+        }), "Alpha " + question.number);
       }
     }
   }
