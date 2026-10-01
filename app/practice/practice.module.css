@@ -1,33 +1,53 @@
 .page {
   min-height: calc(100vh - 4rem);
-  padding: 72px 24px 96px;
-  color: #12233a;
-  background: #e2edf8;
+  padding: 56px 24px 96px;
+  color: #172033;
+  background:
+    radial-gradient(ellipse at 10% 0%, #e4edff, transparent 60%),
+    linear-gradient(135deg, #f1f5f9, #e7edf5);
 }
 
 .content {
   width: 100%;
-  max-width: 720px;
+  max-width: 860px;
   margin: 0 auto;
 }
 
 .header {
-  margin-bottom: 40px;
+  margin-bottom: 28px;
+  padding: 40px 32px;
+  border: 1px solid #365f9a;
+  border-radius: 24px;
+  color: #ffffff;
+  background:
+    radial-gradient(ellipse at top right, #4c86f555, transparent 60%),
+    linear-gradient(120deg, #234d98, #142640);
+  box-shadow: 0 22px 45px -30px #15326099;
   text-align: center;
+}
+
+.header::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin: 24px auto 0;
+  border-radius: 999px;
+  background: #fbbf24;
 }
 
 .header h1 {
   max-width: 620px;
   margin: 0 auto;
   font-size: 44px;
-  font-weight: 750;
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: 0;
+  letter-spacing: -0.025em;
 }
 
 .header p {
   margin: 16px 0 0;
-  color: #5d6e82;
+  color: #dbeafe;
   font-size: 18px;
   line-height: 1.5;
 }
@@ -44,28 +64,23 @@
   gap: 20px;
   min-height: 126px;
   padding: 24px 26px;
-  border: 1px solid #bfd0e1;
-  border-radius: 8px;
-  color: #12233a;
-  background: #ffffff;
-  transition: border-color 150ms ease, transform 150ms ease;
+  border: 1px solid #d7e2f1;
+  border-radius: 24px;
+  color: #172033;
+  background: linear-gradient(145deg, #ffffff 55%, #f3f7ff);
+  box-shadow: 0 4px 8px -6px #14234124, 0 14px 35px -24px #14234145;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .option:hover {
+  border-color: #a5bce8;
+  box-shadow: 0 10px 25px -15px #1e40af55;
   transform: translateY(-2px);
 }
 
 .option:focus-visible {
-  outline: 2px solid #205fa8;
-  outline-offset: 3px;
-}
-
-.questionBank:hover {
-  border-color: #205fa8;
-}
-
-.dailyTrainer:hover {
-  border-color: #b84c2a;
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
 }
 
 .icon {
@@ -73,17 +88,20 @@
   place-items: center;
   width: 56px;
   height: 56px;
-  border-radius: 8px;
+  border: 1px solid;
+  border-radius: 16px;
 }
 
 .questionBank .icon {
-  color: #205fa8;
-  background: #d9e9fa;
+  border-color: #dbe6ff;
+  color: #2563eb;
+  background: #edf3ff;
 }
 
 .dailyTrainer .icon {
-  color: #b84c2a;
-  background: #f9e3da;
+  border-color: #fde68a;
+  color: #a16207;
+  background: #fffbeb;
 }
 
 .copy {
@@ -103,27 +121,29 @@
 
 .copy > span {
   margin-top: 7px;
-  color: #5d6e82;
+  color: #506580;
   font-size: 15px;
   line-height: 1.5;
 }
 
 .arrow {
-  color: #5d6e82;
-  transition: transform 150ms ease;
+  color: #506580;
+  transition: color 160ms ease, transform 160ms ease;
 }
 
 .option:hover .arrow {
+  color: #2563eb;
   transform: translateX(2px);
 }
 
 @media (max-width: 640px) {
   .page {
-    padding: 56px 18px 80px;
+    padding: 32px 18px 64px;
   }
 
   .header {
-    margin-bottom: 34px;
+    margin-bottom: 24px;
+    padding: 32px 20px;
   }
 
   .header h1 {
@@ -175,5 +195,17 @@
   .icon {
     width: 46px;
     height: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option,
+  .arrow {
+    transition: none;
+  }
+
+  .option:hover,
+  .option:hover .arrow {
+    transform: none;
   }
 }
