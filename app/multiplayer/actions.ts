@@ -78,6 +78,10 @@ export async function spectatePublicRoomAction(formData: FormData) {
 
 export async function leaveMultiplayerRoomAction(formData: FormData) {
   const roomId = value(formData, "roomId");
-  try { await leaveMultiplayerRoom(roomId); } catch (error) { errorRedirect(error, `/multiplayer/room/${roomId}`); }
+  const connectionId = value(formData, "connectionId");
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(connectionId)) {
+    errorRedirect(new Error("Reload the lobby before leaving."), `/multiplayer/room/${roomId}`);
+  }
+  try { await leaveMultiplayerRoom(roomId, connectionId); } catch (error) { errorRedirect(error, `/multiplayer/room/${roomId}`); }
   redirect("/multiplayer");
 }

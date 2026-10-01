@@ -3,11 +3,12 @@ import { readFile } from "node:fs/promises";
 import { runInNewContext } from "node:vm";
 import test from "node:test";
 import ts from "typescript";
+import { withRequestTimeout } from "../lib/requestTimeout.ts";
 
 const source = await readFile(new URL("../lib/services/practiceAttemptService.ts", import.meta.url), "utf8");
 const { outputText } = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } });
 function fixture(initialOwner = "user-a") {
-  const state = { owner: initialOwner, sessionError: false, startsLost: 0, resultsLost: 0, startStatus: 200, resultStatus: 200, calls: [], uuid: 0, guestSaves: 0 };
+  const state = { owner: initialOwner, sessionError: false, sessionStalled: false, startsStalled: 0, resultsStalled: 0, bodiesStalled: 0, startsLost: 0, resultsLost: 0, startStatus: 200, resultStatus: 200, calls: [], uuid: 0, guestSaves: 0 };
   const result = { progress: { attempts: 1, correct: 1, times: [7], lastResult: "correct" }, levelChange: { level: 1, progress: 1, leveledUp: false }, isCorrect: true, tutorRevealToken: "fixture-token" };
   const exports = {};
   runInNewContext(`(function(exports,require){${outputText}\n})`, {
@@ -16,17 +17,21 @@ function fixture(initialOwner = "user-a") {
       const body = JSON.parse(init.body);
       state.calls.push({ url, body });
       if (url.endsWith("/attempt")) {
+        if (state.startsStalled-- > 0) return new Promise(() => {});
         if (state.startsLost-- > 0) throw new Error("lost creation response");
         if (state.startStatus !== 200) return Response.json({ error: "fixture rejected attempt" }, { status: state.startStatus });
         return Response.json({ attemptId: `server-${body.requestId}` });
       }
+      if (state.resultsStalled-- > 0) return new Promise(() => {});
+      if (state.bodiesStalled-- > 0) return { ok: true, json: () => new Promise(() => {}) };
       if (state.resultsLost-- > 0) throw new Error("lost committed result response");
       if (state.resultStatus !== 200) return Response.json({ error: "fixture rejected result" }, { status: state.resultStatus });
       return Response.json(result);
     },
   })(exports, (name) => {
+    if (name === "@/lib/requestTimeout") return { withRequestTimeout: (operation, options) => withRequestTimeout(operation, { ...options, timeoutMs: 20 }) };
     assert.equal(name, "@/lib/supabase/client");
-    return { createClient: () => ({ auth: { getSession: async () => ({ data: { session: state.owner ? { user: { id: state.owner } } : null }, error: state.sessionError ? {} : null }) } }) };
+    return { createClient: () => ({ auth: { getSession: async () => state.sessionStalled ? new Promise(() => {}) : ({ data: { session: state.owner ? { user: { id: state.owner } } : null }, error: state.sessionError ? {} : null }) } }) };
   });
   const guest = async () => { state.guestSaves++; return { ...result, tutorRevealToken: null }; };
   return { state, result, guest, create: exports.createPracticeAttempt };
@@ -39,6 +44,39 @@ test("display preparation and simultaneous Strict Mode preparation share one ser
   await Promise.all([attempt.prepare(), attempt.prepare(), attempt.prepare()]);
   assert.equal(state.calls.length, 1);
   assert.deepEqual(state.calls[0].body, { questionId: 42, trainer: true, requestId: "request-1" });
+});
+
+test("stalled creation releases its in-flight promise and retries the same request ID", async () => {
+  const { create, state } = fixture();
+  const attempt = create(42, false);
+  state.startsStalled = 1;
+  await assert.rejects(attempt.prepare(), /took too long/);
+  await attempt.prepare();
+  assert.deepEqual(state.calls[0], state.calls[1]);
+});
+
+test("stalled save or response body unlocks Retry save without changing the accepted answer", async () => {
+  for (const stalled of ["resultsStalled", "bodiesStalled"]) {
+    const { create, state, guest } = fixture();
+    const attempt = create(42, true);
+    state[stalled] = 1;
+    await assert.rejects(attempt.submit("C", 7, guest), /Retry save/);
+    await assert.rejects(attempt.submit("A", 7, guest), /original answer/);
+    await attempt.submit("C", 7, guest);
+    const writes = state.calls.filter(({ url }) => url.endsWith("/result"));
+    assert.deepEqual(writes[0], writes[1]);
+  }
+});
+
+test("a stuck session check times out before a practice write", async () => {
+  const { create, state, guest } = fixture();
+  const attempt = create(42, true);
+  state.sessionStalled = true;
+  await assert.rejects(attempt.submit("C", 7, guest), /check your account/);
+  assert.equal(state.calls.length, 0);
+  state.sessionStalled = false;
+  await attempt.submit("C", 7, guest);
+  assert.equal(state.calls.length, 2);
 });
 
 test("a lost creation response retries the original request ID, not a new attempt", async () => {

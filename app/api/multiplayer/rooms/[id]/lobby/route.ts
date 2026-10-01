@@ -1,27 +1,47 @@
 import { NextResponse } from "next/server";
 
-import { beginPublicRoomIfReady, getPrivateLobby, updatePrivateRoomPresence } from "@/lib/services/multiplayerService";
-import { isTrustedMutationRequest } from "@/lib/security/request";
+import { changeMultiplayerLobbyPresence, confirmMultiplayerLeave, getPrivateLobby } from "@/lib/services/multiplayerService";
+import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 
 interface LobbyRouteContext {
   params: Promise<{ id: string }>;
 }
 
+const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const validUuid = (value: unknown): value is string => typeof value === "string" && uuid.test(value);
+const json = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
+function failure(error: unknown) {
+  return error instanceof RequestBodyError ? json({ error: error.message }, error.status)
+    : json({ error: "Unable to update the room. Please retry." }, 503);
+}
+
 export async function GET(_request: Request, { params }: LobbyRouteContext) {
-  const { id } = await params;
-  let lobby = await getPrivateLobby(id);
-  if (!lobby) return NextResponse.json({ error: "Room not found." }, { status: 404 });
-  if (lobby.room.visibility === "public") {
-    await beginPublicRoomIfReady(id);
-    lobby = await getPrivateLobby(id);
-    if (!lobby) return NextResponse.json({ error: "Room not found." }, { status: 404 });
-  }
-  return NextResponse.json(lobby, { headers: { "Cache-Control": "no-store" } });
+  try {
+    const { id } = await params;
+    if (!validUuid(id)) return json({ error: "Invalid room." }, 400);
+    const lobby = await getPrivateLobby(id);
+    return lobby ? json(lobby) : json({ error: "Room not found." }, 404);
+  } catch (error) { return failure(error); }
+}
+
+export async function POST(request: Request, { params }: LobbyRouteContext) {
+  if (!isTrustedMutationRequest(request)) return json({ error: "Invalid request origin." }, 403);
+  try {
+    const { id } = await params;
+    const { action, tabId, connectionId, generation, playerId } = await readJsonBody<Record<string, unknown>>(request, 1024);
+    if (!validUuid(id) || !validUuid(tabId) || !validUuid(connectionId) || !validUuid(playerId) ||
+      typeof generation !== "number" || !Number.isSafeInteger(generation) || generation < 1 ||
+      (action !== "connect" && action !== "heartbeat" && action !== "disconnect")) return json({ error: "Invalid presence request." }, 400);
+    return json(await changeMultiplayerLobbyPresence(id, action, tabId, connectionId, generation, playerId));
+  } catch (error) { return failure(error); }
 }
 
 export async function DELETE(request: Request, { params }: LobbyRouteContext) {
-  if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
-  const { id } = await params;
-  const updated = await updatePrivateRoomPresence(id, false);
-  return new NextResponse(null, { status: updated ? 204 : 404 });
+  if (!isTrustedMutationRequest(request)) return json({ error: "Invalid request origin." }, 403);
+  try {
+    const { id } = await params;
+    const { connectionId } = await readJsonBody<Record<string, unknown>>(request, 1024);
+    if (!validUuid(id) || !validUuid(connectionId)) return json({ error: "Invalid leave request." }, 400);
+    return json({ status: await confirmMultiplayerLeave(id, connectionId) });
+  } catch (error) { return failure(error); }
 }

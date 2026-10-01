@@ -5,7 +5,6 @@ import { cookies } from "next/headers";
 
 import { questions } from "@/data/questions";
 import { RequestBodyError } from "@/lib/security/request";
-import { QUESTION_PREPARATION_TIMEOUT_MS } from "@/lib/multiplayerTiming";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -33,6 +32,12 @@ const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
 const ALLOWED_TIMES = new Set([30, 60, 90, 120]);
+// Six missed five-second heartbeats tolerate brief school-network interruptions.
+// Membership survives expiry; only lobby presence expires, never match progress.
+const LOBBY_PRESENCE_TIMEOUT_MS = 30_000;
+function lobbyPresenceCutoff() {
+  return new Date(Date.now() - LOBBY_PRESENCE_TIMEOUT_MS).toISOString();
+}
 
 interface RoomRow {
   id: string;
@@ -164,6 +169,67 @@ async function currentUser() {
   return user;
 }
 
+type LobbyIdentity = { p_user_id: string | null; p_guest_hash: string | null };
+type LobbyPlayerRow = PlayerRow & { display_name: string; rp: number };
+type LobbySnapshot = { room: RoomRow; currentPlayer: LobbyPlayerRow; players: LobbyPlayerRow[] };
+export type LobbyPresenceAction = "connect" | "heartbeat" | "disconnect";
+export type LobbyPresenceResult = {
+  status: "connected" | "disconnected" | "left" | "started" | "conflict" | "full";
+  lobby: MultiplayerLobbyState | null;
+};
+
+async function lobbyIdentity(roomId: string): Promise<LobbyIdentity | null> {
+  const { data: { user }, error } = await (await createClient()).auth.getUser();
+  if (error && error.name !== "AuthSessionMissingError") throw new Error("Unable to verify your room membership. Please retry.");
+  if (user) return { p_user_id: user.id, p_guest_hash: null };
+  const token = (await cookies()).get(cookieName(roomId))?.value;
+  return token ? { p_user_id: null, p_guest_hash: hashToken(token) } : null;
+}
+
+function mapLobbySnapshot(snapshot: LobbySnapshot | null): MultiplayerLobbyState | null {
+  if (!snapshot?.currentPlayer) return null;
+  const map = (row: LobbyPlayerRow) => ({ ...mapPlayer(row, row.display_name),
+    rp: row.user_id ? row.rp : null, rankTier: row.user_id ? tierForRp(row.rp) : null });
+  return { room: mapRoom(snapshot.room, snapshot.players.length),
+    currentPlayer: map(snapshot.currentPlayer), players: snapshot.players.map(map) };
+}
+
+async function readLobby(roomId: string, identity: LobbyIdentity) {
+  const { data, error } = await createAdminClient().rpc("read_multiplayer_lobby", { p_room_id: roomId, ...identity });
+  if (error) throw new Error("Unable to load the lobby right now.");
+  return mapLobbySnapshot(data as LobbySnapshot | null);
+}
+
+export async function changeMultiplayerLobbyPresence(roomId: string, action: LobbyPresenceAction, tabId: string, connectionId: string, generation: number, playerId: string): Promise<LobbyPresenceResult> {
+  const identity = await lobbyIdentity(roomId);
+  if (!identity) return { status: "left", lobby: null };
+  const { data, error } = await createAdminClient().rpc("change_multiplayer_lobby_presence", {
+    p_room_id: roomId, ...identity, p_action: action, p_tab_id: tabId, p_connection_id: connectionId, p_generation: generation, p_player_id: playerId,
+  });
+  if (error || !data) throw new Error("Unable to update your lobby connection. Please try again.");
+  let lobby = mapLobbySnapshot(data.lobby ?? null);
+  // Only a due heartbeat/start boundary attempts a transition; live GETs stay read-only.
+  if (lobby?.room.visibility === "public" && lobby.room.status === "countdown" &&
+    ((lobby.room.countdownEndsAt ?? Infinity) <= Date.now() || lobby.players.length >= lobby.room.capacity)) {
+    await prepareRoomMatch(lobby, "countdown", identity);
+    lobby = await readLobby(roomId, identity);
+  }
+  return { status: data.status as LobbyPresenceResult["status"], lobby };
+}
+
+export async function confirmMultiplayerLeave(roomId: string, connectionId: string): Promise<"left" | "started" | "conflict"> {
+  const identity = await lobbyIdentity(roomId);
+  if (!identity) throw new Error("Sign in or rejoin to verify your room membership.");
+  const { data, error } = await createAdminClient().rpc("leave_multiplayer_lobby", {
+    p_room_id: roomId, ...identity, p_connection_id: connectionId,
+  });
+  if (error || !["left", "started", "conflict"].includes(data)) throw new Error("Unable to confirm you left. Please retry.");
+  // Keep the now-inert guest cookie until expiry/rejoin. Deleting it in these
+  // response headers would prevent a safe retry if only the response body is
+  // lost. The deleted membership means this token no longer grants room access.
+  return data;
+}
+
 async function addPlayer(room: RoomRow, guestNickname?: string, isHost = false) {
   const admin = createAdminClient();
   const user = await currentUser();
@@ -268,13 +334,8 @@ export async function joinPrivateRoom(input: JoinPrivateRoomInput): Promise<Mult
   }
 
   if (existingPlayerId) {
-    const { error: reconnectError } = await admin
-      .from("multiplayer_players")
-      .update({ connected: true })
-      .eq("room_id", room.id)
-      .eq("id", existingPlayerId)
-      .eq("connected", false);
-    if (reconnectError) throw new Error("Unable to reconnect to the private room right now.");
+    // The lobby's fenced connect RPC owns reactivation, including capacity and
+    // concurrent-start checks. Merely navigating here must not revive an old tab.
     const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
     return mapRoom(room, count ?? 0);
   }
@@ -348,163 +409,30 @@ async function listActiveSpectators(roomId: string): Promise<MultiplayerSpectato
   });
 }
 
-export async function updatePrivateRoomPresence(roomId: string, connected: boolean): Promise<boolean> {
-  const admin = createAdminClient();
-  const user = await currentUser();
-  let query = admin.from("multiplayer_players").update({ connected }).eq("room_id", roomId).is("left_at", null);
-
-  if (user) {
-    query = query.eq("user_id", user.id);
-  } else {
-    const token = (await cookies()).get(cookieName(roomId))?.value;
-    if (!token) return false;
-    query = query.eq("reconnect_token_hash", hashToken(token));
-  }
-
-  const { data, error } = await query.select("id");
-  const updated = !error && (data?.length ?? 0) === 1;
-
-  if (updated && !connected) {
-    const [{ data: room }, { count }] = await Promise.all([
-      admin.from("multiplayer_rooms").select("visibility, status").eq("id", roomId).maybeSingle<{ visibility: "public" | "private"; status: RoomRow["status"] }>(),
-      admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null),
-    ]);
-    if (room?.visibility === "public" && room.status === "countdown" && (count ?? 0) < 2) {
-      await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown");
-    }
-  }
-
-  return updated;
-}
-
 export async function getPrivateLobby(roomId: string): Promise<MultiplayerLobbyState | null> {
-  const access = await getMultiplayerRoom(roomId, false);
-  if (!access) return null;
-
-  const admin = createAdminClient();
-  const waitingForPlayers = access.room.status === "waiting";
-  const inLobby = waitingForPlayers || access.room.status === "countdown";
-  if (inLobby) await updatePrivateRoomPresence(roomId, true);
-  if (waitingForPlayers) {
-    await admin
-      .from("multiplayer_players")
-      .update({ connected: false })
-      .eq("room_id", roomId)
-      .eq("connected", true)
-      .lt("updated_at", new Date(Date.now() - 10_000).toISOString());
-  }
-
-  let playersQuery = admin
-    .from("multiplayer_players")
-    .select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question")
-    .eq("room_id", roomId)
-    .is("left_at", null);
-  if (inLobby) playersQuery = playersQuery.eq("connected", true);
-  const { data, error } = await playersQuery.order("joined_at", { ascending: true });
-  if (error) throw new Error("Unable to load the lobby right now.");
-
-  const rows = (data ?? []) as PlayerRow[];
-  const userIds = rows.flatMap((row) => row.user_id ? [row.user_id] : []);
-  const [namesResponse, ratingsResponse] = userIds.length > 0
-    ? await Promise.all([
-        admin.from("profiles").select("id, username").in("id", userIds),
-        admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", userIds),
-      ])
-    : [{ data: [], error: null }, { data: [], error: null }];
-  if (namesResponse.error || ratingsResponse.error) {
-    throw new Error("Unable to load player profiles.");
-  }
-
-  const names = new Map((namesResponse.data ?? []).map((profile) => [profile.id, profile.username]));
-  const ratings = new Map((ratingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
-  const players = rows.map((row) => {
-    const player = mapPlayer(row, row.user_id ? names.get(row.user_id) ?? "Player" : row.guest_nickname ?? "Guest");
-    if (row.user_id) {
-      const rp = ratings.get(row.user_id) ?? 0;
-      player.rp = rp;
-      player.rankTier = tierForRp(rp);
-    }
-    return player;
-  });
-
-  return { ...access, room: { ...access.room, playerCount: players.length }, players };
+  const identity = await lobbyIdentity(roomId);
+  return identity ? readLobby(roomId, identity) : null;
 }
 
-async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "waiting" | "countdown"): Promise<MultiplayerRoom> {
-  const roomId = lobby.room.id;
-  const admin = createAdminClient();
-  const availableQuestions = questions.filter((question) => question.division === lobby.room.settings.division);
-  if (availableQuestions.length < lobby.room.settings.questionCount) {
-    throw new Error(`There are not enough ${lobby.room.settings.division} questions for this room.`);
-  }
-
-  const randomizedQuestions = [...availableQuestions];
-  for (let index = randomizedQuestions.length - 1; index > 0; index -= 1) {
+async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "waiting" | "countdown", identity?: LobbyIdentity): Promise<MultiplayerRoom> {
+  if (lobby.room.status !== expectedStatus) return lobby.room;
+  const actor = identity ?? await lobbyIdentity(lobby.room.id);
+  if (!actor) throw new Error("Room not found.");
+  const available = questions.filter((question) => question.division === lobby.room.settings.division);
+  if (available.length < lobby.room.settings.questionCount) throw new Error("There are not enough questions for this room.");
+  for (let index = available.length - 1; index > 0; index -= 1) {
     const swapIndex = randomInt(index + 1);
-    [randomizedQuestions[index], randomizedQuestions[swapIndex]] = [randomizedQuestions[swapIndex], randomizedQuestions[index]];
+    [available[index], available[swapIndex]] = [available[swapIndex], available[index]];
   }
-  const selectedQuestions = randomizedQuestions.slice(0, lobby.room.settings.questionCount);
-  const roomStartedAt = new Date();
-  const preparationDeadline = new Date(roomStartedAt.getTime() + QUESTION_PREPARATION_TIMEOUT_MS);
-
-  const { data: claimedRoom, error: claimError } = await admin.from("multiplayer_rooms")
-    .update({ started_at: roomStartedAt.toISOString() })
-    .eq("id", roomId)
-    .eq("status", expectedStatus)
-    .is("started_at", null)
-    .select("*")
-    .maybeSingle<RoomRow>();
-  if (claimError) throw new Error("Unable to reserve the room start.");
-  if (!claimedRoom) {
-    const { data: existingRoom } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).single<RoomRow>();
-    if (!existingRoom) throw new Error("The room is no longer available.");
-    return mapRoom(existingRoom, lobby.players.length);
-  }
-
-  if (lobby.room.visibility === "public") {
-    await admin.from("multiplayer_players")
-      .update({ left_at: roomStartedAt.toISOString() })
-      .eq("room_id", roomId)
-      .eq("connected", false)
-      .is("left_at", null);
-  }
-
-  const { error: questionsError } = await admin.from("multiplayer_match_questions").insert(
-    selectedQuestions.map((question, index) => ({
-      room_id: roomId,
-      question_number: index + 1,
-      question_id: question.id,
-      difficulty: question.difficulty,
-      started_at: null,
-      ends_at: null,
-      hard_ends_at: null,
-      preparation_deadline_at: index === 0 ? preparationDeadline.toISOString() : null,
-    }))
-  );
-  if (questionsError) {
-    await admin.from("multiplayer_rooms").update({ started_at: null }).eq("id", roomId).eq("status", expectedStatus);
-    throw new Error(`Unable to prepare match questions: ${questionsError.message}`);
-  }
-
-  const { data, error } = await admin.from("multiplayer_rooms").update({
-    status: "in-progress",
-    current_question_number: 1,
-    mode: lobby.players.length === 1 ? "unranked" : lobby.room.settings.mode,
-  }).eq("id", roomId).eq("status", expectedStatus).select("*").single<RoomRow>();
-  if (error) {
-    await admin.from("multiplayer_match_questions").delete().eq("room_id", roomId);
-    await admin.from("multiplayer_rooms").update({ started_at: null }).eq("id", roomId).eq("status", expectedStatus);
-    throw new Error("Unable to start the room right now.");
-  }
-
-  if (lobby.room.visibility === "public") {
-    await admin.from("multiplayer_rooms").insert({
-      visibility: "public", mode: "ranked", division: lobby.room.settings.division,
-      question_count: lobby.room.settings.questionCount, seconds_per_question: 60,
-      status: "waiting", capacity: 20,
-    });
-  }
-  return mapRoom(data, lobby.players.length);
+  const selected = available.slice(0, lobby.room.settings.questionCount);
+  const { data, error } = await createAdminClient().rpc("start_multiplayer_lobby", {
+    p_room_id: lobby.room.id, ...actor,
+    p_question_ids: selected.map((question) => question.id),
+    p_difficulties: selected.map((question) => question.difficulty),
+  });
+  if (error?.code === "P0001") throw new Error(error.message);
+  if (error || !data) throw new Error("Unable to start this room. Please return to the lobby and retry.");
+  return mapRoom(data as RoomRow, lobby.players.length);
 }
 
 export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom> {
@@ -517,16 +445,12 @@ export async function beginPrivateRoom(roomId: string): Promise<MultiplayerRoom>
 }
 
 export async function beginPublicRoomIfReady(roomId: string): Promise<MultiplayerRoom | null> {
-  const lobby = await getPrivateLobby(roomId);
+  const identity = await lobbyIdentity(roomId);
+  if (!identity) return null;
+  const lobby = await readLobby(roomId, identity);
   if (!lobby || lobby.room.visibility !== "public") return null;
   if (lobby.room.status !== "countdown") return lobby.room;
-  if (lobby.players.length < 2) {
-    const admin = createAdminClient();
-    const { data } = await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown").select("*").single<RoomRow>();
-    return data ? mapRoom(data, lobby.players.length) : lobby.room;
-  }
-  if ((lobby.room.countdownEndsAt ?? Infinity) > Date.now() && lobby.players.length < lobby.room.capacity) return lobby.room;
-  return prepareRoomMatch(lobby, "countdown");
+  return prepareRoomMatch(lobby, "countdown", identity);
 }
 
 export function getMultiplayerRoundState(roomId: string): Promise<MultiplayerRoundState | null>;
@@ -823,7 +747,7 @@ export async function listPublicRooms(): Promise<MultiplayerPublicRoom[]> {
     .is("left_at", null)
     // Lobby heartbeats refresh updated_at every five seconds. A missed leave
     // notification must not keep an abandoned seat visible indefinitely.
-    .gte("updated_at", new Date(Date.now() - 10_000).toISOString())
+    .gte("updated_at", lobbyPresenceCutoff())
     .order("joined_at", { ascending: true });
   if (playerError) throw new Error("Unable to load players in public rooms.");
 
@@ -888,7 +812,7 @@ export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]>
   const user = await currentUser();
   if (!user) return [];
   const admin = createAdminClient();
-  const { data: memberships, error: membershipError } = await admin.from("multiplayer_players").select("room_id").eq("user_id", user.id).is("left_at", null);
+  const { data: memberships, error: membershipError } = await admin.from("multiplayer_players").select("room_id, connected, updated_at").eq("user_id", user.id).is("left_at", null);
   if (membershipError) throw new Error(`Unable to load active games: ${membershipError.message}`);
   const roomIds = [...new Set((memberships ?? []).map((membership) => membership.room_id))];
   if (roomIds.length === 0) return [];
@@ -897,6 +821,10 @@ export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]>
   if (error) throw new Error("Unable to load active games right now.");
   const rooms = await Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
     if (room.status === "in-progress" && !multiplayerRoomHasNotExpired(room)) return null;
+    if (room.status !== "in-progress") {
+      const membership = memberships?.find((entry) => entry.room_id === room.id);
+      if (!membership?.connected || new Date(membership.updated_at).getTime() < Date.now() - LOBBY_PRESENCE_TIMEOUT_MS) return null;
+    }
     const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
     return mapRoom(room, count ?? 0);
   }));
@@ -905,56 +833,18 @@ export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]>
 export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   const user = await currentUser();
   if (!user) throw new Error("Sign in or create an account to join public rooms.");
-  const admin = createAdminClient();
-  const { data: room, error } = await admin.from("multiplayer_rooms").select("*").eq("id", roomId).eq("visibility", "public").maybeSingle<RoomRow>();
-  if (error || !room) throw new Error("Public room not found.");
-  if (!["waiting", "countdown"].includes(room.status)) throw new Error("That public room has already started.");
-
-  const { data: existing } = await admin.from("multiplayer_players").select("id, connected").eq("room_id", roomId).eq("user_id", user.id).is("left_at", null).maybeSingle<{ id: string; connected: boolean }>();
-  const { count: activeCount } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null);
-  if (!existing && (activeCount ?? 0) >= room.capacity) throw new Error("That public room is full.");
-
-  if (existing) {
-    if (existing.connected) {
-      throw new Error("This account is already connected to that game. Return to its original tab.");
-    }
-    const { error: reconnectError } = await admin.from("multiplayer_players").update({ connected: true }).eq("id", existing.id);
-    if (reconnectError) throw new Error("Unable to reconnect to that public room.");
-  } else {
-    await addPlayer(room);
-  }
-
-  const { count: refreshedCount, error: countError } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null);
-  if (countError) throw new Error("Unable to check the active players in that room.");
-  const playerCount = refreshedCount ?? 0;
-
-  let updatedRoom = room;
-  if (playerCount >= 2 && room.status === "waiting") {
-    const countdownEndsAt = new Date(Date.now() + (playerCount >= room.capacity ? 0 : 60_000)).toISOString();
-    const response = await admin.from("multiplayer_rooms").update({ status: "countdown", countdown_ends_at: countdownEndsAt }).eq("id", roomId).eq("status", "waiting").select("*").single<RoomRow>();
-    if (!response.error) updatedRoom = response.data;
-  }
-  return mapRoom(updatedRoom, playerCount);
+  const { data, error } = await createAdminClient().rpc("join_public_multiplayer_lobby", {
+    p_room_id: roomId, p_user_id: user.id,
+  });
+  if (error?.code === "P0001") throw new Error(error.message);
+  if (error || !data) throw new Error("Unable to join that public room. Please try again.");
+  return mapRoom(data as RoomRow, data.player_count);
 }
-export async function leaveMultiplayerRoom(roomId: string): Promise<void> {
-  const access = await getMultiplayerRoom(roomId);
-  if (!access) throw new Error("Room not found.");
-  if (!['waiting', 'countdown'].includes(access.room.status)) throw new Error("You cannot leave after the match has started.");
-  const admin = createAdminClient();
 
-  if (access.room.visibility === "private" && access.currentPlayer.isHost) {
-    const { error } = await admin.from("multiplayer_rooms").delete().eq("id", roomId).in("status", ["waiting", "countdown"]);
-    if (error) throw new Error("Unable to close the room right now.");
-  } else {
-    const { error } = await admin.from("multiplayer_players").delete().eq("room_id", roomId).eq("id", access.currentPlayer.playerId);
-    if (error) throw new Error("Unable to leave the room right now.");
-    if (access.room.visibility === "public" && access.room.status === "countdown") {
-      const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", roomId).eq("connected", true).is("left_at", null);
-      if ((count ?? 0) < 2) await admin.from("multiplayer_rooms").update({ status: "waiting", countdown_ends_at: null }).eq("id", roomId).eq("status", "countdown");
-    }
-  }
-
-  if (access.currentPlayer.isGuest) (await cookies()).delete(cookieName(roomId));
+export async function leaveMultiplayerRoom(roomId: string, connectionId: string): Promise<void> {
+  const status = await confirmMultiplayerLeave(roomId, connectionId);
+  if (status === "started") throw new Error("The game already started before your leave was accepted. Use Rejoin Game to return.");
+  if (status === "conflict") throw new Error("Your room connection changed. Reload before leaving.");
 }
 export async function spectatePublicMatch(roomId: string): Promise<MultiplayerSpectatorState> {
   const user = await currentUser();

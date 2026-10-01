@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { unstable_rethrow } from "next/navigation";
-import { KeyRound, Plus, Trophy, Users, ArrowUpRight, Timer } from "lucide-react";
+import { KeyRound, Plus, Trophy, ArrowUpRight } from "lucide-react";
 import styles from "./lobby.module.css";
 
-import { joinPrivateRoomAction, joinPublicRoomAction, spectatePublicRoomAction } from "@/app/multiplayer/actions";
-import { LiveRoomListRefresh } from "@/components/multiplayer/LiveRoomListRefresh";
+import { joinPrivateRoomAction, spectatePublicRoomAction } from "@/app/multiplayer/actions";
+import PublicRoomList from "@/components/multiplayer/PublicRoomList";
 import PendingSubmitButton from "@/components/multiplayer/PendingSubmitButton";
-import { PublicRoomPresence } from "@/components/multiplayer/PublicRoomCard";
 import { RankIcon, rankChipClass, rankIconClass, rankPageClass, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { getMultiplayerProfile, getMultiplayerRatingLeaderboard, listMyActiveMultiplayerRooms, listOngoingPublicMatches, listPublicRooms, listRecentMultiplayerMatches } from "@/lib/services/multiplayerService";
 import { createClient } from "@/lib/supabase/server";
@@ -14,7 +13,6 @@ import { createClient } from "@/lib/supabase/server";
 interface MultiplayerPageProps { searchParams: Promise<{ error?: string }>; }
 
 const fieldClass = "mt-1.5 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm";
-const divisionOrder = { Mu: 0, Alpha: 1, Theta: 2 };
 const rankSteps = [{ name: "Novice", rp: 0 }, { name: "Bronze", rp: 100 }, { name: "Silver", rp: 250 }, { name: "Gold", rp: 450 }, { name: "Platinum", rp: 700 }, { name: "Diamond", rp: 1000 }, { name: "Master", rp: 1350 }, { name: "Grandmaster", rp: 1750 }, { name: "Legend", rp: 2200 }];
 
 async function retryFutureJwt<T>(operation: () => Promise<T>): Promise<T> {
@@ -60,9 +58,6 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
   const ratingLeaderboard = ratingLeaderboardResult.data;
   const recentMatches = recentMatchesResult.data;
   const { data: { user } } = await supabase.auth.getUser();
-  const orderedPublicRooms = [...publicRooms].sort((a, b) =>
-    divisionOrder[a.settings.division] - divisionOrder[b.settings.division]
-    || a.settings.questionCount - b.settings.questionCount);
   const activeInProgress = activeRooms.filter((room) => room.status === "in-progress");
   const activeRoomIds = new Set(activeInProgress.map((room) => room.id));
   const combinedOngoingMatches = [...new Map([...ongoingMatches, ...activeInProgress].map((room) => [room.id, room])).values()];
@@ -71,7 +66,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
   const currentRankRp = rankIndex >= 0 ? rankSteps[rankIndex].rp : 0;
   const progress = profile ? nextRank ? Math.min(100, Math.round((profile.rp - currentRankRp) / (nextRank.rp - currentRankRp) * 100)) : 100 : 0;
 
-  return <div className={rankPageClass(profile?.rankTier ?? "Novice")}><LiveRoomListRefresh /><main className={`${styles.lobby} mx-auto max-w-6xl px-5 py-8 sm:px-8`}>
+  return <div className={rankPageClass(profile?.rankTier ?? "Novice")}><main className={`${styles.lobby} mx-auto max-w-6xl px-5 py-8 sm:px-8`}>
     <header className={styles.header}><p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Multiplayer</p><h1 className="mt-1.5 text-3xl font-bold tracking-tight">Create or join a private room</h1><p className="mt-2 text-sm text-gray-600">Enter a code to join, or create a room with your own settings.</p></header>
     {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
     <div className="mt-6 grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
@@ -81,7 +76,7 @@ export default async function MultiplayerPage({ searchParams }: MultiplayerPageP
     </div>
 
     <div className="mt-8 grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(15rem,1fr)]">
-      <section><div><h2 className="flex items-center gap-2 text-xl font-bold"><Users size={21} className="text-blue-600" aria-hidden="true" />Public rooms</h2><p className="mt-1 text-sm text-gray-600">Ranked · 60 seconds per question · up to 20 players</p></div><div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{orderedPublicRooms.map((room) => { const occupied = room.playerCount > 0; return <article key={room.id} className={`${styles.roomCard} relative overflow-hidden rounded-2xl border bg-white p-4 shadow-sm ${occupied ? styles.occupied : ""}`}><div className={styles.roomAccent} aria-hidden="true" /><div className="flex items-start justify-between gap-3"><div className="flex items-center gap-3"><span className={styles.divisionMark} aria-hidden="true">{room.settings.division === "Alpha" ? "Α" : room.settings.division === "Mu" ? "Μ" : "θ"}</span><div><p className="text-lg font-bold">{room.settings.division}</p><p className="text-sm text-gray-600">{room.settings.questionCount} questions</p></div></div><span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${occupied ? "bg-blue-100 text-blue-800 ring-1 ring-blue-200" : "bg-gray-100"}`}>{room.playerCount}/{room.capacity}</span></div><div className={styles.roomMeta}><span><Timer size={13} aria-hidden="true" />60s / question</span><span><Trophy size={13} aria-hidden="true" />Ranked</span></div><PublicRoomPresence room={room} />{user ? <form action={joinPublicRoomAction} className="mt-3"><input type="hidden" name="roomId" value={room.id} /><PendingSubmitButton pendingText="Joining…" className={`w-full rounded-lg px-3 py-2 text-sm font-semibold text-white ${occupied ? "bg-blue-600 hover:bg-blue-700 shadow-sm shadow-blue-200" : "bg-slate-900 hover:bg-slate-700"}`}>{occupied ? "Join players" : "Join"}</PendingSubmitButton></form> : <Link href="/login" className="mt-3 flex w-full items-center justify-center rounded-lg border px-3 py-2 text-sm font-semibold">Sign in to join</Link>}</article>; })}</div></section>
+      <PublicRoomList initialRooms={publicRooms} signedIn={!!user} />
       <aside className={`${styles.leaderboard} rounded-2xl border bg-white p-4 shadow-sm`}><div className="flex items-center justify-between"><h2 className="flex items-center gap-2 font-bold"><Trophy size={18} className="text-blue-600" aria-hidden="true" />RP leaderboard</h2><span className="text-xs text-gray-500">Top 10</span></div>{ratingLeaderboard.length ? <ol className="mt-3 space-y-2">{ratingLeaderboard.map((entry) => <li key={entry.userId} className={`${rankThemeClass(entry.rankTier)} flex items-center justify-between gap-2 rounded-xl border px-3 py-3 text-sm`}><div className="min-w-0"><p className="truncate font-semibold">#{entry.globalRank} {entry.username}</p><div className={`${rankSecondaryClass} mt-1 flex items-center gap-1.5 text-xs`}><RankIcon rank={entry.rankTier} size={13} /><span>{entry.rankTier}</span></div></div><span className="shrink-0 font-bold tabular-nums">{entry.rp} RP</span></li>)}</ol> : <p className="mt-3 text-sm text-gray-500">No ranked players yet.</p>}</aside>
     </div>
 

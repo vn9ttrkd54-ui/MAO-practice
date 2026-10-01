@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/client";
+import { withRequestTimeout } from "@/lib/requestTimeout";
 import type { QuestionProgress } from "@/types/progress";
 import type { LevelChangeResult } from "@/types/level";
 
@@ -21,7 +22,10 @@ export function createPracticeAttempt(questionId: number, trainer: boolean) {
   let first: { selectedAnswer: string | null; elapsedSeconds: number } | undefined;
 
   async function checkOwner() {
-    const { data: { session }, error } = await createClient().auth.getSession();
+    const { data: { session }, error } = await withRequestTimeout(
+      () => createClient().auth.getSession(),
+      { message: "Unable to check your account. Please try again." },
+    );
     if (error) throw new Error("Unable to check your account. Please try again.");
     const current = session?.user?.id ?? null;
     if (owner === undefined) owner = current;
@@ -35,11 +39,14 @@ export function createPracticeAttempt(questionId: number, trainer: boolean) {
     if (!preparing) {
       preparing = (async () => {
         if (owner === null) { attemptId = null; return; }
-        const response = await fetch("/api/practice/attempt", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionId, trainer, requestId }),
-        });
-        const payload = await response.json();
+        const { response, payload } = await withRequestTimeout(async (signal) => {
+          const response = await fetch("/api/practice/attempt", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ questionId, trainer, requestId }),
+            signal,
+          });
+          return { response, payload: await response.json() };
+        }, { message: "Starting this attempt took too long. Please try again." });
         if (!response.ok) {
           const error = new Error(payload.error ?? "Unable to start this attempt. Please try again.");
           if ([400, 409, 410].includes(response.status)) terminalError = error;
@@ -66,11 +73,14 @@ export function createPracticeAttempt(questionId: number, trainer: boolean) {
         await prepare();
         await checkOwner();
         if (owner === null) return saveGuest();
-        const response = await fetch("/api/practice/result", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ questionId, trainer, attemptId, ...first }),
-        });
-        const payload = await response.json();
+        const { response, payload } = await withRequestTimeout(async (signal) => {
+          const response = await fetch("/api/practice/result", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ questionId, trainer, attemptId, ...first }),
+            signal,
+          });
+          return { response, payload: await response.json() };
+        }, { message: "We could not confirm your save in time. Retry save to check the same answer safely." });
         if (!response.ok) {
           const error = new Error(payload.error ?? "Unable to save this result. Please retry.");
           if ([400, 409, 410].includes(response.status)) terminalError = error;

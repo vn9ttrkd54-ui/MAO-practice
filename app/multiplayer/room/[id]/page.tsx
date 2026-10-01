@@ -38,7 +38,7 @@ export default async function PrivateRoomPage({ params, searchParams }: PrivateR
           <div className="rounded-xl bg-gray-50 p-3"><dt className="text-xs font-semibold uppercase text-gray-500">Mode</dt><dd className="mt-1 font-bold capitalize">{room.settings.mode}</dd></div>
         </dl>
 
-        <PrivateLobby initialLobby={lobby} error={error} />
+        <PrivateLobby key={`${room.id}:${lobby.currentPlayer.playerId}`} initialLobby={lobby} error={error} />
       </section>
     </main>
   );

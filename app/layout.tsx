@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import Navbar, { NavbarFallback } from "@/components/Navbar";
 import SiteFooter from "@/components/SiteFooter";
 import SiteAnalytics from "@/components/analytics/SiteAnalytics";
 
@@ -58,7 +59,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
+        <Suspense fallback={<NavbarFallback />}>
+          <Navbar />
+        </Suspense>
 
         <main className="flex-1">
           {children}

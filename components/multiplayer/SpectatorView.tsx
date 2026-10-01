@@ -10,6 +10,7 @@ import MathText from "@/components/math/MathText";
 import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { countdownSeconds } from "@/lib/multiplayerTiming";
+import { withRequestTimeout } from "@/lib/requestTimeout";
 import type { MultiplayerSpectator, MultiplayerSpectatorState } from "@/types/multiplayer";
 
 function Spectators({ spectators }: { spectators: MultiplayerSpectator[] }) {
@@ -36,35 +37,42 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
   const [state, setState] = useState(initialState);
   const [now, setNow] = useState<number | null>(null);
   const [ended, setEnded] = useState(false);
+  const [connectionWarning, setConnectionWarning] = useState(false);
   const refreshState = useRef<() => void>(() => undefined);
 
   useEffect(() => {
     let stopped = false;
     let requestInFlight = false;
     let refreshQueued = false;
+    const lifecycle = new AbortController();
     const clock = window.setInterval(() => setNow(Date.now()), 250);
 
     async function loadState() {
+      if (stopped) return;
       if (requestInFlight) {
         refreshQueued = true;
         return;
       }
       requestInFlight = true;
       try {
-        const response = await fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { cache: "no-store" });
+        const { response, payload } = await withRequestTimeout(async (signal) => {
+          const response = await fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { cache: "no-store", signal });
+          return { response, payload: response.ok ? await response.json() as MultiplayerSpectatorState | { completed: true } : null };
+        }, { signal: lifecycle.signal, timeoutMs: 8_000 });
         if (stopped) return;
-        if (!response.ok) {
+        if (!payload) {
           if (response.status === 404) setEnded(true);
+          else setConnectionWarning(true);
           return;
         }
-        const payload = await response.json() as MultiplayerSpectatorState | { completed: true };
+        setConnectionWarning(false);
         if ("completed" in payload) {
           router.replace(`/multiplayer/room/${state.roomId}/results`);
           return;
         }
         setState(payload);
       } catch {
-        // The heartbeat retries after brief network interruptions.
+        if (!stopped) setConnectionWarning(true);
       } finally {
         requestInFlight = false;
         if (refreshQueued && !stopped) {
@@ -78,7 +86,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
     const unsubscribe = subscribeToMultiplayerRoom(state.roomId, refreshState.current);
     const heartbeat = window.setInterval(refreshState.current, 5_000);
     const leave = () => {
-      fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true });
+      void fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true }).catch(() => undefined);
     };
     const reconnect = () => {
       if (document.visibilityState === "visible") void loadState();
@@ -90,6 +98,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
     document.addEventListener("visibilitychange", reconnect);
     return () => {
       stopped = true;
+      lifecycle.abort();
       refreshState.current = () => undefined;
       window.clearInterval(clock);
       window.clearInterval(heartbeat);
@@ -99,7 +108,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
       window.removeEventListener("focus", reconnect);
       window.removeEventListener("online", reconnect);
       document.removeEventListener("visibilitychange", reconnect);
-      fetch(`/api/multiplayer/rooms/${state.roomId}/spectate`, { method: "DELETE", keepalive: true });
+      leave();
     };
   }, [router, state.roomId]);
 
@@ -133,6 +142,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
 
   return (
     <main className={`${styles.page} mx-auto max-w-5xl px-5 py-8`}>
+      {connectionWarning ? <p role="status" className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">Connection interrupted. Reconnecting to the match… <button type="button" onClick={() => refreshState.current()} className="ml-2 font-semibold underline">Retry now</button></p> : null}
       <header className={`${styles.header} flex items-center justify-between`}>
         <div>
           <p className="text-sm font-semibold text-blue-600">Live spectator view</p>

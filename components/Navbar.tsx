@@ -5,6 +5,19 @@ import LogoutButton from "@/components/auth/LogoutButton";
 import MobileNavbarMenu from "@/components/MobileNavbarMenu";
 import { createClient } from "@/lib/supabase/server";
 
+export function NavbarFallback() {
+  return (
+    <nav aria-label="Primary navigation" className="sticky top-0 z-50 flex min-h-[72px] flex-wrap items-center justify-between gap-3 border-b border-slate-300 bg-white px-4 py-3.5 text-slate-950 sm:px-7">
+      <Link href="/" className="text-lg font-bold sm:text-xl">Mathematics Daily</Link>
+      <div className="flex gap-4 text-sm font-semibold">
+        <Link href="/practice">Practice</Link>
+        <Link href="/multiplayer">Multiplayer</Link>
+        <span role="status" className="font-normal text-slate-600">Loading account…</span>
+      </div>
+    </nav>
+  );
+}
+
 export default async function Navbar() {
   const supabase = await createClient();
   const {

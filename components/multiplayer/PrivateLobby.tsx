@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
-import { leaveMultiplayerRoomAction, startPrivateRoomAction } from "@/app/multiplayer/actions";
+import { startPrivateRoomAction } from "@/app/multiplayer/actions";
 import PendingSubmitButton from "@/components/multiplayer/PendingSubmitButton";
 import { RankIcon, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
-import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
+import { useLobbyConnection } from "@/components/multiplayer/useLobbyConnection";
 import type { MultiplayerLobbyState } from "@/types/multiplayer";
 
 interface PrivateLobbyProps {
@@ -15,102 +15,8 @@ interface PrivateLobbyProps {
 }
 
 export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps) {
-  const [lobby, setLobby] = useState(initialLobby);
+  const { lobby, warning, ready, leaving, leaveError, blocked, retry, leave } = useLobbyConnection(initialLobby);
   const [now, setNow] = useState<number | null>(null);
-  const router = useRouter();
-  const navigatingToGame = useRef(false);
-  const refreshLobby = useRef<() => void>(() => undefined);
-
-  useEffect(() => {
-    const endpoint = `/api/multiplayer/rooms/${lobby.room.id}/lobby`;
-    let stopped = false;
-    let requestInFlight = false;
-    let refreshQueued = false;
-
-    async function pollLobby() {
-      if (requestInFlight) {
-        refreshQueued = true;
-        return;
-      }
-      requestInFlight = true;
-      try {
-        const response = await fetch(endpoint, { cache: "no-store" });
-        if (stopped) return;
-        if (response.ok) {
-          const nextLobby = await response.json() as MultiplayerLobbyState;
-          setLobby(nextLobby);
-          if (nextLobby.room.status === "in-progress") {
-            navigatingToGame.current = true;
-            router.replace(`/multiplayer/room/${nextLobby.room.id}/play`);
-            return;
-          }
-        } else if (response.status === 404) {
-          router.replace("/multiplayer");
-          return;
-        }
-      } catch {
-        // The heartbeat retries after brief network interruptions.
-      } finally {
-        requestInFlight = false;
-        if (refreshQueued && !stopped && !navigatingToGame.current) {
-          refreshQueued = false;
-          void pollLobby();
-        }
-      }
-    }
-
-    refreshLobby.current = () => void pollLobby();
-    void pollLobby();
-    const unsubscribe = subscribeToMultiplayerRoom(lobby.room.id, refreshLobby.current);
-    const heartbeat = window.setInterval(refreshLobby.current, 5_000);
-
-    function disconnect() {
-      void fetch(endpoint, { method: "DELETE", keepalive: true });
-    }
-
-    function reconnect() {
-      if (document.visibilityState === "visible") void pollLobby();
-    }
-
-    function disconnectForOutsideLink(event: MouseEvent) {
-      if (navigatingToGame.current || !(event.target instanceof Element)) return;
-      const link = event.target.closest("a[href]");
-      if (!(link instanceof HTMLAnchorElement)) return;
-      const destination = new URL(link.href, window.location.href);
-      const roomPath = `/multiplayer/room/${lobby.room.id}`;
-      if (destination.origin === window.location.origin && !destination.pathname.startsWith(roomPath)) {
-        disconnect();
-      }
-    }
-
-    window.addEventListener("pagehide", disconnect);
-    window.addEventListener("pageshow", reconnect);
-    window.addEventListener("popstate", disconnect);
-    window.addEventListener("focus", reconnect);
-    window.addEventListener("online", reconnect);
-    document.addEventListener("visibilitychange", reconnect);
-    document.addEventListener("click", disconnectForOutsideLink, true);
-    return () => {
-      stopped = true;
-      refreshLobby.current = () => undefined;
-      window.clearInterval(heartbeat);
-      unsubscribe();
-      window.removeEventListener("pagehide", disconnect);
-      window.removeEventListener("pageshow", reconnect);
-      window.removeEventListener("popstate", disconnect);
-      window.removeEventListener("focus", reconnect);
-      window.removeEventListener("online", reconnect);
-      document.removeEventListener("visibilitychange", reconnect);
-      document.removeEventListener("click", disconnectForOutsideLink, true);
-    };
-  }, [lobby.room.id, router]);
-
-  useEffect(() => {
-    if (!lobby.room.countdownEndsAt || lobby.room.status !== "countdown") return;
-    const delay = Math.max(0, lobby.room.countdownEndsAt - Date.now() + 100);
-    const timer = window.setTimeout(() => refreshLobby.current(), delay);
-    return () => window.clearTimeout(timer);
-  }, [lobby.room.countdownEndsAt, lobby.room.status]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 250);
@@ -124,6 +30,9 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
 
   return (
     <>
+      {warning && !leaving && !leaveError && !blocked ? <div role="status" className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Connection interrupted. Reconnecting to the lobby… <button type="button" onClick={retry} className="ml-2 font-semibold underline">Retry now</button></div> : null}
+      {leaveError ? <div role="alert" className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{leaveError}</div> : null}
+      {blocked ? <div role="alert" className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{blocked} <Link href="/multiplayer" className="ml-2 font-semibold underline">Back to rooms</Link>{blocked.includes("game started") ? <Link href={`/multiplayer/room/${lobby.room.id}/play`} className="ml-2 font-semibold underline">Rejoin Game</Link> : null}</div> : null}
       {error ? <div role="alert" className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
 
       <div className="mt-7 grid gap-5 md:grid-cols-[1fr_0.75fr]">
@@ -154,11 +63,11 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
           {!publicRoom && isHost && !started ? (
             <form action={startPrivateRoomAction} className="mt-5">
               <input type="hidden" name="roomId" value={lobby.room.id} />
-              <PendingSubmitButton pendingText="Starting game…" className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Start Game</PendingSubmitButton>
+              <PendingSubmitButton pendingText="Starting game…" disabled={!ready || leaving || !!leaveError || !!blocked} className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Start Game</PendingSubmitButton>
             </form>
           ) : null}
           {!publicRoom && isHost && lobby.players.length === 1 && !started ? <p className="mt-3 text-xs text-gray-500">Solo games automatically become unranked.</p> : null}
-          {!started ? <form action={leaveMultiplayerRoomAction} className="mt-3" onSubmit={(event) => { if (!publicRoom && isHost && !window.confirm("Close this private room for everyone?")) event.preventDefault(); }}><input type="hidden" name="roomId" value={lobby.room.id} /><PendingSubmitButton pendingText={!publicRoom && isHost ? "Closing room…" : "Leaving room…"} className="w-full rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50">{!publicRoom && isHost ? "Close Room" : "Leave Room"}</PendingSubmitButton></form> : null}
+          {!started ? <button type="button" disabled={!ready || leaving || !!blocked} aria-busy={leaving} onClick={() => { if (leaveError || publicRoom || !isHost || window.confirm("Close this private room for everyone?")) void leave(); }} className="mt-3 w-full rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-50 disabled:cursor-wait disabled:opacity-60">{leaving ? (!publicRoom && isHost ? "Closing room…" : "Leaving room…") : leaveError ? "Retry leave" : !ready ? "Connecting…" : !publicRoom && isHost ? "Close Room" : "Leave Room"}</button> : null}
           {started ? <div className="mt-5 rounded-lg bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-800">Game started</div> : null}
         </aside>
       </div>
