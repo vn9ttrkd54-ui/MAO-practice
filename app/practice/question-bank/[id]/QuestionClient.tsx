@@ -17,11 +17,7 @@ import {
   toggleQuestionBookmark,
 } from "@/lib/services/bookmarkService";
 
-import {
-  getNextQuestion,
-  getPreviousQuestion,
-} from "@/lib/questions";
-import { questions } from "@/data/questions";
+import { questionBankHref, questionBankReturnTo, type questionBankNavigation } from "@/lib/questionBankListing";
 import { createPracticeAttempt, type PracticeAttempt } from "@/lib/services/practiceAttemptService";
 
 import QuestionHeader from "@/components/practice/QuestionHeader";
@@ -47,21 +43,19 @@ const EMPTY_PROGRESS: QuestionProgress = {
 export default function QuestionClient({
   question,
   tutorEnabled,
+  navigation,
 }: {
   question: Question;
   tutorEnabled: boolean;
+  navigation: ReturnType<typeof questionBankNavigation>;
 }) {
-  return <QuestionSession key={question.id} question={question} tutorEnabled={tutorEnabled} />;
+  return <QuestionSession key={question.id} question={question} tutorEnabled={tutorEnabled} navigation={navigation} />;
 }
 
-function QuestionSession({ question, tutorEnabled }: { question: Question; tutorEnabled: boolean }) {
+function QuestionSession({ question, tutorEnabled, navigation }: { question: Question; tutorEnabled: boolean; navigation: ReturnType<typeof questionBankNavigation> }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const requestedReturnTo = searchParams.get("returnTo");
-  const defaultReturnTo = `/practice/question-bank/${question.division.toLowerCase()}`;
-  const returnTo = requestedReturnTo?.startsWith("/practice/question-bank/")
-    ? requestedReturnTo
-    : defaultReturnTo;
+  const returnTo = questionBankReturnTo(searchParams.get("returnTo"), question.division);
 
   const [selectedAnswer, setSelectedAnswer] =
     useState<string | null>(null);
@@ -129,27 +123,7 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
     };
   }, [question.id]);
 
-  const sequence = (searchParams.get("sequence") ?? "")
-    .split(",")
-    .map(Number)
-    .filter((id) => Number.isInteger(id));
-  const sequenceIndex = sequence.indexOf(question.id);
-  const sequenceQuestion = (offset: number) => {
-    if (sequenceIndex === -1) return null;
-    const id = sequence[sequenceIndex + offset];
-    return questions.find((item) => item.id === id) ?? null;
-  };
-  const nextQuestion = sequence.length ? sequenceQuestion(1) : getNextQuestion(question.id);
-  const previousQuestion = sequence.length ? sequenceQuestion(-1) : getPreviousQuestion(question.id);
-  const sequenceQuery = sequence.length ? `&sequence=${encodeURIComponent(sequence.join(","))}` : "";
-
-  const goToQuestion = (
-    destinationId: number
-  ) => {
-    router.push(
-      `/practice/question-bank/${destinationId}?returnTo=${encodeURIComponent(returnTo)}${sequenceQuery}`
-    );
-  };
+  const goToQuestion = (destinationId: number) => router.push(questionBankHref(destinationId, returnTo, navigation.sequence));
 
   const handleSave = async (answer: string | null) => {
     if (submitted || busy.current || !attempt.current) return;
@@ -323,16 +297,16 @@ function QuestionSession({ question, tutorEnabled }: { question: Question; tutor
             />
 
             <QuestionNavigation
-              previousDisabled={!previousQuestion || (hasPending && !submitted)}
-              nextDisabled={!nextQuestion || (hasPending && !submitted)}
+              previousDisabled={!navigation.previousId || (hasPending && !submitted)}
+              nextDisabled={!navigation.nextId || (hasPending && !submitted)}
               onPrevious={() => {
-                if (previousQuestion) {
-                  goToQuestion(previousQuestion.id);
+                if (navigation.previousId) {
+                  goToQuestion(navigation.previousId);
                 }
               }}
               onNext={() => {
-                if (nextQuestion) {
-                  goToQuestion(nextQuestion.id);
+                if (navigation.nextId) {
+                  goToQuestion(navigation.nextId);
                 }
               }}
             />
