@@ -173,6 +173,22 @@ test("configuration errors and signed-out callers do not reserve tokens", async 
   }
 });
 
+test("busy responses provide a no-store backoff hint without paid work or changed budgets", async () => {
+  for (const reserveStatus of ["busy", "active"]) {
+    const { post, calls } = harness({ reserveStatus });
+    const response = await post();
+    assert.equal(response.status, 429);
+    assert.equal(response.headers.get("retry-after"), "3");
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.deepEqual(await response.json(), { code: "busy", retryAfterMs: 3000 });
+    assert.equal(calls.provider.length, 0);
+    assert.equal(calls.finish.length, 0);
+    const { daily_message_limit, concurrent_limit, per_user_minute_limit, global_minute_limit } = calls.reserve[0];
+    assert.deepEqual({ daily_message_limit, concurrent_limit, per_user_minute_limit, global_minute_limit },
+      { daily_message_limit: 15, concurrent_limit: 3, per_user_minute_limit: 5, global_minute_limit: 12 });
+  }
+});
+
 test("an old database accounting contract cannot authorize a paid provider request", async () => {
   for (const options of [{ legacyReservation: true }, { legacyDailySlots: true }]) {
     const { post, calls } = harness(options);

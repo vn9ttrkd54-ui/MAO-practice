@@ -154,7 +154,9 @@ export async function POST(request: Request) {
       requestId = null;
     }
     if (reservation.status === "busy" || reservation.status === "active") {
-      return NextResponse.json({ code: "busy", retryAfterMs: 1_200 }, { status: 429 });
+      return NextResponse.json({ code: "busy", retryAfterMs: 3_000 }, {
+        status: 429, headers: { "Retry-After": "3", "Cache-Control": "no-store" },
+      });
     }
     if (reservation.status === "rate_limited") {
       return NextResponse.json({ error: "Please wait a moment before asking again.", code: "rate_limited" }, { status: 429 });
