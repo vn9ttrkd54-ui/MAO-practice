@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowRight, Target } from "lucide-react";
 
 import SessionMetric from "@/components/dashboard/SessionMetric";
-import { calculateTrainerStats } from "@/lib/trainer";
 
 import type { DashboardData } from "@/lib/dashboardService";
 
@@ -60,9 +59,7 @@ export default function RecentSessionsSection({
       ) : (
         <div className="mt-6 space-y-3">
           {sessions.map((session) => {
-            const stats = calculateTrainerStats(
-              session.results
-            );
+            const stats = session.stats;
 
             const sessionScore =
               stats.correct -
