@@ -3,7 +3,7 @@ import { memoryTrainerHistoryStorage } from "@/lib/storage/trainerHistory/memory
 import { createSupabaseTrainerHistoryStorage } from "@/lib/storage/trainerHistory/supabaseTrainerHistoryStorage";
 import type { TrainerSessionRecord } from "@/types/trainer";
 
-async function getStorage() {
+async function getStorage(expectedUserId?: string | null) {
   const supabase = createClient();
   const {
     data: { session },
@@ -12,6 +12,10 @@ async function getStorage() {
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  if (expectedUserId !== undefined && (session?.user.id ?? null) !== expectedUserId) {
+    throw new Error("Your account changed. Reload Trainer to start a new session.");
   }
 
   if (!session?.user) {
@@ -45,9 +49,10 @@ export async function hasTrainerAccount(): Promise<boolean> {
 }
 
 export async function saveTrainerSession(
-  session: TrainerSessionRecord
+  session: TrainerSessionRecord,
+  expectedUserId?: string | null,
 ): Promise<TrainerSessionRecord[]> {
-  const storage = await getStorage();
+  const storage = await getStorage(expectedUserId);
   return storage.saveSession(session);
 }
 

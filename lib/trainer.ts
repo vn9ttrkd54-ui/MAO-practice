@@ -1,78 +1,21 @@
-import { questions } from "@/data/questions";
-import { getQuestionProgress } from "@/lib/services/progressService";
-
 import type {
   Division,
-  Question,
 } from "@/types/question";
 
 import type {
   TrainerQuestionResult,
   TrainerResult,
   TrainerSessionStats,
+  TrainerQuestionItem,
+  TrainerSelectionProgress,
 } from "@/types/trainer";
-import type { QuestionProgress } from "@/types/progress";
 
 const CORRECT_ANSWER_COOLDOWN_MS =
   30 * 24 * 60 * 60 * 1000;
 
-export function getTrainerQuestions(
-  division: Division
-): Question[] {
-  return questions.filter(
-    (question) => question.division === division
-  );
-}
-
-export async function isQuestionEligibleForTrainer(
-  question: Question,
-  currentTime = Date.now()
-): Promise<boolean> {
-  const progress = await getQuestionProgress(
-    question.id
-  );
-
-  if (progress.lastResult !== "correct") {
-    return true;
-  }
-
-  if (progress.lastCorrectAt === null) {
-    return true;
-  }
-
-  const timeSinceLastCorrect =
-    currentTime - progress.lastCorrectAt;
-
-  return (
-    timeSinceLastCorrect >=
-    CORRECT_ANSWER_COOLDOWN_MS
-  );
-}
-
-export async function getEligibleTrainerQuestions(
-  division: Division
-): Promise<Question[]> {
-  const currentTime = Date.now();
-  const divisionQuestions =
-    getTrainerQuestions(division);
-
-  const eligibility = await Promise.all(
-    divisionQuestions.map((question) =>
-      isQuestionEligibleForTrainer(
-        question,
-        currentTime
-      )
-    )
-  );
-
-  return divisionQuestions.filter(
-    (_, index) => eligibility[index]
-  );
-}
-
 type QuestionWithProgress = {
-  question: Question;
-  progress: QuestionProgress;
+  question: TrainerQuestionItem;
+  progress: TrainerSelectionProgress;
 };
 
 function weightedQuestion(
@@ -128,27 +71,32 @@ function difficultyOrder(targetDifficulty: number) {
   return order;
 }
 
-export async function getNextTrainerQuestion({
-  division,
-  previousQuestionId,
-  targetDifficulty,
-  sessionResults = [],
-  forceChallenge = false,
-}: {
+export type TrainerSelectionOptions = {
   division: Division;
   previousQuestionId?: number | null;
   targetDifficulty?: number | null;
   sessionResults?: TrainerQuestionResult[];
   forceChallenge?: boolean;
-}): Promise<Question | null> {
-  const currentTime = Date.now();
-  const divisionQuestions = getTrainerQuestions(division);
-  const withProgress = await Promise.all(
-    divisionQuestions.map(async (question) => ({
-      question,
-      progress: await getQuestionProgress(question.id),
-    }))
-  );
+};
+
+// Pure selection: no catalog, authentication or per-question network reads.
+export function selectNextTrainerQuestion(
+  items: TrainerQuestionItem[],
+  progress: Map<number, TrainerSelectionProgress>,
+  {
+    division,
+    previousQuestionId,
+    targetDifficulty,
+    sessionResults = [],
+    forceChallenge = false,
+  }: TrainerSelectionOptions,
+  currentTime = Date.now(),
+): TrainerQuestionItem | null {
+  const divisionQuestions = items.filter(question => question.division === division);
+  const withProgress = divisionQuestions.map((question) => ({
+    question,
+    progress: progress.get(question.id) ?? { attempts: 0, correct: 0, lastResult: null, lastCorrectAt: null },
+  }));
   const eligible = withProgress.filter(({ progress }) =>
     progress.lastResult !== "correct"
     || progress.lastCorrectAt === null

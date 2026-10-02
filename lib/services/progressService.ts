@@ -6,6 +6,7 @@ import { createSupabaseProgressStorage } from "@/lib/storage/progress/supabasePr
 import type { QuestionProgress } from "@/types/progress";
 import type { PracticeAttempt, SavedPracticeResult } from "@/lib/services/practiceAttemptService";
 import { appendPracticeTime } from "@/lib/practiceTiming";
+import type { Question } from "@/types/question";
 
 async function getProgressStorage(): Promise<ProgressStorage> {
   const supabase = createClient();
@@ -18,14 +19,16 @@ export async function getQuestionProgress(questionId: number): Promise<QuestionP
   return (await getProgressStorage()).getQuestionProgress(questionId);
 }
 
-async function saveResult(questionId: number, answer: string | null, time: number, trainer: boolean, attempt: PracticeAttempt): Promise<SavedPracticeResult> {
+async function saveResult(questionId: number, answer: string | null, time: number, trainer: boolean, attempt: PracticeAttempt, displayedQuestion?: Pick<Question, "id" | "answer">): Promise<SavedPracticeResult> {
   if (!attempt || attempt.questionId !== questionId || attempt.trainer !== trainer) {
     throw new Error("Please reload to start this practice attempt.");
   }
   return attempt.submit(answer, time, async () => {
     // Guest results stay local; never choose a signed-in writer during a save.
-    const question = (await import("@/data/questions")).questions.find((item) => item.id === questionId);
-    if (!question) throw new Error("Question not found.");
+    // Trainer already has the public question: do not download every division
+    // to check a guest answer. Signed-in results still use the verified API.
+    const question = displayedQuestion ?? (await import("@/data/questions")).questions.find((item) => item.id === questionId);
+    if (!question || question.id !== questionId) throw new Error("Question not found.");
     const isCorrect = answer === question.answer;
     const current = await memoryProgressStorage.getQuestionProgress(questionId);
     const progress = await memoryProgressStorage.saveQuestionProgress(questionId, {
@@ -48,8 +51,8 @@ export function saveQuestionGiveUp(questionId: number, attempt: PracticeAttempt)
   return saveResult(questionId, null, 0, false, attempt);
 }
 
-export async function saveVerifiedTrainerResult(questionId: number, selectedAnswer: string | null, timeInSeconds: number, attempt: PracticeAttempt) {
-  const result = await saveResult(questionId, selectedAnswer, timeInSeconds, true, attempt);
+export async function saveVerifiedTrainerResult(questionId: number, selectedAnswer: string | null, timeInSeconds: number, attempt: PracticeAttempt, displayedQuestion?: Pick<Question, "id" | "answer">) {
+  const result = await saveResult(questionId, selectedAnswer, timeInSeconds, true, attempt, displayedQuestion);
   if (!result.levelChange) throw new Error("Unable to confirm Trainer progress. Please retry.");
   return { ...result, levelChange: result.levelChange };
 }

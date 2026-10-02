@@ -3,6 +3,7 @@ import type { Division } from "@/types/question";
 type TrainerSetupProps = {
   division: Division;
   error: string | null;
+  loading: boolean;
   onDivisionChange: (division: Division) => void;
   onStart: () => void;
 };
@@ -10,6 +11,7 @@ type TrainerSetupProps = {
 export default function TrainerSetup({
   division,
   error,
+  loading,
   onDivisionChange,
   onStart,
 }: TrainerSetupProps) {
@@ -62,6 +64,7 @@ export default function TrainerSetup({
             <select
               id="trainer-division"
               value={division}
+              disabled={loading}
               onChange={(event) =>
                 onDivisionChange(event.target.value as Division)
               }
@@ -84,9 +87,11 @@ export default function TrainerSetup({
             <button
               type="button"
               onClick={onStart}
-              className="mt-6 w-full rounded-lg bg-gradient-to-br from-[#2563eb] to-[#111827] px-6 py-3.5 font-semibold text-white shadow-md transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200"
+              disabled={loading}
+              aria-busy={loading}
+              className="mt-6 w-full rounded-lg bg-gradient-to-br from-[#2563eb] to-[#111827] px-6 py-3.5 font-semibold text-white shadow-md transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 disabled:cursor-wait disabled:opacity-75"
             >
-              Start Trainer
+              {loading ? "Loading Trainer…" : "Start Trainer"}
             </button>
           </div>
         </section>

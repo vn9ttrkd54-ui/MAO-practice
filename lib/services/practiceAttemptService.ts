@@ -11,9 +11,9 @@ export type SavedPracticeResult = {
 };
 
 // Create once per displayed question, not per save. Retain in a ref for retries.
-export function createPracticeAttempt(questionId: number, trainer: boolean) {
+export function createPracticeAttempt(questionId: number, trainer: boolean, expectedUserId?: string | null) {
   const requestId = crypto.randomUUID();
-  let owner: string | null | undefined;
+  let owner: string | null | undefined = expectedUserId;
   let attemptId: string | null | undefined;
   let preparing: Promise<void> | undefined;
   let saving: Promise<SavedPracticeResult> | undefined;

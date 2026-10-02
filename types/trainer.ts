@@ -1,7 +1,12 @@
 import type {
   AnswerChoice,
   Division,
+  Question,
 } from "@/types/question";
+import type { QuestionProgress } from "@/types/progress";
+
+export type TrainerQuestionItem = Pick<Question, "id" | "number" | "division" | "topic" | "difficulty">;
+export type TrainerSelectionProgress = Pick<QuestionProgress, "attempts" | "correct" | "lastResult" | "lastCorrectAt">;
 
 import type {
   LevelProgress,

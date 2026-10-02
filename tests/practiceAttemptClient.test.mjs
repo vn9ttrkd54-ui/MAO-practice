@@ -46,6 +46,17 @@ test("display preparation and simultaneous Strict Mode preparation share one ser
   assert.deepEqual(state.calls[0].body, { questionId: 42, trainer: true, requestId: "request-1" });
 });
 
+test("Trainer pins the selection owner before attempt preparation, including a guest identity", async () => {
+  for (const expected of ["user-a", null]) {
+    const { create, state, guest } = fixture("user-b");
+    const attempt = create(42, true, expected);
+    await assert.rejects(attempt.prepare(), /account changed/);
+    await assert.rejects(attempt.submit("A", 3, guest), /account changed/);
+    assert.equal(state.calls.length, 0);
+    assert.equal(state.guestSaves, 0);
+  }
+});
+
 test("stalled creation releases its in-flight promise and retries the same request ID", async () => {
   const { create, state } = fixture();
   const attempt = create(42, false);

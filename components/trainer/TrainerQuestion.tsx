@@ -131,7 +131,7 @@ export default function TrainerQuestion({
               hover:brightness-110
             "
           >
-            Next Question
+            {saving ? "Loading question…" : "Next Question"}
           </button>
         </div>
       )}

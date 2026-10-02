@@ -17,6 +17,7 @@ import type {
 import type {
   TrainerQuestionResult,
   TrainerSessionRecord,
+  TrainerQuestionItem,
 } from "@/types/trainer";
 
 import type {
@@ -25,8 +26,9 @@ import type {
 
 import {
   calculateTrainerStats,
-  getNextTrainerQuestion,
 } from "@/lib/trainer";
+import { getNextTrainerSelection, TrainerAccountChangedError } from "@/lib/services/trainerSelectionService";
+import { createClient } from "@/lib/supabase/client";
 import {
   applyAdaptiveTrainerResult,
   createAdaptiveTrainerState,
@@ -39,11 +41,6 @@ import {
 } from "@/lib/services/progressService";
 
 import {
-  getLevelProgress,
-} from "@/lib/services/levelService";
-
-import {
-  hasTrainerAccount,
   saveTrainerSession,
 } from "@/lib/services/trainerHistoryService";
 
@@ -62,8 +59,11 @@ const DEFAULT_LEVEL: LevelProgress = {
   progress: 0,
 };
 
-export default function TrainerClient() {
+export default function TrainerClient({ items }: { items: TrainerQuestionItem[] }) {
   const router = useRouter();
+  const selectionRequest = useRef<AbortController | null>(null);
+  const sessionOwner = useRef<string | null | undefined>(undefined);
+  const [accountChanged, setAccountChanged] = useState(false);
   const attempt = useRef<PracticeAttempt | null>(null);
   const pending = useRef<{ answer: AnswerChoice | null; time: number; answeredAt: number } | null>(null);
   const saveBusy = useRef(false);
@@ -158,39 +158,25 @@ export default function TrainerClient() {
   ] = useState<LevelProgress>(DEFAULT_LEVEL);
 
   useEffect(() => {
-    let cancelled = false;
-
-    async function loadLevel() {
-      try {
-        const [savedLevel, accountAvailable] =
-          await Promise.all([
-            getLevelProgress(),
-            hasTrainerAccount(),
-          ]);
-
-        if (!cancelled) {
-          setLevelProgress(savedLevel);
-          setStartingLevelProgress(savedLevel);
-          setHasAccount(accountAvailable);
-        }
-      } catch {
-        if (!cancelled) {
-          setLevelProgress(DEFAULT_LEVEL);
-          setStartingLevelProgress(DEFAULT_LEVEL);
-          setHasAccount(false);
-        }
+    const { data: { subscription } } = createClient().auth.onAuthStateChange((_event, session) => {
+      if (sessionOwner.current !== undefined && sessionOwner.current !== (session?.user.id ?? null)) {
+        selectionRequest.current?.abort();
+        selectionRequest.current = null;
+        attempt.current = null;
+        setAccountChanged(true);
+        setIsSaving(false);
       }
-    }
-
-    void loadLevel();
-
+    });
     return () => {
-      cancelled = true;
+      subscription.unsubscribe();
+      selectionRequest.current?.abort();
+      selectionRequest.current = null;
+      attempt.current = null;
     };
   }, []);
 
   useEffect(() => {
-    if (!sessionStarted || showSummary) {
+    if (!sessionStarted || showSummary || accountChanged) {
       return;
     }
 
@@ -199,13 +185,13 @@ export default function TrainerClient() {
     }, 1_000);
 
     return () => window.clearInterval(timer);
-  }, [sessionStarted, showSummary]);
+  }, [sessionStarted, showSummary, accountChanged]);
 
   const sessionStats =
     calculateTrainerStats(results);
 
   const openAttempt = (question: Question) => {
-    const fresh = createPracticeAttempt(question.id, true);
+    const fresh = createPracticeAttempt(question.id, true, sessionOwner.current);
     attempt.current = fresh;
     pending.current = null;
     setHasPending(false);
@@ -215,22 +201,19 @@ export default function TrainerClient() {
   };
 
   const handleStartSession = async () => {
-    if (isSaving) {
+    if (isSaving || selectionRequest.current || accountChanged) {
       return;
     }
-
+    const controller = new AbortController();
+    selectionRequest.current = controller;
     setIsSaving(true);
+    setStartError(null);
 
     try {
-      const [firstQuestion, currentLevel, accountAvailable] =
-        await Promise.all([
-          getNextTrainerQuestion({
-            division,
-            previousQuestionId: null,
-          }),
-          getLevelProgress(),
-          hasTrainerAccount(),
-        ]);
+      const { question: firstQuestion, level: currentLevel, userId } = await getNextTrainerSelection(
+        items, { division, previousQuestionId: null }, { signal: controller.signal, includeLevel: true },
+      );
+      if (selectionRequest.current !== controller || controller.signal.aborted) return;
 
       if (!firstQuestion) {
         setStartError(
@@ -239,6 +222,7 @@ export default function TrainerClient() {
         return;
       }
 
+      sessionOwner.current = userId;
       openAttempt(firstQuestion);
       setCurrentQuestion(firstQuestion);
       setAdaptiveState(createAdaptiveTrainerState(firstQuestion.difficulty));
@@ -256,22 +240,26 @@ export default function TrainerClient() {
       setSessionEndedAt(null);
       setLevelProgress(currentLevel);
       setStartingLevelProgress(currentLevel);
-      setHasAccount(accountAvailable);
+      setHasAccount(userId !== null);
       setSessionStarted(true);
       setShowSummary(false);
       setShowEndDialog(false);
       setStartError(null);
-    } catch {
+    } catch (error) {
+      if (selectionRequest.current !== controller || controller.signal.aborted) return;
       setStartError(
-        "Unable to start Trainer right now. Please try again."
+        error instanceof Error ? error.message : "Unable to start Trainer right now. Please try again."
       );
     } finally {
-      setIsSaving(false);
+      if (selectionRequest.current === controller) {
+        selectionRequest.current = null;
+        setIsSaving(false);
+      }
     }
   };
 
   const handleSave = async (answer: AnswerChoice | null) => {
-    if (!currentQuestion || !attempt.current || submitted || isSaving || saveBusy.current) return;
+    if (!currentQuestion || !attempt.current || submitted || isSaving || saveBusy.current || accountChanged) return;
     saveBusy.current = true;
     const answeredAt = Date.now();
     pending.current ??= { answer, time: Math.floor((answeredAt - startTime) / 1000), answeredAt };
@@ -282,7 +270,7 @@ export default function TrainerClient() {
     setIsSaving(true);
     setStartError(null);
     try {
-      const savedResult = await saveVerifiedTrainerResult(currentQuestion.id, original.answer, original.time, attempt.current);
+      const savedResult = await saveVerifiedTrainerResult(currentQuestion.id, original.answer, original.time, attempt.current, currentQuestion);
       const levelChange = savedResult.levelChange;
       setLevelProgress({ level: levelChange.level, progress: levelChange.progress });
       if (levelChange.leveledUp) setLevelUpLevel(levelChange.level);
@@ -307,24 +295,28 @@ export default function TrainerClient() {
   };
 
   const handleNextQuestion = async () => {
-    if (!currentQuestion || !submitted || isSaving || saveBusy.current) {
+    if (!currentQuestion || !submitted || isSaving || saveBusy.current || selectionRequest.current || accountChanged) {
       return;
     }
 
+    const controller = new AbortController();
+    selectionRequest.current = controller;
     setIsSaving(true);
+    setStartError(null);
 
     try {
       const nextQuestionNumber = results.length + 1;
       const forceChallenge = isTrainerChallengeQuestion(nextQuestionNumber);
-      const nextQuestion =
-        await getNextTrainerQuestion({
+      const { question: nextQuestion } =
+        await getNextTrainerSelection(items, {
           division,
           previousQuestionId:
             currentQuestion.id,
           targetDifficulty: adaptiveState?.difficulty,
           sessionResults: results,
           forceChallenge,
-        });
+        }, { signal: controller.signal, expectedUserId: sessionOwner.current });
+      if (selectionRequest.current !== controller || controller.signal.aborted) return;
 
       if (!nextQuestion) {
         setSessionEndedAt(Date.now());
@@ -343,23 +335,28 @@ export default function TrainerClient() {
       setQuestionFinishedAt(null);
       setNow(startedAt);
       setStartError(null);
-    } catch {
+    } catch (error) {
+      if (selectionRequest.current !== controller || controller.signal.aborted) return;
+      if (error instanceof TrainerAccountChangedError) setAccountChanged(true);
       setStartError(
-        "Unable to load the next question. Please try again."
+        error instanceof Error ? error.message : "Unable to load the next question. Please try again."
       );
     } finally {
-      setIsSaving(false);
+      if (selectionRequest.current === controller) {
+        selectionRequest.current = null;
+        setIsSaving(false);
+      }
     }
   };
 
   const handleEndSession = () => {
-    if (!isSaving && (!hasPending || submitted)) {
+    if (!isSaving && !accountChanged && (!hasPending || submitted)) {
       setShowEndDialog(true);
     }
   };
 
   const handleConfirmEndSession = async () => {
-    if (isSaving) {
+    if (isSaving || accountChanged) {
       return;
     }
 
@@ -384,7 +381,7 @@ export default function TrainerClient() {
           startingLevelProgress,
         endingLevel: levelProgress,
         results,
-      });
+      }, sessionOwner.current);
 
       setTrainerHistory(savedHistory);
       setSessionEndedAt(endedAt);
@@ -401,6 +398,7 @@ export default function TrainerClient() {
   };
 
   const handleStartNewSession = () => {
+    sessionOwner.current = undefined;
     attempt.current = null;
     pending.current = null;
     setHasPending(false);
@@ -423,11 +421,22 @@ export default function TrainerClient() {
     router.push("/practice");
   };
 
+  if (accountChanged) {
+    return (
+      <main className="mx-auto max-w-3xl px-5 py-12 text-slate-950">
+        <h1 className="text-3xl font-bold">Your account changed</h1>
+        <p role="alert" className="mt-4">Reload Trainer to start a new session. This session will not be saved to a different account.</p>
+        <button type="button" onClick={() => window.location.reload()} className="mt-6 rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white">Reload Trainer</button>
+      </main>
+    );
+  }
+
   if (!sessionStarted) {
     return (
       <TrainerSetup
         division={division}
         error={startError}
+        loading={isSaving}
         onDivisionChange={(newDivision) => {
           setDivision(newDivision);
           setStartError(null);
@@ -442,6 +451,7 @@ export default function TrainerClient() {
   if (showSummary) {
     return (
       <TrainerSummary
+        items={items}
         division={division}
         stats={sessionStats}
         results={results}

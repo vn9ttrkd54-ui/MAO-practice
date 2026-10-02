@@ -1,16 +1,16 @@
 import Link from "next/link";
 
-import { questions } from "@/data/questions";
-
 import type { Division } from "@/types/question";
 import type { LevelProgress } from "@/types/level";
 import type {
   TrainerQuestionResult,
   TrainerSessionRecord,
   TrainerSessionStats,
+  TrainerQuestionItem,
 } from "@/types/trainer";
 
 type TrainerSummaryProps = {
+  items: TrainerQuestionItem[];
   division: Division;
   stats: TrainerSessionStats;
   results: TrainerQuestionResult[];
@@ -22,10 +22,6 @@ type TrainerSummaryProps = {
   onStartNewSession: () => void;
   onReturnToPractice: () => void;
 };
-
-const questionById = new Map(
-  questions.map((question) => [question.id, question])
-);
 
 function resultLabel(result: TrainerQuestionResult["result"]) {
   if (result === "correct") return "Correct";
@@ -45,7 +41,7 @@ function resultClasses(result: TrainerQuestionResult["result"]) {
   return "border-amber-200 bg-amber-50 text-amber-800";
 }
 
-function topicPerformance(results: TrainerQuestionResult[]) {
+function topicPerformance(results: TrainerQuestionResult[], questionById: Map<number, TrainerQuestionItem>) {
   const topics = new Map<string, { attempted: number; correct: number }>();
 
   for (const result of results) {
@@ -99,6 +95,7 @@ function formatDuration(totalSeconds: number) {
 }
 
 export default function TrainerSummary({
+  items,
   division,
   stats,
   results,
@@ -110,6 +107,7 @@ export default function TrainerSummary({
   onStartNewSession,
   onReturnToPractice,
 }: TrainerSummaryProps) {
+  const questionById = new Map(items.map(item => [item.id, item]));
   const sessionScore =
     stats.correct - stats.incorrect - stats.giveUps;
   const totalQuestionSeconds = results.reduce(
@@ -120,7 +118,7 @@ export default function TrainerSummary({
     results.length > 0
       ? Math.round(totalQuestionSeconds / results.length)
       : 0;
-  const topics = topicPerformance(results);
+  const topics = topicPerformance(results, questionById);
   const rankedTopics = [...topics].sort(
     (first, second) =>
       second.correct - first.correct ||
