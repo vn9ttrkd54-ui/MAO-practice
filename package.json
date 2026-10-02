@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test:multiplayer-browser": "node scripts/multiplayerBrowserTest.mjs",
     "test:multiplayer-realtime": "node --env-file=.env.local scripts/multiplayerRealtimeLoadTest.mjs",
-    "test:tutor-safety": "node --experimental-strip-types --test tests/*.test.mjs"
+    "test:tutor-safety": "node --experimental-strip-types --test tests/*.test.mjs",
+    "metrics:summary": "node --experimental-strip-types scripts/summarizeApiMetrics.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

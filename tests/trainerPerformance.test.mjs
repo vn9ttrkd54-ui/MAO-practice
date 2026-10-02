@@ -9,6 +9,7 @@ import { alphaQuestions } from "../data/questions/alpha.ts";
 import { thetaQuestions } from "../data/questions/theta.ts";
 import { selectNextTrainerQuestion } from "../lib/trainer.ts";
 import { withRequestTimeout } from "../lib/requestTimeout.ts";
+import { createApiObserver } from "../lib/apiMetrics.ts";
 
 const questions = [...muQuestions, ...alphaQuestions, ...thetaQuestions];
 const metadata = questions.map(({ id, number, division, topic, difficulty }) => ({ id, number, division, topic, difficulty }));
@@ -27,17 +28,17 @@ test("Trainer metadata and single-question delivery preserve original catalog co
   const catalog = await load("lib/trainerCatalog.ts", { "server-only": {}, "@/data/questions": { questions } });
   assert.equal(JSON.stringify(catalog.getTrainerItems()), JSON.stringify(metadata));
   assert.ok(JSON.stringify(metadata).length < JSON.stringify(questions).length / 5);
-  const { GET } = await load("app/api/practice/trainer/question/route.ts", { "@/lib/trainerCatalog": catalog });
+  const { GET } = await load("app/api/practice/trainer/question/route.ts", { "@/lib/trainerCatalog": catalog, "@/lib/serverPerformance": { observeApi: createApiObserver() } });
   for (const question of questions) {
-    const response = GET(new Request(`https://example.test/api/practice/trainer/question?id=${question.id}`));
+    const response = await GET(new Request(`https://example.test/api/practice/trainer/question?id=${question.id}`));
     assert.equal(response.status, 200);
     assert.equal(response.headers.get("cache-control"), "no-store");
     assert.deepEqual(await response.json(), { question });
   }
   for (const query of ["", "id=0", "id=-1", "id=1e4", "id=10001&id=10002", "id=01", "id=9999999999999999999"]) {
-    assert.equal(GET(new Request(`https://example.test/?${query}`)).status, 400);
+    assert.equal((await GET(new Request(`https://example.test/?${query}`))).status, 400);
   }
-  assert.equal(GET(new Request("https://example.test/?id=9999999")).status, 404);
+  assert.equal((await GET(new Request("https://example.test/?id=9999999"))).status, 404);
 });
 
 test("960 seeded selections match the pre-refactor algorithm across all divisions and eight progress scenarios", async () => {

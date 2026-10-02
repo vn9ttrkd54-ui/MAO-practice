@@ -4,6 +4,7 @@ import test from "node:test";
 import { runInThisContext } from "node:vm";
 import ts from "typescript";
 import * as crypto from "node:crypto";
+import { createApiObserver } from "../lib/apiMetrics.ts";
 
 // Run actual route code and the actual JSON/origin helper. Every external
 // dependency is explicit and local; this harness never loads provider clients.
@@ -121,6 +122,7 @@ async function invoke(routeName, body, options = {}) {
   };
   const [path, method] = routes[routeName];
   const handlers = await loadModule(path, {
+    "@/lib/serverPerformance": { observeApi: createApiObserver() },
     "node:crypto": crypto,
     "next/server": { NextResponse: { json: (value, init) => Response.json(value, init) } },
     "next/headers": { cookies: async () => ({ get: () => ({ value: "test-only-cookie" }), delete: () => record("deleteCookie") }) },

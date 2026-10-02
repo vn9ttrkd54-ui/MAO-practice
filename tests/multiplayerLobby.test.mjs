@@ -6,6 +6,7 @@ import { runInThisContext } from "node:vm";
 import { createHash, randomUUID } from "node:crypto";
 import ts from "typescript";
 import { nextLobbyConnection } from "../lib/multiplayerLobbyConnection.ts";
+import { createApiObserver } from "../lib/apiMetrics.ts";
 
 const require = createRequire(import.meta.url);
 const compiled = new Map();
@@ -94,6 +95,7 @@ function routeFixture({ fail=false }={}) {
   const record=(name,result)=>(...args)=>{calls.push({name,args});if(fail)throw new Error('database credential detail');return result;};
   const service={getPrivateLobby:record('get',snapshot),changeMultiplayerLobbyPresence:record('presence',{status:'connected',lobby:snapshot}),confirmMultiplayerLeave:record('leave','left')};
   const route=load('app/api/multiplayer/rooms/[id]/lobby/route.ts',{
+    '@/lib/serverPerformance':{observeApi:createApiObserver()},
     'next/server':{NextResponse:{json:Response.json}},'@/lib/security/request':security,'@/lib/services/multiplayerService':service,
   });
   const invoke=(method,body,headers={},id=roomId)=>route[method](new Request('https://local.test/api/lobby',{method,headers:{'Content-Type':'application/json',...headers},...(method==='GET'?{}:{body:JSON.stringify(body)})}),{params:Promise.resolve({id})});
@@ -128,7 +130,7 @@ test("browser-supplied identities are ignored; leave and presence remain differe
 });
 test("public directory caches only public data and never caches failure responses",async()=>{
   for(const fail of [false,true]) {
-    const route=load('app/api/multiplayer/public-rooms/route.ts',{'next/server':{NextResponse:{json:Response.json}},
+    const route=load('app/api/multiplayer/public-rooms/route.ts',{'@/lib/serverPerformance':{observeApi:createApiObserver()},'next/server':{NextResponse:{json:Response.json}},
       '@/lib/services/multiplayerService':{listPublicRooms:()=>{if(fail)throw Error('private detail');return [];}}});
     const response=await route.GET();
     assert.equal(response.status,fail?503:200);

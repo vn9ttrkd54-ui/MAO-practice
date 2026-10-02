@@ -7,6 +7,7 @@ import { parseDashboardSnapshot, dashboardObject } from "../lib/dashboardSnapsho
 import { withRequestTimeout } from "../lib/requestTimeout.ts";
 import { getMultiplayerSummary } from "../lib/multiplayerSummary.ts";
 import { dashboardFixture, dashboardOwner } from "./browserFixtures/dashboardData.ts";
+import { createApiObserver } from "../lib/apiMetrics.ts";
 
 async function load(path, dependencies = {}, globals = {}) {
   const source = await readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -92,6 +93,7 @@ test("server enriches one compact RPC result using the catalog only on the serve
 async function routeFixture(options = {}) {
   const calls = { auth: 0, reads: 0 };
   const route = await load("app/api/dashboard/route.ts", {
+    "@/lib/serverPerformance": { observeApi: createApiObserver() },
     "@/lib/requestTimeout": { withRequestTimeout: fastTimeout },
     "@/lib/supabase/server": { createClient: async () => ({ auth: { getUser: async () => {
       calls.auth++; if (options.stallAuth) return new Promise(() => {});
