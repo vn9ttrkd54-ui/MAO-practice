@@ -7,15 +7,12 @@ import type { Question } from "@/types/question";
 import type { QuestionProgress } from "@/types/progress";
 
 import {
-  getQuestionProgress,
   saveQuestionAttempt,
   saveQuestionGiveUp,
 } from "@/lib/services/progressService";
 
-import {
-  isQuestionBookmarked,
-  toggleQuestionBookmark,
-} from "@/lib/services/bookmarkService";
+import { getQuestionState, setQuestionBookmark, QuestionStateAccountError } from "@/lib/services/questionStateService";
+import { createClient } from "@/lib/supabase/client";
 
 import { questionBankHref, questionBankReturnTo, type questionBankNavigation } from "@/lib/questionBankListing";
 import { createPracticeAttempt, type PracticeAttempt } from "@/lib/services/practiceAttemptService";
@@ -32,27 +29,17 @@ import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
 import LlamaTutor from "@/components/practice/LlamaTutor";
 
-const EMPTY_PROGRESS: QuestionProgress = {
-  attempts: 0,
-  correct: 0,
-  times: [],
-  lastResult: null,
-  lastCorrectAt: null,
-};
-
 export default function QuestionClient({
   question,
-  tutorEnabled,
   navigation,
 }: {
   question: Question;
-  tutorEnabled: boolean;
   navigation: ReturnType<typeof questionBankNavigation>;
 }) {
-  return <QuestionSession key={question.id} question={question} tutorEnabled={tutorEnabled} navigation={navigation} />;
+  return <QuestionSession key={question.id} question={question} navigation={navigation} />;
 }
 
-function QuestionSession({ question, tutorEnabled, navigation }: { question: Question; tutorEnabled: boolean; navigation: ReturnType<typeof questionBankNavigation> }) {
+function QuestionSession({ question, navigation }: { question: Question; navigation: ReturnType<typeof questionBankNavigation> }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const returnTo = questionBankReturnTo(searchParams.get("returnTo"), question.division);
@@ -78,6 +65,20 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
   const busy = useRef(false);
   const [hasPending, setHasPending] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const owner = useRef<string | null | undefined>(undefined);
+  const active = useRef(false);
+  const blocked = useRef(false);
+  const revision = useRef(0);
+  const bookmarkRequest = useRef<AbortController | null>(null);
+  const bookmarkIntent = useRef<boolean | null>(null);
+  const retryState = useRef<() => void>(() => undefined);
+  const [accountChanged, setAccountChanged] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
+  const [stateLoading, setStateLoading] = useState(true);
+  const [stateError, setStateError] = useState<string | null>(null);
+  const [bookmarkError, setBookmarkError] = useState<string | null>(null);
+  const [bookmarkPending, setBookmarkPending] = useState(false);
+  const [hasAccount, setHasAccount] = useState(false);
 
   const [attemptNumber, setAttemptNumber] =
     useState(0);
@@ -86,48 +87,96 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
     useState(false);
 
   const [progress, setProgress] =
-    useState<QuestionProgress>(EMPTY_PROGRESS);
+    useState<QuestionProgress | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    active.current = true;
+    let disposed = false;
+    let request: AbortController | null = null;
+    let lastStart = -Infinity;
     startTime.current = Date.now();
-    attempt.current ??= createPracticeAttempt(question.id, false);
-    void attempt.current.prepare().catch((error: unknown) => {
-      if (!cancelled) setSaveError(error instanceof Error ? error.message : "Unable to start this attempt.");
-    });
-
-    async function loadQuestionState() {
+    const invalidate = () => {
+      blocked.current = true;
+      request?.abort();
+      bookmarkRequest.current?.abort();
+      bookmarkRequest.current = null;
+      attempt.current = null;
+      setProgress(null);
+      setBookmarked(false);
+      setDataReady(false);
+      setHasAccount(false);
+      setAccountChanged(true);
+    };
+    async function loadQuestionState(force = false) {
+      if (disposed || blocked.current || request || busy.current || bookmarkIntent.current !== null
+        || document.visibilityState === "hidden" || (!force && Date.now() - lastStart < 2000)) return;
+      const controller = new AbortController();
+      request = controller;
+      lastStart = Date.now();
+      const atRevision = revision.current;
+      setStateLoading(true);
       try {
-        const [savedProgress, savedBookmark] =
-          await Promise.all([
-            getQuestionProgress(question.id),
-            isQuestionBookmarked(question.id),
-          ]);
-
-        if (!cancelled) {
-          if (!pending.current) setProgress(savedProgress);
-          setBookmarked(savedBookmark);
+        const state = await getQuestionState(question.id, controller.signal);
+        if (disposed || controller.signal.aborted || blocked.current) return;
+        if (owner.current !== undefined && owner.current !== state.userId) { invalidate(); return; }
+        owner.current = state.userId;
+        if (atRevision === revision.current) {
+          setProgress(state.progress);
+          setBookmarked(state.bookmarked);
         }
-      } catch {
-        if (!cancelled) {
-          if (!pending.current) setProgress(EMPTY_PROGRESS);
-          setBookmarked(false);
+        setHasAccount(state.userId !== null);
+        setDataReady(true);
+        setStateError(null);
+        if (!attempt.current) {
+          attempt.current ??= createPracticeAttempt(question.id, false, state.userId);
+          const fresh = attempt.current;
+          void fresh.prepare().catch((error: unknown) => {
+            if (!disposed && attempt.current === fresh) setSaveError(error instanceof Error ? error.message : "Unable to start this attempt.");
+          });
+        }
+      } catch (error) {
+        if (disposed || controller.signal.aborted) return;
+        if (error instanceof QuestionStateAccountError) { invalidate(); return; }
+        setStateError(error instanceof Error ? error.message : "Unable to load question statistics. Please retry.");
+      } finally {
+        if (request === controller) {
+          request = null;
+          if (!disposed) setStateLoading(false);
         }
       }
     }
-
-    void loadQuestionState();
-
+    const { data: { subscription } } = createClient().auth.onAuthStateChange((_event, session) => {
+      const next = session?.user.id ?? null;
+      if (owner.current !== undefined && owner.current !== next) invalidate();
+      else owner.current = next;
+    });
+    const refresh = () => { void loadQuestionState(); };
+    retryState.current = () => { void loadQuestionState(true); };
+    void loadQuestionState(true);
+    window.addEventListener("focus", refresh);
+    window.addEventListener("pageshow", refresh);
+    document.addEventListener("visibilitychange", refresh);
     return () => {
-      cancelled = true;
+      disposed = true;
+      active.current = false;
+      request?.abort();
+      bookmarkRequest.current?.abort();
+      bookmarkRequest.current = null;
+      attempt.current = null;
+      subscription.unsubscribe();
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("pageshow", refresh);
+      document.removeEventListener("visibilitychange", refresh);
     };
   }, [question.id]);
 
   const goToQuestion = (destinationId: number) => router.push(questionBankHref(destinationId, returnTo, navigation.sequence));
 
   const handleSave = async (answer: string | null) => {
-    if (submitted || busy.current || !attempt.current) return;
+    if (submitted || busy.current || !attempt.current || !dataReady || blocked.current) return;
+    const currentAttempt = attempt.current;
     busy.current = true;
+    revision.current++;
     pending.current ??= { answer, time: answer === null ? 0 : Math.floor((Date.now() - startTime.current) / 1000) };
     const original = pending.current;
     setSelectedAnswer(original.answer);
@@ -136,21 +185,24 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
     setSaveError(null);
     try {
       const result = original.answer === null
-        ? await saveQuestionGiveUp(question.id, attempt.current)
-        : await saveQuestionAttempt(question.id, original.answer, original.time, attempt.current);
+        ? await saveQuestionGiveUp(question.id, currentAttempt, question)
+        : await saveQuestionAttempt(question.id, original.answer, original.time, currentAttempt, question);
+      if (!active.current || attempt.current !== currentAttempt || blocked.current) return;
+      revision.current++;
       setProgress(result.progress);
       setTutorRevealToken(result.tutorRevealToken);
       setSubmitted(true);
     } catch (error) {
+      if (!active.current || attempt.current !== currentAttempt || blocked.current) return;
       setSaveError(error instanceof Error ? error.message : "Unable to save this result. Please retry.");
     } finally {
       busy.current = false;
-      setIsSaving(false);
+      if (active.current && !blocked.current) setIsSaving(false);
     }
   };
 
   const handleReattempt = () => {
-    if (busy.current) return;
+    if (busy.current || blocked.current || !dataReady) return;
     pending.current = null;
     setHasPending(false);
     setSaveError(null);
@@ -158,30 +210,51 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
     setSelectedAnswer(null);
     setTutorRevealToken(null);
     startTime.current = Date.now();
-    const fresh = createPracticeAttempt(question.id, false);
+    const fresh = createPracticeAttempt(question.id, false, owner.current);
     attempt.current = fresh;
     void fresh.prepare().catch((error: unknown) => {
-      if (attempt.current === fresh) setSaveError(error instanceof Error ? error.message : "Unable to start this attempt.");
+      if (active.current && attempt.current === fresh) setSaveError(error instanceof Error ? error.message : "Unable to start this attempt.");
     });
     setAttemptNumber((current) => current + 1);
   };
 
   const handleBookmarkToggle = async () => {
-    if (isBookmarkSaving) {
-      return;
-    }
-
+    if (!dataReady || bookmarkRequest.current || blocked.current || owner.current === undefined) return;
+    const controller = new AbortController();
+    bookmarkRequest.current = controller;
+    bookmarkIntent.current ??= !bookmarked;
+    const desired = bookmarkIntent.current;
+    revision.current++;
+    setBookmarkPending(true);
     setIsBookmarkSaving(true);
-
+    setBookmarkError(null);
     try {
-      const updatedBookmark =
-        await toggleQuestionBookmark(question.id);
-
-      setBookmarked(updatedBookmark);
+      const updated = await setQuestionBookmark(question.id, desired, owner.current, controller.signal);
+      if (!active.current || controller.signal.aborted || blocked.current) return;
+      revision.current++;
+      setBookmarked(updated);
+      bookmarkIntent.current = null;
+      setBookmarkPending(false);
+    } catch (error) {
+      if (!active.current || controller.signal.aborted || blocked.current) return;
+      if (error instanceof QuestionStateAccountError) {
+        blocked.current = true;
+        attempt.current = null;
+        setAccountChanged(true);
+      } else setBookmarkError(error instanceof Error ? error.message : "Unable to confirm your bookmark. Please retry.");
     } finally {
-      setIsBookmarkSaving(false);
+      if (bookmarkRequest.current === controller) {
+        bookmarkRequest.current = null;
+        if (active.current && !blocked.current) setIsBookmarkSaving(false);
+      }
     }
   };
+
+  if (accountChanged) return <main className="mx-auto max-w-3xl px-5 py-12 text-slate-950">
+    <h1 className="text-3xl font-bold">Reload this question</h1>
+    <p role="alert" className="mt-4">Your account changed or could not be confirmed. Reload before continuing; this attempt will not be saved to a different account.</p>
+    <button type="button" onClick={() => window.location.reload()} className="mt-6 rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white">Reload question</button>
+  </main>;
 
   return (
     <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-4 py-8 sm:px-8 sm:py-10">
@@ -197,6 +270,15 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
         backHref={returnTo}
       />
 
+      {stateError ? <div role="alert" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+        <p>{stateError} {dataReady ? "Showing the last confirmed statistics and bookmark." : "Statistics and bookmark status are unavailable, not reset."}</p>
+        <button type="button" disabled={stateLoading || isSaving || bookmarkPending} onClick={() => retryState.current()} className="mt-2 font-bold underline disabled:opacity-50">{stateLoading ? "Loading saved state…" : "Retry saved state"}</button>
+      </div> : stateLoading && !dataReady ? <p role="status" className="mt-4 text-sm text-slate-600">Loading saved statistics and bookmark… You can read the question while this loads.</p> : null}
+      {bookmarkError ? <div role="alert" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+        <p>{bookmarkError} Keep this page open until confirmed.</p>
+        <button type="button" disabled={isBookmarkSaving} onClick={() => { void handleBookmarkToggle(); }} className="mt-2 font-bold underline disabled:opacity-50">{isBookmarkSaving ? "Saving bookmark…" : "Retry bookmark"}</button>
+      </div> : null}
+
       <div className="flex flex-wrap justify-between items-center gap-3 mt-6 mb-6">
         <Timer
           key={`${question.id}-${attemptNumber}`}
@@ -207,6 +289,9 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
           <QuestionReportButton questionId={question.id} division={question.division} />
           <BookmarkButton
             bookmarked={bookmarked}
+            known={dataReady}
+            saving={isBookmarkSaving}
+            disabled={!dataReady || isBookmarkSaving || bookmarkPending}
             onToggle={() => {
               void handleBookmarkToggle();
             }}
@@ -238,7 +323,7 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
                 disabled={
                   (!selectedAnswer && !hasPending) ||
                   submitted ||
-                  isSaving
+                  isSaving || !dataReady
                 }
                 onClick={() => {
                   void handleSave(selectedAnswer);
@@ -259,11 +344,11 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
                   disabled:opacity-50
                 "
               >
-                {isSaving ? "Saving..." : hasPending ? "Retry save" : "Submit"}
+                {submitted ? "Saved" : isSaving ? "Saving..." : hasPending ? "Retry save" : "Submit"}
               </button>
 
               <button
-                disabled={submitted || isSaving || hasPending}
+                disabled={submitted || isSaving || hasPending || !dataReady}
                 onClick={() => {
                   void handleSave(null);
                 }}
@@ -313,14 +398,17 @@ function QuestionSession({ question, tutorEnabled, navigation }: { question: Que
           </div>
         </div>
 
-        <QuestionStats
+        {progress ? <QuestionStats
           attempts={progress.attempts}
           correct={progress.correct}
           times={progress.times}
           timing={progress.timing}
-        />
+        /> : <aside className="self-start rounded-2xl border-2 border-slate-900 bg-[#f8fafc] p-5">
+          <h2 className="mb-4 text-xl font-bold">Statistics</h2>
+          <p>{stateLoading ? "Loading your saved statistics…" : "Statistics are unavailable. Retry saved state to load them."}</p>
+        </aside>}
       </div>
-      {tutorEnabled ? <LlamaTutor questionId={question.id} revealToken={tutorRevealToken} /> : null}
+      {hasAccount ? <LlamaTutor questionId={question.id} revealToken={tutorRevealToken} /> : null}
       </div>
     </main>
   );

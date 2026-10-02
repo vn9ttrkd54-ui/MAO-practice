@@ -8,6 +8,7 @@ import { muQuestions } from "../data/questions/mu.ts";
 import { thetaQuestions } from "../data/questions/theta.ts";
 import { toQuestionBankItem, filterQuestionBankItems, encodeQuestionSequence, decodeQuestionSequence, questionBankNavigation, questionBankReturnTo, questionBankHref } from "../lib/questionBankListing.ts";
 import { withRequestTimeout } from "../lib/requestTimeout.ts";
+import { questionReadError } from "../lib/questionReadError.ts";
 
 const catalog = [...muQuestions, ...alphaQuestions, ...thetaQuestions];
 test("division metadata preserves every label/id/filter field and excludes full question content", () => {
@@ -107,6 +108,7 @@ function fixture() {
     },
   };
   const dependencies = {
+    "@/lib/questionReadError": { questionReadError },
     "@/lib/supabase/client": { createClient: () => supabase },
     "@/lib/storage/bookmarks/memoryBookmarkStorage": { getMemoryBookmarkIds: () => [2, 99] },
     "@/lib/storage/progress/memoryProgressStorage": { getMemoryProgressSnapshot: () => state.guest },

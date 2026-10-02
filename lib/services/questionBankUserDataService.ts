@@ -3,6 +3,7 @@ import { getMemoryBookmarkIds } from "@/lib/storage/bookmarks/memoryBookmarkStor
 import { getMemoryProgressSnapshot } from "@/lib/storage/progress/memoryProgressStorage";
 import type { QuestionStatus } from "@/types/progress";
 import { withRequestTimeout } from "@/lib/requestTimeout";
+import { questionReadError } from "@/lib/questionReadError";
 
 interface ProgressRow {
   question_id: number;
@@ -106,7 +107,7 @@ async function loadQuestionBankUserData(questionIds: number[], requestSignal: Ab
         .select(table === "question_progress" ? "question_id, last_result" : "question_id")
         .eq("user_id", userId).gte("question_id", min).lte("question_id", max)
         .order("question_id", { ascending: true }).range(offset, offset + 499).abortSignal(reads.signal);
-      if (response.error) throw new Error("Unable to load your saved progress. Please retry.");
+      if (response.error) throw questionReadError(table === "bookmarks" ? "BOOKMARKS" : "PROGRESS", response.error);
       const page = (response.data ?? []) as unknown as Array<ProgressRow | BookmarkRow>;
       rows.push(...page);
       if (page.length < 500) return rows;

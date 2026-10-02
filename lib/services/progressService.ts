@@ -43,12 +43,12 @@ async function saveResult(questionId: number, answer: string | null, time: numbe
   });
 }
 
-export function saveQuestionAttempt(questionId: number, selectedAnswer: string, timeInSeconds: number, attempt: PracticeAttempt) {
-  return saveResult(questionId, selectedAnswer, timeInSeconds, false, attempt);
+export function saveQuestionAttempt(questionId: number, selectedAnswer: string, timeInSeconds: number, attempt: PracticeAttempt, displayedQuestion?: Pick<Question, "id" | "answer">) {
+  return saveResult(questionId, selectedAnswer, timeInSeconds, false, attempt, displayedQuestion);
 }
 
-export function saveQuestionGiveUp(questionId: number, attempt: PracticeAttempt) {
-  return saveResult(questionId, null, 0, false, attempt);
+export function saveQuestionGiveUp(questionId: number, attempt: PracticeAttempt, displayedQuestion?: Pick<Question, "id" | "answer">) {
+  return saveResult(questionId, null, 0, false, attempt, displayedQuestion);
 }
 
 export async function saveVerifiedTrainerResult(questionId: number, selectedAnswer: string | null, timeInSeconds: number, attempt: PracticeAttempt, displayedQuestion?: Pick<Question, "id" | "answer">) {

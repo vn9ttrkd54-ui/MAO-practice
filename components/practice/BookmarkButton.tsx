@@ -6,19 +6,27 @@ import {
 type BookmarkButtonProps = {
   bookmarked: boolean;
   onToggle: () => void;
+  disabled?: boolean;
+  saving?: boolean;
+  known?: boolean;
 };
 
 export default function BookmarkButton({
   bookmarked,
   onToggle,
+  disabled = false,
+  saving = false,
+  known = true,
 }: BookmarkButtonProps) {
   return (
     <button
       type="button"
       onClick={onToggle}
+      disabled={disabled}
+      aria-busy={saving}
       aria-pressed={bookmarked}
       aria-label={
-        bookmarked
+        !known ? "Bookmark status unavailable" : bookmarked
           ? "Remove bookmark"
           : "Bookmark question"
       }
@@ -32,6 +40,8 @@ export default function BookmarkButton({
         py-2
         hover:bg-gray-100
         transition
+        disabled:opacity-50
+        disabled:cursor-not-allowed
       "
     >
       {bookmarked ? (
@@ -47,7 +57,7 @@ export default function BookmarkButton({
       )}
 
       <span>
-        {bookmarked
+        {saving ? "Saving bookmark…" : !known ? "Bookmark unavailable" : bookmarked
           ? "Bookmarked"
           : "Bookmark"}
       </span>

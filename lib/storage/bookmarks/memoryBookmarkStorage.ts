@@ -2,6 +2,11 @@ import type { BookmarkStorage } from "@/lib/storage/bookmarks/bookmarkStorage";
 
 const bookmarkedQuestionIds = new Set<number>();
 
+export function setMemoryQuestionBookmark(questionId: number, bookmarked: boolean) {
+  if (bookmarked) bookmarkedQuestionIds.add(questionId);
+  else bookmarkedQuestionIds.delete(questionId);
+}
+
 export function getMemoryBookmarkIds(): number[] {
   return Array.from(bookmarkedQuestionIds);
 }
