@@ -3,6 +3,15 @@ type AnswerCheckQuestion = {
   choices: string[];
 };
 
+export function containsProgrammingInstructions(text: string) {
+  // Catch code even if the model incorrectly labels the reply as in scope.
+  return /```/.test(text)
+    || /\b(?:print|printf|puts|console\.log|document\.write|System\.out\.print(?:ln)?|eval|exec)\s*\(/i.test(text)
+    || /\b(?:def|function)\s+[a-z_$][\w$]*\s*\(/i.test(text)
+    || /\b(?:const|let|var)\s+[a-z_$][\w$]*\s*=/i.test(text)
+    || /(?:^|\n)\s*(?:from\s+[\w.]+\s+import\s+|import\s+[\w.]+(?:\s+as\s+\w+)?\s*(?:;|$))/m.test(text);
+}
+
 function normalizedAnswerText(value: string) {
   return value
     .replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, "$1/$2")

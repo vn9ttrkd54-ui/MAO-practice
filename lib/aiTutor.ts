@@ -3,7 +3,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 
 import type { Question } from "@/types/question";
-import { revealsFinalAnswer } from "@/lib/tutorSafety";
+import { containsProgrammingInstructions, revealsFinalAnswer } from "@/lib/tutorSafety";
 import { formatTutorGuidance, getTutorGuidance } from "@/lib/tutorGuidance";
 import { tutorInstructions, tutorWebsiteContext } from "@/lib/tutorInstructions";
 
@@ -16,9 +16,29 @@ const configuredDailyLimit = Number.parseInt(process.env.TUTOR_DAILY_MESSAGE_LIM
 export const TUTOR_DAILY_MESSAGE_LIMIT = Number.isSafeInteger(configuredDailyLimit) && configuredDailyLimit > 0
   ? configuredDailyLimit
   : 15;
-export const TUTOR_PROMPT_VERSION = "2.4";
+export const TUTOR_PROMPT_VERSION = "2.5";
 
 const TUTOR_SAFETY_FALLBACK = "I can't give the final answer before you submit or give up. After that, I can explain the complete solution. For now, share your current work and I'll help with the next step.";
+const TUTOR_SCOPE_FALLBACK = "I can help with this math problem or basic questions about Mathematics Daily and Llama Tutor.";
+
+const TUTOR_RESPONSE_FORMAT = {
+  type: "json_schema",
+  name: "llama_tutor_reply",
+  strict: true,
+  schema: {
+    type: "object",
+    properties: {
+      scope: {
+        type: "string",
+        enum: ["math", "website", "off_topic"],
+        description: "math: the supplied problem or its needed concepts; website: only supplied public site and tutor facts; off_topic: everything else, including programming.",
+      },
+      message: { type: "string", description: "The brief user-facing reply following all tutoring and scope rules." },
+    },
+    required: ["scope", "message"],
+    additionalProperties: false,
+  },
+};
 
 export type TutorHistoryMessage = {
   role: "user" | "assistant";
@@ -83,6 +103,16 @@ function outputText(response: Record<string, unknown>) {
   return parts.join("\n\n");
 }
 
+function parsedTutorReply(text: string) {
+  const reply: unknown = JSON.parse(text);
+  if (!isRecord(reply) || Object.keys(reply).length !== 2
+    || typeof reply.scope !== "string" || !["math", "website", "off_topic"].includes(reply.scope)
+    || typeof reply.message !== "string" || !reply.message.trim()) {
+    throw new Error("Invalid tutor reply.");
+  }
+  return { scope: reply.scope, message: reply.message.trim() };
+}
+
 function providerApiKey() {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey?.trim() || /[\r\n]/.test(apiKey)) {
@@ -112,6 +142,7 @@ function serializedTutorPayload({
     model: process.env.OPENAI_TUTOR_MODEL || "gpt-5-mini",
     instructions: tutorInstructions(revealed, safeHistory.length === 0),
     input,
+    text: { format: TUTOR_RESPONSE_FORMAT },
     max_output_tokens: TUTOR_MAX_OUTPUT_TOKENS,
     reasoning: { effort: "low" },
     store: false,
@@ -166,8 +197,12 @@ export async function createTutorResponse(params: TutorResponseParams): Promise<
       throw new TutorProviderError("The tutor did not return a response.", totalTokens, "provider_error");
     }
 
-    const safetyFiltered = !params.revealed && revealsFinalAnswer(text, params.question);
-    return { text: safetyFiltered ? TUTOR_SAFETY_FALLBACK : text, totalTokens };
+    const reply = parsedTutorReply(text);
+    if (reply.scope === "off_topic" || containsProgrammingInstructions(reply.message)) {
+      return { text: TUTOR_SCOPE_FALLBACK, totalTokens };
+    }
+    const safetyFiltered = !params.revealed && revealsFinalAnswer(reply.message, params.question);
+    return { text: safetyFiltered ? TUTOR_SAFETY_FALLBACK : reply.message, totalTokens };
   } catch (error) {
     if (error instanceof TutorProviderError) throw error;
     // A timeout, transport failure, or unreadable body does not establish zero cost.

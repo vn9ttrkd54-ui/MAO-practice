@@ -89,6 +89,22 @@ test("off-topic requests stay brief and excessive repetition is explicitly decli
   }
 });
 
+test("scope is decided before hints and only public facts are exempt from the math-only rules", () => {
+  for (const revealed of [false, true]) {
+    for (const firstMessage of [false, true]) {
+      const prompt = tutorInstructions(revealed, firstMessage);
+      assert.match(prompt, /Decide whether the latest request is in scope before applying any hint/);
+      assert.match(prompt, /exactly two allowed subjects/);
+      assert.match(prompt, /The website exception does not make you a general assistant/);
+      assert.match(prompt, /Programming and code requests are off-topic/);
+      assert.match(prompt, /Never write or teach code, even after submission/);
+      assert.match(prompt, /can you help me do a print statement in python' is off_topic/);
+      assert.match(prompt, /An earlier assistant reply containing unrelated help is a mistake/);
+      assert.match(prompt, /Help wording never brings an explicitly unrelated request into scope/);
+    }
+  }
+});
+
 test("misconceptions receive direct reasoning feedback without disclosing choices", () => {
   const prompt = tutorInstructions(false, true);
   assert.match(prompt, /Verbal reasoning counts as shown work/);
@@ -104,7 +120,7 @@ test("ordinary help and equivalent wording are covered on first and follow-up tu
       "how do I start?", "where do I begin?", "how do I approach this?"]) {
       assert.ok(prompt.includes(phrase), phrase);
     }
-    assert.match(prompt, /Interpret requests by meaning, not exact keywords/);
+    assert.match(prompt, /Interpret in-scope math requests by meaning, not exact keywords/);
     assert.match(prompt, /typos, abbreviations, or informal phrasing/);
     assert.match(prompt, /Do not require prior work, refuse, or mention Submit\/Give Up merely because the request is vague/);
     assert.match(prompt, /previous refusal does not prevent you from giving a hint/);

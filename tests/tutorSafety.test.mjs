@@ -1,7 +1,33 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { revealsFinalAnswer } from "../lib/tutorSafety.ts";
+import { containsProgrammingInstructions, revealsFinalAnswer } from "../lib/tutorSafety.ts";
+
+test("blocks the screenshot's Python examples and other common code formats", () => {
+  const examples = [
+    'Sure - in Python use the print() function. Examples: print("Hello, world!")',
+    'print ("Hello")',
+    'console.log("Hello");',
+    'System.out.println("Hello");',
+    'def greet(name):',
+    'function greet(name) {',
+    'const message = "Hello";',
+    'Here is some code:\n```python\nx = 3\n```',
+    'from math import sqrt',
+    'import math',
+  ];
+  for (const example of examples) assert.equal(containsProgrammingInstructions(example), true, example);
+});
+
+test("normal math, website explanations, and a brief coding refusal are not treated as code", () => {
+  for (const reply of [
+    String.raw`Differentiate \(f(x)\), then use the product rule.`,
+    String.raw`You can write \(x=3\) as an intermediate value.`,
+    'The tutor appears on signed-in Question Bank pages at desktop widths.',
+    'I cannot help with programming. I can help with this math problem.',
+    'Print the question on paper if you prefer to work by hand.',
+  ]) assert.equal(containsProgrammingInstructions(reply), false, reply);
+});
 
 const question = {
   answer: "C",

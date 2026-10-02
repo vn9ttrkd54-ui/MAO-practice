@@ -59,8 +59,8 @@ function response(data, ok = true) {
   return { ok, json: async () => data };
 }
 
-function completed(usage) {
-  return { status: "completed", output_text: "A short explanation.", usage };
+function completed(usage, message = "A short explanation.", scope = "math") {
+  return { status: "completed", output_text: JSON.stringify({ scope, message }), usage };
 }
 
 async function rejectsProvider(provider, expectedTokens, code = "provider_error") {
@@ -101,6 +101,10 @@ test("reserves against the exact transmitted UTF-8 payload with room for output 
   assert.equal(payload.max_output_tokens, 1200);
   assert.deepEqual(payload.reasoning, { effort: "low" });
   assert.equal(payload.store, false);
+  assert.equal(payload.text.format.type, "json_schema");
+  assert.equal(payload.text.format.strict, true);
+  assert.deepEqual(payload.text.format.schema.properties.scope.enum, ["math", "website", "off_topic"]);
+  assert.equal(payload.text.format.schema.additionalProperties, false);
   assert.equal(payload.instructions, tutorInstructions.tutorInstructions(true, false));
   assert.equal(payload.input.length, 8);
   assert.equal(payload.input[0].role, "developer");
@@ -149,10 +153,62 @@ test("public website facts reach the provider as trusted context with the config
 });
 
 test("public website questions do not bypass the final-answer output check", async () => {
-  const provider = loadProvider(async () => response({ ...completed({ total_tokens: 8 }), output_text: "The correct choice is A." }));
+  const provider = loadProvider(async () => response(completed({ total_tokens: 8 }, "The correct choice is A.", "website")));
   const result = await provider.createTutorResponse({ ...params, revealed: false, message: "Tell me about the website and the answer." });
   assert.match(result.text, /can't give the final answer before you submit/);
   assert.equal(result.totalTokens, 8);
+});
+
+test("off-topic replies are replaced with a fixed boundary regardless of model wording or reveal state", async () => {
+  for (const revealed of [false, true]) {
+    const provider = loadProvider(async () => response(completed({ total_tokens: 9 }, "Here is a poem about the ocean.", "off_topic")));
+    const result = await provider.createTutorResponse({ ...params, revealed, message: "Write me a poem" });
+    assert.equal(result.text, "I can help with this math problem or basic questions about Mathematics Daily and Llama Tutor.");
+    assert.equal(result.totalTokens, 9);
+    assert.equal(provider.calls.length, 1, "scope checks must not add paid provider calls");
+  }
+});
+
+test("Python examples cannot reach the user even when incorrectly labeled math or website", async () => {
+  for (const scope of ["math", "website"]) {
+    for (const revealed of [false, true]) {
+      const provider = loadProvider(async () => response(completed({ total_tokens: 11 }, 'Sure - in Python use the print() function. Examples: print("Hello, world!")', scope)));
+      const result = await provider.createTutorResponse({ ...params, revealed, message: "can you help me do a print statement in python" });
+      assert.equal(result.text, "I can help with this math problem or basic questions about Mathematics Daily and Llama Tutor.");
+      assert.equal(result.totalTokens, 11);
+    }
+  }
+});
+
+test("allowed website explanations and LaTeX hints pass through without schema labels", async () => {
+  for (const [scope, message] of [
+    ["website", "I appear on signed-in Question Bank pages at desktop widths."],
+    ["math", String.raw`Try factoring \(x^2+5x+6\).`],
+  ]) {
+    const provider = loadProvider(async () => response(completed({ total_tokens: 7 }, message, scope)));
+    const result = await provider.createTutorResponse({ ...params, revealed: false });
+    assert.equal(result.text, message);
+  }
+});
+
+test("verified submission still permits the official answer and a mixed request can explain public facts", async () => {
+  const official = loadProvider(async () => response(completed({ total_tokens: 7 }, "The correct choice is A.")));
+  assert.equal((await official.createTutorResponse(params)).text, "The correct choice is A.");
+  const message = "I cannot help with programming. I appear on signed-in Question Bank pages at desktop widths.";
+  const website = loadProvider(async () => response(completed({ total_tokens: 7 }, message, "website")));
+  assert.equal((await website.createTutorResponse({ ...params, revealed: false,
+    message: "Why are you missing on my phone, and show me a Python print statement?" })).text, message);
+});
+
+test("malformed scope output fails closed and retains known billing usage", async () => {
+  for (const output of [
+    "A raw reply without scope.", JSON.stringify({ scope: "general", message: "Hello" }),
+    JSON.stringify({ scope: "math", message: "" }), JSON.stringify({ scope: "math", message: 3 }),
+    JSON.stringify({ scope: ["math"], message: "Hello" }), JSON.stringify({ message: "Hello" }),
+    JSON.stringify({ scope: "math", message: "Hello", extra: "Unexpected" }),
+  ]) {
+    await rejectsProvider(loadProvider(async () => response({ ...completed({ total_tokens: 17 }), output_text: output })), 17);
+  }
 });
 
 test("only an actual nonnegative safe integer total_tokens establishes known usage, including zero", async () => {
@@ -223,8 +279,8 @@ test("malformed output cannot discard usage already reported by the provider", a
 test("defensive output parsing accepts real text among optional and malformed content", async () => {
   const provider = loadProvider(async () => response({
     status: "completed", usage: { total_tokens: 21 },
-    output: [null, { type: "reasoning" }, { content: [null, { type: "output_text", text: " First. " },
-      { type: "other", text: "Ignore." }, { type: "output_text", text: " Second. " }] }],
+    output: [null, { type: "reasoning" }, { content: [null, { type: "other", text: "Ignore." },
+      { type: "output_text", text: JSON.stringify({ scope: "math", message: "First.\n\nSecond." }) }] }],
   }));
   const result = await provider.createTutorResponse(params);
   assert.equal(result.text, "First.\n\nSecond.");
