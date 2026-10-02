@@ -125,7 +125,56 @@ try {
     await page.clock.runFor(180_000); assert.equal(state.posts.length, 1);
     await close(page, state);
   }
-  for (const action of ["close", "account", "question", "unmount", "hidden", "pagehide"]) {
+  {
+    const { page, state } = await open();
+    await send(page);
+    await page.getByText("Try drawing the tangent first.", { exact: true }).waitFor();
+    await page.getByLabel("Message Llama Tutor").fill("My unfinished message");
+    for (const visibility of ["hidden", "visible"]) {
+      await page.evaluate(value => {
+        Object.defineProperty(document, "visibilityState", { configurable: true, value });
+        document.dispatchEvent(new Event("visibilitychange"));
+      }, visibility);
+    }
+    await expect(page.locator("#llama-tutor-panel")).toBeVisible();
+    await expect(page.getByLabel("Message Llama Tutor")).toHaveValue("My unfinished message");
+    await page.getByText("Try drawing the tangent first.", { exact: true }).waitFor();
+    assert.equal(state.gets, 1, "switching tabs must not reopen the tutor or reload its allowance");
+    assert.equal(state.posts.length, 1, "switching tabs must not resend a completed request");
+    await page.getByRole("button", { name: "Next fixture question" }).click();
+    await expect(page.locator("#llama-tutor-panel")).toHaveCount(0);
+    await page.getByRole("button", { name: "Open Llama Tutor", exact: true }).click();
+    await expect(page.getByLabel("Message Llama Tutor")).toHaveValue("");
+    assert.equal(await page.getByText("Try drawing the tangent first.", { exact: true }).count(), 0);
+    await close(page, state);
+  }
+  for (const mode of ["hold", "busy"]) {
+    const { page, state } = await open({ mode });
+    await send(page);
+    await expect.poll(() => state.posts.length).toBe(1);
+    if (mode === "busy") await page.getByLabel("Waiting for tutor", { exact: true }).waitFor();
+    await page.evaluate(() => {
+      Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    if (mode === "hold") {
+      await state.held[0].fulfill({ json: { message: "Try drawing the tangent first.", messagesRemaining: state.remaining } });
+      state.held = [];
+    } else {
+      state.mode = "success";
+      await page.clock.runFor(3000);
+    }
+    await page.getByText("Try drawing the tangent first.", { exact: true }).waitFor();
+    await page.evaluate(() => {
+      Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await expect(page.locator("#llama-tutor-panel")).toBeVisible();
+    await expect(page.getByLabel("Message Llama Tutor")).toBeEnabled();
+    assert.equal(state.posts.length, mode === "busy" ? 2 : 1, "a tab switch must retain the existing request or bounded busy retry");
+    await close(page, state);
+  }
+  for (const action of ["close", "account", "question", "unmount", "pagehide"]) {
     const { page, state } = await open({ mode: "busy" });
     await send(page); await page.getByLabel("Waiting for tutor", { exact: true }).waitFor();
     if (action === "close") await page.getByRole("button", { name: "Close tutor", exact: true }).click();
@@ -136,10 +185,6 @@ try {
       await expect(page.getByLabel("Waiting for tutor", { exact: true })).toBeVisible();
       await page.evaluate(() => window.dispatchEvent(new CustomEvent("trainer-account", { detail: "second" })));
     }
-    if (action === "hidden") await page.evaluate(() => {
-      Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
-      document.dispatchEvent(new Event("visibilitychange"));
-    });
     if (action === "pagehide") await page.evaluate(() => window.dispatchEvent(new Event("pagehide")));
     await expect(page.locator("#llama-tutor-panel")).toHaveCount(0);
     await page.clock.runFor(180_000);
@@ -171,7 +216,7 @@ try {
     await expect(page.getByLabel("Message Llama Tutor")).toBeEnabled();
     await close(page, state);
   }
-  console.log("PASS: tutor bounded busy retries, single-flight send, restored drafts, allowance/post deadlines, no ambiguous resends, sleep/thought bubbles, cancellation, account/question changes, and stale response isolation.");
+  console.log("PASS: tutor bounded busy retries, single-flight send, restored drafts, allowance/post deadlines, no ambiguous resends, sleep/thought bubbles, tab-switch continuity, cancellation, account/question changes, and stale response isolation.");
   console.log(`Screenshots: ${join(dir, "tutor-waiting.png")} and ${join(dir, "tutor-busy.png")}`);
 } finally {
   await browser?.close();

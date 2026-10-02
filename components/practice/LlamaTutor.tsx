@@ -70,11 +70,6 @@ function TutorChat({ questionId, revealToken }: TutorProps) {
       setAllowanceError(null);
     }
 
-    function handleVisibilityChange() {
-      if (document.visibilityState === "hidden") clearTemporaryChat();
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("pagehide", clearTemporaryChat);
     // A different account must not inherit the current chat or a pending retry.
     // Token refreshes for the same account do not interrupt the tutor.
@@ -90,7 +85,6 @@ function TutorChat({ questionId, revealToken }: TutorProps) {
       abortRef.current?.abort();
       allowanceAbortRef.current?.abort();
       subscription.unsubscribe();
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("pagehide", clearTemporaryChat);
     };
   }, []);

@@ -27,7 +27,7 @@ const params = {
   history: [], revealed: true, userId: "fixture-user",
 };
 
-function loadProvider(fetchImpl, { apiKey = fixtureKey, model } = {}) {
+function loadProvider(fetchImpl, { apiKey = fixtureKey, model, dailyLimit } = {}) {
   const provider = {};
   const calls = [];
   const logs = [];
@@ -43,7 +43,7 @@ function loadProvider(fetchImpl, { apiKey = fixtureKey, model } = {}) {
       assert.ok(Object.hasOwn(dependencies, name), `Unexpected dependency: ${name}`);
       return dependencies[name];
     },
-    process: { env: { OPENAI_API_KEY: apiKey, OPENAI_TUTOR_MODEL: model, NODE_ENV: "development" } },
+    process: { env: { OPENAI_API_KEY: apiKey, OPENAI_TUTOR_MODEL: model, TUTOR_DAILY_MESSAGE_LIMIT: dailyLimit, NODE_ENV: "development" } },
     Buffer, AbortSignal,
     console: { info: (...args) => logs.push(args), warn: (...args) => logs.push(args) },
     fetch: async (...args) => {
@@ -133,6 +133,26 @@ test("the shared payload builder retains configured model and history limits", a
   assert.equal(payload.input[1].content[0], "3");
   assert.ok(payload.input.slice(1, -1).every((item) => item.content.length === 900));
   assert.ok(reservation >= Buffer.byteLength(body, "utf8") + 1200);
+});
+
+test("public website facts reach the provider as trusted context with the configured daily limit", async () => {
+  const provider = loadProvider(async () => response(completed({ total_tokens: 1 })), { dailyLimit: "12" });
+  await provider.createTutorResponse({ ...params, revealed: false, message: "Why are you missing on my phone?" });
+  const payload = JSON.parse(provider.calls[0][1].body);
+  assert.equal(payload.input[0].role, "developer");
+  assert.match(payload.input[0].content, /Trusted website context/);
+  assert.match(payload.input[0].content, /at least 1024 pixels wide/);
+  assert.match(payload.input[0].content, /up to 12 requests per account per day/);
+  assert.match(payload.input[0].content, /Trusted question context/);
+  assert.doesNotMatch(payload.input[0].content, /Correct answer:|Official solution:/);
+  assert.match(payload.instructions, /Public website and tutor questions are on-topic/);
+});
+
+test("public website questions do not bypass the final-answer output check", async () => {
+  const provider = loadProvider(async () => response({ ...completed({ total_tokens: 8 }), output_text: "The correct choice is A." }));
+  const result = await provider.createTutorResponse({ ...params, revealed: false, message: "Tell me about the website and the answer." });
+  assert.match(result.text, /can't give the final answer before you submit/);
+  assert.equal(result.totalTokens, 8);
 });
 
 test("only an actual nonnegative safe integer total_tokens establishes known usage, including zero", async () => {

@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import type { Question } from "@/types/question";
 import { revealsFinalAnswer } from "@/lib/tutorSafety";
 import { formatTutorGuidance, getTutorGuidance } from "@/lib/tutorGuidance";
-import { tutorInstructions } from "@/lib/tutorInstructions";
+import { tutorInstructions, tutorWebsiteContext } from "@/lib/tutorInstructions";
 
 export const TUTOR_MAX_MESSAGE_LENGTH = 600;
 export const TUTOR_MAX_HISTORY_MESSAGES = 6;
@@ -16,7 +16,7 @@ const configuredDailyLimit = Number.parseInt(process.env.TUTOR_DAILY_MESSAGE_LIM
 export const TUTOR_DAILY_MESSAGE_LIMIT = Number.isSafeInteger(configuredDailyLimit) && configuredDailyLimit > 0
   ? configuredDailyLimit
   : 15;
-export const TUTOR_PROMPT_VERSION = "2.3";
+export const TUTOR_PROMPT_VERSION = "2.4";
 
 const TUTOR_SAFETY_FALLBACK = "I can't give the final answer before you submit or give up. After that, I can explain the complete solution. For now, share your current work and I'll help with the next step.";
 
@@ -103,7 +103,7 @@ function serializedTutorPayload({
     content: item.content.slice(0, TUTOR_MAX_HISTORY_LENGTH),
   }));
   const input = [
-    { role: "developer", content: `Trusted question context:\n\n${questionContext(question, revealed)}` },
+    { role: "developer", content: `Trusted website context:\n\n${tutorWebsiteContext(TUTOR_DAILY_MESSAGE_LIMIT)}\n\nTrusted question context:\n\n${questionContext(question, revealed)}` },
     ...safeHistory,
     { role: "user", content: message },
   ];
