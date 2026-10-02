@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/client";
 import { memoryTrainerHistoryStorage } from "@/lib/storage/trainerHistory/memoryTrainerHistoryStorage";
 import { createSupabaseTrainerHistoryStorage } from "@/lib/storage/trainerHistory/supabaseTrainerHistoryStorage";
-import type { TrainerSessionRecord } from "@/types/trainer";
+import type { TrainerSessionRecord, TrainerSessionReceipt } from "@/types/trainer";
+import { withRequestTimeout } from "@/lib/requestTimeout";
 
 async function getStorage(expectedUserId?: string | null) {
   const supabase = createClient();
@@ -51,9 +52,13 @@ export async function hasTrainerAccount(): Promise<boolean> {
 export async function saveTrainerSession(
   session: TrainerSessionRecord,
   expectedUserId?: string | null,
-): Promise<TrainerSessionRecord[]> {
-  const storage = await getStorage(expectedUserId);
-  return storage.saveSession(session);
+  signal?: AbortSignal,
+): Promise<TrainerSessionReceipt> {
+  return withRequestTimeout(async requestSignal => {
+    const storage = await getStorage(expectedUserId);
+    requestSignal.throwIfAborted();
+    return storage.saveSession(session, requestSignal);
+  }, { signal, message: "We could not confirm your session save in time. Keep this page open and retry session save to check it safely." });
 }
 
 export async function clearTrainerHistory():

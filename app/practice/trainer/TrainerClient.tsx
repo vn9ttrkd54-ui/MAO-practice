@@ -18,6 +18,7 @@ import type {
   TrainerQuestionResult,
   TrainerSessionRecord,
   TrainerQuestionItem,
+  TrainerHistoryPoint,
 } from "@/types/trainer";
 
 import type {
@@ -53,6 +54,7 @@ import TrainerSummary from "@/components/trainer/TrainerSummary";
 import LevelUpBanner from "@/components/trainer/LevelUpBanner";
 
 import { createPracticeAttempt, type PracticeAttempt } from "@/lib/services/practiceAttemptService";
+import { MAX_TRAINER_SESSION_RESULTS } from "@/lib/trainerSessionSave";
 
 const DEFAULT_LEVEL: LevelProgress = {
   level: 1,
@@ -67,6 +69,11 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   const attempt = useRef<PracticeAttempt | null>(null);
   const pending = useRef<{ answer: AnswerChoice | null; time: number; answeredAt: number } | null>(null);
   const saveBusy = useRef(false);
+  const sessionId = useRef<string | null>(null);
+  const pendingSession = useRef<TrainerSessionRecord | null>(null);
+  const sessionSaveRequest = useRef<AbortController | null>(null);
+  const [sessionSaveStatus, setSessionSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [sessionSaveError, setSessionSaveError] = useState<string | null>(null);
   const [hasPending, setHasPending] = useState(false);
 
   const [division, setDivision] =
@@ -129,7 +136,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   const [
     trainerHistory,
     setTrainerHistory,
-  ] = useState<TrainerSessionRecord[]>([]);
+  ] = useState<TrainerHistoryPoint[]>([]);
 
   const [hasAccount, setHasAccount] =
     useState(false);
@@ -163,6 +170,8 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
         selectionRequest.current?.abort();
         selectionRequest.current = null;
         attempt.current = null;
+        sessionSaveRequest.current?.abort();
+        sessionSaveRequest.current = null;
         setAccountChanged(true);
         setIsSaving(false);
       }
@@ -172,6 +181,8 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       selectionRequest.current?.abort();
       selectionRequest.current = null;
       attempt.current = null;
+      sessionSaveRequest.current?.abort();
+      sessionSaveRequest.current = null;
     };
   }, []);
 
@@ -223,6 +234,11 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       }
 
       sessionOwner.current = userId;
+      sessionId.current = crypto.randomUUID();
+      pendingSession.current = null;
+      setSessionSaveStatus("idle");
+      setSessionSaveError(null);
+      setTrainerHistory([]);
       openAttempt(firstQuestion);
       setCurrentQuestion(firstQuestion);
       setAdaptiveState(createAdaptiveTrainerState(firstQuestion.difficulty));
@@ -259,7 +275,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   };
 
   const handleSave = async (answer: AnswerChoice | null) => {
-    if (!currentQuestion || !attempt.current || submitted || isSaving || saveBusy.current || accountChanged) return;
+    if (!currentQuestion || !attempt.current || submitted || isSaving || saveBusy.current || accountChanged || pendingSession.current) return;
     saveBusy.current = true;
     const answeredAt = Date.now();
     pending.current ??= { answer, time: Math.floor((answeredAt - startTime) / 1000), answeredAt };
@@ -294,8 +310,48 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
     }
   };
 
+  const finishSession = async () => {
+    if (sessionSaveRequest.current || accountChanged || sessionStartedAt === null || !sessionId.current
+      || sessionOwner.current === undefined || sessionSaveStatus === "saved") return;
+    // Freeze identity, duration, levels and answers once. A lost confirmation
+    // must resend this exact session rather than invent a new UUID or end time.
+    pendingSession.current ??= {
+        id: sessionId.current,
+        division,
+        startedAt: sessionStartedAt,
+        endedAt: Date.now(),
+        startingLevel: { ...startingLevelProgress },
+        endingLevel: { ...levelProgress },
+        results: results.map(result => ({ ...result })),
+    };
+    const controller = new AbortController();
+    sessionSaveRequest.current = controller;
+    setSessionEndedAt(pendingSession.current.endedAt);
+    setShowEndDialog(false);
+    setShowSummary(true);
+    setSessionSaveStatus("saving");
+    setSessionSaveError(null);
+    try {
+      const receipt = await saveTrainerSession(pendingSession.current, sessionOwner.current, controller.signal);
+      if (controller.signal.aborted || sessionSaveRequest.current !== controller) return;
+      setTrainerHistory(receipt.recentSessions);
+      setSessionSaveStatus("saved");
+    } catch (error) {
+      if (controller.signal.aborted || sessionSaveRequest.current !== controller) return;
+      setSessionSaveStatus("error");
+      setSessionSaveError(error instanceof Error ? error.message : "Unable to confirm this session. Please retry session save.");
+    } finally {
+      if (sessionSaveRequest.current === controller) sessionSaveRequest.current = null;
+    }
+  };
+
   const handleNextQuestion = async () => {
-    if (!currentQuestion || !submitted || isSaving || saveBusy.current || selectionRequest.current || accountChanged) {
+    if (!currentQuestion || !submitted || isSaving || saveBusy.current || selectionRequest.current || accountChanged || pendingSession.current) {
+      return;
+    }
+
+    if (results.length >= MAX_TRAINER_SESSION_RESULTS) {
+      await finishSession();
       return;
     }
 
@@ -319,9 +375,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       if (selectionRequest.current !== controller || controller.signal.aborted) return;
 
       if (!nextQuestion) {
-        setSessionEndedAt(Date.now());
-        setCurrentQuestion(null);
-        setShowSummary(true);
+        await finishSession();
         return;
       }
 
@@ -356,49 +410,17 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   };
 
   const handleConfirmEndSession = async () => {
-    if (isSaving || accountChanged) {
-      return;
-    }
-
-    const endedAt = Date.now();
-
-    if (sessionStartedAt === null) {
-      setShowEndDialog(false);
-      setShowSummary(true);
-      return;
-    }
-
-    setIsSaving(true);
-    setStartError(null);
-
-    try {
-      const savedHistory = await saveTrainerSession({
-        id: crypto.randomUUID(),
-        division,
-        startedAt: sessionStartedAt,
-        endedAt,
-        startingLevel:
-          startingLevelProgress,
-        endingLevel: levelProgress,
-        results,
-      }, sessionOwner.current);
-
-      setTrainerHistory(savedHistory);
-      setSessionEndedAt(endedAt);
-      setShowEndDialog(false);
-      setShowSummary(true);
-    } catch {
-      setStartError(
-        "Unable to save this Trainer session. Please try again."
-      );
-      setShowEndDialog(false);
-    } finally {
-      setIsSaving(false);
-    }
+    if (isSaving || saveBusy.current || accountChanged || (hasPending && !submitted)) return;
+    await finishSession();
   };
 
   const handleStartNewSession = () => {
+    if (pendingSession.current && sessionSaveStatus !== "saved") return;
     sessionOwner.current = undefined;
+    sessionId.current = null;
+    pendingSession.current = null;
+    setSessionSaveStatus("idle");
+    setSessionSaveError(null);
     attempt.current = null;
     pending.current = null;
     setHasPending(false);
@@ -418,6 +440,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   };
 
   const handleReturnToPractice = () => {
+    if (pendingSession.current && sessionSaveStatus !== "saved") return;
     router.push("/practice");
   };
 
@@ -468,6 +491,9 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
               )
         }
         sessionHistory={trainerHistory}
+        saveStatus={sessionSaveStatus}
+        saveError={sessionSaveError}
+        onRetrySave={() => { void finishSession(); }}
         hasAccount={hasAccount}
         onStartNewSession={handleStartNewSession}
         onReturnToPractice={handleReturnToPractice}

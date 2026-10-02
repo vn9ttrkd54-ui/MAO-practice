@@ -1,5 +1,6 @@
 import type { TrainerHistoryStorage } from "@/lib/storage/trainerHistory/trainerHistoryStorage";
 import type { TrainerSessionRecord } from "@/types/trainer";
+import { localTrainerHistoryPoints } from "@/lib/trainerSessionSave";
 
 let sessions: TrainerSessionRecord[] = [];
 
@@ -11,7 +12,8 @@ export const memoryTrainerHistoryStorage: TrainerHistoryStorage = {
     );
   },
 
-  async saveSession(session) {
+  async saveSession(session, signal) {
+    signal?.throwIfAborted();
     sessions = [
       session,
       ...sessions.filter(
@@ -19,7 +21,7 @@ export const memoryTrainerHistoryStorage: TrainerHistoryStorage = {
       ),
     ];
 
-    return this.getHistory();
+    return { status: "saved", userId: null, sessionId: session.id, recentSessions: localTrainerHistoryPoints(sessions, session) };
   },
 
   async clearHistory() {

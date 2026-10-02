@@ -8,6 +8,17 @@ window.addEventListener("trainer-account", ((event: CustomEvent<string | null>) 
 
 export function createClient() {
   return {
+    rpc(name: string, args: unknown) {
+      let signal: AbortSignal | undefined;
+      const query = {
+        abortSignal(value: AbortSignal) { signal = value; return query; },
+        then(resolve: (value: unknown) => unknown, reject: (reason: unknown) => unknown) {
+          return fetch("/fixture/trainer-save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name, args }), signal })
+            .then(response => response.json()).then(resolve, reject);
+        },
+      };
+      return query;
+    },
     auth: {
       getSession: async () => ({ data: { session: owner ? { user: { id: owner } } : null }, error: null }),
       onAuthStateChange(listener: (event: string, session: Session) => void) {

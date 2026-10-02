@@ -206,6 +206,7 @@ test("session history cannot be written to an account different from the Trainer
   let saves = 0;
   const storage = { saveSession: async () => { saves++; return []; } };
   const { saveTrainerSession } = await load("lib/services/trainerHistoryService.ts", {
+    "@/lib/requestTimeout": { withRequestTimeout },
     "@/lib/supabase/client": { createClient: () => ({ auth: { getSession: async () => ({ data: { session: { user: { id: "second" } } }, error: null }) } }) },
     "@/lib/storage/trainerHistory/memoryTrainerHistoryStorage": { memoryTrainerHistoryStorage: storage },
     "@/lib/storage/trainerHistory/supabaseTrainerHistoryStorage": { createSupabaseTrainerHistoryStorage: () => storage },

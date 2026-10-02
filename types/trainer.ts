@@ -43,3 +43,17 @@ export interface TrainerSessionRecord {
   endingLevel: LevelProgress;
   results: TrainerQuestionResult[];
 }
+
+export interface TrainerHistoryPoint {
+  id: string;
+  endedAt: number;
+  questionsAnswered: number;
+  accuracy: number;
+}
+
+export interface TrainerSessionReceipt {
+  status: "saved";
+  sessionId: string;
+  userId: string | null;
+  recentSessions: TrainerHistoryPoint[];
+}

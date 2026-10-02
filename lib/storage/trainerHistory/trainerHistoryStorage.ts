@@ -1,9 +1,10 @@
-import type { TrainerSessionRecord } from "@/types/trainer";
+import type { TrainerSessionRecord, TrainerSessionReceipt } from "@/types/trainer";
 
 export interface TrainerHistoryStorage {
   getHistory(): Promise<TrainerSessionRecord[]>;
   saveSession(
-    session: TrainerSessionRecord
-  ): Promise<TrainerSessionRecord[]>;
+    session: TrainerSessionRecord,
+    signal?: AbortSignal,
+  ): Promise<TrainerSessionReceipt>;
   clearHistory(): Promise<void>;
 }

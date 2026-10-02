@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { parseTrainerSessionReceipt, trainerSessionArguments } from "@/lib/trainerSessionSave";
 
 import type { TrainerHistoryStorage } from "@/lib/storage/trainerHistory/trainerHistoryStorage";
 import type {
@@ -96,62 +97,16 @@ export function createSupabaseTrainerHistoryStorage(
       );
     },
 
-    async saveSession(session) {
-      const { error: sessionError } = await supabase
-        .from("trainer_sessions")
-        .insert({
-          id: session.id,
-          user_id: userId,
-          division: session.division,
-          started_at: new Date(
-            session.startedAt
-          ).toISOString(),
-          ended_at: new Date(
-            session.endedAt
-          ).toISOString(),
-          starting_level:
-            session.startingLevel.level,
-          starting_progress:
-            session.startingLevel.progress,
-          ending_level: session.endingLevel.level,
-          ending_progress:
-            session.endingLevel.progress,
-        });
-
-      if (sessionError) {
-        throw new Error(sessionError.message);
-      }
-
-      if (session.results.length > 0) {
-        const { error: resultsError } = await supabase
-          .from("trainer_results")
-          .insert(
-            session.results.map((result) => ({
-              session_id: session.id,
-              user_id: userId,
-              question_id: result.questionId,
-              question_number:
-                result.questionNumber,
-              selected_answer:
-                result.selectedAnswer,
-              correct_answer:
-                result.correctAnswer,
-              result: result.result,
-            }))
-          );
-
-        if (resultsError) {
-          await supabase
-            .from("trainer_sessions")
-            .delete()
-            .eq("id", session.id)
-            .eq("user_id", userId);
-
-          throw new Error(resultsError.message);
-        }
-      }
-
-      return this.getHistory();
+    async saveSession(session, signal) {
+      signal?.throwIfAborted();
+      const args = trainerSessionArguments(session, userId);
+      const query = supabase.rpc("save_trainer_session_v1", args);
+      const { data, error } = await (signal ? query.abortSignal(signal) : query);
+      signal?.throwIfAborted();
+      if (error) throw new Error("Unable to confirm your session save. Keep this page open and retry session save.");
+      if (data?.status === "busy") throw new Error("This session is still saving. Wait a moment, then retry session save.");
+      if (data?.status === "conflict") throw new Error("This session ID already has different saved data. No existing history was overwritten.");
+      return parseTrainerSessionReceipt(data, session, userId);
     },
 
     async clearHistory() {

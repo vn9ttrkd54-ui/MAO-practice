@@ -173,7 +173,7 @@ export function calculateTrainerStats(
   const accuracy =
     questionsAnswered > 0
       ? Math.round(
-          (correct / questionsAnswered) * 100
+          (100 * correct) / questionsAnswered
         )
       : 0;
 

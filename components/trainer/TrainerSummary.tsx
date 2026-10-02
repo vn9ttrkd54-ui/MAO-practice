@@ -4,7 +4,7 @@ import type { Division } from "@/types/question";
 import type { LevelProgress } from "@/types/level";
 import type {
   TrainerQuestionResult,
-  TrainerSessionRecord,
+  TrainerHistoryPoint,
   TrainerSessionStats,
   TrainerQuestionItem,
 } from "@/types/trainer";
@@ -17,7 +17,10 @@ type TrainerSummaryProps = {
   startingLevel: LevelProgress;
   endingLevel: LevelProgress;
   sessionSeconds: number;
-  sessionHistory: TrainerSessionRecord[];
+  sessionHistory: TrainerHistoryPoint[];
+  saveStatus: "idle" | "saving" | "saved" | "error";
+  saveError: string | null;
+  onRetrySave: () => void;
   hasAccount: boolean;
   onStartNewSession: () => void;
   onReturnToPractice: () => void;
@@ -63,23 +66,13 @@ function topicPerformance(results: TrainerQuestionResult[], questionById: Map<nu
     missed: values.attempted - values.correct,
     accuracy:
       values.attempted > 0
-        ? Math.round((values.correct / values.attempted) * 100)
+        ? Math.round((100 * values.correct) / values.attempted)
         : 0,
   })).sort(
     (first, second) =>
       second.attempted - first.attempted ||
       first.topic.localeCompare(second.topic)
   );
-}
-
-function sessionAccuracy(session: TrainerSessionRecord) {
-  if (session.results.length === 0) return 0;
-
-  const correct = session.results.filter(
-    (result) => result.result === "correct"
-  ).length;
-
-  return Math.round((correct / session.results.length) * 100);
 }
 
 function formatDuration(totalSeconds: number) {
@@ -103,10 +96,14 @@ export default function TrainerSummary({
   endingLevel,
   sessionSeconds,
   sessionHistory,
+  saveStatus,
+  saveError,
+  onRetrySave,
   hasAccount,
   onStartNewSession,
   onReturnToPractice,
 }: TrainerSummaryProps) {
+  const saveReady = saveStatus === "saved";
   const questionById = new Map(items.map(item => [item.id, item]));
   const sessionScore =
     stats.correct - stats.incorrect - stats.giveUps;
@@ -145,10 +142,10 @@ export default function TrainerSummary({
       ? recentSessions[recentSessions.length - 2]
       : null;
   const accuracyChange = previousSession
-    ? stats.accuracy - sessionAccuracy(previousSession)
+    ? stats.accuracy - previousSession.accuracy
     : null;
   const improvingStreak = [...recentSessions]
-    .map(sessionAccuracy)
+    .map(session => session.accuracy)
     .reduce(
       (state, accuracy) => {
         if (
@@ -205,6 +202,11 @@ export default function TrainerSummary({
           </header>
 
           <div className="p-5 sm:p-8">
+            {!saveReady ? <div role={saveStatus === "error" ? "alert" : "status"} className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+              <p>{saveStatus === "error" ? saveError : "Saving your session history…"}</p>
+              <p className="mt-1 text-sm">Keep this page open until the session is confirmed. Answers already confirmed during practice are saved separately.</p>
+              {saveStatus === "error" ? <button type="button" onClick={onRetrySave} className="mt-3 rounded-lg bg-slate-950 px-4 py-2 font-bold text-white">Retry session save</button> : null}
+            </div> : <p role="status" className="mb-6 text-sm font-semibold text-emerald-800">{hasAccount ? "Session history saved." : "Session kept for this visit. Sign in before your next session to save history to an account."}</p>}
             <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               <SummaryCard
                 label="Questions"
@@ -246,7 +248,7 @@ export default function TrainerSummary({
               <SummaryCard
                 label="Accuracy change"
                 value={
-                  accuracyChange === null
+                  !saveReady ? "Pending save" : accuracyChange === null
                     ? "First session"
                     : `${accuracyChange > 0 ? "+" : ""}${accuracyChange}%`
                 }
@@ -254,7 +256,7 @@ export default function TrainerSummary({
               />
               <SummaryCard
                 label="Improving streak"
-                value={`${improvingStreak} session${improvingStreak === 1 ? "" : "s"}`}
+                value={saveReady ? `${improvingStreak} session${improvingStreak === 1 ? "" : "s"}` : "Pending save"}
                 detail="consecutive accuracy improvements"
               />
               <SummaryCard
@@ -335,12 +337,12 @@ export default function TrainerSummary({
                   </div>
                 ) : recentSessions.length === 0 ? (
                   <p className="mt-6 text-slate-500">
-                    Your session trend will appear here.
+                    {saveReady ? "Your session trend will appear here." : "Recent comparisons will appear after your session save is confirmed."}
                   </p>
                 ) : (
                   <div className="mt-8 flex h-52 items-end gap-3">
                     {recentSessions.map((session, index) => {
-                      const accuracy = sessionAccuracy(session);
+                      const accuracy = session.accuracy;
                       const isCurrent =
                         index === recentSessions.length - 1;
 
@@ -354,7 +356,7 @@ export default function TrainerSummary({
                               {accuracy}%
                             </p>
                             <p className="mt-0.5 text-[11px] font-semibold text-slate-400">
-                              {session.results.length} Q
+                              {session.questionsAnswered} Q
                             </p>
                           </div>
                           <div className="flex h-36 w-full items-end overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
@@ -457,12 +459,12 @@ export default function TrainerSummary({
                           >
                             {resultLabel(result.result)}
                           </span>
-                          <Link
+                          {saveReady ? <Link
                             href={`/practice/question-bank/${result.questionId}`}
                             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-800 transition hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700"
                           >
                             Review question
-                          </Link>
+                          </Link> : <span className="text-sm text-slate-500">Review links unlock after the session is confirmed.</span>}
                         </div>
                       </article>
                     );
@@ -475,14 +477,16 @@ export default function TrainerSummary({
               <button
                 type="button"
                 onClick={onStartNewSession}
-                className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-3 font-bold text-white shadow-lg shadow-blue-900/15 transition hover:brightness-110"
+                disabled={!saveReady}
+                className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-3 font-bold text-white shadow-lg shadow-blue-900/15 transition hover:brightness-110 disabled:opacity-50"
               >
                 Start New Session
               </button>
               <button
                 type="button"
                 onClick={onReturnToPractice}
-                className="rounded-xl border-2 border-slate-900 bg-white px-6 py-3 font-bold text-slate-900 transition hover:bg-slate-100"
+                disabled={!saveReady}
+                className="rounded-xl border-2 border-slate-900 bg-white px-6 py-3 font-bold text-slate-900 transition hover:bg-slate-100 disabled:opacity-50"
               >
                 Return to Practice
               </button>
