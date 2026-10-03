@@ -146,6 +146,16 @@ test("name moderation and database conflicts remain useful and generic in setup/
   const collision=await invoke(setup,{metadata:{needs_username:true},body:{username:"taken_name",acceptedLegal:true},rpcError:{code:"23505",message:"private detail"}});
   assert.equal(collision.status,409);assert.equal(collision.effects.some(e=>e.kind==="refresh"),false);
 });
+test("setup refreshes the session after saving and reports refresh failure without success",async()=>{
+  const options={metadata:{needs_username:true},body:{username:"math_student",acceptedLegal:true}};
+  const complete=await invoke(setup,options);
+  assert.equal(complete.status,200);assert.equal(complete.body.success,true);
+  assert.deepEqual(complete.effects.map(e=>e.kind),["rpc","refresh"]);
+  const failed=await invoke(setup,{...options,refreshError:true});
+  assert.equal(failed.status,503);assert.equal(failed.body.success,undefined);
+  assert.equal(failed.body.error,"Your username was saved. Sign in again to continue.");
+  assert.deepEqual(failed.effects.map(e=>e.kind),["rpc","refresh"]);
+});
 test("Google-only accounts reject site-password operations and require a consumed delete proof",async()=>{
   const metadata={password_login_enabled:false};
   for(const action of ["password","email"]) assert.equal((await invoke(account,{method:"PATCH",metadata,body:{action,password:"new-password",currentPassword:"anything",email:"new@example.test"}})).status,400);

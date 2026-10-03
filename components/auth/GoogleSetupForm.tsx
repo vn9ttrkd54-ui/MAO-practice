@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { getUsernameValidationError } from "@/lib/auth/publicNames";
 
 export default function GoogleSetupForm() {
-  const router = useRouter();
   const [username, setUsername] = useState("");
   const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -21,9 +19,12 @@ export default function GoogleSetupForm() {
       const response = await fetch("/api/auth/setup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: normalized, acceptedLegal }) });
       const data = await response.json() as { error?: string };
       if (!response.ok) throw new Error(data.error ?? "Unable to finish setup.");
-      router.replace("/dashboard"); router.refresh();
-    } catch (error) { setError(error instanceof Error ? error.message : "Unable to finish setup."); }
-    finally { setBusy(false); }
+      // Load with the updated auth cookies, discarding prefetched setup redirects.
+      window.location.replace("/dashboard");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Unable to finish setup.");
+      setBusy(false);
+    }
   }
   return (
     <form onSubmit={submit} className="mt-8 space-y-5">

@@ -17,6 +17,13 @@ await new Promise((resolve,reject)=>compiler.run((error,stats)=>error||stats.has
 const bundle=await readFile(join(dir,"client.js"));
 const cssDir=join(root,".next/static/css"),css=(await Promise.all((await readdir(cssDir)).filter(n=>n.endsWith(".css")).map(n=>readFile(join(cssDir,n),"utf8")))).join("\n");
 const server=createServer((req,res)=>{
+  if(req.url==="/dashboard") {
+    res.setHeader("Content-Type","text/html");
+    res.setHeader("Cache-Control","no-store");
+    const completed=req.headers.cookie?.split("; ").includes("google-setup-complete=1");
+    res.end(`<h1>${completed?"Your dashboard":"Setup is required"}</h1>`);
+    return;
+  }
   res.setHeader("Content-Type",req.url==="/client.js"?"text/javascript":"text/html");
   res.end(req.url==="/client.js"?bundle:`<style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
 });
@@ -27,12 +34,21 @@ try {
   const url=`http://127.0.0.1:${server.address().port}`;
   for(const width of [1280,390]) {
     for(const mode of ["login","signup","setup","account-password","account-google","account-verified"]) {
-      const page=await browser.newPage({viewport:{width,height:1000}}),errors=[],requests=[];
+      const page=await browser.newPage({viewport:{width,height:1000}}),errors=[],requests=[],dashboardNavigations=[];
+      let setupAttempts=0;
       page.on("pageerror",e=>errors.push(e.message));
+      page.on("request",request=>{
+        if(request.isNavigationRequest()&&request.url()===`${url}/dashboard`) dashboardNavigations.push(request.url());
+      });
       await page.route("**/*",route=>{
         if(!route.request().url().startsWith(url)) return route.abort();
         if(!route.request().url().includes("/api/")) return route.continue();
         requests.push(route.request().postDataJSON());
+        if(route.request().url().endsWith("/api/auth/setup")) {
+          setupAttempts++;
+          if(setupAttempts===1) return route.fulfill({status:409,json:{error:"That username is already taken."}});
+          return route.fulfill({status:200,headers:{"Set-Cookie":"google-setup-complete=1; Path=/; SameSite=Lax"},json:{success:true}});
+        }
         return route.fulfill({status:route.request().url().endsWith("/google")?503:200,json:route.request().url().endsWith("/google")?{error:"Google sign-in is not available right now."}:{success:true}});
       });
       await page.goto(`${url}/?mode=${mode}`);
@@ -50,8 +66,19 @@ try {
         await page.getByRole("alert").waitFor();assert.equal(requests.length,0);
         await page.getByLabel("Public username").fill("math_student");
         await page.getByRole("button",{name:"Finish setup"}).click();
-        await page.waitForFunction(()=>document.body.dataset.destination==="/dashboard");
+        await page.getByRole("alert").waitFor();
+        assert.equal(await page.getByRole("alert").innerText(),"That username is already taken.");
+        assert.equal(page.url(),`${url}/?mode=setup`);
+        assert.equal(await page.getByRole("button",{name:"Finish setup"}).isEnabled(),true);
+        assert.equal(dashboardNavigations.length,0);
+        await page.screenshot({path:join(dir,`setup-${width}.png`),fullPage:true});
+        await page.getByLabel("Public username").fill("available_student");
+        await page.getByRole("button",{name:"Finish setup"}).click();
+        await page.waitForURL(`${url}/dashboard`,{timeout:5000});
+        await page.getByRole("heading",{name:"Your dashboard"}).waitFor();
         assert.deepEqual(requests[0],{username:"math_student",acceptedLegal:true});
+        assert.deepEqual(requests[1],{username:"available_student",acceptedLegal:true});
+        assert.equal(dashboardNavigations.length,1,"Setup must use one fresh document request with the saved cookies");
       }
       if(mode==="account-password") {
         assert.equal(await page.getByRole("button",{name:"Connect Google"}).isDisabled(),true);
@@ -70,9 +97,26 @@ try {
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${mode} overflows at ${width}`);
       for(const button of await page.getByRole("button").all()) assert.equal(await button.evaluate(el=>el.scrollWidth>el.clientWidth),false);
       assert.deepEqual(errors,[]);
-      await page.screenshot({path:join(dir,`${mode}-${width}.png`),fullPage:true});
+      await page.screenshot({path:join(dir,`${mode==="setup"?"setup-complete":mode}-${width}.png`),fullPage:true});
       await page.close();
     }
+    const failedSetup=await browser.newPage({viewport:{width,height:1000}});
+    const setupUrl=`${url}/?mode=setup`;
+    let failedRequests=0;
+    await failedSetup.route("**/api/auth/setup",route=>{
+      failedRequests++;
+      return route.fulfill({status:503,json:{error:"Your username was saved. Sign in again to continue."}});
+    });
+    await failedSetup.goto(setupUrl);
+    await failedSetup.getByLabel("Public username").fill("math_student");
+    await failedSetup.getByRole("checkbox").check();
+    await failedSetup.getByRole("button",{name:"Finish setup"}).click();
+    await failedSetup.getByRole("alert").waitFor();
+    assert.equal(await failedSetup.getByRole("alert").innerText(),"Your username was saved. Sign in again to continue.");
+    assert.equal(failedSetup.url(),setupUrl,"A failed session refresh must not open the dashboard");
+    assert.equal(await failedSetup.getByRole("button",{name:"Finish setup"}).isEnabled(),true);
+    assert.equal(failedRequests,1);
+    await failedSetup.close();
   }
-  console.log(`PASS: six auth/account states, Google button actions, profanity blocking, legal setup and no overflow at desktop/mobile. Screenshots: ${dir}`);
+  console.log(`PASS: six auth/account states, Google button actions, profanity blocking, legal setup, cookie-aware full-page setup completion, failed setup recovery and no overflow at desktop/mobile. Screenshots: ${dir}`);
 } finally { if(browser) await browser.close();await new Promise(resolve=>server.close(resolve)); }

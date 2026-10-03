@@ -18,6 +18,7 @@ Official setup references: [Google sign-in](https://supabase.com/docs/guides/aut
 - Login and signup offer Google alongside the existing username/password flow.
 - New Google users choose a unique public username and affirm the existing 13+ age and Terms/Privacy agreement. Their Google real name and email are not used as their public username. An opaque temporary profile is created internally until setup is finished.
 - Setup and rename update the public profile and Auth display name atomically. A username collision changes neither record.
+- Successful Google setup replaces the setup page with a fresh dashboard document after the server saves the username and refreshes the session cookies. This avoids reusing pre-setup route data or racing a client navigation with a refresh. The form remains disabled during the handoff; validation and session-refresh errors stay on the setup page.
 - Existing users should sign in normally, visit Account settings, enter their current password, and click **Connect Google**. The existing account ID, progress, bookmarks, history, and username remain unchanged. Signing in with Google first may create a separate account if the old account has a synthetic email. The application never merges accounts by username. Supabase can automatically link identities with the same verified email.
 - Google-only accounts have no site password field or recovery-email editor. Those are managed in Google. Existing accounts connected to Google retain their password and recovery-email controls.
 - Google-only deletion requires a new Google OAuth round trip for the same account, plus typing `DELETE`. The proof lasts five minutes, is bound to that account and Supabase session, and is single-use. Choosing another Google account does not authorize deletion. This confirms access to the Google session; it does not guarantee that Google prompts for the user's password or MFA again.
@@ -43,7 +44,7 @@ order by username;
 ## Verification checklist
 
 - Regular signup, login, recovery, and password/email changes still work.
-- Google signup reaches username setup; no setup-dependent page/API is usable before completion.
+- Google signup reaches username setup; no setup-dependent page/API is usable before completion. Finishing setup opens the dashboard without a manual reload. Test with a Google identity that has never used the site, not just an existing account.
 - Canceling Google sign-in produces a retry message, not a broken page.
 - A returning Google user reaches the dashboard without another setup screen.
 - Existing-account linking preserves the same user ID and progress. An identity already linked to another account gives an error rather than merging records.
