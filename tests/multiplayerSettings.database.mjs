@@ -42,7 +42,7 @@ try {
   const oldWaiting=await legacyRoom();
   const oldPrivate=await legacyRoom('waiting','private');
   const oldHost=await scalar("insert into multiplayer_players(room_id,user_id) values($1,$2) returning id",[oldWaiting,users[0]]);
-  await db.exec(await migration("057_multiplayer_room_settings"));
+  await db.exec(await migration("059_multiplayer_room_settings"));
   const read=(room,user)=>scalar("select read_multiplayer_lobby($1,$2,null)",[room,user]);
   const join=(room,user)=>scalar("select join_public_multiplayer_lobby($1,$2)",[room,user]);
   const room=()=>scalar("insert into multiplayer_rooms(visibility,mode,division,question_count,seconds_per_question,capacity) values('public','ranked','Mu',5,90,20) returning id");

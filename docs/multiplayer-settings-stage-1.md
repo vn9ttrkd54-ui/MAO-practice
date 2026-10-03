@@ -1,6 +1,12 @@
 # Multiplayer room settings rollout
 
-This stage adds public hosts, difficulty bands and longer question times. It is a local implementation, not a deployed change or evidence of 200-player capacity. Apply migration 057 before deploying the matching application during a quiet lobby window.
+This stage adds public hosts, difficulty bands and longer question times. Local checks are not confirmation of deployment or evidence of 200-player capacity. For a new installation, apply migration 059 before deploying the matching application during a quiet lobby window.
+
+## Migration numbering correction
+
+`059_multiplayer_room_settings.sql` is the unchanged SQL previously named `057_multiplayer_room_settings.sql`. It was renumbered to avoid colliding with `057_google_auth_public_names.sql`. Google remains 057, and `058_signup_role_function_permissions.sql` remains 058.
+
+If you already successfully applied the multiplayer SQL under its old filename, **do not run 059 again**. Verify the installed changes and reconcile its migration-history entry as 059 instead. Missing history does not mean the SQL is missing, and the presence of one function does not verify the entire migration. Check each migration independently before marking it applied; do not mark 057 or 058 applied merely because multiplayer is installed. Stop if a proposed version is already recorded for a different migration. Do not use an unrestricted database push to resolve this numbering conflict.
 
 ## Included behavior
 
@@ -28,10 +34,10 @@ Ready must only shorten the normal countdown to at most 10 seconds, never extend
 
 1. Review only the Stage 1 files. Leave unrelated account, security and migration files unstaged. Do not run an unrestricted database push just to apply this stage.
 2. Test the migration and matching app against a staging database first. Schedule production application during a quiet lobby window; old app instances cannot start a newly band-limited room using the old unrestricted selector.
-3. Apply only `supabase/migrations/057_multiplayer_room_settings.sql` in the intended project's SQL Editor. It is transactional and requests a schema-cache refresh. If it fails, stop and inspect the error; do not remove constraints manually or mark it applied.
+3. For a new installation only, apply `supabase/migrations/059_multiplayer_room_settings.sql` in the intended project's SQL Editor. If the same SQL was already applied under the former 057 filename, skip reapplication and follow the numbering correction above. It is transactional and requests a schema-cache refresh. If it fails, stop and inspect the error; do not remove constraints manually or mark it applied.
 4. Deploy the matching application and refresh open lobby pages. Do not deploy the application ahead of the migration: it requires the new RPC signatures and fields.
 5. Run the read-only checks below, then manually check two-account hosting, band selection, public 90-second play and private 180-second play.
-6. Record migration 057 in migration history only after successful application and verification, using the project's established reviewed repair process. A successful SQL Editor run alone does not update migration history.
+6. Record migration 059 in migration history only after successful application and verification, using the project's established reviewed repair process. A successful SQL Editor run alone does not update migration history. This step records an already-installed change; it must not reapply its SQL.
 
 ```sql
 select
