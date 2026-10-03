@@ -11,7 +11,7 @@ import { chromium } from "@playwright/test";
 const require = createRequire(import.meta.url);
 const root = path.resolve(import.meta.dirname, "..");
 const rooms = ["Alpha", "Mu", "Theta"].flatMap((division, index) => [5, 15, 30].map((questionCount, i) => ({
-  id: `${division}-${questionCount}`, settings: { division, questionCount, secondsPerQuestion: 60, mode: "ranked" },
+  id: `${division}-${questionCount}`, settings: { division, questionCount, secondsPerQuestion: 90, difficultyBand: "2-4", mode: "ranked" },
   capacity: 20, playerCount: index === 0 && i === 1 ? 3 : 0,
   status: "waiting", countdownEndsAt: null,
   players: index === 0 && i === 1 ? ["Ada", "Sofia", "Max"].map((name, p) => ({ playerId: name, displayName: name, rankTier: p === 0 ? "Silver" : "Novice" })) : [],
@@ -76,6 +76,9 @@ try {
     assert.deepEqual(await page.locator('[name="division"] option').allTextContents(), ["Mu", "Alpha", "Theta"]);
     assert.equal(await page.getByLabel("Questions", { exact: true }).inputValue(), "5");
     assert.equal(await page.getByLabel("Time per question", { exact: true }).inputValue(), "60");
+    assert.deepEqual(await page.locator('[name="secondsPerQuestion"] option').evaluateAll(options => options.map(option => option.value)), ["30","60","90","120","150","180"]);
+    assert.deepEqual(await page.locator('[name="difficultyBand"] option').evaluateAll(options => options.map(option => option.value)), ["1-3","2-4","3-5"]);
+    assert.equal(await page.getByLabel("Difficulty", { exact: true }).inputValue(), "2-4");
     assert.equal(await page.getByLabel("Rating mode", { exact: true }).inputValue(), "unranked");
     for (const field of await page.locator("input, select").all()) assert.ok((await field.boundingBox()).height >= 44);
     await page.getByRole("button", { name: "Create Room", exact: true }).click({ trial: true });

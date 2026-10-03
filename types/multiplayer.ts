@@ -18,7 +18,8 @@ export type MultiplayerRankTier =
   | "Master"
   | "Grandmaster"
   | "Legend";
-export type MultiplayerQuestionTime = 30 | 60 | 90 | 120;
+export type MultiplayerQuestionTime = 30 | 60 | 90 | 120 | 150 | 180;
+export type MultiplayerDifficultyBand = "1-3" | "2-4" | "3-5";
 export type PublicMatchQuestionCount = 5 | 15 | 30;
 
 export interface MultiplayerRoomSettings {
@@ -26,6 +27,8 @@ export interface MultiplayerRoomSettings {
   questionCount: number;
   secondsPerQuestion: MultiplayerQuestionTime;
   mode: MultiplayerRoomMode;
+  // Null preserves the unrestricted selection of rooms created before Stage 1.
+  difficultyBand: MultiplayerDifficultyBand | null;
 }
 
 export interface MultiplayerPlayerIdentity {
@@ -64,6 +67,7 @@ export interface MultiplayerRoom {
   createdAt: number;
   startedAt: number | null;
   stateVersion: number;
+  settingsVersion: number;
   currentQuestionNumber: number;
 }
 

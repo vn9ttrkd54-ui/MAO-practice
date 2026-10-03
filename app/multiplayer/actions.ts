@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { beginPrivateRoom, createPrivateRoom, joinPrivateRoom, joinPublicRoom, leaveMultiplayerRoom, spectatePublicMatch } from "@/lib/services/multiplayerService";
 import type { Division } from "@/types/question";
-import type { MultiplayerQuestionTime, MultiplayerRoomMode } from "@/types/multiplayer";
+import type { MultiplayerDifficultyBand, MultiplayerQuestionTime, MultiplayerRoomMode } from "@/types/multiplayer";
 
 function value(formData: FormData, key: string) {
   return String(formData.get(key) ?? "");
@@ -24,6 +24,7 @@ export async function createPrivateRoomAction(formData: FormData) {
         questionCount: Number(value(formData, "questionCount")),
         secondsPerQuestion: Number(value(formData, "secondsPerQuestion")) as MultiplayerQuestionTime,
         mode: value(formData, "mode") as MultiplayerRoomMode,
+        difficultyBand: value(formData, "difficultyBand") as MultiplayerDifficultyBand,
       },
     });
     roomId = room.id;

@@ -43,7 +43,10 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
             <input name="questionCount" type="number" min={1} max={30} defaultValue={5} required className={fieldClass} />
           </label>
           <label className="block text-sm font-semibold"><span id="time-label" className={styles.label}><Timer size={16} aria-hidden="true" />Time per question</span>
-            <select name="secondsPerQuestion" aria-labelledby="time-label" defaultValue="60" className={fieldClass}><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="90">90 seconds</option><option value="120">120 seconds</option></select>
+            <select name="secondsPerQuestion" aria-labelledby="time-label" defaultValue="60" className={fieldClass}><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="90">90 seconds</option><option value="120">2 minutes</option><option value="150">2 minutes 30 seconds</option><option value="180">3 minutes</option></select>
+          </label>
+          <label className="block text-sm font-semibold"><span id="difficulty-label" className={styles.label}><Layers size={16} aria-hidden="true" />Difficulty</span>
+            <select name="difficultyBand" aria-labelledby="difficulty-label" defaultValue="2-4" className={fieldClass}><option value="1-3">Levels 1–3</option><option value="2-4">Levels 2–4</option><option value="3-5">Levels 3–5</option></select>
           </label>
           <label className="block text-sm font-semibold"><span id="mode-label" className={styles.label}><Trophy size={16} aria-hidden="true" />Rating mode</span>
             <select name="mode" aria-labelledby="mode-label" defaultValue="unranked" className={fieldClass}><option value="unranked">Unranked</option><option value="ranked">Ranked (5+ questions)</option></select>

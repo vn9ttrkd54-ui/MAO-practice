@@ -14,6 +14,7 @@ import type {
   JoinPrivateRoomInput,
   MultiplayerAnswerSubmission,
   MultiplayerDeliveryReceipt,
+  MultiplayerDifficultyBand,
   MultiplayerMatchResult,
   MultiplayerLobbyState,
   MultiplayerMatchHistoryEntry,
@@ -32,7 +33,8 @@ import type {
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
-const ALLOWED_TIMES = new Set([30, 60, 90, 120]);
+const ALLOWED_TIMES = new Set([30, 60, 90, 120, 150, 180]);
+const DIFFICULTY_BANDS = new Set(["1-3", "2-4", "3-5"]);
 // Six missed five-second heartbeats tolerate brief school-network interruptions.
 // Membership survives expiry; only lobby presence expires, never match progress.
 const LOBBY_PRESENCE_TIMEOUT_MS = 30_000;
@@ -47,7 +49,9 @@ interface RoomRow {
   mode: "ranked" | "unranked";
   division: "Mu" | "Alpha" | "Theta";
   question_count: number;
-  seconds_per_question: 30 | 60 | 90 | 120;
+  seconds_per_question: 30 | 60 | 90 | 120 | 150 | 180;
+  difficulty_band: MultiplayerDifficultyBand | null;
+  settings_version: number;
   status: "waiting" | "countdown" | "in-progress" | "completed" | "cancelled";
   capacity: number;
   host_player_id: string | null;
@@ -98,8 +102,21 @@ function validateSettings(settings: MultiplayerRoomSettings) {
     throw new Error("Choose ranked or unranked mode.");
   }
   if (!ALLOWED_TIMES.has(settings.secondsPerQuestion)) {
-    throw new Error("Choose 30, 60, 90, or 120 seconds per question.");
+    throw new Error("Choose 30, 60, 90, 120, 150, or 180 seconds per question.");
   }
+  if (!settings.difficultyBand || !DIFFICULTY_BANDS.has(settings.difficultyBand)) {
+    throw new Error("Choose difficulty 1–3, 2–4, or 3–5.");
+  }
+  availableRoomQuestions(settings);
+}
+
+function availableRoomQuestions(settings: MultiplayerRoomSettings) {
+  const minimum = settings.difficultyBand ? Number(settings.difficultyBand[0]) : 1;
+  const maximum = settings.difficultyBand ? minimum + 2 : 5;
+  const available = questions.filter(question => question.division === settings.division &&
+    question.difficulty >= minimum && question.difficulty <= maximum);
+  if (available.length < settings.questionCount) throw new Error("There are not enough questions in that difficulty range. Choose fewer questions or another range.");
+  return available;
 }
 
 function normalizeNickname(value?: string) {
@@ -135,6 +152,7 @@ function mapRoom(row: RoomRow, playerCount: number): MultiplayerRoom {
       questionCount: row.question_count,
       secondsPerQuestion: row.seconds_per_question,
       mode: row.mode,
+      difficultyBand: row.difficulty_band ?? null,
     },
     playerCount,
     spectatorCount: 0,
@@ -144,6 +162,7 @@ function mapRoom(row: RoomRow, playerCount: number): MultiplayerRoom {
     createdAt: new Date(row.created_at).getTime(),
     startedAt: row.started_at ? new Date(row.started_at).getTime() : null,
     stateVersion: row.state_version,
+    settingsVersion: row.settings_version ?? 0,
     currentQuestionNumber: row.current_question_number,
   };
 }
@@ -232,6 +251,28 @@ export async function confirmMultiplayerLeave(roomId: string, connectionId: stri
   return data;
 }
 
+export async function updateMultiplayerDifficulty(roomId: string, difficultyBand: MultiplayerDifficultyBand,
+  settingsVersion: number, connectionId: string, playerId: string): Promise<MultiplayerLobbyState> {
+  if (!DIFFICULTY_BANDS.has(difficultyBand) || !Number.isSafeInteger(settingsVersion) || settingsVersion < 0) {
+    throw new RequestBodyError("Choose a valid difficulty range.", 400);
+  }
+  const identity = await lobbyIdentity(roomId);
+  if (!identity) throw new RequestBodyError("Rejoin the lobby before changing settings.", 403);
+  const lobby = await readLobby(roomId, identity);
+  if (!lobby) throw new RequestBodyError("Room not found.", 404);
+  // Check availability against the trusted catalog, never IDs supplied by a browser.
+  availableRoomQuestions({ ...lobby.room.settings, difficultyBand });
+  const { data, error } = await createAdminClient().rpc("set_multiplayer_lobby_difficulty", {
+    p_room_id: roomId, ...identity, p_difficulty_band: difficultyBand,
+    p_settings_version: settingsVersion, p_connection_id: connectionId, p_player_id: playerId,
+  });
+  if (error?.code === "P0001") throw new RequestBodyError(error.message, 409);
+  if (error || !data) throw new Error("Unable to save the difficulty. Please retry.");
+  const updated = mapLobbySnapshot(data as LobbySnapshot);
+  if (!updated) throw new Error("Unable to confirm the new difficulty. Please reload.");
+  return updated;
+}
+
 async function addPlayer(room: RoomRow, guestNickname?: string, isHost = false) {
   const admin = createAdminClient();
   const user = await currentUser();
@@ -291,6 +332,7 @@ export async function createPrivateRoom(input: CreatePrivateRoomInput): Promise<
       p_division: input.settings.division,
       p_question_count: input.settings.questionCount,
       p_seconds_per_question: input.settings.secondsPerQuestion,
+      p_difficulty_band: input.settings.difficultyBand,
     });
     if (error?.code === "23505") continue;
     if (error?.code === "P0001") throw new Error(error.message);
@@ -421,8 +463,7 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
   if (lobby.room.status !== expectedStatus) return lobby.room;
   const actor = identity ?? await lobbyIdentity(lobby.room.id);
   if (!actor) throw new Error("Room not found.");
-  const available = questions.filter((question) => question.division === lobby.room.settings.division);
-  if (available.length < lobby.room.settings.questionCount) throw new Error("There are not enough questions for this room.");
+  const available = availableRoomQuestions(lobby.room.settings);
   for (let index = available.length - 1; index > 0; index -= 1) {
     const swapIndex = randomInt(index + 1);
     [available[index], available[swapIndex]] = [available[swapIndex], available[index]];
@@ -432,6 +473,7 @@ async function prepareRoomMatch(lobby: MultiplayerLobbyState, expectedStatus: "w
     p_room_id: lobby.room.id, ...actor,
     p_question_ids: selected.map((question) => question.id),
     p_difficulties: selected.map((question) => question.difficulty),
+    p_settings_version: lobby.room.settingsVersion,
   });
   if (error?.code === "P0001") throw new Error(error.message);
   if (error || !data) throw new Error("Unable to start this room. Please return to the lobby and retry.");

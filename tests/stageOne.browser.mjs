@@ -43,7 +43,8 @@ try {
   browser = await chromium.launch({ headless: true });
   const url = `http://127.0.0.1:${server.address().port}`;
   const player = { playerId: "me", isGuest: true, displayName: "Tester", connected: true, score: 0 };
-  const lobby = { room: { id: "test", status: "waiting", visibility: "public", capacity: 20, stateVersion: 1 }, currentPlayer: player, players: [player] };
+  const lobby = { room: { id: "test", status: "waiting", visibility: "public", capacity: 20, stateVersion: 1, settingsVersion: 0, countdownEndsAt: null,
+    settings: { division: "Mu", questionCount: 5, secondsPerQuestion: 90, difficultyBand: "2-4", mode: "ranked" } }, currentPlayer: player, players: [player] };
   const spectator = { roomId: "test", questionNumber: 1, totalQuestions: 2,
     question: { question: "What is 1 + 1?", choices: ["2", "3"] }, questionDurationSeconds: 60,
     questionStartedAt: Date.now(), questionEndsAt: Date.now() + 60_000, players: [player], spectators: [] };

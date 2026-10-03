@@ -8,6 +8,7 @@ export const API_OPERATIONS = {
   "multiplayer.lobby.read": "GET",
   "multiplayer.lobby.presence": "POST",
   "multiplayer.lobby.leave": "DELETE",
+  "multiplayer.lobby.settings": "PATCH",
   "multiplayer.round.read": "GET",
   "multiplayer.round.submit": "POST",
   "multiplayer.ready": "POST",

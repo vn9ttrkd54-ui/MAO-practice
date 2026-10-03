@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { nextLobbyConnection } from "@/lib/multiplayerLobbyConnection";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { withRequestTimeout } from "@/lib/requestTimeout";
-import type { MultiplayerLobbyState } from "@/types/multiplayer";
+import type { MultiplayerDifficultyBand, MultiplayerLobbyState } from "@/types/multiplayer";
 
 export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
   const [lobby, setLobby] = useState(initialLobby);
@@ -14,7 +14,10 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
   const [leaving, setLeaving] = useState(false);
   const [leaveError, setLeaveError] = useState("");
   const [blocked, setBlocked] = useState("");
-  const operations = useRef({ retry: () => {}, leave: async () => {} });
+  const operations = useRef<{ retry: () => void; leave: () => Promise<void>;
+    saveDifficulty: (band: MultiplayerDifficultyBand, version: number) => Promise<void> }>({
+    retry: () => {}, leave: async () => {}, saveDifficulty: async () => { throw new Error("Connect to the lobby first."); },
+  });
   const router = useRouter();
   const roomId = initialLobby.room.id;
   const playerId = initialLobby.currentPlayer.playerId;
@@ -151,6 +154,19 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
       // On an ambiguous timeout do not resume heartbeats or falsely claim success.
     }
 
+    async function saveDifficulty(difficultyBand: MultiplayerDifficultyBand, settingsVersion: number) {
+      if (!canUpdate() || !connected) throw new Error("Reconnect to the lobby before changing settings.");
+      const next = await withRequestTimeout(async signal => {
+        const response = await fetch(endpoint, { method: "PATCH", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ difficultyBand, settingsVersion, connectionId: connection.connectionId, playerId }), signal });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error ?? "Unable to save difficulty. Please retry.");
+        if (!payload?.room || !Array.isArray(payload.players)) throw new Error("Unable to confirm the new settings. Retry the lobby connection.");
+        return payload as MultiplayerLobbyState;
+      }, { timeoutMs: 8_000 });
+      apply(next);
+    }
+
     const retry = () => void refresh(true);
     const resume = () => {
       if (document.visibilityState !== "visible" || stopped || leavingRoom || blockedRoom || navigating) return;
@@ -164,7 +180,7 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
       const destination = new URL(link.href, window.location.href);
       if (destination.origin === window.location.origin && !destination.pathname.startsWith(`/multiplayer/room/${roomId}`)) disconnect();
     };
-    operations.current = { retry, leave };
+    operations.current = { retry, leave, saveDifficulty };
     void refresh(true);
     const unsubscribe = subscribeToMultiplayerRoom(roomId, event => {
       // Broadcasts are hints, never trusted roster data. Coalesce bursts and read
@@ -188,7 +204,7 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
       clearTimeout(eventTimer);
       clearTimeout(boundaryTimer);
       unsubscribe();
-      operations.current = { retry: () => {}, leave: async () => {} };
+      operations.current = { retry: () => {}, leave: async () => {}, saveDifficulty: async () => { throw new Error("Reconnect to the lobby first."); } };
       window.removeEventListener("pagehide", disconnect);
       window.removeEventListener("popstate", disconnect);
       window.removeEventListener("pageshow", resume);
@@ -200,5 +216,6 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
   }, [roomId, playerId, router]);
 
   return { lobby, warning, ready, leaving, leaveError, blocked,
-    retry: () => operations.current.retry(), leave: () => operations.current.leave() };
+    retry: () => operations.current.retry(), leave: () => operations.current.leave(),
+    saveDifficulty: (band: MultiplayerDifficultyBand, version: number) => operations.current.saveDifficulty(band, version) };
 }

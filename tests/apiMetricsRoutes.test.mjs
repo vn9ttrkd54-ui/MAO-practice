@@ -30,6 +30,7 @@ const routes = [
   ["multiplayer.lobby.read", "multiplayer/rooms/[id]/lobby", {}],
   ["multiplayer.lobby.presence", "multiplayer/rooms/[id]/lobby", { body: { action: "heartbeat", tabId: clientId, connectionId: clientId, playerId: clientId, generation: 2 } }],
   ["multiplayer.lobby.leave", "multiplayer/rooms/[id]/lobby", { body: { connectionId: clientId } }],
+  ["multiplayer.lobby.settings", "multiplayer/rooms/[id]/lobby", { body: { connectionId: clientId, playerId: clientId, difficultyBand: "2-4", settingsVersion: 0 } }],
   ["multiplayer.round.read", "multiplayer/rooms/[id]/round", {}],
   ["multiplayer.round.submit", "multiplayer/rooms/[id]/round", { body: { questionId: 42, selectedAnswer: "A" } }],
   ["multiplayer.ready", "multiplayer/rooms/[id]/ready", { body: { questionNumber: 1 } }],
@@ -48,6 +49,7 @@ async function fixture(path, { failure = false, round = "running", stallAuth = f
     listPublicRooms: record("directory", []), getPrivateLobby: record("lobby", { players: [] }),
     changeMultiplayerLobbyPresence: record("presence", { status: "connected", lobby: {} }),
     confirmMultiplayerLeave: record("leave", "left"),
+    updateMultiplayerDifficulty: record("settings", { room: {}, players: [] }),
     getMultiplayerRoundState: record("round", round === "running" ? { stateVersion: 2 } : null),
     getMultiplayerRoom: record("access", { room: { status: round } }),
     submitMultiplayerAnswer: record("answer", undefined), acknowledgeMultiplayerQuestionReady: record("ready", undefined),
@@ -86,7 +88,7 @@ async function fixture(path, { failure = false, round = "running", stallAuth = f
   };
   return { logs, calls, invoke };
 }
-test("all 15 API operations expose bounded timings while keeping sensitive data out of log records", async () => {
+test("all API operations expose bounded timings while keeping sensitive data out of log records", async () => {
   assert.deepEqual(routes.map(([operation]) => operation), Object.keys(API_OPERATIONS));
   for (const [operation, path, options] of routes) {
     const { logs, calls, invoke } = await fixture(path);

@@ -7,7 +7,7 @@ import { startPrivateRoomAction } from "@/app/multiplayer/actions";
 import PendingSubmitButton from "@/components/multiplayer/PendingSubmitButton";
 import { RankIcon, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
 import { useLobbyConnection } from "@/components/multiplayer/useLobbyConnection";
-import type { MultiplayerLobbyState } from "@/types/multiplayer";
+import type { MultiplayerDifficultyBand, MultiplayerLobbyState } from "@/types/multiplayer";
 
 interface PrivateLobbyProps {
   initialLobby: MultiplayerLobbyState;
@@ -15,8 +15,10 @@ interface PrivateLobbyProps {
 }
 
 export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps) {
-  const { lobby, warning, ready, leaving, leaveError, blocked, retry, leave } = useLobbyConnection(initialLobby);
+  const { lobby, warning, ready, leaving, leaveError, blocked, retry, leave, saveDifficulty } = useLobbyConnection(initialLobby);
   const [now, setNow] = useState<number | null>(null);
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsError, setSettingsError] = useState("");
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 250);
@@ -27,6 +29,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
   const started = lobby.room.status === "in-progress" || lobby.room.status === "completed";
   const publicRoom = lobby.room.visibility === "public";
   const countdown = now !== null && lobby.room.countdownEndsAt ? Math.max(0, Math.ceil((lobby.room.countdownEndsAt - now) / 1000)) : null;
+  const settingsLocked = started || (lobby.room.countdownEndsAt !== null && (now === null || (countdown ?? 0) <= 10));
 
   return (
     <>
@@ -58,12 +61,35 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
         </section>
 
         <aside className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+          <h2 className="font-bold">Room settings</h2>
+          <p className="mt-2 text-sm text-gray-700" aria-live="polite">Difficulty: {lobby.room.settings.difficultyBand?.replace("-", "–") ?? "1–5 (legacy room)"} · {lobby.room.settings.secondsPerQuestion}s per question</p>
+          {isHost && !started ? <form className="my-4" onSubmit={async event => {
+            event.preventDefault();
+            if (savingSettings) return;
+            const band = new FormData(event.currentTarget).get("difficultyBand") as MultiplayerDifficultyBand;
+            setSavingSettings(true); setSettingsError("");
+            try { await saveDifficulty(band, lobby.room.settingsVersion); }
+            catch (failure) { setSettingsError(failure instanceof Error ? failure.message : "Unable to save difficulty. Please retry."); }
+            finally { setSavingSettings(false); }
+          }}>
+            <label className="block text-sm font-semibold"><span id="lobby-difficulty-label">Question difficulty</span>
+              <select key={`${lobby.room.settingsVersion}:${lobby.room.settings.difficultyBand}`} name="difficultyBand" aria-labelledby="lobby-difficulty-label" defaultValue={lobby.room.settings.difficultyBand ?? "2-4"}
+                disabled={!ready || settingsLocked || savingSettings || leaving || !!leaveError || !!blocked}
+                className="mt-2 min-h-11 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-slate-900 disabled:opacity-60">
+                <option value="1-3">Levels 1–3</option><option value="2-4">Levels 2–4</option><option value="3-5">Levels 3–5</option>
+              </select>
+            </label>
+            <button type="submit" disabled={!ready || settingsLocked || savingSettings || leaving || !!leaveError || !!blocked}
+              className="mt-2 min-h-11 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 disabled:opacity-60">{savingSettings ? "Saving difficulty…" : "Save difficulty"}</button>
+            <p className="mt-2 text-xs text-gray-600">{settingsLocked ? "Difficulty is locked for the start." : publicRoom ? "Only you can change difficulty. It locks in the final 10 seconds." : "You can change difficulty before starting."}</p>
+          </form> : !started ? <p className="my-3 text-xs text-gray-600">The host chooses the difficulty.</p> : null}
+          {settingsError ? <p role="alert" className="my-3 text-sm text-red-700">{settingsError}</p> : null}
           <h2 className="font-bold">Ready to play?</h2>
           <p className="mt-2 text-sm text-gray-600">{publicRoom ? (lobby.room.status === "countdown" ? `Match begins in ${countdown ?? 60}s` : "The countdown begins when a second player joins.") : isHost ? "Start whenever everyone has joined." : "Waiting for the host to start the game."}</p>
           {!publicRoom && isHost && !started ? (
             <form action={startPrivateRoomAction} className="mt-5">
               <input type="hidden" name="roomId" value={lobby.room.id} />
-              <PendingSubmitButton pendingText="Starting game…" disabled={!ready || leaving || !!leaveError || !!blocked} className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Start Game</PendingSubmitButton>
+              <PendingSubmitButton pendingText="Starting game…" disabled={!ready || savingSettings || leaving || !!leaveError || !!blocked} className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">Start Game</PendingSubmitButton>
             </form>
           ) : null}
           {!publicRoom && isHost && lobby.players.length === 1 && !started ? <p className="mt-3 text-xs text-gray-500">Solo games automatically become unranked.</p> : null}

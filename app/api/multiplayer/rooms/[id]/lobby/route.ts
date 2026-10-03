@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { changeMultiplayerLobbyPresence, confirmMultiplayerLeave, getPrivateLobby } from "@/lib/services/multiplayerService";
+import { changeMultiplayerLobbyPresence, confirmMultiplayerLeave, getPrivateLobby, updateMultiplayerDifficulty } from "@/lib/services/multiplayerService";
 import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
 import { observeApi } from "@/lib/serverPerformance";
 
@@ -49,6 +49,22 @@ export async function DELETE(request: Request, { params }: LobbyRouteContext) {
       const { connectionId } = await readJsonBody<Record<string, unknown>>(request, 1024);
       if (!validUuid(id) || !validUuid(connectionId)) return json({ error: "Invalid leave request." }, 400);
       return json({ status: await measure("service", () => confirmMultiplayerLeave(id, connectionId)) });
+    } catch (error) { return failure(error); }
+  });
+}
+
+export async function PATCH(request: Request, { params }: LobbyRouteContext) {
+  return observeApi("multiplayer.lobby.settings", async measure => {
+    if (!isTrustedMutationRequest(request)) return json({ error: "Invalid request origin." }, 403);
+    try {
+      const { id } = await params;
+      const { difficultyBand, settingsVersion, connectionId, playerId } = await readJsonBody<Record<string, unknown>>(request, 1024);
+      if (!validUuid(id) || !validUuid(connectionId) || !validUuid(playerId) ||
+        typeof settingsVersion !== "number" || !Number.isSafeInteger(settingsVersion) || settingsVersion < 0 ||
+        (difficultyBand !== "1-3" && difficultyBand !== "2-4" && difficultyBand !== "3-5")) {
+        return json({ error: "Invalid settings request." }, 400);
+      }
+      return json(await measure("service", () => updateMultiplayerDifficulty(id, difficultyBand, settingsVersion, connectionId, playerId)));
     } catch (error) { return failure(error); }
   });
 }

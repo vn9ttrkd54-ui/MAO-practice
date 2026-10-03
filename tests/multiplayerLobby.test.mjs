@@ -27,7 +27,7 @@ const row = { id:roomId, visibility:'public', mode:'ranked', division:'Mu', ques
   seconds_per_question:60, capacity:20, status:'waiting', state_version:5, created_at:new Date().toISOString() };
 const player = { id:randomUUID(),user_id:userId,display_name:'Tester',rp:450,connected:true };
 const snapshot = { room:row,currentPlayer:player,players:[player] };
-function serviceFixture({ user = {id:userId}, authError = null, token, error = null, reply } = {}) {
+function serviceFixture({ user = {id:userId}, authError = null, token, error = null, reply, catalog = [] } = {}) {
   const calls = [], auth = [], cookies = [];
   const admin = { rpc:async(name,args) => {
     calls.push({name,args});
@@ -39,13 +39,56 @@ function serviceFixture({ user = {id:userId}, authError = null, token, error = n
   const service = load("lib/services/multiplayerService.ts", {
     "server-only": {}, "node:crypto": require("node:crypto"),
     "next/headers": {cookies:async()=>({get:()=>token?{value:token}:undefined,delete:key=>cookies.push(key)})},
-    "@/data/questions": {questions:[]}, "@/lib/security/request": security,
+    "@/data/questions": {questions:catalog}, "@/lib/security/request": security,
     "@/lib/auth/publicNames": publicNames,
     "@/lib/supabase/admin": {createAdminClient:()=>admin},
     "@/lib/supabase/server": {createClient:async()=>({auth:{getUser:async()=>{auth.push(1);return {data:{user},error:authError};}}})},
   });
   return {service,calls,auth,cookies};
 }
+test("settings PATCH validates ranges, version, origin and connection, ignoring supplied authority", async () => {
+  const f=routeFixture();
+  const body={difficultyBand:'1-3',settingsVersion:2,connectionId,playerId:player.id};
+  for(const change of [{difficultyBand:'1-5'},{settingsVersion:-1},{settingsVersion:1.5},{connectionId:null},{playerId:null}]) {
+    assert.equal((await f.invoke('PATCH',{...body,...change})).status,400);
+  }
+  assert.equal((await f.invoke('PATCH',body,{origin:'https://evil.test'})).status,403);
+  assert.equal((await f.invoke('PATCH',{...body,extra:'x'.repeat(2000)})).status,413);
+  assert.equal(f.calls.length,0);
+  const response=await f.invoke('PATCH',{...body,userId:'victim',isHost:true});
+  assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');
+  assert.deepEqual(f.calls[0].args,[roomId,'1-3',2,connectionId,player.id]);
+});
+
+const catalog=[...load('data/questions/mu.ts',{}).muQuestions,...load('data/questions/alpha.ts',{}).alphaQuestions,...load('data/questions/theta.ts',{}).thetaQuestions];
+test("every division and difficulty band has 30 unique questions; starts select only the requested pool", async () => {
+  for(const division of ['Mu','Alpha','Theta']) for(const band of ['1-3','2-4','3-5']) {
+    const pool=catalog.filter(q=>q.division===division && q.difficulty>=Number(band[0]) && q.difficulty<=Number(band[2]));
+    assert.ok(new Set(pool.map(q=>q.id)).size>=30,`${division} ${band} lacks 30 questions`);
+    const configured={...snapshot,room:{...row,visibility:'private',division,question_count:30,difficulty_band:band,settings_version:7},currentPlayer:{...player,is_host:true}};
+    const f=serviceFixture({catalog,reply:name=>name==='read_multiplayer_lobby'?configured:configured.room});
+    await f.service.beginPrivateRoom(roomId);
+    const call=f.calls.find(call=>call.name==='start_multiplayer_lobby');
+    assert.equal(call.args.p_settings_version,7);
+    assert.equal(new Set(call.args.p_question_ids).size,30);
+    assert.ok(call.args.p_question_ids.every(id=>pool.some(q=>q.id===id)));
+    assert.ok(call.args.p_difficulties.every(d=>d>=Number(band[0]) && d<=Number(band[2])));
+  }
+});
+test("an insufficient pool fails without silently broadening difficulty or starting a match", async () => {
+  const configured={...snapshot,room:{...row,visibility:'private',difficulty_band:'3-5'},currentPlayer:{...player,is_host:true}};
+  const f=serviceFixture({catalog:catalog.slice(0,1),reply:()=>configured});
+  await assert.rejects(f.service.beginPrivateRoom(roomId),/not enough questions/);
+  assert.equal(f.calls.filter(call=>call.name==='start_multiplayer_lobby').length,0);
+});
+test("settings saves derive identity on the server and send the fenced version to the database", async () => {
+  const f=serviceFixture({catalog,reply:()=>snapshot});
+  await f.service.updateMultiplayerDifficulty(roomId,'1-3',2,connectionId,player.id);
+  assert.equal(f.auth.length,1);
+  assert.deepEqual(f.calls[1],{name:'set_multiplayer_lobby_difficulty',args:{p_room_id:roomId,p_user_id:userId,p_guest_hash:null,p_difficulty_band:'1-3',p_settings_version:2,p_connection_id:connectionId,p_player_id:player.id}});
+  await assert.rejects(serviceFixture({user:null}).service.updateMultiplayerDifficulty(roomId,'1-3',0,connectionId,player.id),/Rejoin/);
+});
+
 test("normal lobby reads and heartbeats use one identity check and one RPC", async () => {
   for (const action of [null,'connect','heartbeat','disconnect']) {
     const f=serviceFixture();
@@ -95,7 +138,7 @@ test("database failures, malformed receipts, and started/conflict outcomes never
 function routeFixture({ fail=false }={}) {
   const calls=[];
   const record=(name,result)=>(...args)=>{calls.push({name,args});if(fail)throw new Error('database credential detail');return result;};
-  const service={getPrivateLobby:record('get',snapshot),changeMultiplayerLobbyPresence:record('presence',{status:'connected',lobby:snapshot}),confirmMultiplayerLeave:record('leave','left')};
+  const service={getPrivateLobby:record('get',snapshot),changeMultiplayerLobbyPresence:record('presence',{status:'connected',lobby:snapshot}),confirmMultiplayerLeave:record('leave','left'),updateMultiplayerDifficulty:record('settings',snapshot)};
   const route=load('app/api/multiplayer/rooms/[id]/lobby/route.ts',{
     '@/lib/serverPerformance':{observeApi:createApiObserver()},
     'next/server':{NextResponse:{json:Response.json}},'@/lib/security/request':security,'@/lib/services/multiplayerService':service,
