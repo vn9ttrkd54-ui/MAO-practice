@@ -20,6 +20,23 @@ export class TrainerAccountChangedError extends Error {
   constructor() { super("Your account changed. Reload Trainer to start a new session."); }
 }
 
+// Recovery fetches the same public question, not a fresh adaptive selection.
+export async function loadTrainerQuestion(selected: TrainerQuestionItem, signal: AbortSignal): Promise<Question> {
+  const response = await fetch(`/api/practice/trainer/question?id=${selected.id}`, { signal, cache: "no-store" });
+  if (!response.ok) throw new Error("Unable to load this Trainer question. Please retry.");
+  const { question } = await response.json() as { question?: Question };
+  signal.throwIfAborted();
+  if (!question || question.id !== selected.id || question.division !== selected.division
+    || question.difficulty !== selected.difficulty || question.topic !== selected.topic
+    || question.number !== selected.number || typeof question.question !== "string"
+    || typeof question.solution !== "string" || !Array.isArray(question.choices)
+    || !question.choices.every(choice => typeof choice === "string")
+    || !["A", "B", "C", "D", "E"].includes(question.answer)) {
+    throw new Error("The question catalog changed. Reload Trainer and try again.");
+  }
+  return question;
+}
+
 export async function getNextTrainerSelection(
   items: TrainerQuestionItem[],
   options: TrainerSelectionOptions,
@@ -90,18 +107,7 @@ export async function getNextTrainerSelection(
     await verifyOwner();
     const selected = selectNextTrainerQuestion(divisionItems, progress, options, currentTime);
     if (!selected) return { question: null, userId, level };
-    const response = await fetch(`/api/practice/trainer/question?id=${selected.id}`, { signal, cache: "no-store" });
-    if (!response.ok) throw new Error("Unable to load this Trainer question. Please retry.");
-    const { question } = await response.json() as { question?: Question };
-    signal.throwIfAborted();
-    if (!question || question.id !== selected.id || question.division !== selected.division
-      || question.difficulty !== selected.difficulty || question.topic !== selected.topic
-      || question.number !== selected.number || typeof question.question !== "string"
-      || typeof question.solution !== "string" || !Array.isArray(question.choices)
-      || !question.choices.every(choice => typeof choice === "string")
-      || !["A", "B", "C", "D", "E"].includes(question.answer)) {
-      throw new Error("The question catalog changed. Reload Trainer and try again.");
-    }
+    const question = await loadTrainerQuestion(selected, signal);
     await verifyOwner();
     return { question, userId, level };
   }, { signal: request.signal, message: "Loading Trainer took too long. Please retry." });

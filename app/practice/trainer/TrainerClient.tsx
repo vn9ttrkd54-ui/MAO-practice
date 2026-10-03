@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -28,7 +29,7 @@ import type {
 import {
   calculateTrainerStats,
 } from "@/lib/trainer";
-import { getNextTrainerSelection, TrainerAccountChangedError } from "@/lib/services/trainerSelectionService";
+import { getNextTrainerSelection, loadTrainerQuestion, TrainerAccountChangedError } from "@/lib/services/trainerSelectionService";
 import { createClient } from "@/lib/supabase/client";
 import {
   applyAdaptiveTrainerResult,
@@ -55,6 +56,12 @@ import LevelUpBanner from "@/components/trainer/LevelUpBanner";
 
 import { createPracticeAttempt, type PracticeAttempt } from "@/lib/services/practiceAttemptService";
 import { MAX_TRAINER_SESSION_RESULTS } from "@/lib/trainerSessionSave";
+import { withRequestTimeout } from "@/lib/requestTimeout";
+import { restoreGuestTrainerLevel } from "@/lib/storage/levels/memoryLevelStorage";
+import {
+  TRAINER_DRAFT_KEY, clearTrainerDraft, parseTrainerDraft, writeTrainerDraft,
+  type TrainerPendingAnswer, type TrainerSessionDraft,
+} from "@/lib/trainerSessionDraft";
 
 const DEFAULT_LEVEL: LevelProgress = {
   level: 1,
@@ -67,7 +74,12 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   const sessionOwner = useRef<string | null | undefined>(undefined);
   const [accountChanged, setAccountChanged] = useState(false);
   const attempt = useRef<PracticeAttempt | null>(null);
-  const pending = useRef<{ answer: AnswerChoice | null; time: number; answeredAt: number } | null>(null);
+  const pending = useRef<TrainerPendingAnswer | null>(null);
+  const recoveryRequest = useRef<AbortController | null>(null);
+  const [recoveryStatus, setRecoveryStatus] = useState<"checking" | "ready" | "error">("checking");
+  const [recoveryRetry, setRecoveryRetry] = useState(0);
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
+  const [storageWarning, setStorageWarning] = useState<string | null>(null);
   const saveBusy = useRef(false);
   const sessionId = useRef<string | null>(null);
   const pendingSession = useRef<TrainerSessionRecord | null>(null);
@@ -172,6 +184,8 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
         attempt.current = null;
         sessionSaveRequest.current?.abort();
         sessionSaveRequest.current = null;
+        recoveryRequest.current?.abort();
+        clearTrainerDraft();
         setAccountChanged(true);
         setIsSaving(false);
       }
@@ -185,6 +199,109 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       sessionSaveRequest.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    recoveryRequest.current = controller;
+    async function restore() {
+      let raw: string | null;
+      try { raw = sessionStorage.getItem(TRAINER_DRAFT_KEY); }
+      catch {
+        setStorageWarning("Your browser is blocking session recovery. Keep this tab open until you finish.");
+        setRecoveryStatus("ready");
+        return;
+      }
+      if (!raw) { setRecoveryStatus("ready"); return; }
+      try {
+        await withRequestTimeout(async signal => {
+          const auth = createClient().auth;
+          const readOwner = async () => {
+            const { data: { session }, error } = await auth.getSession();
+            signal.throwIfAborted();
+            if (error) throw new Error("Unable to verify your account. Retry session recovery.");
+            return session?.user.id ?? null;
+          };
+          const owner = await readOwner();
+          const draft = parseTrainerDraft(raw, owner, items);
+          if (!draft) {
+            clearTrainerDraft();
+            sessionOwner.current = undefined;
+            setStorageWarning("The previous session could not be restored or has expired. Completed account progress is unchanged.");
+            setRecoveryStatus("ready");
+            return;
+          }
+          sessionOwner.current = owner;
+          const item = items.find(item => item.id === draft.questionId)!;
+          const question = await loadTrainerQuestion(item, signal);
+          if (await readOwner() !== owner) throw new TrainerAccountChangedError();
+          signal.throwIfAborted();
+          sessionId.current = draft.id;
+          // Reusing the request UUID recovers the original server attempt and
+          // receipt, even if refresh interrupted the creation or result response.
+          attempt.current = createPracticeAttempt(question.id, true, owner, draft.requestId);
+          pending.current = draft.pending;
+          if (owner === null) restoreGuestTrainerLevel(draft.levelProgress);
+          setDivision(draft.division);
+          setCurrentQuestion(question);
+          setSelectedAnswer(draft.selectedAnswer);
+          setSubmitted(draft.submitted);
+          setHasPending(draft.pending !== null);
+          setResults(draft.results);
+          setAdaptiveState(draft.adaptiveState);
+          setCurrentIsChallenge(draft.currentIsChallenge);
+          setLevelProgress(draft.levelProgress);
+          setStartingLevelProgress(draft.startingLevelProgress);
+          setSessionStartedAt(draft.sessionStartedAt);
+          setStartTime(draft.startTime);
+          setQuestionFinishedAt(draft.questionFinishedAt);
+          setSessionEndedAt(draft.endedAt);
+          setNow(Date.now());
+          setHasAccount(owner !== null);
+          setSessionStarted(true);
+          if (draft.endedAt !== null) {
+            pendingSession.current = {
+              id: draft.id, division: draft.division, startedAt: draft.sessionStartedAt,
+              endedAt: draft.endedAt, startingLevel: draft.startingLevelProgress,
+              endingLevel: draft.levelProgress, results: draft.results,
+            };
+            setShowSummary(true);
+            setSessionSaveStatus("error");
+            setSessionSaveError("The page refreshed before your session save was confirmed. Retry the same session safely.");
+          } else if (draft.pending && !draft.submitted) {
+            setStartError("The page refreshed before your answer save was confirmed. Retry save to check the same answer safely.");
+          }
+          setRecoveryStatus("ready");
+        }, { signal: controller.signal, message: "Session recovery took too long. Please retry; your session is still kept in this tab." });
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setRecoveryError(error instanceof Error ? error.message : "Unable to restore your session. Please retry.");
+        setRecoveryStatus("error");
+      }
+    }
+    void restore();
+    return () => {
+      controller.abort();
+      if (recoveryRequest.current === controller) recoveryRequest.current = null;
+    };
+  }, [items, recoveryRetry]);
+
+  const persistSession = useCallback((overrides: Partial<TrainerSessionDraft> = {}) => {
+    if (!currentQuestion || !adaptiveState || sessionStartedAt === null || !sessionId.current
+      || sessionOwner.current === undefined || !attempt.current) return;
+    const stored = writeTrainerDraft({
+      version: 1, owner: sessionOwner.current, id: sessionId.current, division,
+      questionId: currentQuestion.id, requestId: attempt.current.requestId,
+      sessionStartedAt, startTime, questionFinishedAt, endedAt: sessionEndedAt,
+      selectedAnswer, submitted, pending: pending.current, results, adaptiveState,
+      currentIsChallenge, levelProgress, startingLevelProgress, ...overrides,
+    });
+    if (!stored) setStorageWarning("Your browser could not keep a recovery copy. Keep this tab open until you finish.");
+  }, [currentQuestion, adaptiveState, sessionStartedAt, division, startTime, questionFinishedAt,
+    sessionEndedAt, selectedAnswer, submitted, results, currentIsChallenge, levelProgress, startingLevelProgress]);
+
+  useEffect(() => {
+    if (recoveryStatus === "ready" && sessionStarted && !accountChanged && sessionSaveStatus !== "saved") persistSession();
+  }, [persistSession, recoveryStatus, sessionStarted, accountChanged, sessionSaveStatus]);
 
   useEffect(() => {
     if (!sessionStarted || showSummary || accountChanged) {
@@ -212,7 +329,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   };
 
   const handleStartSession = async () => {
-    if (isSaving || selectionRequest.current || accountChanged) {
+    if (isSaving || selectionRequest.current || accountChanged || recoveryStatus !== "ready") {
       return;
     }
     const controller = new AbortController();
@@ -280,13 +397,17 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
     const answeredAt = Date.now();
     pending.current ??= { answer, time: Math.floor((answeredAt - startTime) / 1000), answeredAt };
     const original = pending.current;
+    const currentAttempt = attempt.current;
+    // Persist intent before sending a write, not in an unload handler.
+    persistSession({ selectedAnswer: original.answer, questionFinishedAt: original.answeredAt });
     setHasPending(true);
     setSelectedAnswer(original.answer);
     setQuestionFinishedAt(original.answeredAt);
     setIsSaving(true);
     setStartError(null);
     try {
-      const savedResult = await saveVerifiedTrainerResult(currentQuestion.id, original.answer, original.time, attempt.current, currentQuestion);
+      const savedResult = await saveVerifiedTrainerResult(currentQuestion.id, original.answer, original.time, currentAttempt, currentQuestion);
+      if (attempt.current !== currentAttempt) return;
       const levelChange = savedResult.levelChange;
       setLevelProgress({ level: levelChange.level, progress: levelChange.progress });
       if (levelChange.leveledUp) setLevelUpLevel(levelChange.level);
@@ -298,11 +419,17 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
         result: original.answer === null ? "give-up" : savedResult.isCorrect ? "correct" : "incorrect",
         elapsedSeconds: original.time,
       };
-      setResults((currentResults) => [...currentResults, newResult]);
-      setAdaptiveState((current) => current ? applyAdaptiveTrainerResult(current, newResult.result, currentIsChallenge) : current);
+      const nextResults = [...results, newResult];
+      const nextAdaptive = adaptiveState ? applyAdaptiveTrainerResult(adaptiveState, newResult.result, currentIsChallenge) : null;
+      setResults(nextResults);
+      setAdaptiveState(nextAdaptive);
       setNow(original.answeredAt);
       setSubmitted(true);
+      persistSession({ results: nextResults, submitted: true, selectedAnswer: original.answer,
+        questionFinishedAt: original.answeredAt, adaptiveState: nextAdaptive ?? adaptiveState!,
+        levelProgress: { level: levelChange.level, progress: levelChange.progress } });
     } catch (error) {
+      if (attempt.current !== currentAttempt) return;
       setStartError(error instanceof Error ? error.message : "Unable to save this result. Please retry.");
     } finally {
       saveBusy.current = false;
@@ -324,6 +451,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
         endingLevel: { ...levelProgress },
         results: results.map(result => ({ ...result })),
     };
+    persistSession({ endedAt: pendingSession.current.endedAt });
     const controller = new AbortController();
     sessionSaveRequest.current = controller;
     setSessionEndedAt(pendingSession.current.endedAt);
@@ -336,6 +464,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       if (controller.signal.aborted || sessionSaveRequest.current !== controller) return;
       setTrainerHistory(receipt.recentSessions);
       setSessionSaveStatus("saved");
+      clearTrainerDraft();
     } catch (error) {
       if (controller.signal.aborted || sessionSaveRequest.current !== controller) return;
       setSessionSaveStatus("error");
@@ -389,6 +518,8 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       setQuestionFinishedAt(null);
       setNow(startedAt);
       setStartError(null);
+      persistSession({ questionId: nextQuestion.id, selectedAnswer: null, submitted: false,
+        currentIsChallenge: forceChallenge, startTime: startedAt, questionFinishedAt: null });
     } catch (error) {
       if (selectionRequest.current !== controller || controller.signal.aborted) return;
       if (error instanceof TrainerAccountChangedError) setAccountChanged(true);
@@ -416,6 +547,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
 
   const handleStartNewSession = () => {
     if (pendingSession.current && sessionSaveStatus !== "saved") return;
+    clearTrainerDraft();
     sessionOwner.current = undefined;
     sessionId.current = null;
     pendingSession.current = null;
@@ -454,11 +586,25 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
     );
   }
 
+  if (recoveryStatus !== "ready") {
+    return (
+      <main className="mx-auto max-w-3xl px-5 py-12 text-slate-950">
+        <h1 className="text-3xl font-bold">{recoveryStatus === "checking" ? "Restoring your session…" : "Session recovery paused"}</h1>
+        {recoveryStatus === "error" ? <>
+          <p role="alert" className="mt-4">{recoveryError}</p>
+          <button type="button" className="mt-6 rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white" onClick={() => {
+            setRecoveryStatus("checking"); setRecoveryRetry(value => value + 1);
+          }}>Retry session recovery</button>
+        </> : <p role="status" className="mt-4">Checking this tab for an unfinished Trainer session.</p>}
+      </main>
+    );
+  }
+
   if (!sessionStarted) {
     return (
       <TrainerSetup
         division={division}
-        error={startError}
+        error={startError ?? storageWarning}
         loading={isSaving}
         onDivisionChange={(newDivision) => {
           setDivision(newDivision);
@@ -529,6 +675,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   return (
     <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">
       <div className="mx-auto max-w-7xl">
+      {storageWarning ? <p role="alert" className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{storageWarning}</p> : null}
       {startError ? (
         <div
           role="alert"

@@ -1,5 +1,6 @@
 type Session = { user: { id: string } } | null;
-let owner: string | null = "first";
+const params = new URLSearchParams(location.search);
+let owner: string | null = params.has("guest") ? null : params.has("second") ? "second" : "first";
 const listeners = new Set<(event: string, session: Session) => void>();
 window.addEventListener("trainer-account", ((event: CustomEvent<string | null>) => {
   owner = event.detail;

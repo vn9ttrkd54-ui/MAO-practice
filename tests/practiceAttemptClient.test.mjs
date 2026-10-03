@@ -115,6 +115,25 @@ test("a lost committed result retries identical answer/time/id and cannot change
   assert.equal(state.calls.length, 3);
 });
 
+test("refresh recovers the same server attempt after lost creation and result confirmations", async () => {
+  for (const lost of ["startsLost", "resultsLost"]) {
+    const { create, state, guest } = fixture();
+    const original = create(42, true, "user-a");
+    state[lost] = 1;
+    await assert.rejects(original.submit("C", 7, guest), /lost/);
+    const resumed = create(42, true, "user-a", original.requestId);
+    await resumed.submit("C", 7, guest);
+    assert.equal(state.uuid, 1, "recovery does not mint a replacement identity");
+    const starts = state.calls.filter(({ url }) => url.endsWith("/attempt"));
+    assert.deepEqual(starts[0], starts[1]);
+    const writes = state.calls.filter(({ url }) => url.endsWith("/result"));
+    if (lost === "resultsLost") assert.deepEqual(writes[0], writes[1]);
+    state.owner = "user-b";
+    await assert.rejects(create(42, true, "user-a", original.requestId).prepare(), /account changed/);
+    assert.equal(state.calls.filter(({ url }) => url.endsWith("/attempt")).length, 2);
+  }
+});
+
 test("double-click saves deduplicate in flight and new manual attempts and tabs stay independent", async () => {
   const { create, state, guest } = fixture();
   const first = create(42, false);
