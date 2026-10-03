@@ -61,6 +61,58 @@ test("settings PATCH validates ranges, version, origin and connection, ignoring 
 });
 
 const catalog=[...load('data/questions/mu.ts',{}).muQuestions,...load('data/questions/alpha.ts',{}).alphaQuestions,...load('data/questions/theta.ts',{}).thetaQuestions];
+test("Ready uses one verified identity and one RPC; legacy snapshots default to not ready",async()=>{
+  for(const value of [false,true]) {
+    const confirmed={...snapshot,currentPlayer:{...player,lobby_ready:value},players:[{...player,lobby_ready:value}]};
+    const f=serviceFixture({reply:()=>confirmed});
+    const result=await f.service.updateMultiplayerLobbyReady(roomId,value,2,connectionId,player.id);
+    assert.equal(f.auth.length,1);assert.equal(f.calls.length,1);
+    assert.deepEqual(f.calls[0],{name:'set_multiplayer_lobby_ready',args:{p_room_id:roomId,p_user_id:userId,p_ready:value,p_settings_version:2,p_connection_id:connectionId,p_player_id:player.id}});
+    assert.equal(result.currentPlayer.lobbyReady,value);assert.equal(result.players[0].lobbyReady,value);
+  }
+  assert.equal((await serviceFixture().service.getPrivateLobby(roomId)).currentPlayer.lobbyReady,false);
+});
+test("Ready rejects missing or guest identity, auth failure, invalid versions and malformed or failed receipts",async()=>{
+  for(const config of [{user:null},{user:null,token:'guest'},{authError:{name:'AuthRetryableFetchError'}}]) {
+    const f=serviceFixture(config);
+    await assert.rejects(f.service.updateMultiplayerLobbyReady(roomId,true,0,connectionId,player.id),/Sign in|verify/);
+    assert.equal(f.calls.length,0);
+  }
+  for(const version of [-1,0.1,Number.MAX_SAFE_INTEGER+1]) {
+    const f=serviceFixture();await assert.rejects(f.service.updateMultiplayerLobbyReady(roomId,true,version,connectionId,player.id),/Invalid/);
+    assert.equal(f.calls.length,0);
+  }
+  for(const config of [{reply:()=>null},{reply:()=>({})},{error:{message:'secret database details'}}])
+    await assert.rejects(serviceFixture(config).service.updateMultiplayerLobbyReady(roomId,true,0,connectionId,player.id),/Unable to confirm/);
+  await assert.rejects(serviceFixture({error:{code:'P0001',message:'Settings changed.'}}).service.updateMultiplayerLobbyReady(roomId,true,0,connectionId,player.id),error=>error.status===409);
+});
+test("full public room heartbeats do not start before the deadline; due rooms still start",async()=>{
+  for(const due of [false,true]) {
+    const full={...snapshot,room:{...row,status:'countdown',difficulty_band:'2-4',settings_version:0,countdown_ends_at:new Date(Date.now()+(due?-1000:60000)).toISOString()},players:Array.from({length:20},()=>player)};
+    const f=serviceFixture({catalog,reply:name=>name==='change_multiplayer_lobby_presence'?{status:'connected',lobby:full}:name==='read_multiplayer_lobby'?full:full.room});
+    await f.service.changeMultiplayerLobbyPresence(roomId,'heartbeat',tabId,connectionId,1,player.id);
+    assert.equal(f.calls.some(call=>call.name==='start_multiplayer_lobby'),due);
+  }
+});
+test("Ready route fences input and origin, ignores supplied identity, and hides unexpected errors",async()=>{
+  const calls=[];let failure=null;
+  const route=load('app/api/multiplayer/rooms/[id]/lobby/ready/route.ts',{
+    '@/lib/serverPerformance':{observeApi:createApiObserver()},'next/server':{NextResponse:{json:Response.json}},
+    '@/lib/security/request':security,'@/lib/services/multiplayerService':{updateMultiplayerLobbyReady:(...args)=>{calls.push(args);if(failure)throw failure;return snapshot;}},
+  });
+  const invoke=(body,headers={},id=roomId)=>route.POST(new Request('https://local.test/api/lobby/ready',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(body)}),{params:Promise.resolve({id})});
+  const body={ready:true,settingsVersion:0,connectionId,playerId:player.id};
+  assert.equal((await invoke(body,{origin:'https://evil.test'})).status,403);
+  assert.equal((await invoke({...body,extra:'x'.repeat(2000)})).status,413);
+  for(const change of [{ready:'true'},{ready:null},{settingsVersion:-1},{settingsVersion:1.5},{settingsVersion:Number.MAX_SAFE_INTEGER+1},{playerId:null},{connectionId:'bad'}])
+    assert.equal((await invoke({...body,...change})).status,400);
+  assert.equal((await invoke(body,{},'bad')).status,400);assert.equal(calls.length,0);
+  const response=await invoke({...body,userId:'victim',isHost:true});assert.equal(response.status,200);
+  assert.equal(response.headers.get('cache-control'),'no-store');assert.deepEqual(calls[0],[roomId,true,0,connectionId,player.id]);
+  failure=new Error('private credentials');const failed=await invoke(body);
+  assert.equal(failed.status,503);assert.ok(!(await failed.text()).includes('credentials'));
+  failure=new security.RequestBodyError('Settings changed.',409);assert.equal((await invoke(body)).status,409);
+});
 test("every division and difficulty band has 30 unique questions; starts select only the requested pool", async () => {
   for(const division of ['Mu','Alpha','Theta']) for(const band of ['1-3','2-4','3-5']) {
     const pool=catalog.filter(q=>q.division===division && q.difficulty>=Number(band[0]) && q.difficulty<=Number(band[2]));

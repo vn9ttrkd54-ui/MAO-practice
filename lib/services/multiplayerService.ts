@@ -191,7 +191,7 @@ async function currentUser() {
 }
 
 type LobbyIdentity = { p_user_id: string | null; p_guest_hash: string | null };
-type LobbyPlayerRow = PlayerRow & { display_name: string; rp: number };
+type LobbyPlayerRow = PlayerRow & { display_name: string; rp: number; lobby_ready?: boolean };
 type LobbySnapshot = { room: RoomRow; currentPlayer: LobbyPlayerRow; players: LobbyPlayerRow[] };
 export type LobbyPresenceAction = "connect" | "heartbeat" | "disconnect";
 export type LobbyPresenceResult = {
@@ -210,6 +210,7 @@ async function lobbyIdentity(roomId: string): Promise<LobbyIdentity | null> {
 function mapLobbySnapshot(snapshot: LobbySnapshot | null): MultiplayerLobbyState | null {
   if (!snapshot?.currentPlayer) return null;
   const map = (row: LobbyPlayerRow) => ({ ...mapPlayer(row, row.display_name),
+    lobbyReady: row.lobby_ready === true,
     rp: row.user_id ? row.rp : null, rankTier: row.user_id ? tierForRp(row.rp) : null });
   return { room: mapRoom(snapshot.room, snapshot.players.length),
     currentPlayer: map(snapshot.currentPlayer), players: snapshot.players.map(map) };
@@ -231,11 +232,30 @@ export async function changeMultiplayerLobbyPresence(roomId: string, action: Lob
   let lobby = mapLobbySnapshot(data.lobby ?? null);
   // Only a due heartbeat/start boundary attempts a transition; live GETs stay read-only.
   if (lobby?.room.visibility === "public" && lobby.room.status === "countdown" &&
-    ((lobby.room.countdownEndsAt ?? Infinity) <= Date.now() || lobby.players.length >= lobby.room.capacity)) {
+    (lobby.room.countdownEndsAt ?? Infinity) <= Date.now()) {
     await prepareRoomMatch(lobby, "countdown", identity);
     lobby = await readLobby(roomId, identity);
   }
   return { status: data.status as LobbyPresenceResult["status"], lobby };
+}
+
+export async function updateMultiplayerLobbyReady(roomId: string, ready: boolean,
+  settingsVersion: number, connectionId: string, playerId: string): Promise<MultiplayerLobbyState> {
+  if (typeof ready !== "boolean" || !Number.isSafeInteger(settingsVersion) || settingsVersion < 0) {
+    throw new RequestBodyError("Invalid Ready request.", 400);
+  }
+  const identity = await lobbyIdentity(roomId);
+  if (!identity?.p_user_id) throw new RequestBodyError("Sign in to change Ready in a public room.", 403);
+  // One authenticated identity and one room-locked RPC, never browser authority.
+  const { data, error } = await createAdminClient().rpc("set_multiplayer_lobby_ready", {
+    p_room_id: roomId, p_user_id: identity.p_user_id, p_ready: ready,
+    p_settings_version: settingsVersion, p_connection_id: connectionId, p_player_id: playerId,
+  });
+  if (error?.code === "P0001") throw new RequestBodyError(error.message, 409);
+  if (error || !data) throw new Error("Unable to confirm Ready. Please retry.");
+  const updated = mapLobbySnapshot(data as LobbySnapshot);
+  if (!updated) throw new Error("Unable to confirm Ready. Reconnect to the lobby.");
+  return updated;
 }
 
 export async function confirmMultiplayerLeave(roomId: string, connectionId: string): Promise<"left" | "started" | "conflict"> {

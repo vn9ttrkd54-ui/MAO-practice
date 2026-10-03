@@ -221,6 +221,11 @@ export interface MultiplayerRoomAccess {
   currentPlayer: MultiplayerPlayer;
 }
 
+export interface MultiplayerLobbyPlayer extends MultiplayerPlayer {
+  lobbyReady: boolean;
+}
+
 export interface MultiplayerLobbyState extends MultiplayerRoomAccess {
-  players: MultiplayerPlayer[];
+  currentPlayer: MultiplayerLobbyPlayer;
+  players: MultiplayerLobbyPlayer[];
 }

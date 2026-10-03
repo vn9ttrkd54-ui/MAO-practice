@@ -9,14 +9,17 @@ import type { MultiplayerDifficultyBand, MultiplayerLobbyState } from "@/types/m
 
 export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
   const [lobby, setLobby] = useState(initialLobby);
+  const [receivedAt, setReceivedAt] = useState<number | null>(null);
   const [warning, setWarning] = useState(false);
   const [ready, setReady] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [leaveError, setLeaveError] = useState("");
   const [blocked, setBlocked] = useState("");
   const operations = useRef<{ retry: () => void; leave: () => Promise<void>;
-    saveDifficulty: (band: MultiplayerDifficultyBand, version: number) => Promise<void> }>({
+    saveDifficulty: (band: MultiplayerDifficultyBand, version: number) => Promise<void>;
+    setLobbyReady: (value: boolean, version: number) => Promise<void> }>({
     retry: () => {}, leave: async () => {}, saveDifficulty: async () => { throw new Error("Connect to the lobby first."); },
+    setLobbyReady: async () => { throw new Error("Connect to the lobby first."); },
   });
   const router = useRouter();
   const roomId = initialLobby.room.id;
@@ -27,6 +30,7 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
     let connection = nextLobbyConnection(roomId);
     let stopped = false, suspended = false, navigating = false, leavingRoom = false, blockedRoom = false;
     let connected = false, inFlight = false, leaveInFlight = false, queuedRead = false, queuedHeartbeat = false;
+    let readyInFlight = false;
     let version = -1;
     let active: AbortController | null = null;
     let eventTimer: ReturnType<typeof setTimeout> | undefined;
@@ -37,6 +41,7 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
     function apply(next: MultiplayerLobbyState) {
       if (!canUpdate() || next.room.stateVersion < version) return;
       version = next.room.stateVersion;
+      setReceivedAt(Date.now());
       setLobby(next);
       setWarning(false);
       clearTimeout(boundaryTimer);
@@ -167,6 +172,27 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
       apply(next);
     }
 
+    async function setLobbyReady(value: boolean, settingsVersion: number) {
+      if (!canUpdate() || !connected) throw new Error("Reconnect to the lobby before changing Ready.");
+      if (readyInFlight) throw new Error("Wait for your Ready update to finish.");
+      readyInFlight = true;
+      const connectionId = connection.connectionId;
+      try {
+        const next = await withRequestTimeout(async signal => {
+          const response = await fetch(`${endpoint}/ready`, { method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ready: value, settingsVersion, connectionId, playerId }), signal });
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error ?? "Unable to confirm Ready. Please retry.");
+          if (!payload?.room || !Array.isArray(payload.players)) throw new Error("Unable to confirm Ready. Reconnect to the lobby.");
+          return payload as MultiplayerLobbyState;
+        }, { timeoutMs: 8_000 });
+        if (!canUpdate() || connectionId !== connection.connectionId) throw new Error("Your connection changed. Check Ready after reconnecting.");
+        apply(next);
+      } finally {
+        readyInFlight = false;
+      }
+    }
+
     const retry = () => void refresh(true);
     const resume = () => {
       if (document.visibilityState !== "visible" || stopped || leavingRoom || blockedRoom || navigating) return;
@@ -180,7 +206,7 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
       const destination = new URL(link.href, window.location.href);
       if (destination.origin === window.location.origin && !destination.pathname.startsWith(`/multiplayer/room/${roomId}`)) disconnect();
     };
-    operations.current = { retry, leave, saveDifficulty };
+    operations.current = { retry, leave, saveDifficulty, setLobbyReady };
     void refresh(true);
     const unsubscribe = subscribeToMultiplayerRoom(roomId, event => {
       // Broadcasts are hints, never trusted roster data. Coalesce bursts and read
@@ -204,7 +230,9 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
       clearTimeout(eventTimer);
       clearTimeout(boundaryTimer);
       unsubscribe();
-      operations.current = { retry: () => {}, leave: async () => {}, saveDifficulty: async () => { throw new Error("Reconnect to the lobby first."); } };
+      operations.current = { retry: () => {}, leave: async () => {},
+        saveDifficulty: async () => { throw new Error("Reconnect to the lobby first."); },
+        setLobbyReady: async () => { throw new Error("Reconnect to the lobby first."); } };
       window.removeEventListener("pagehide", disconnect);
       window.removeEventListener("popstate", disconnect);
       window.removeEventListener("pageshow", resume);
@@ -215,7 +243,8 @@ export function useLobbyConnection(initialLobby: MultiplayerLobbyState) {
     };
   }, [roomId, playerId, router]);
 
-  return { lobby, warning, ready, leaving, leaveError, blocked,
+  return { lobby, receivedAt, warning, ready, leaving, leaveError, blocked,
     retry: () => operations.current.retry(), leave: () => operations.current.leave(),
+    setLobbyReady: (value: boolean, version: number) => operations.current.setLobbyReady(value, version),
     saveDifficulty: (band: MultiplayerDifficultyBand, version: number) => operations.current.saveDifficulty(band, version) };
 }

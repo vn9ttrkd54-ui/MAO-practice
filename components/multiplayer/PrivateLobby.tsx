@@ -15,10 +15,12 @@ interface PrivateLobbyProps {
 }
 
 export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps) {
-  const { lobby, warning, ready, leaving, leaveError, blocked, retry, leave, saveDifficulty } = useLobbyConnection(initialLobby);
+  const { lobby, receivedAt, warning, ready, leaving, leaveError, blocked, retry, leave, saveDifficulty, setLobbyReady } = useLobbyConnection(initialLobby);
   const [now, setNow] = useState<number | null>(null);
   const [savingSettings, setSavingSettings] = useState(false);
   const [settingsError, setSettingsError] = useState("");
+  const [savingReady, setSavingReady] = useState(false);
+  const [readyError, setReadyError] = useState<{ value: boolean; version: number; message: string } | null>(null);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 250);
@@ -28,8 +30,15 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
   const isHost = lobby.currentPlayer.isHost;
   const started = lobby.room.status === "in-progress" || lobby.room.status === "completed";
   const publicRoom = lobby.room.visibility === "public";
-  const countdown = now !== null && lobby.room.countdownEndsAt ? Math.max(0, Math.ceil((lobby.room.countdownEndsAt - now) / 1000)) : null;
-  const settingsLocked = started || (lobby.room.countdownEndsAt !== null && (now === null || (countdown ?? 0) <= 10));
+  // A freshly shortened deadline must not use the previous interval's clock
+  // value (which could briefly display 11 seconds or unlock the settings).
+  const clockNow = now === null && receivedAt === null ? null : Math.max(now ?? 0, receivedAt ?? 0);
+  const countdown = clockNow !== null && lobby.room.countdownEndsAt ? Math.max(0, Math.ceil((lobby.room.countdownEndsAt - clockNow) / 1000)) : null;
+  const settingsLocked = started || (lobby.room.countdownEndsAt !== null && (clockNow === null || (countdown ?? 0) <= 10));
+  const playerReady = lobby.currentPlayer.lobbyReady === true;
+  // A lost response is retried with the same desired value, never as a toggle.
+  const readyFailure = readyError?.version === lobby.room.settingsVersion && readyError.value !== playerReady ? readyError : null;
+  const readyCount = lobby.players.filter(player => player.lobbyReady).length;
 
   return (
     <>
@@ -54,7 +63,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
                     <span>{player.isGuest ? "Unranked guest" : `${player.rankTier} · ${player.rp} RP`}</span>
                   </div>
                 </div>
-                <span className="h-2.5 w-2.5 rounded-full shrink-0 bg-blue-500 ring-4 ring-blue-100/50" aria-label="Connected" />
+                {publicRoom && !started ? <span className={`shrink-0 rounded-full px-2 py-1 text-xs font-semibold ${player.lobbyReady ? "bg-emerald-100 text-emerald-900" : "bg-slate-100 text-slate-600"}`}>{player.lobbyReady ? "Ready" : "Not ready"}</span> : <span className="h-2.5 w-2.5 rounded-full shrink-0 bg-blue-500 ring-4 ring-blue-100/50" aria-label="Connected" />}
               </li>
             ))}
           </ul>
@@ -74,18 +83,37 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
           }}>
             <label className="block text-sm font-semibold"><span id="lobby-difficulty-label">Question difficulty</span>
               <select key={`${lobby.room.settingsVersion}:${lobby.room.settings.difficultyBand}`} name="difficultyBand" aria-labelledby="lobby-difficulty-label" defaultValue={lobby.room.settings.difficultyBand ?? "2-4"}
-                disabled={!ready || settingsLocked || savingSettings || leaving || !!leaveError || !!blocked}
+                disabled={!ready || settingsLocked || savingSettings || savingReady || leaving || !!leaveError || !!blocked}
                 className="mt-2 min-h-11 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-slate-900 disabled:opacity-60">
                 <option value="1-3">Levels 1–3</option><option value="2-4">Levels 2–4</option><option value="3-5">Levels 3–5</option>
               </select>
             </label>
-            <button type="submit" disabled={!ready || settingsLocked || savingSettings || leaving || !!leaveError || !!blocked}
+            <button type="submit" disabled={!ready || settingsLocked || savingSettings || savingReady || leaving || !!leaveError || !!blocked}
               className="mt-2 min-h-11 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 disabled:opacity-60">{savingSettings ? "Saving difficulty…" : "Save difficulty"}</button>
             <p className="mt-2 text-xs text-gray-600">{settingsLocked ? "Difficulty is locked for the start." : publicRoom ? "Only you can change difficulty. It locks in the final 10 seconds." : "You can change difficulty before starting."}</p>
           </form> : !started ? <p className="my-3 text-xs text-gray-600">The host chooses the difficulty.</p> : null}
           {settingsError ? <p role="alert" className="my-3 text-sm text-red-700">{settingsError}</p> : null}
           <h2 className="font-bold">Ready to play?</h2>
-          <p className="mt-2 text-sm text-gray-600">{publicRoom ? (lobby.room.status === "countdown" ? `Match begins in ${countdown ?? 60}s` : "The countdown begins when a second player joins.") : isHost ? "Start whenever everyone has joined." : "Waiting for the host to start the game."}</p>
+          <p className="mt-2 text-sm text-gray-600">{publicRoom ? (lobby.room.status === "countdown" ? countdown === null ? "Checking countdown…" : `Match begins in ${countdown}s` : "The countdown begins when a second player joins.") : isHost ? "Start whenever everyone has joined." : "Waiting for the host to start the game."}</p>
+          {publicRoom && !started ? <div className="mt-4">
+            <p className="text-sm font-semibold text-slate-700" aria-live="polite">{readyCount}/{lobby.players.length} ready</p>
+            <button type="button" aria-pressed={playerReady} aria-busy={savingReady}
+              disabled={!ready || savingReady || savingSettings || leaving || !!leaveError || !!blocked}
+              onClick={async () => {
+                if (savingReady) return;
+                const value = readyFailure?.value ?? !playerReady;
+                const version = lobby.room.settingsVersion;
+                setSavingReady(true); setReadyError(null);
+                try { await setLobbyReady(value, version); }
+                catch (failure) { setReadyError({ value, version, message: failure instanceof Error ? failure.message : "Unable to save Ready. Please retry." }); }
+                finally { setSavingReady(false); }
+              }}
+              className="mt-2 min-h-11 w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+              {savingReady ? "Saving Ready…" : readyFailure ? "Retry Ready" : playerReady ? "Not ready" : "I'm ready"}
+            </button>
+            {readyFailure ? <p role="alert" className="mt-2 text-sm text-red-700">{readyFailure.message}</p> : null}
+            <p className="mt-2 text-xs text-gray-600">Everyone ready shortens the countdown to 10 seconds. If less time remains, it keeps counting down. Changing difficulty or reconnecting clears your Ready.</p>
+          </div> : null}
           {!publicRoom && isHost && !started ? (
             <form action={startPrivateRoomAction} className="mt-5">
               <input type="hidden" name="roomId" value={lobby.room.id} />
