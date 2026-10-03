@@ -28,9 +28,13 @@ export async function POST(request: Request, { params }: RoundRouteContext) {
     try {
       if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
       const { id } = await params;
-      const body = await readJsonBody<{ questionId?: number; selectedAnswer?: AnswerChoice }>(request, 2_048);
-      if (!body.questionId || !body.selectedAnswer) return NextResponse.json({ error: "Choose an answer." }, { status: 400 });
-      await measure("service", () => submitMultiplayerAnswer({ roomId: id, questionId: body.questionId!, selectedAnswer: body.selectedAnswer! }));
+      const body = await readJsonBody<{ questionId?: number; selectedAnswer?: AnswerChoice | null }>(request, 2_048);
+      if (!Number.isSafeInteger(body.questionId) || body.questionId! <= 0
+        || (body.selectedAnswer !== null && !["A", "B", "C", "D", "E"].includes(body.selectedAnswer ?? ""))) {
+        return NextResponse.json({ error: "Choose an answer or Give up." }, { status: 400 });
+      }
+      const selectedAnswer = body.selectedAnswer as AnswerChoice | null;
+      await measure("service", () => submitMultiplayerAnswer({ roomId: id, questionId: body.questionId!, selectedAnswer }));
       return NextResponse.json({ accepted: true });
     } catch (error) {
       const status = error instanceof RequestBodyError ? error.status : 503;

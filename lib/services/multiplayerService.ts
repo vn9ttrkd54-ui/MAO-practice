@@ -43,6 +43,7 @@ function lobbyPresenceCutoff() {
 }
 
 interface RoomRow {
+  scoring_version?: 1 | 2;
   id: string;
   code: string | null;
   visibility: "public" | "private";
@@ -143,6 +144,7 @@ function cookieName(roomId: string) {
 
 function mapRoom(row: RoomRow, playerCount: number): MultiplayerRoom {
   return {
+    scoringVersion: row.scoring_version ?? 1,
     id: row.id,
     code: row.code,
     visibility: row.visibility,
@@ -548,6 +550,7 @@ export async function getMultiplayerRoundState(roomId: string, knownVersion = -1
   return {
     roomId, stateVersion: data.stateVersion, currentPlayerId: access.currentPlayer.playerId,
     questionNumber: q.question_number, totalQuestions: data.totalQuestions,
+    scoringVersion: data.scoringVersion ?? 1,
     question: presentQuestion(q), questionDurationSeconds: data.questionDurationSeconds,
     preparing: !q.started_at,
     questionStartedAt: q.started_at ? new Date(q.started_at).getTime() : 0,
@@ -623,7 +626,8 @@ export async function acknowledgeMultiplayerQuestionDelivery(
 }
 
 export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission): Promise<"accepted"> {
-  if (!["A", "B", "C", "D", "E"].includes(input.selectedAnswer)) {
+  if (!Number.isSafeInteger(input.questionId) || input.questionId <= 0
+    || (input.selectedAnswer !== null && !["A", "B", "C", "D", "E"].includes(input.selectedAnswer))) {
     throw new RequestBodyError("Choose a valid answer.", 400);
   }
   const access = await getMultiplayerRoom(input.roomId, false);
@@ -649,7 +653,7 @@ interface SubmissionRow {
   player_id: string;
   question_number: number;
   question_id: number;
-  selected_answer: "A" | "B" | "C" | "D" | "E";
+  selected_answer: "A" | "B" | "C" | "D" | "E" | null;
   correct: boolean;
   answer_time_ms: number;
   points_earned: number;

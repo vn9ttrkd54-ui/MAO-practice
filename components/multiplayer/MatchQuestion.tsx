@@ -10,6 +10,7 @@ import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/compon
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { sendMultiplayerAnswer, SubmissionRejectedError } from "@/lib/multiplayerSubmission";
 import { acceptRoundSnapshot, restoreMultiplayerAnswers } from "@/lib/multiplayerRecovery";
+import type { SavedMultiplayerAnswer } from "@/lib/multiplayerRecovery";
 import { countdownSeconds, MultiplayerClock, questionDisplayDeadline } from "@/lib/multiplayerTiming";
 import type { MultiplayerRoundState } from "@/types/multiplayer";
 import type { AnswerChoice } from "@/types/question";
@@ -40,10 +41,12 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const lastConfirmedQuestion = useRef<number | null>(null);
   const [now, setNow] = useState<number | null>(null);
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
+  const [confirmGiveUp, setConfirmGiveUp] = useState(false);
+  const [givenUpQuestion, setGivenUpQuestion] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
-  const [outbox, setOutbox] = useState<Array<{ questionId: number; questionNumber: number; selectedAnswer: AnswerChoice; status: "pending" | "failed"; message?: string }>>([]);
+  const [outbox, setOutbox] = useState<Array<SavedMultiplayerAnswer & { status: "pending" | "failed"; message?: string }>>([]);
   const submissionsInFlight = useRef(new Set<number>());
   const [outboxLoaded, setOutboxLoaded] = useState(false);
   const outboxKey = `multiplayer-answers:${round.roomId}:${round.currentPlayerId}`;
@@ -132,6 +135,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
               questionNumber.current = nextRound.questionNumber;
               setPendingRound(null);
               setSelected(null);
+              setConfirmGiveUp(false);
               setShowLeaderboard(false);
             }
             if (lastConfirmedQuestion.current === nextRound.question.questionId) {
@@ -199,6 +203,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       questionNumber.current = pendingRound.questionNumber;
       setNow(serverClock.now(performance.now()));
       setSelected(null);
+      setConfirmGiveUp(false);
       setShowLeaderboard(false);
       setRound(pendingRound);
       setPendingRound(null);
@@ -224,7 +229,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }, [outbox, outboxKey, outboxLoaded]);
 
   async function submitAnswer() {
-    if ((!selected && !currentSubmission) || isSubmitting) return;
+    if ((!selected && !currentSubmission) || isSubmitting || !outboxLoaded) return;
     setError(null);
     setShowLeaderboard(true);
     await submitSavedAnswer(currentSubmission ?? {
@@ -234,13 +239,14 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     });
   }
 
-  async function submitSavedAnswer(answer: { questionId: number; questionNumber: number; selectedAnswer: AnswerChoice }) {
+  async function submitSavedAnswer(answer: SavedMultiplayerAnswer) {
     if (submissionsInFlight.current.has(answer.questionId)) return;
     submissionsInFlight.current.add(answer.questionId);
     setOutbox((current) => [...current.filter((entry) => entry.questionId !== answer.questionId), { ...answer, status: "pending" }]);
     try {
       await sendMultiplayerAnswer({ roomId: round.roomId, questionId: answer.questionId, selectedAnswer: answer.selectedAnswer });
       lastConfirmedQuestion.current = answer.questionId;
+      if (answer.selectedAnswer === null) setGivenUpQuestion(answer.questionId);
       setOutbox((current) => current.filter((entry) => entry.questionId !== answer.questionId));
       setRound((current) => current.question.questionId !== answer.questionId ? current : ({
         ...current,
@@ -262,7 +268,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const submissionNotice = outbox.length === 0 ? null : (
     <div className="my-4 space-y-2" aria-live="polite">
       {outbox.map((entry) => <div key={entry.questionId} className="rounded-xl border bg-gray-50 p-3 text-sm">
-        <p>Question {entry.questionNumber}, answer {entry.selectedAnswer}: {entry.status === "pending" ? "Confirming your answer…" : entry.message}</p>
+        <p>Question {entry.questionNumber}, {entry.selectedAnswer === null ? "Give up (0 points)" : `answer ${entry.selectedAnswer}`}: {entry.status === "pending" ? "Confirming your answer…" : entry.message}</p>
         {entry.status === "failed" ? <button className="mt-2 font-semibold text-blue-600" onClick={() => void submitSavedAnswer(entry)}>Retry saved answer</button> : null}
       </div>)}
     </div>
@@ -274,10 +280,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
 
   const inIntermission = preparingNext || Boolean(effectiveIntermissionEndsAt);
   const personalTimeExpired = !round.preparing && secondsLeft === 0;
-  if (inIntermission || submitted || showLeaderboard || personalTimeExpired) {
+  if (inIntermission || submitted || currentSubmission || showLeaderboard || personalTimeExpired) {
     if (round.questionNumber >= round.totalQuestions) return <MatchWaiting>{submissionNotice}</MatchWaiting>;
     const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className={`${styles.page} mx-auto max-w-5xl px-6 py-8`}><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? (intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`) : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+    return <main className={`${styles.page} mx-auto max-w-5xl px-6 py-8`}><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : givenUpQuestion === round.question.questionId ? "Give up recorded · 0 points" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? (intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`) : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
   }
 
   if (round.preparing || questionStartsIn === null || questionStartsIn > 0) {
@@ -289,10 +295,30 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       <header className={`${styles.header} flex items-center justify-between gap-4`}><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className={`${styles.panel} rounded-3xl border bg-white p-6 shadow-sm sm:p-8`}>
         {submissionNotice}
+        <p className="mb-4 text-sm text-slate-600">{round.scoringVersion === 2
+          ? "Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0"
+          : "Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0."}</p>
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
         <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "border-slate-200 bg-slate-50/60 hover:border-blue-300 hover:bg-blue-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
-        <button onClick={submitAnswer} disabled={!selected || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
+        <button onClick={submitAnswer} disabled={!selected || !outboxLoaded || submitted || isSubmitting || confirmGiveUp || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
+        {round.scoringVersion === 2 ? confirmGiveUp ? (
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4" role="group" aria-label="Confirm Give up">
+            <p className="text-sm text-slate-700">Leave this question blank for 0 points? You cannot answer it afterward.</p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <button type="button" className="min-h-11 rounded-lg border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700"
+                onClick={() => setConfirmGiveUp(false)}>Keep working</button>
+              <button type="button" className="min-h-11 rounded-lg bg-slate-700 px-4 py-2 font-semibold text-white disabled:opacity-60"
+                disabled={!outboxLoaded || submitted || !!currentSubmission || secondsLeft === null || secondsLeft === 0}
+                onClick={() => {
+                  setConfirmGiveUp(false); setError(null); setShowLeaderboard(true);
+                  void submitSavedAnswer({ questionId: round.question.questionId, questionNumber: round.questionNumber, selectedAnswer: null });
+                }}>Confirm Give up</button>
+            </div>
+          </div>
+        ) : <button type="button" onClick={() => setConfirmGiveUp(true)}
+          disabled={!outboxLoaded || submitted || !!currentSubmission || secondsLeft === null || secondsLeft === 0}
+          className="mt-3 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60">Give up · 0 points</button> : null}
       </section>
       <SpectatorList round={round} />
       </div>

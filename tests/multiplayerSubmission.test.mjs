@@ -5,6 +5,18 @@ import { sendMultiplayerAnswer, SubmissionRejectedError } from "../lib/multiplay
 const answer = { roomId: "room", questionId: 42, selectedAnswer: "B" };
 const wait = async () => {};
 
+test("Give up retries explicit null unchanged even if the caller later chooses an answer", async () => {
+  const input = { ...answer, selectedAnswer: null }, bodies = [];
+  await sendMultiplayerAnswer(input, { wait, fetcher: async (_url, options) => {
+    bodies.push(options.body);
+    if (bodies.length === 1) { input.selectedAnswer = "A"; throw new Error("Lost Give up receipt"); }
+    return Response.json({ accepted: true });
+  } });
+  assert.equal(bodies.length, 2);
+  assert.deepEqual(bodies, [bodies[0], bodies[0]]);
+  assert.equal(JSON.parse(bodies[0]).selectedAnswer, null);
+});
+
 test("a lost response retries the exact saved answer", async () => {
   const input = { ...answer };
   const bodies = [];

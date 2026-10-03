@@ -54,8 +54,9 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
             <article key={round.questionId} className={`${styles.panel} rounded-2xl border bg-white p-5 shadow-sm`}>
               <div className="flex items-center justify-between gap-4">
                 <h3 className="font-bold">Question {round.questionNumber}</h3>
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isSpectator ? "bg-blue-100 text-blue-800" : round.correct ? "bg-green-100 text-green-800" : "bg-red-100 text-red-700"}`}>
-                  {isSpectator ? "Official answer" : round.correct ? `Correct · +${round.pointsEarned}` : "Incorrect · +0"}
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isSpectator ? "bg-blue-100 text-blue-800" : round.selectedAnswer === null ? "bg-slate-100 text-slate-700" : round.correct ? "bg-green-100 text-green-800" : "bg-red-100 text-red-700"}`}>
+                  {isSpectator ? "Official answer" : round.selectedAnswer === null ? "Blank / Give up · 0"
+                    : `${round.correct ? "Correct" : "Incorrect"} · ${round.pointsEarned > 0 ? "+" : ""}${round.pointsEarned}`}
                 </span>
               </div>
 

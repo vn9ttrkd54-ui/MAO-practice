@@ -11,7 +11,7 @@ const dir = await mkdtemp(join(tmpdir(), "podium-ui-"));
 const fixture = name => resolve(import.meta.dirname, "browserFixtures", name);
 const compiler = require("next/dist/compiled/webpack/webpack").webpack({
   mode: "development", entry: fixture("results.tsx"), output: { path: dir, filename: "client.js" }, devtool: false,
-  resolve: { extensions: [".tsx", ".ts", ".js"], alias: { "next/link": fixture("link.tsx"), "@": resolve(import.meta.dirname, "..") } },
+  resolve: { extensions: [".tsx", ".ts", ".js"], alias: { "next/link": fixture("link.tsx"), "next/image": fixture("image.tsx"), "@": resolve(import.meta.dirname, "..") } },
   module: { rules: [
     { test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") },
     { test: /\.css$/, use: fixture("css.cjs") },

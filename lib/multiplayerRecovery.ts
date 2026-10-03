@@ -1,7 +1,7 @@
 export interface SavedMultiplayerAnswer {
   questionId: number;
   questionNumber: number;
-  selectedAnswer: "A" | "B" | "C" | "D" | "E";
+  selectedAnswer: "A" | "B" | "C" | "D" | "E" | null;
 }
 
 export function restoreMultiplayerAnswers(raw: string | null): SavedMultiplayerAnswer[] {
@@ -12,7 +12,8 @@ export function restoreMultiplayerAnswers(raw: string | null): SavedMultiplayerA
     return entries.filter((entry): entry is SavedMultiplayerAnswer => {
       if (!entry || !Number.isSafeInteger(entry.questionId) || entry.questionId <= 0
         || !Number.isInteger(entry.questionNumber) || entry.questionNumber < 1 || entry.questionNumber > 30
-        || !["A", "B", "C", "D", "E"].includes(entry.selectedAnswer) || seen.has(entry.questionId)) return false;
+        || (entry.selectedAnswer !== null && !["A", "B", "C", "D", "E"].includes(entry.selectedAnswer))
+        || seen.has(entry.questionId)) return false;
       seen.add(entry.questionId);
       return true;
     }).slice(0, 30).map(({ questionId, questionNumber, selectedAnswer }) => ({ questionId, questionNumber, selectedAnswer }));

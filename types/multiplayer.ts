@@ -54,6 +54,7 @@ export interface MultiplayerSpectator extends MultiplayerPlayerIdentity {
 }
 
 export interface MultiplayerRoom {
+  scoringVersion?: 1 | 2;
   id: string;
   code: string | null;
   visibility: MultiplayerRoomVisibility;
@@ -92,6 +93,7 @@ export interface MultiplayerQuestion {
 }
 
 export interface MultiplayerRoundState {
+  scoringVersion?: 1 | 2;
   preparing?: boolean;
   stateVersion: number;
   roomId: string;
@@ -137,7 +139,8 @@ export interface MultiplayerDeliveryReceipt {
 export interface MultiplayerAnswerSubmission {
   roomId: string;
   questionId: number;
-  selectedAnswer: AnswerChoice;
+  // Explicit null is an irreversible Give up; omission is never accepted.
+  selectedAnswer: AnswerChoice | null;
 }
 
 export interface MultiplayerRoundResult {
