@@ -69,6 +69,7 @@ function fixture({ players = [player("me", 60_000)], status = "waiting", capacit
     Date: class extends Date { static now() { return now; } },
     require(name) {
       if (name === "server-only") return {};
+      if (name === "@/lib/auth/publicNames") return { isPublicNameAllowed: () => true, PUBLIC_NAME_ERROR: "Name is not allowed." };
       if (name === "next/headers") return { cookies: async () => ({ get: () => undefined }) };
       if (name === "@/data/questions") return { questions: [] };
       if (name === "@/lib/security/request") return { RequestBodyError: class extends Error {} };

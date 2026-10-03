@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { runInThisContext } from "node:vm";
 import ts from "typescript";
+import publicNameRules from "../lib/auth/publicNameRules.json" with { type: "json" };
 
 async function compile(path) {
   const source = await readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -20,6 +21,7 @@ async function compile(path) {
 }
 
 const policy = (await compile("lib/auth/passwordPolicy.ts"))();
+const publicNames = (await compile("lib/auth/publicNames.ts"))({ "./publicNameRules.json": { default: publicNameRules } });
 const loadAuthService = await compile("lib/auth/authService.ts");
 const { MIN_PASSWORD_LENGTH, PASSWORD_REQUIREMENT_MESSAGE, getPasswordValidationError } = policy;
 
@@ -49,6 +51,7 @@ async function signUp(password, options = {}) {
   const effects = [];
   const service = loadAuthService({
     "@/lib/auth/passwordPolicy": policy,
+    "@/lib/auth/publicNames": publicNames,
     "@/lib/legal": { LEGAL_VERSION: "fixture-version" },
     "@/lib/supabase/client": {
       createClient() {
@@ -84,7 +87,7 @@ test("signup accepts 8-character passwords without rewriting them and preserves 
   for (const password of ["abcdefgh", "🔐".repeat(8), "  useful long passphrase  "]) {
     const { result, effects } = await signUp(password);
     assert.deepEqual(result, { success: true });
-    assert.deepEqual(effects.map(({ kind }) => kind), ["createClient", "rpc", "signUp"]);
+    assert.deepEqual(effects.map(({ kind }) => kind), ["createClient", "rpc", "rpc", "signUp"]);
     const value = effects.at(-1).value;
     assert.equal(value.password, password);
     assert.equal(value.email, "math_fixture@users.mao-practice.local");

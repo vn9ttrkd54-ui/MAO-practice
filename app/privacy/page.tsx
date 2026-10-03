@@ -22,7 +22,7 @@ export default function PrivacyPage() {
 
       <h2>Information we collect</h2>
       <ul>
-        <li><strong>Account information:</strong> your username, account identifier, password credentials handled by our authentication provider, and an optional recovery email address.</li>
+        <li><strong>Account information:</strong> your username, account identifier, password credentials handled by our authentication provider, and an optional recovery email address. If you choose Google sign-in, our authentication provider receives your Google account identifier, email address, and basic profile information. Your Google name and email are not used as your public username.</li>
         <li><strong>Learning activity:</strong> answers, attempts, correctness, answer times, bookmarks, level progress, trainer sessions, challenge results, and related statistics.</li>
         <li><strong>Multiplayer activity:</strong> username or guest nickname, room participation, answers, scores, rankings, ratings, connection status, and match results.</li>
         <li><strong>Tutor content:</strong> messages you send to the Llama Tutor, limited recent conversation context, the current math question, and the tutor response.</li>
@@ -44,6 +44,7 @@ export default function PrivacyPage() {
       <p>We use service providers to operate Mathematics Daily:</p>
       <ul>
         <li><strong>Supabase</strong> provides authentication, database storage, and real-time features.</li>
+        <li><strong>Google</strong> verifies your Google account when you choose Google sign-in or connect Google to an existing account.</li>
         <li><strong>Vercel</strong> hosts and delivers the website and may process technical request logs.</li>
         <li><strong>OpenAI</strong> processes Llama Tutor prompts and responses. We request that responses are not stored as application state, but OpenAI may retain API abuse-monitoring data for up to 30 days under its standard API practices. API content is not used to train OpenAI models unless the account owner separately opts in.</li>
       </ul>

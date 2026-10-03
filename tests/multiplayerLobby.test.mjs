@@ -21,6 +21,7 @@ function load(path, dependencies) {
   return exports;
 }
 const security = load("lib/security/request.ts", { "server-only": {} });
+const publicNames = load("lib/auth/publicNames.ts", { "./publicNameRules.json": { default: require("../lib/auth/publicNameRules.json") } });
 const roomId = randomUUID(), userId = randomUUID(), tabId = randomUUID(), connectionId = randomUUID();
 const row = { id:roomId, visibility:'public', mode:'ranked', division:'Mu', question_count:5,
   seconds_per_question:60, capacity:20, status:'waiting', state_version:5, created_at:new Date().toISOString() };
@@ -39,6 +40,7 @@ function serviceFixture({ user = {id:userId}, authError = null, token, error = n
     "server-only": {}, "node:crypto": require("node:crypto"),
     "next/headers": {cookies:async()=>({get:()=>token?{value:token}:undefined,delete:key=>cookies.push(key)})},
     "@/data/questions": {questions:[]}, "@/lib/security/request": security,
+    "@/lib/auth/publicNames": publicNames,
     "@/lib/supabase/admin": {createAdminClient:()=>admin},
     "@/lib/supabase/server": {createClient:async()=>({auth:{getUser:async()=>{auth.push(1);return {data:{user},error:authError};}}})},
   });

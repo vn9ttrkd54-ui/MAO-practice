@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { LEGAL_VERSION } from "@/lib/legal";
 import { getPasswordValidationError } from "@/lib/auth/passwordPolicy";
+import { getUsernameValidationError, PUBLIC_NAME_ERROR } from "@/lib/auth/publicNames";
 
 export interface AuthResult {
   success: boolean;
@@ -23,6 +24,9 @@ export async function signUp({
   password,
   acceptedLegal,
 }: SignUpInput): Promise<AuthResult> {
+  username = username.trim().toLowerCase();
+  const nameError = getUsernameValidationError(username);
+  if (nameError) return { success: false, error: nameError };
   if (!acceptedLegal) {
     return { success: false, error: "You must confirm your age and agree to the legal terms." };
   }
@@ -30,6 +34,10 @@ export async function signUp({
   if (passwordError) return { success: false, error: passwordError };
   const supabase = createClient();
   const authenticationEmail = `${username}@users.mao-practice.local`;
+
+  const nameCheck = await supabase.rpc("is_public_name_allowed", { p_value: username });
+  if (nameCheck.error) return { success: false, error: "Unable to check that username right now. Please try again." };
+  if (nameCheck.data !== true) return { success: false, error: PUBLIC_NAME_ERROR };
 
   const { data: isAvailable, error: availabilityError } =
     await supabase.rpc("is_username_available", {

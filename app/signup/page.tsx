@@ -12,7 +12,7 @@ export default async function SignupPage() {
   } = await supabase.auth.getUser();
 
   if (user) {
-    redirect("/dashboard");
+    redirect(user.app_metadata.needs_username === true ? "/auth/setup" : "/dashboard");
   }
 
   return (

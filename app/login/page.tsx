@@ -5,14 +5,15 @@ import styles from "@/components/auth/auth.module.css";
 import LoginForm from "@/components/auth/LoginForm";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function LoginPage() {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ google?: string }> }) {
+  const { google } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (user) {
-    redirect("/dashboard");
+    redirect(user.app_metadata.needs_username === true ? "/auth/setup" : "/dashboard");
   }
 
   return (
@@ -28,9 +29,11 @@ export default async function LoginPage() {
         </h1>
 
         <p className="mt-3 text-gray-600">
-          Use your username and password to continue your saved progress.
+          Continue with Google or your username and password.
         </p>
 
+        {google === "error" && <p role="alert" className="mt-4 text-sm text-red-700">Google sign-in could not finish. Please try again.</p>}
+        {google === "wrong-account" && <p role="alert" className="mt-4 text-sm text-red-700">Choose the Google account connected to your Mathematics Daily account.</p>}
         <LoginForm />
       </section>
     </main>

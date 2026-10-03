@@ -1,0 +1,5 @@
+{
+  "contains": ["fuck", "motherfucker", "bitch", "asshole", "dumbass", "dickhead", "bullshit", "shitty", "nigger", "nigga", "faggot", "nazihitler"],
+  "words": ["ass", "shit", "cunt", "dick", "cock", "pussy", "bastard", "slut", "whore", "fag", "retard", "retarded", "hitler", "nazi"],
+  "allow": ["assistant", "assassin", "assassins", "assassination", "classic", "classical", "passion", "cassidy", "scunthorpe", "dickens", "cockburn", "hancock", "shitake", "shital", "cockatoo", "cockatiel", "peacock"]
+}

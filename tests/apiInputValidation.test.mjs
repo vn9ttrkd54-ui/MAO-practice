@@ -4,6 +4,7 @@ import test from "node:test";
 import { runInThisContext } from "node:vm";
 import ts from "typescript";
 import * as crypto from "node:crypto";
+import publicNameRules from "../lib/auth/publicNameRules.json" with { type: "json" };
 import { createApiObserver } from "../lib/apiMetrics.ts";
 
 // Run actual route code and the actual JSON/origin helper. Every external
@@ -28,6 +29,7 @@ async function loadModule(path, dependencies) {
 const security = await loadModule("lib/security/request.ts", { "server-only": {} });
 const roles = await loadModule("lib/auth/roles.ts", {});
 const passwordPolicy = await loadModule("lib/auth/passwordPolicy.ts", {});
+const publicNames = await loadModule("lib/auth/publicNames.ts", { "./publicNameRules.json": { default: publicNameRules } });
 const timing = await loadModule("lib/practiceTiming.ts", {});
 const USER_ID = "00000000-0000-4000-8000-000000000001";
 const TARGET_ID = "00000000-0000-4000-8000-000000000002";
@@ -132,6 +134,8 @@ async function invoke(routeName, body, options = {}) {
     "@/lib/supabase/admin": { createAdminClient: () => admin },
     "@/lib/auth/roles": roles,
     "@/lib/auth/passwordPolicy": passwordPolicy,
+    "@/lib/auth/publicNames": publicNames,
+    "@/lib/auth/googleFlow": { GOOGLE_DELETE_COOKIE: "md_google_delete" },
     "@/lib/auth/recoveryToken": { verifyRecoveryToken: () => options.recoveryVerified !== false },
     "@/lib/tutorRevealToken": { createTutorRevealToken: () => "test-only-reveal-token" },
     "@/data/questions": { questions: [QUESTION] },
@@ -324,9 +328,9 @@ test("valid account actions retain normalization, self ownership and untruncated
   assert.equal(changed.effects[1].value.current_password, "current");
   const renamed = await invoke("account", { action: "username", username: " Math_Student " });
   assert.equal(renamed.status, 200);
-  const write = renamed.effects.find(({ kind }) => kind === "databaseUpdate").value;
-  assert.equal(write.value.username, "math_student");
-  assert.deepEqual(write.filters, [["eq", "id", USER_ID]]);
+  const write = renamed.effects.find(({ kind }) => kind === "rpc").value;
+  assert.equal(write.name, "set_account_username");
+  assert.deepEqual(write.value, { p_user_id: USER_ID, p_username: "math_student" });
   const email = await invoke("account", { action: "email", email: " New@Example.Test ", currentPassword: "current" });
   assert.equal(email.status, 200);
   assert.equal(email.effects.find(({ kind }) => kind === "updateUser").value.email, "new@example.test");

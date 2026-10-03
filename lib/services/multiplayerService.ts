@@ -1,4 +1,5 @@
 import "server-only";
+import { isPublicNameAllowed, PUBLIC_NAME_ERROR } from "@/lib/auth/publicNames";
 
 import { createHash, randomBytes, randomInt } from "node:crypto";
 import { cookies } from "next/headers";
@@ -106,6 +107,7 @@ function normalizeNickname(value?: string) {
   if (Array.from(nickname).length < 1 || Array.from(nickname).length > 20) {
     throw new Error("Guest nicknames must be between 1 and 20 characters.");
   }
+  if (!isPublicNameAllowed(nickname)) throw new Error(PUBLIC_NAME_ERROR);
   return nickname;
 }
 
@@ -257,6 +259,7 @@ async function addPlayer(room: RoomRow, guestNickname?: string, isHost = false) 
 
   if (error) {
     if (error.code === "23505") throw new Error("That account or nickname is already in this room.");
+    if (error.code === "23514" && error.message.includes("public_name_not_allowed")) throw new Error(PUBLIC_NAME_ERROR);
     if (error.code === "P0001") throw new Error(error.message);
     throw new Error("Unable to join the private room right now.");
   }

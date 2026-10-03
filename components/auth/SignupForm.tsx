@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { signUp } from "@/lib/auth/authService";
 import { MIN_PASSWORD_LENGTH, getPasswordValidationError } from "@/lib/auth/passwordPolicy";
 
-const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/;
+import GoogleButton from "@/components/auth/GoogleButton";
+import { getUsernameValidationError } from "@/lib/auth/publicNames";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -24,10 +25,9 @@ export default function SignupForm() {
 
     const normalizedUsername = username.trim().toLowerCase();
 
-    if (!USERNAME_PATTERN.test(normalizedUsername)) {
-      setErrorMessage(
-        "Username must be 3–20 characters and use only lowercase letters, numbers, or underscores."
-      );
+    const nameError = getUsernameValidationError(normalizedUsername);
+    if (nameError) {
+      setErrorMessage(nameError);
       return;
     }
 
@@ -72,6 +72,8 @@ export default function SignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+      <GoogleButton disabled={isSubmitting} />
+      <div className="flex items-center gap-3 text-xs text-slate-500"><span className="h-px flex-1 bg-slate-200" />or<span className="h-px flex-1 bg-slate-200" /></div>
       <div>
         <label
           htmlFor="username"
