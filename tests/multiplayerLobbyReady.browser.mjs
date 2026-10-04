@@ -35,7 +35,7 @@ const cssDir = join(root, ".next/static/css");
 const css = (await Promise.all((await readdir(cssDir)).filter(name => name.endsWith(".css")).map(name => readFile(join(cssDir, name), "utf8")))).join("\n");
 const server = createServer((req, res) => {
   res.setHeader("Content-Type", req.url === "/client.js" ? "text/javascript; charset=utf-8" : "text/html; charset=utf-8");
-  res.end(req.url === "/client.js" ? bundle : `<style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
+  res.end(req.url === "/client.js" ? bundle : `<meta name="viewport" content="width=device-width, initial-scale=1"><style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
 });
 await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
 let browser;
@@ -46,7 +46,7 @@ try {
 
   const player={playerId:'me',isHost:true,isGuest:false,rankTier:'Novice',rp:0,displayName:'Host',connected:true,score:0,lobbyReady:false};
   const friend={...player,playerId:'friend',isHost:false,displayName:'Friend'};
-  let lobby={room:{id:'test',status:'countdown',visibility:'public',capacity:20,stateVersion:1,settingsVersion:0,countdownEndsAt:Date.now()+60000,
+  let lobby={room:{id:'test',scoringVersion:2,status:'countdown',visibility:'public',capacity:20,stateVersion:1,settingsVersion:0,countdownEndsAt:Date.now()+60000,
     settings:{division:'Mu',questionCount:5,secondsPerQuestion:90,difficultyBand:'2-4',mode:'ranked'}},currentPlayer:player,players:[player,friend]};
   const page=await browser.newPage({viewport:{width:390,height:1000}});
   const errors=[],readyCalls=[],connections=[],reads=[];
@@ -101,6 +101,10 @@ try {
   await page.goto(url);
   const readyButton=()=>page.getByRole('button',{name:"I'm ready",exact:true});
   await readyButton().waitFor();assert.equal(await readyButton().isDisabled(),true,'must connect first');
+  const scoringCopy='Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0';
+  const readyCopy='Everyone ready shortens the countdown to 10 seconds. If less time remains, it keeps counting down. Changing difficulty or reconnecting clears your Ready.';
+  assert.equal(await page.getByText(scoringCopy,{exact:true}).count(),0);
+  assert.equal(await page.getByText(readyCopy,{exact:true}).count(),0);
   releaseConnect();
   await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent==="I'm ready"&&!b.disabled));
   assert.equal(await page.getByLabel('Question difficulty',{exact:true}).isEnabled(),true,
@@ -152,6 +156,9 @@ try {
   for(const width of [390,1280]) {
     await page.setViewportSize({width,height:1000});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal overflow');
+    assert.equal(await page.getByText(scoringCopy,{exact:true}).count(),0);
+    assert.equal(await page.getByText(readyCopy,{exact:true}).count(),0);
+    if(process.env.READY_SCREENSHOT_DIR)await page.screenshot({path:join(process.env.READY_SCREENSHOT_DIR,`public-lobby-${width}.png`),fullPage:true});
   }
   if(process.env.READY_SCREENSHOT)await page.screenshot({path:process.env.READY_SCREENSHOT,fullPage:true});
 
@@ -166,6 +173,7 @@ try {
   await signal();await page.getByRole('button',{name:'Start Game',exact:true}).waitFor();
   assert.equal(await readyButton().count(),0,'private rooms keep host Start Game');
   assert.equal(await page.getByRole('button',{name:'Start Game',exact:true}).isEnabled(),true);
+  assert.equal(await page.getByText(scoringCopy,{exact:true}).isVisible(),true,'private lobby copy is unchanged');
   const beforeReady=readyCalls.length,beforeHeartbeats=connections.filter(c=>c.action==='heartbeat').length;
   const beforeReads=reads.length;
   await page.clock.runFor(10100);

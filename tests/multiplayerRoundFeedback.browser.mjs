@@ -68,9 +68,18 @@ try {
     for(const text of ["Correct","Incorrect","Gave up","Blank","+1250 pts","-300 pts","45.0s","12.0s","12.5s","Time expired"])
       await expect(list.getByText(text,{exact:true}).first()).toBeVisible();
   };
+  const assertRemovedCopy=async page=>{
+    for(const text of ["This question’s points are included in each total.",
+      "Totals show completed questions. Results appear when this round closes."])
+      await expect(page.getByText(text,{exact:true})).toHaveCount(0);
+  };
   for(const width of [1280,390]) {
     const f=await setup({width}),{page}=f;
     await expect(page.getByTestId("remaining-time")).toBeVisible();
+    const standings=page.getByRole("list",{name:"Round standings"});
+    await expect(standings.getByText("Answered",{exact:true})).toHaveCount(3);
+    await expect(standings.getByText("Still answering",{exact:true})).toHaveCount(1);
+    await assertRemovedCopy(page);
     const start=await page.getByTestId("remaining-time").textContent(),reads=f.reads();
     await expect(page.getByTestId("remaining-time")).not.toHaveText(start);
     assert.equal(f.reads(),reads,"countdown ticks locally, no per-second requests");
@@ -83,6 +92,7 @@ try {
     assert.equal(await page.getByText("Correct",{exact:true}).count(),0);
     f.set(close(f.get()));await f.signal();
     await expect(page.getByRole("heading",{name:"Question 1 results"})).toBeVisible();await assertFeedback(page);
+    await assertRemovedCopy(page);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     await page.screenshot({path:join(dir,`results-${width}.png`),fullPage:true});
     // Refresh preserves the server-confirmed result rather than a local score calculation.
@@ -96,6 +106,12 @@ try {
     await expect(page.getByRole("heading",{name:"Question 2 of 2"})).toBeVisible({timeout:6000});
     await expect(page.getByRole("button",{name:"Submit Answer",exact:true})).toBeVisible();
     assert.equal(await page.getByText("Correct",{exact:true}).count(),0);
+    await page.getByRole("button",{name:"A 2",exact:true}).click();
+    await page.getByRole("button",{name:"Submit Answer",exact:true}).click();
+    await expect(standings.getByText("Answered",{exact:true})).toHaveCount(1);
+    await expect(standings.getByText("Still answering",{exact:true})).toHaveCount(3);
+    assert.equal(await page.getByText("Correct",{exact:true}).count(),0,"new round never inherits earlier feedback");
+    await assertRemovedCopy(page);
     await page.close();
   }
   const final=await setup({final:true});
@@ -112,8 +128,11 @@ try {
   await retry.page.getByRole("button",{name:"Retry now"}).click();
   await expect(retry.page.getByRole("button",{name:"Retry now"})).toHaveCount(0);await retry.page.close();
   const spectator=await setup({spectator:true,final:true});
+  await expect(spectator.page.getByRole("list",{name:"Round standings"}).getByText("Answered",{exact:true})).toHaveCount(3);
+  await assertRemovedCopy(spectator.page);
   assert.equal(await spectator.page.getByText("Correct",{exact:true}).count(),0);
   spectator.set(close(spectator.get()));await spectator.signal();await assertFeedback(spectator.page);
+  await assertRemovedCopy(spectator.page);
   spectator.set({...spectator.get(),stateVersion:1,roundClosed:false});await spectator.signal();
   await expect(spectator.page.getByRole("heading",{name:"Question 1 results"})).toBeVisible();await spectator.page.close();
   for(const spectator of [false,true]) {

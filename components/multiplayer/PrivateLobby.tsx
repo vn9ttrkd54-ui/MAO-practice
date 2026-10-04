@@ -71,9 +71,9 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
 
         <aside className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
           <h2 className="font-bold">Room settings</h2>
-          <p className="mt-2 text-sm text-gray-700">{lobby.room.scoringVersion === 2
+          {!publicRoom ? <p className="mt-2 text-sm text-gray-700">{lobby.room.scoringVersion === 2
             ? "Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0"
-            : "Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0."}</p>
+            : "Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0."}</p> : null}
           <p className="mt-2 text-sm text-gray-700" aria-live="polite">Difficulty: {lobby.room.settings.difficultyBand?.replace("-", "–") ?? "1–5 (legacy room)"} · {lobby.room.settings.secondsPerQuestion}s per question</p>
           {isHost && !started ? <form className="my-4" onSubmit={async event => {
             event.preventDefault();
@@ -115,7 +115,6 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
               {savingReady ? "Saving Ready…" : readyFailure ? "Retry Ready" : playerReady ? "Not ready" : "I'm ready"}
             </button>
             {readyFailure ? <p role="alert" className="mt-2 text-sm text-red-700">{readyFailure.message}</p> : null}
-            <p className="mt-2 text-xs text-gray-600">Everyone ready shortens the countdown to 10 seconds. If less time remains, it keeps counting down. Changing difficulty or reconnecting clears your Ready.</p>
           </div> : null}
           {!publicRoom && isHost && !started ? (
             <form action={startPrivateRoomAction} className="mt-5">

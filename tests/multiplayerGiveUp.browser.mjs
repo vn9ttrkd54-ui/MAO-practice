@@ -39,7 +39,7 @@ try {
     intermissionEndsAt:null,players:[{playerId:"p",displayName:"Tester",isGuest:true,score:0,hasSubmittedCurrentQuestion:false}],
     spectators:[],upcomingQuestion:null});
   const errors=[];
-  async function setup({version=2,duration=90,width=1280,failures=0,result}={}) {
+  async function setup({version=2,duration=90,width=1280,failures=0,staleSubmissionSnapshot=false,result}={}) {
     const page=await browser.newPage({viewport:{width,height:1000}});
     page.on("pageerror",e=>errors.push(e.message));
     const initial={...base(),scoringVersion:version,questionDurationSeconds:duration,
@@ -51,7 +51,7 @@ try {
       if(route.request().method()==="POST") {
         const body=route.request().postDataJSON();posts.push(body);
         if(failCount>0){failCount--;return route.abort();}
-        state={...state,stateVersion:2,players:state.players.map(p=>({...p,hasSubmittedCurrentQuestion:true}))};
+        state={...state,stateVersion:2,players:state.players.map(p=>({...p,hasSubmittedCurrentQuestion:!staleSubmissionSnapshot}))};
         return route.fulfill({json:{accepted:true}});
       }
       return route.fulfill({json:{...state,serverReceivedAt:Date.now(),serverSentAt:Date.now()}});
@@ -60,42 +60,49 @@ try {
     return {page,posts,succeed:()=>{failCount=0;}};
   }
   const giveUp=page=>page.getByRole("button",{name:"Give up · 0 points",exact:true});
-  const confirm=page=>page.getByRole("button",{name:"Confirm Give up",exact:true});
+  const removedCopy="Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0";
+  const answered=page=>page.getByRole("list",{name:"Round standings"}).getByText("Answered",{exact:true});
   for(const width of [1280,390]) {
-    const f=await setup({width,failures:1}), {page}=f;
+    const f=await setup({width,failures:1,staleSubmissionSnapshot:true}), {page}=f;
     await expect(giveUp(page)).toBeEnabled();
     assert.equal(await page.getByRole("button",{name:/skip/i}).count(),0);
-    await expect(page.getByText("Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0")).toBeVisible();
+    await expect(page.getByText(removedCopy,{exact:true})).toHaveCount(0);
     if(process.env.SCORING_SCREENSHOT_DIR)await page.screenshot({path:join(process.env.SCORING_SCREENSHOT_DIR,`question-${width}.png`),fullPage:true});
-    await giveUp(page).click();await page.getByRole("button",{name:"Keep working"}).click();
-    assert.equal(f.posts.length,0);
+    await page.getByRole("button",{name:"B 3",exact:true}).click();
     await giveUp(page).click();
-    assert.equal(await page.getByRole("button",{name:"Submit Answer",exact:true}).isDisabled(),true);
-    if(process.env.SCORING_SCREENSHOT_DIR)await page.screenshot({path:join(process.env.SCORING_SCREENSHOT_DIR,`confirm-${width}.png`),fullPage:true});
+    await expect(page.getByRole("group",{name:"Confirm Give up"})).toHaveCount(0);
+    await expect(page.getByRole("button",{name:"Confirm Give up",exact:true})).toHaveCount(0);
+    await expect(answered(page)).toBeVisible();
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-    await confirm(page).click();
     await page.getByText("Give up recorded · 0 points",{exact:true}).waitFor();
     assert.equal(f.posts.length,2);
     assert.deepEqual(f.posts,[{questionId:42,selectedAnswer:null},{questionId:42,selectedAnswer:null}]);
     await expect(page.getByRole("heading",{name:"Live leaderboard"})).toBeVisible();
     await expect(page.getByText("Waiting for the other players…",{exact:true})).toBeVisible();
+    await expect(answered(page)).toBeVisible();
+    await expect(page.getByText("Still answering",{exact:true})).toHaveCount(0);
+    await expect(page.getByText("Totals show completed questions. Results appear when this round closes.",{exact:true})).toHaveCount(0);
+    if(process.env.SCORING_SCREENSHOT_DIR)await page.screenshot({path:join(process.env.SCORING_SCREENSHOT_DIR,`answered-${width}.png`),fullPage:true});
     assert.equal(await giveUp(page).count(),0);
     await page.close();
   }
   for(const selectedAnswer of [null,"B"]) {
     const f=await setup({failures:20}),{page}=f;
     await expect(giveUp(page)).toBeEnabled();
-    if(selectedAnswer===null){await giveUp(page).click();await confirm(page).click();}
+    if(selectedAnswer===null)await giveUp(page).click();
     else {await page.getByRole("button",{name:"B 3",exact:true}).click();await page.getByRole("button",{name:"Submit Answer"}).click();}
+    await expect(answered(page)).toBeVisible();
     await page.getByRole("button",{name:"Retry saved answer"}).waitFor({timeout:15000});
     assert.equal(f.posts.length,4);
     await page.reload();
     await page.getByRole("button",{name:"Retry saved answer"}).waitFor();
+    await expect(answered(page)).toBeVisible();
     assert.equal(await giveUp(page).count(),0,"pending answer cannot be replaced by Give up after refresh");
     assert.equal(await page.getByRole("button",{name:"Submit Answer"}).count(),0);
     f.succeed();
     await page.getByRole("button",{name:"Retry saved answer"}).click();
     await page.getByText(selectedAnswer===null?"Give up recorded · 0 points":"Answer submitted",{exact:true}).waitFor();
+    await expect(answered(page)).toBeVisible();
     assert.equal(f.posts.length,5);assert.ok(f.posts.every(p=>p.selectedAnswer===selectedAnswer));
     await page.close();
   }
@@ -121,7 +128,7 @@ try {
     await expect(final.page.getByText(text,{exact:true})).toBeVisible();
   await final.page.close();
   assert.deepEqual(errors,[]);
-  console.log("PASS: scoring rules, mobile/desktop Give up confirmation/cancel, immutable network retries, refresh recovery, timeout blanks, legacy rooms, negative results, and no Skip button.");
+  console.log("PASS: one-click Give up, removed scoring copy, accurate Answered status, stale snapshots, immutable network retries, refresh recovery, timeout blanks, legacy rooms, negative results and desktop/mobile layout.");
 } finally {
   await browser?.close();
   await new Promise(resolve=>server.close(resolve));

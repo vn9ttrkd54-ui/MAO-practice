@@ -42,7 +42,6 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const lastConfirmedQuestion = useRef<number | null>(null);
   const [now, setNow] = useState<number | null>(null);
   const [selected, setSelected] = useState<AnswerChoice | null>(null);
-  const [confirmGiveUp, setConfirmGiveUp] = useState(false);
   const [givenUpQuestion, setGivenUpQuestion] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
@@ -143,7 +142,6 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
               questionNumber.current = nextRound.questionNumber;
               setPendingRound(null);
               setSelected(null);
-              setConfirmGiveUp(false);
               setShowLeaderboard(false);
             }
             if (lastConfirmedQuestion.current === nextRound.question.questionId) {
@@ -223,7 +221,6 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       questionNumber.current = pendingRound.questionNumber;
       setNow(serverClock.now(performance.now()));
       setSelected(null);
-      setConfirmGiveUp(false);
       setShowLeaderboard(false);
       setRound(pendingRound);
       setPendingRound(null);
@@ -305,6 +302,8 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   if (inIntermission || round.roundClosed || submitted || currentSubmission || showLeaderboard || personalTimeExpired) {
     const closed = round.roundClosed === true;
     const finalQuestion = round.questionNumber >= round.totalQuestions;
+    const leaderboardPlayers = currentSubmission ? round.players.map((player) => player.playerId === round.currentPlayerId
+      ? { ...player, hasSubmittedCurrentQuestion: true } : player) : round.players;
     return <main className={`${styles.page} mx-auto max-w-5xl px-6 py-8`}>
       <header className={`${styles.header} text-center`}>
         <p className="text-sm font-semibold text-blue-600">{closed ? `Question ${round.questionNumber} complete` : personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : givenUpQuestion === round.question.questionId ? "Give up recorded · 0 points" : "Answer submitted"}</p>
@@ -313,12 +312,11 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           ? finalQuestion ? "Preparing final results…" : intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`
           : secondsLeft === 0 ? "Waiting for the round to close…" : "Waiting for the other players…"}</p>
         {!closed && !inIntermission ? <p className="mt-3 text-xl font-bold tabular-nums" data-testid="remaining-time">Time remaining: {secondsLeft === null ? "--" : `${secondsLeft}s`}</p> : null}
-        <p className="mt-2 text-sm text-slate-600">{closed ? "This question’s points are included in each total." : "Totals show completed questions. Results appear when this round closes."}</p>
       </header>
       {submissionNotice}
       {error ? <p role="alert" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{error} <button type="button" className="min-h-11 font-semibold underline" onClick={() => refreshRound.current()}>Retry now</button></p> : null}
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}>
-        <RoundLeaderboard players={round.players} questionNumber={round.questionNumber} closed={closed} currentPlayerId={round.currentPlayerId} />
+        <RoundLeaderboard players={leaderboardPlayers} questionNumber={round.questionNumber} closed={closed} currentPlayerId={round.currentPlayerId} />
         <SpectatorList round={round} />
       </div>
     </main>;
@@ -333,28 +331,15 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       <header className={`${styles.header} flex items-center justify-between gap-4`}><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className={`${styles.panel} rounded-3xl border bg-white p-6 shadow-sm sm:p-8`}>
         {submissionNotice}
-        <p className="mb-4 text-sm text-slate-600">{round.scoringVersion === 2
-          ? "Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0"
-          : "Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0."}</p>
+        {round.scoringVersion !== 2 ? <p className="mb-4 text-sm text-slate-600">Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0.</p> : null}
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
         <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "border-slate-200 bg-slate-50/60 hover:border-blue-300 hover:bg-blue-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
-        <button onClick={submitAnswer} disabled={!selected || !outboxLoaded || submitted || isSubmitting || confirmGiveUp || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
-        {round.scoringVersion === 2 ? confirmGiveUp ? (
-          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-4" role="group" aria-label="Confirm Give up">
-            <p className="text-sm text-slate-700">Leave this question blank for 0 points? You cannot answer it afterward.</p>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <button type="button" className="min-h-11 rounded-lg border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700"
-                onClick={() => setConfirmGiveUp(false)}>Keep working</button>
-              <button type="button" className="min-h-11 rounded-lg bg-slate-700 px-4 py-2 font-semibold text-white disabled:opacity-60"
-                disabled={!outboxLoaded || submitted || !!currentSubmission || secondsLeft === null || secondsLeft === 0}
-                onClick={() => {
-                  setConfirmGiveUp(false); setError(null); setShowLeaderboard(true);
-                  void submitSavedAnswer({ questionId: round.question.questionId, questionNumber: round.questionNumber, selectedAnswer: null });
-                }}>Confirm Give up</button>
-            </div>
-          </div>
-        ) : <button type="button" onClick={() => setConfirmGiveUp(true)}
+        <button onClick={submitAnswer} disabled={!selected || !outboxLoaded || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
+        {round.scoringVersion === 2 ? <button type="button" onClick={() => {
+          setError(null); setShowLeaderboard(true);
+          void submitSavedAnswer({ questionId: round.question.questionId, questionNumber: round.questionNumber, selectedAnswer: null });
+        }}
           disabled={!outboxLoaded || submitted || !!currentSubmission || secondsLeft === null || secondsLeft === 0}
           className="mt-3 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60">Give up · 0 points</button> : null}
       </section>

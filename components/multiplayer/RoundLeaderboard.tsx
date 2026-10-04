@@ -29,7 +29,7 @@ export default function RoundLeaderboard({ players, questionNumber, closed, fina
           <div><dt className="text-xs">Result</dt><dd className="mt-1 font-semibold">{roundOutcomeLabels[feedback.outcome]}</dd></div>
           <div><dt className="text-xs">Question {questionNumber}</dt><dd className="mt-1 font-semibold tabular-nums">{formatRoundPoints(feedback.pointsEarned)} pts</dd></div>
           <div><dt className="text-xs">Answer time</dt><dd className="mt-1 font-semibold tabular-nums">{formatAnswerTime(feedback.answerTimeMs)}</dd></div>
-        </dl> : !closed ? <p className="mt-3 text-sm">{player.hasSubmittedCurrentQuestion ? "Submitted" : "Still answering"}</p> : null}
+        </dl> : !closed ? <p className="mt-3 text-sm">{player.hasSubmittedCurrentQuestion ? "Answered" : "Still answering"}</p> : null}
       </li>;
     })}
   </ol>;

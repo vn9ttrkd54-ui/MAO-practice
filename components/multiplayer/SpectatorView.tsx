@@ -168,8 +168,8 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
           </section>
 
           <section>
-            <h2 className="font-bold">{state.roundClosed ? `Question ${state.questionNumber} results` : "Live leaderboard"}</h2>
-            <p className="mb-3 mt-1 text-sm text-slate-600">{state.roundClosed ? "This question’s points are included in each total." : seconds === 0 && !preparing ? "Waiting for the round to close…" : "Totals show completed questions. Results appear when this round closes."}</p>
+            <h2 className="mb-3 font-bold">{state.roundClosed ? `Question ${state.questionNumber} results` : "Live leaderboard"}</h2>
+            {!state.roundClosed && seconds === 0 && !preparing ? <p className="mb-3 mt-1 text-sm text-slate-600">Waiting for the round to close…</p> : null}
             <RoundLeaderboard players={state.players} questionNumber={state.questionNumber} closed={state.roundClosed === true} />
           </section>
         </div>
