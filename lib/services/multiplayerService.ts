@@ -13,6 +13,7 @@ import type {
   CreatePrivateRoomInput,
   JoinPrivateRoomInput,
   MultiplayerAnswerSubmission,
+  MultiplayerActiveRoom,
   MultiplayerDeliveryReceipt,
   MultiplayerDifficultyBand,
   MultiplayerMatchResult,
@@ -875,11 +876,11 @@ export async function listOngoingPublicMatches(): Promise<MultiplayerRoom[]> {
   }));
   return rooms.filter((room): room is MultiplayerRoom => room !== null);
 }
-export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]> {
+export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerActiveRoom[]> {
   const user = await currentUser();
   if (!user) return [];
   const admin = createAdminClient();
-  const { data: memberships, error: membershipError } = await admin.from("multiplayer_players").select("room_id, connected, updated_at").eq("user_id", user.id).is("left_at", null);
+  const { data: memberships, error: membershipError } = await admin.from("multiplayer_players").select("room_id, is_host, connected, updated_at").eq("user_id", user.id).is("left_at", null);
   if (membershipError) throw new Error(`Unable to load active games: ${membershipError.message}`);
   const roomIds = [...new Set((memberships ?? []).map((membership) => membership.room_id))];
   if (roomIds.length === 0) return [];
@@ -888,14 +889,30 @@ export async function listMyActiveMultiplayerRooms(): Promise<MultiplayerRoom[]>
   if (error) throw new Error("Unable to load active games right now.");
   const rooms = await Promise.all(((data ?? []) as RoomRow[]).map(async (room) => {
     if (room.status === "in-progress" && !multiplayerRoomHasNotExpired(room)) return null;
-    if (room.status !== "in-progress") {
-      const membership = memberships?.find((entry) => entry.room_id === room.id);
+    const membership = memberships?.find((entry) => entry.room_id === room.id);
+    if (room.status !== "in-progress" && room.visibility !== "private") {
       if (!membership?.connected || new Date(membership.updated_at).getTime() < Date.now() - LOBBY_PRESENCE_TIMEOUT_MS) return null;
     }
     const { count } = await admin.from("multiplayer_players").select("id", { count: "exact", head: true }).eq("room_id", room.id).is("left_at", null);
-    return mapRoom(room, count ?? 0);
+    return { ...mapRoom(room, count ?? 0), isHost: membership?.is_host === true };
   }));
-  return rooms.filter((room): room is MultiplayerRoom => room !== null);
+  return rooms.filter((room): room is MultiplayerActiveRoom => room !== null);
+}
+
+export async function closeOwnedPrivateLobby(roomId: string): Promise<"closed" | "started"> {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(roomId)) {
+    throw new RequestBodyError("Invalid room.", 400);
+  }
+  const user = await currentUser();
+  if (!user) throw new RequestBodyError("Sign in to close your room.", 401);
+  const { data, error } = await createAdminClient().rpc("close_owned_private_multiplayer_lobby", {
+    p_room_id: roomId, p_user_id: user.id,
+  });
+  if (error?.code === "P0001") throw new RequestBodyError(error.message, 403);
+  if (error || (data !== "closed" && data !== "started")) {
+    throw new Error("Closing the room was not confirmed. Please retry.");
+  }
+  return data;
 }
 export async function joinPublicRoom(roomId: string): Promise<MultiplayerRoom> {
   const user = await currentUser();

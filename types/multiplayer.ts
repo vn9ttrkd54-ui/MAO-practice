@@ -80,6 +80,10 @@ export interface MultiplayerRoom {
   currentQuestionNumber: number;
 }
 
+export interface MultiplayerActiveRoom extends MultiplayerRoom {
+  isHost: boolean;
+}
+
 export interface MultiplayerPublicRoomPlayer {
   playerId: string;
   displayName: string;

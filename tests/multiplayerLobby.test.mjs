@@ -266,6 +266,7 @@ test("only the exact public-directory read bypasses session-cookie refresh",asyn
 test("legacy leave actions cannot bypass the connection check",async()=>{
   const calls=[];
   const actions=load('app/multiplayer/actions.ts',{'next/navigation':{redirect:url=>{throw new Error(url);}},
+    'next/cache':{revalidatePath:()=>assert.fail('Leaving through the legacy action must not use the new close path')},
     '@/lib/services/multiplayerService':{leaveMultiplayerRoom:(...args)=>calls.push(args)}});
   const form=new FormData();form.set('roomId',roomId);
   await assert.rejects(actions.leaveMultiplayerRoomAction(form),/Reload/);

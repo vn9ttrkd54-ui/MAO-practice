@@ -1,8 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
-import { beginPrivateRoom, createPrivateRoom, joinPrivateRoom, joinPublicRoom, leaveMultiplayerRoom, spectatePublicMatch } from "@/lib/services/multiplayerService";
+import { beginPrivateRoom, closeOwnedPrivateLobby, createPrivateRoom, joinPrivateRoom, joinPublicRoom, leaveMultiplayerRoom, spectatePublicMatch } from "@/lib/services/multiplayerService";
 import type { Division } from "@/types/question";
 import type { MultiplayerDifficultyBand, MultiplayerQuestionTime, MultiplayerRoomMode } from "@/types/multiplayer";
 
@@ -13,6 +14,20 @@ function value(formData: FormData, key: string) {
 function errorRedirect(error: unknown, path = "/multiplayer"): never {
   const message = error instanceof Error ? error.message : "Something went wrong. Please try again.";
   redirect(`${path}?error=${encodeURIComponent(message)}`);
+}
+
+export async function closePrivateLobbyAction(formData: FormData) {
+  const roomId = value(formData, "roomId");
+  try {
+    if (value(formData, "confirmation") !== "close") throw new Error("Confirm that you want to close this room.");
+    const status = await closeOwnedPrivateLobby(roomId);
+    if (status === "started") throw new Error("This game already started or has saved match data. It was not closed. Return to your game.");
+  } catch (error) {
+    errorRedirect(error);
+  }
+  revalidatePath("/multiplayer");
+  revalidatePath("/multiplayer/create");
+  redirect(`/multiplayer?closed=${encodeURIComponent(roomId)}`);
 }
 
 export async function createPrivateRoomAction(formData: FormData) {
@@ -31,6 +46,9 @@ export async function createPrivateRoomAction(formData: FormData) {
   } catch (error) {
     errorRedirect(error, "/multiplayer/create");
   }
+  // Back navigation must not restore a directory/create page from before this room existed.
+  revalidatePath("/multiplayer");
+  revalidatePath("/multiplayer/create");
   redirect(`/multiplayer/room/${roomId}`);
 }
 
