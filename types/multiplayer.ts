@@ -41,7 +41,15 @@ export interface MultiplayerPlayerIdentity {
   globalRank: number | null;
 }
 
+export interface MultiplayerRoundFeedback {
+  questionNumber: number;
+  outcome: "correct" | "incorrect" | "give-up" | "blank";
+  pointsEarned: number;
+  answerTimeMs: number | null;
+}
+
 export interface MultiplayerPlayer extends MultiplayerPlayerIdentity {
+  roundResult?: MultiplayerRoundFeedback | null;
   isHost: boolean;
   connected: boolean;
   score: number;
@@ -93,6 +101,7 @@ export interface MultiplayerQuestion {
 }
 
 export interface MultiplayerRoundState {
+  roundClosed?: boolean;
   scoringVersion?: 1 | 2;
   preparing?: boolean;
   stateVersion: number;
@@ -117,6 +126,8 @@ export interface MultiplayerRoundState {
 }
 
 export interface MultiplayerSpectatorState {
+  roundClosed?: boolean;
+  stateVersion?: number;
   roomId: string;
   questionNumber: number;
   totalQuestions: number;

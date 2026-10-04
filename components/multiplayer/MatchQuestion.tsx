@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import MatchWaiting from "./MatchWaiting";
+import RoundLeaderboard from "./RoundLeaderboard";
 import styles from "./matchSurface.module.css";
 import MathText from "@/components/math/MathText";
-import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import { RankPill } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { sendMultiplayerAnswer, SubmissionRejectedError } from "@/lib/multiplayerSubmission";
 import { acceptRoundSnapshot, restoreMultiplayerAnswers } from "@/lib/multiplayerRecovery";
@@ -21,8 +22,8 @@ function preloadedRound(round: MultiplayerRoundState): MultiplayerRoundState | n
   const upcoming = round.upcomingQuestion;
   if (!upcoming) return null;
   return {
-    ...round, ...upcoming, intermissionEndsAt: null, upcomingQuestion: null,
-    players: round.players.map(player => ({ ...player, hasSubmittedCurrentQuestion: false })),
+    ...round, ...upcoming, roundClosed: false, intermissionEndsAt: null, upcomingQuestion: null,
+    players: round.players.map(player => ({ ...player, roundResult: null, hasSubmittedCurrentQuestion: false })),
   };
 }
 
@@ -109,6 +110,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           router.replace(`/multiplayer/room/${round.roomId}/results`);
           return;
         }
+        if (!response.ok) throw new Error("Unable to refresh the match.");
         if (response.status === 200) {
           const payload = await response.json();
           const nextRound = payload as MultiplayerRoundState & { serverReceivedAt: number; serverSentAt: number };
@@ -117,7 +119,10 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
             setNow(serverClock.now(performance.now()));
             setClockRevision((value) => value + 1);
           }
-          if (payload.unchanged) return;
+          if (payload.unchanged) {
+            setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
+            return;
+          }
           if (!acceptRoundSnapshot(nextRound.stateVersion, nextRound.questionNumber, stateVersion.current, questionNumber.current)) return;
           stateVersion.current = nextRound.stateVersion;
           setError((current) => current === "Connection interrupted. Reconnecting…" ? null : current);
@@ -280,10 +285,26 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
 
   const inIntermission = preparingNext || Boolean(effectiveIntermissionEndsAt);
   const personalTimeExpired = !round.preparing && secondsLeft === 0;
-  if (inIntermission || submitted || currentSubmission || showLeaderboard || personalTimeExpired) {
-    if (round.questionNumber >= round.totalQuestions) return <MatchWaiting>{submissionNotice}</MatchWaiting>;
-    const leaderboard = [...round.players].sort((a, b) => b.score - a.score);
-    return <main className={`${styles.page} mx-auto max-w-5xl px-6 py-8`}><header className="text-center"><p className="text-sm font-semibold text-blue-600">{personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : givenUpQuestion === round.question.questionId ? "Give up recorded · 0 points" : "Answer submitted"}</p><h1 className="mt-1 text-3xl font-bold">Live leaderboard</h1><p className="mt-2 text-gray-600">{inIntermission ? (intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`) : "Waiting for the other players…"}</p></header>{submissionNotice}<div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><ol className="space-y-3">{leaderboard.map((player, index) => <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}><div><span className="font-semibold">{index + 1}. {player.displayName}</span><div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>{player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}<span>{player.isGuest ? "Unranked guest" : player.rankTier}</span></div></div><span className="font-bold tabular-nums">{player.score} pts</span></li>)}</ol><SpectatorList round={round} /></div></main>;
+  if (inIntermission || round.roundClosed || submitted || currentSubmission || showLeaderboard || personalTimeExpired) {
+    const closed = round.roundClosed === true;
+    const finalQuestion = round.questionNumber >= round.totalQuestions;
+    return <main className={`${styles.page} mx-auto max-w-5xl px-6 py-8`}>
+      <header className={`${styles.header} text-center`}>
+        <p className="text-sm font-semibold text-blue-600">{closed ? `Question ${round.questionNumber} complete` : personalTimeExpired && !submitted ? "Time expired" : isSubmitting ? "Submitting answer…" : currentSubmission ? "Answer awaiting confirmation" : givenUpQuestion === round.question.questionId ? "Give up recorded · 0 points" : "Answer submitted"}</p>
+        <h1 className="mt-1 text-3xl font-bold">{closed ? `Question ${round.questionNumber} results` : finalQuestion ? "Waiting for final results" : "Live leaderboard"}</h1>
+        <p className="mt-2 text-gray-600">{closed || inIntermission
+          ? finalQuestion ? "Preparing final results…" : intermissionLeft === null ? "Preparing next question…" : `Next question in ${intermissionLeft}s`
+          : secondsLeft === 0 ? "Waiting for the round to close…" : "Waiting for the other players…"}</p>
+        {!closed && !inIntermission ? <p className="mt-3 text-xl font-bold tabular-nums" data-testid="remaining-time">Time remaining: {secondsLeft === null ? "--" : `${secondsLeft}s`}</p> : null}
+        <p className="mt-2 text-sm text-slate-600">{closed ? "This question’s points are included in each total." : "Totals show completed questions. Results appear when this round closes."}</p>
+      </header>
+      {submissionNotice}
+      {error ? <p role="alert" className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{error} <button type="button" className="min-h-11 font-semibold underline" onClick={() => refreshRound.current()}>Retry now</button></p> : null}
+      <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}>
+        <RoundLeaderboard players={round.players} questionNumber={round.questionNumber} closed={closed} currentPlayerId={round.currentPlayerId} />
+        <SpectatorList round={round} />
+      </div>
+    </main>;
   }
 
   if (round.preparing || questionStartsIn === null || questionStartsIn > 0) {

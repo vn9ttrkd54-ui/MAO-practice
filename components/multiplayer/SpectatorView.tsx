@@ -1,13 +1,13 @@
 "use client";
 
-import MatchWaiting from "./MatchWaiting";
+import RoundLeaderboard from "./RoundLeaderboard";
 import styles from "./matchSurface.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import MathText from "@/components/math/MathText";
-import { RankIcon, RankPill, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import { RankPill } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { countdownSeconds } from "@/lib/multiplayerTiming";
 import { withRequestTimeout } from "@/lib/requestTimeout";
@@ -70,7 +70,9 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
           router.replace(`/multiplayer/room/${state.roomId}/results`);
           return;
         }
-        setState(payload);
+        setState(current => payload.questionNumber < current.questionNumber ||
+          (payload.stateVersion !== undefined && current.stateVersion !== undefined && payload.stateVersion < current.stateVersion)
+          ? current : payload);
       } catch {
         if (!stopped) setConnectionWarning(true);
       } finally {
@@ -129,7 +131,6 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
     );
   }
 
-  const leaderboard = [...state.players].sort((a, b) => b.score - a.score);
   const spectatorEndsAt = Math.min(
     state.questionEndsAt,
     state.questionStartedAt + state.questionDurationSeconds * 1000,
@@ -137,8 +138,6 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
   const seconds = now === null ? null : Math.max(0, Math.ceil((spectatorEndsAt - now) / 1000));
   const preparing = !state.questionStartedAt || now === null || now < state.questionStartedAt;
   const countdown = countdownSeconds(state.questionStartedAt, now, state.questionNumber);
-
-  if (!preparing && seconds === 0 && state.questionNumber >= state.totalQuestions) return <MatchWaiting />;
 
   return (
     <main className={`${styles.page} mx-auto max-w-5xl px-5 py-8`}>
@@ -148,7 +147,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
           <p className="text-sm font-semibold text-blue-600">Live spectator view</p>
           <h1 className="text-2xl font-bold">Question {state.questionNumber} of {state.totalQuestions}</h1>
         </div>
-        <div className="rounded-xl bg-gray-100 px-4 py-2 text-xl font-bold tabular-nums">{preparing ? (countdown === null ? "Preparing…" : `Starts in ${countdown}s`) : `${seconds}s`}</div>
+        <div className="rounded-xl bg-gray-100 px-4 py-2 text-xl font-bold tabular-nums">{state.roundClosed ? "Round complete" : preparing ? (countdown === null ? "Preparing…" : `Starts in ${countdown}s`) : `${seconds}s`}</div>
       </header>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_18rem]">
@@ -169,21 +168,9 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
           </section>
 
           <section>
-            <h2 className="font-bold">Live leaderboard</h2>
-            <ol className="mt-3 space-y-2">
-              {leaderboard.map((player, index) => (
-                <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-sm shadow-sm`}>
-                  <div>
-                    <span className="font-semibold">{index + 1}. {player.displayName}</span>
-                    <div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>
-                      {player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={13} />}
-                      <span>{player.isGuest ? "Unranked guest" : player.rankTier}</span>
-                    </div>
-                  </div>
-                  <b>{player.score} pts</b>
-                </li>
-              ))}
-            </ol>
+            <h2 className="font-bold">{state.roundClosed ? `Question ${state.questionNumber} results` : "Live leaderboard"}</h2>
+            <p className="mb-3 mt-1 text-sm text-slate-600">{state.roundClosed ? "This question’s points are included in each total." : seconds === 0 && !preparing ? "Waiting for the round to close…" : "Totals show completed questions. Results appear when this round closes."}</p>
+            <RoundLeaderboard players={state.players} questionNumber={state.questionNumber} closed={state.roundClosed === true} />
           </section>
         </div>
         <Spectators spectators={state.spectators} />

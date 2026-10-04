@@ -26,6 +26,7 @@ import type {
   MultiplayerRoomAccess,
   MultiplayerRoomSettings,
   MultiplayerRoundState,
+  MultiplayerRoundFeedback,
   MultiplayerSpectator,
   MultiplayerSpectatorState,
 } from "@/types/multiplayer";
@@ -64,6 +65,7 @@ interface RoomRow {
 }
 
 interface PlayerRow {
+  round_result?: MultiplayerRoundFeedback | null;
   id: string;
   user_id: string | null;
   guest_nickname: string | null;
@@ -183,7 +185,17 @@ function mapPlayer(row: PlayerRow, displayName: string): MultiplayerPlayer {
     score: row.score,
     placement: row.placement,
     hasSubmittedCurrentQuestion: row.has_submitted_current_question,
+    roundResult: row.round_result ?? null,
   };
+}
+
+function mapScoreboardPlayers(rows: Array<PlayerRow & { display_name: string; rp: number | null }>): MultiplayerPlayer[] {
+  return rows.map(row => {
+    const player = mapPlayer(row, row.display_name);
+    player.rp = row.user_id ? row.rp ?? 0 : null;
+    player.rankTier = player.rp === null ? null : tierForRp(player.rp);
+    return player;
+  });
 }
 
 async function currentUser() {
@@ -541,16 +553,12 @@ export async function getMultiplayerRoundState(roomId: string, knownVersion = -1
       topic: source.topic, difficulty: row.difficulty, question: source.question, choices: source.choices };
   };
   const upcoming = data.upcoming as MatchQuestionRow | null;
-  const players = (data.players as Array<PlayerRow & { display_name: string; rp: number | null }>).map((row) => {
-    const player = mapPlayer(row, row.display_name);
-    player.rp = row.user_id ? row.rp ?? 0 : null;
-    player.rankTier = player.rp === null ? null : tierForRp(player.rp);
-    return player;
-  });
+  const players = mapScoreboardPlayers(data.players);
   return {
     roomId, stateVersion: data.stateVersion, currentPlayerId: access.currentPlayer.playerId,
     questionNumber: q.question_number, totalQuestions: data.totalQuestions,
     scoringVersion: data.scoringVersion ?? 1,
+    roundClosed: data.roundClosed === true,
     question: presentQuestion(q), questionDurationSeconds: data.questionDurationSeconds,
     preparing: !q.started_at,
     questionStartedAt: q.started_at ? new Date(q.started_at).getTime() : 0,
@@ -697,34 +705,24 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
   const [resultResponse, resultsResponse, playersResponse, submissionsResponse, matchQuestionsResponse] = await Promise.all([
     spectatorMode ? Promise.resolve({ data: null }) : admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).eq("player_id", access!.currentPlayer.playerId).maybeSingle(),
     admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).order("placement"),
-    admin.from("multiplayer_players").select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question").eq("room_id", roomId),
+    admin.rpc("read_multiplayer_scoreboard", { p_room_id: roomId }),
     spectatorMode ? Promise.resolve({ data: [] }) : admin.from("multiplayer_submissions").select("player_id, question_number, question_id, selected_answer, correct, answer_time_ms, points_earned").eq("room_id", roomId).eq("player_id", access!.currentPlayer.playerId),
     admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId).order("question_number"),
   ]);
+  if ([resultResponse, resultsResponse, playersResponse, submissionsResponse, matchQuestionsResponse]
+    .some(response => "error" in response && response.error)) {
+    throw new Error("Unable to load match results right now.");
+  }
   const result = resultResponse.data;
   if (!spectatorMode && !result) return null;
+  if (playersResponse.error || !playersResponse.data || playersResponse.data.status !== "completed") {
+    throw new Error("Unable to load match results right now.");
+  }
 
   const resultByPlayer = new Map((resultsResponse.data ?? []).map((entry) => [entry.player_id, entry]));
-  const finalPlayerRows = (playersResponse.data ?? []) as PlayerRow[];
-  const finalUserIds = finalPlayerRows.flatMap((player) => player.user_id ? [player.user_id] : []);
-  const [finalNamesResponse, finalRatingsResponse] = finalUserIds.length > 0
-    ? await Promise.all([
-      admin.from("profiles").select("id, username").in("id", finalUserIds),
-      admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", finalUserIds),
-    ])
-    : [{ data: [] }, { data: [] }];
-  const finalNames = finalNamesResponse.data;
-  const finalNameByUser = new Map((finalNames ?? []).map((profile) => [profile.id, profile.username]));
-  const finalRatingByUser = new Map((finalRatingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
-  const finalLeaderboard = finalPlayerRows.map((player) => {
-    const mapped = mapPlayer(player, player.guest_nickname ?? (player.user_id ? finalNameByUser.get(player.user_id) ?? "Account player" : "Guest"));
-    mapped.placement = resultByPlayer.get(player.id)?.placement ?? null;
-    if (player.user_id) {
-      const rp = finalRatingByUser.get(player.user_id) ?? 0;
-      mapped.rp = rp;
-      mapped.rankTier = tierForRp(rp);
-    }
-    return mapped;
+  const finalLeaderboard = mapScoreboardPlayers(playersResponse.data.players).map((player) => {
+    player.placement = resultByPlayer.get(player.playerId)?.placement ?? null;
+    return player;
   }).sort((a, b) => (a.placement ?? 999) - (b.placement ?? 999));
   const submissionByQuestion = new Map(((submissionsResponse.data ?? []) as SubmissionRow[]).map((submission) => [submission.question_number, submission]));
   const rounds = ((matchQuestionsResponse.data ?? []) as MatchQuestionRow[]).map((matchQuestion) => {
@@ -926,25 +924,24 @@ export async function spectatePublicMatch(roomId: string): Promise<MultiplayerSp
   await admin.from("multiplayer_profiles").upsert({ user_id: user.id }, { onConflict: "user_id", ignoreDuplicates: true });
   const { error: spectatorError } = await admin.from("multiplayer_spectators").upsert({ room_id: roomId, user_id: user.id, last_seen_at: new Date().toISOString() }, { onConflict: "room_id,user_id" });
   if (spectatorError) throw new Error(`Unable to spectate this match: ${spectatorError.message}`);
-  const [questionResponse, players, spectators] = await Promise.all([
-    admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, hard_ends_at, intermission_ends_at").eq("room_id", roomId).eq("question_number", room.current_question_number).maybeSingle<MatchQuestionRow>(),
-    getPublicMatchPlayers(roomId), listActiveSpectators(roomId),
+  const [snapshot, spectators] = await Promise.all([
+    admin.rpc("read_multiplayer_scoreboard", { p_room_id: roomId }), listActiveSpectators(roomId),
   ]);
-  const matchQuestion = questionResponse.data;
+  if (snapshot.error || !snapshot.data) throw new Error("Unable to read multiplayer state.");
+  const data = snapshot.data;
+  if (data.status !== "in-progress") throw new Error("That public match is no longer in progress.");
+  const matchQuestion = data.question as MatchQuestionRow | null;
   const question = matchQuestion ? questions.find((entry) => entry.id === matchQuestion.question_id) : null;
   if (!matchQuestion || !question) throw new Error("The current question is unavailable.");
-  return { roomId, questionNumber: matchQuestion.question_number, totalQuestions: room.question_count, question: { questionId: question.id, number: matchQuestion.question_number, division: question.division, topic: question.topic, difficulty: matchQuestion.difficulty, question: question.question, choices: question.choices }, questionDurationSeconds: room.seconds_per_question, questionStartedAt: matchQuestion.started_at ? new Date(matchQuestion.started_at).getTime() : 0, questionEndsAt: matchQuestion.ends_at ? new Date(matchQuestion.hard_ends_at ?? matchQuestion.ends_at).getTime() : 0, intermissionEndsAt: matchQuestion.intermission_ends_at ? new Date(matchQuestion.intermission_ends_at).getTime() : null, players, spectators };
-}
-
-async function getPublicMatchPlayers(roomId: string): Promise<MultiplayerPlayer[]> {
-  const admin = createAdminClient();
-  const { data } = await admin.from("multiplayer_players").select("id, user_id, guest_nickname, is_host, connected, score, placement, has_submitted_current_question").eq("room_id", roomId).is("left_at", null).order("score", { ascending: false });
-  const rows = (data ?? []) as PlayerRow[];
-  const userIds = rows.flatMap((row) => row.user_id ? [row.user_id] : []);
-  const [namesResponse, ratingsResponse] = userIds.length ? await Promise.all([admin.from("profiles").select("id, username").in("id", userIds), admin.from("multiplayer_profiles").select("user_id, rp").in("user_id", userIds)]) : [{ data: [] }, { data: [] }];
-  const names = new Map((namesResponse.data ?? []).map((profile) => [profile.id, profile.username]));
-  const ratings = new Map((ratingsResponse.data ?? []).map((profile) => [profile.user_id, profile.rp]));
-  return rows.map((row) => { const mapped = mapPlayer(row, row.user_id ? names.get(row.user_id) ?? "Player" : row.guest_nickname ?? "Guest"); if (row.user_id) { const rp = ratings.get(row.user_id) ?? 0; mapped.rp = rp; mapped.rankTier = tierForRp(rp); } return mapped; });
+  return { roomId, stateVersion: data.stateVersion, roundClosed: data.roundClosed === true,
+    questionNumber: matchQuestion.question_number, totalQuestions: data.totalQuestions,
+    question: { questionId: question.id, number: matchQuestion.question_number, division: question.division,
+      topic: question.topic, difficulty: matchQuestion.difficulty, question: question.question, choices: question.choices },
+    questionDurationSeconds: data.questionDurationSeconds,
+    questionStartedAt: matchQuestion.started_at ? new Date(matchQuestion.started_at).getTime() : 0,
+    questionEndsAt: matchQuestion.ends_at ? new Date(matchQuestion.ends_at).getTime() : 0,
+    intermissionEndsAt: matchQuestion.intermission_ends_at ? new Date(matchQuestion.intermission_ends_at).getTime() : null,
+    players: mapScoreboardPlayers(data.players), spectators };
 }
 
 export async function leavePublicSpectator(roomId: string): Promise<void> {

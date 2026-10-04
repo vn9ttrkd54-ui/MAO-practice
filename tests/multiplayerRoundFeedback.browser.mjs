@@ -1,0 +1,127 @@
+// Actual components and generated application CSS, mock endpoints only.
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+import { mkdtemp, readFile, readdir } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { resolve, join } from "node:path";
+import { createServer } from "node:http";
+import { chromium, expect } from "@playwright/test";
+const require=createRequire(import.meta.url);
+const dir=await mkdtemp(join(tmpdir(),"multiplayer-feedback-"));
+const root=resolve(import.meta.dirname,"..");
+const fixture=name=>resolve(import.meta.dirname,"browserFixtures",name);
+const compiler=require("next/dist/compiled/webpack/webpack").webpack({mode:"development",entry:fixture("roundFeedback.tsx"),
+  output:{path:dir,filename:"client.js"},devtool:false,
+  resolve:{extensions:[".tsx",".ts",".js"],alias:{
+    "next/navigation":fixture("router.ts"),"next/link":fixture("link.tsx"),"next/image":fixture("image.tsx"),
+    "@/lib/multiplayerRealtime":fixture("realtime.ts"),"@/components/math/MathText":fixture("math.tsx"),"@":root,
+  }},module:{rules:[{test:/\.tsx?$/,exclude:/node_modules/,use:fixture("loader.cjs")},{test:/\.css$/,use:fixture("css.cjs")}]},
+});
+await new Promise((resolve,reject)=>compiler.run((error,stats)=>error||stats.hasErrors()
+  ?reject(error??new Error(stats.toString())):compiler.close(resolve)));
+const bundle=await readFile(join(dir,"client.js"));
+const cssRoot=join(root,".next/static");
+const css=(await Promise.all((await readdir(cssRoot,{recursive:true})).filter(f=>f.endsWith(".css")).map(f=>readFile(join(cssRoot,f),"utf8")))).join("\n");
+const server=createServer((req,res)=>{
+  const script=req.url==="/client.js";
+  res.setHeader("Content-Type",script?"text/javascript; charset=utf-8":"text/html; charset=utf-8");
+  res.end(script?bundle:`<meta name="viewport" content="width=device-width, initial-scale=1"><style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
+});
+await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
+let browser;
+try {
+  browser=await chromium.launch({headless:true});
+  const errors=[];
+  const base=()=>({roomId:"test",scoringVersion:2,stateVersion:1,currentPlayerId:"p0",questionNumber:1,totalQuestions:2,
+    roundClosed:false,question:{questionId:42,number:1,division:"Mu",topic:"Algebra",difficulty:2,question:"What is 1 + 1?",choices:["2","3","4","5","6"]},
+    questionDurationSeconds:90,preparing:false,questionStartedAt:Date.now()-1000,questionEndsAt:Date.now()+89000,
+    intermissionEndsAt:null,players:["Ada","Ben","Guest","Dana"].map((name,i)=>({playerId:`p${i}`,userId:i===2?null:`u${i}`,
+      displayName:name,isGuest:i===2,rankTier:["Gold","Silver",null,"Bronze"][i],rp:400,score:0,placement:null,roundResult:null,
+      hasSubmittedCurrentQuestion:i<3})),spectators:[],upcomingQuestion:null});
+  const close=state=>({...state,stateVersion:state.stateVersion+1,roundClosed:true,players:state.players.map((p,i)=>({...p,
+    score:[1250,-300,0,0][i],roundResult:{questionNumber:state.questionNumber,outcome:["correct","incorrect","give-up","blank"][i],
+      pointsEarned:[1250,-300,0,0][i],answerTimeMs:[45000,12000,12500,null][i]}}))});
+  async function setup({width=1280,spectator=false,final=false,result=false}={}) {
+    const page=await browser.newPage({viewport:{width,height:1000}});
+    page.on("pageerror",e=>errors.push(e.message));
+    let state=base(),failure=false,reads=0;
+    if(final)state.totalQuestions=1;
+    const initial=structuredClone(state);
+    const finalData={roomId:"test",viewerMode:spectator?"spectator":"player",placement:2,score:-300,ranked:false,ratingChange:null,
+      finalLeaderboard:close(state).players.map((p,i)=>({...p,placement:[1,4,2,3][i]})),rounds:[{questionId:42,questionNumber:1,
+        question:"What is 1 + 1?",choices:["2","3"],selectedAnswer:"B",correctAnswer:"A",correct:false,answerTimeMs:12000,pointsEarned:-300,solution:"Two."}]};
+    await page.addInitScript(({initial,spectator,result,finalData})=>{
+      window.initialRound=initial;if(spectator)window.initialSpectator=initial;if(result)window.initialResult=finalData;
+    },{initial,spectator,result,finalData});
+    await page.route("**/api/multiplayer/**",async route=>{
+      if(route.request().method()!=="GET")return route.fulfill({json:{accepted:true}});
+      reads++;if(failure)return route.fulfill({status:503,json:{error:"Offline"}});
+      if(state.completed)return spectator?route.fulfill({json:{completed:true}}):route.fulfill({status:204});
+      return route.fulfill({json:{...state,serverReceivedAt:Date.now(),serverSentAt:Date.now()}});
+    });
+    await page.goto(`http://127.0.0.1:${server.address().port}/`);
+    return {page,get:()=>state,set:s=>{state=s;},reads:()=>reads,fail:value=>{failure=value;},
+      signal:()=>page.evaluate(v=>window.dispatchEvent(new CustomEvent("test-room-event",{detail:{stateVersion:v}})),state.stateVersion)};
+  }
+  const assertFeedback=async page=>{
+    const list=page.getByRole("list",{name:/standings/});
+    for(const text of ["Correct","Incorrect","Gave up","Blank","+1250 pts","-300 pts","45.0s","12.0s","12.5s","Time expired"])
+      await expect(list.getByText(text,{exact:true}).first()).toBeVisible();
+  };
+  for(const width of [1280,390]) {
+    const f=await setup({width}),{page}=f;
+    await expect(page.getByTestId("remaining-time")).toBeVisible();
+    const start=await page.getByTestId("remaining-time").textContent(),reads=f.reads();
+    await expect(page.getByTestId("remaining-time")).not.toHaveText(start);
+    assert.equal(f.reads(),reads,"countdown ticks locally, no per-second requests");
+    assert.equal(await page.getByText("Correct",{exact:true}).count(),0);
+    assert.equal(await page.getByRole("button",{name:/skip/i}).count(),0);
+    await page.screenshot({path:join(dir,`waiting-${width}.png`),fullPage:true});
+    // Zero on the local clock must not reveal feedback, even if a malformed fixture includes it.
+    f.set({...close(f.get()),roundClosed:false,questionStartedAt:Date.now()-95000,questionEndsAt:Date.now()-5000});await f.signal();
+    await expect(page.getByText("Waiting for the round to close…")).toBeVisible();
+    assert.equal(await page.getByText("Correct",{exact:true}).count(),0);
+    f.set(close(f.get()));await f.signal();
+    await expect(page.getByRole("heading",{name:"Question 1 results"})).toBeVisible();await assertFeedback(page);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.screenshot({path:join(dir,`results-${width}.png`),fullPage:true});
+    // Refresh preserves the server-confirmed result rather than a local score calculation.
+    await page.reload();await assertFeedback(page);
+    const current=f.get();f.set({...current,stateVersion:current.stateVersion-1,roundClosed:false,players:base().players});await f.signal();
+    await expect(page.getByRole("heading",{name:"Question 1 results"})).toBeVisible();
+    // Preloaded reveal must not inherit question 1's outcome flags.
+    const startAt=Date.now()+1200;
+    f.set({...current,stateVersion:current.stateVersion+1,intermissionEndsAt:startAt,upcomingQuestion:{questionNumber:2,preparing:false,
+      question:{...current.question,number:2,questionId:43},questionStartedAt:startAt,questionEndsAt:startAt+90000}});await f.signal();
+    await expect(page.getByRole("heading",{name:"Question 2 of 2"})).toBeVisible({timeout:6000});
+    await expect(page.getByRole("button",{name:"Submit Answer",exact:true})).toBeVisible();
+    assert.equal(await page.getByText("Correct",{exact:true}).count(),0);
+    await page.close();
+  }
+  const final=await setup({final:true});
+  await expect(final.page.getByRole("heading",{name:"Waiting for final results"})).toBeVisible();
+  await expect(final.page.getByTestId("remaining-time")).toBeVisible();
+  final.set({...final.get(),stateVersion:2,completed:true});await final.signal();
+  await expect(final.page.locator("body")).toHaveAttribute("data-destination","/multiplayer/room/test/results");await final.page.close();
+  const retry=await setup();await expect(retry.page.getByTestId("remaining-time")).toBeVisible();
+  retry.fail(true);retry.set({...retry.get(),stateVersion:2});await retry.signal();
+  // A transport failure needs a visible retry on the waiting screen.
+  await retry.page.route("**/round?*",route=>route.abort());await retry.signal();
+  await expect(retry.page.getByRole("button",{name:"Retry now"})).toBeVisible();
+  await retry.page.unroute("**/round?*");retry.fail(false);
+  await retry.page.getByRole("button",{name:"Retry now"}).click();
+  await expect(retry.page.getByRole("button",{name:"Retry now"})).toHaveCount(0);await retry.page.close();
+  const spectator=await setup({spectator:true,final:true});
+  assert.equal(await spectator.page.getByText("Correct",{exact:true}).count(),0);
+  spectator.set(close(spectator.get()));await spectator.signal();await assertFeedback(spectator.page);
+  spectator.set({...spectator.get(),stateVersion:1,roundClosed:false});await spectator.signal();
+  await expect(spectator.page.getByRole("heading",{name:"Question 1 results"})).toBeVisible();await spectator.page.close();
+  for(const spectator of [false,true]) {
+    const f=await setup({result:true,spectator,width:390});await assertFeedback(f.page);
+    assert.equal(await f.page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await f.page.close();
+  }
+  assert.deepEqual(errors,[]);
+  console.log("PASS: waiting timer, closed-round feedback, refresh, stale snapshots, preload reset, final-question wait, reconnect, spectator and final results; desktop/mobile.");
+  console.log(`Screenshots: ${dir}`);
+} finally { await browser?.close();await new Promise(resolve=>server.close(resolve)); }

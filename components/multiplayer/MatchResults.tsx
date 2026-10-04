@@ -4,7 +4,8 @@ import styles from "./matchSurface.module.css";
 import Link from "next/link";
 
 import MathText from "@/components/math/MathText";
-import { RankIcon, rankSecondaryClass, rankThemeClass } from "@/components/multiplayer/RankTheme";
+import RoundLeaderboard from "./RoundLeaderboard";
+import { formatAnswerTime } from "@/lib/multiplayerRoundFeedback";
 import type { MultiplayerMatchResult } from "@/types/multiplayer";
 
 const labels = ["A", "B", "C", "D", "E"];
@@ -31,20 +32,8 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
 
       <section className="mt-8">
         <h2 className="text-xl font-bold">Final leaderboard</h2>
-        <ol className="mt-3 space-y-3">
-          {result.finalLeaderboard.map((player) => (
-            <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 shadow-sm`}>
-              <div>
-                <span className="font-semibold">#{player.placement} {player.displayName}</span>
-                <div className={`mt-1 flex items-center gap-1.5 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>
-                  {player.isGuest ? null : <RankIcon rank={player.rankTier ?? "Novice"} size={14} />}
-                  <span>{player.isGuest ? "Unranked guest" : `${player.rankTier} · ${player.rp ?? 0} RP`}</span>
-                </div>
-              </div>
-              <span className="font-bold tabular-nums">{player.score} pts</span>
-            </li>
-          ))}
-        </ol>
+        <p className="mb-3 mt-1 text-sm text-slate-600">Final totals, with the last question’s result below each player.</p>
+        <RoundLeaderboard players={result.finalLeaderboard} questionNumber={result.rounds.at(-1)?.questionNumber ?? 0} closed final />
       </section>
 
       <section className="mt-8">
@@ -60,6 +49,7 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
                 </span>
               </div>
 
+              {!isSpectator ? <p className="mt-2 text-sm text-slate-600">Answer time: {formatAnswerTime(round.answerTimeMs)}</p> : null}
               <div className="mt-3 font-medium leading-7">
                 <MathText>{round.question}</MathText>
               </div>

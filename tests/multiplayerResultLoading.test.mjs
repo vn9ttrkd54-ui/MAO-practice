@@ -11,7 +11,7 @@ const roomId = "00000000-0000-0000-0000-000000000001";
 const playerId = "00000000-0000-0000-0000-000000000002";
 const userId = "00000000-0000-0000-0000-000000000003";
 
-function loadResultService({ isHost, finalizedAt }) {
+function loadResultService({ isHost, finalizedAt, resultReadError = false }) {
   let finalizationCalls = 0;
   const room = {
     id: roomId, code: "TESTROOM", visibility: "private", mode: "unranked", division: "Mu",
@@ -56,12 +56,14 @@ function loadResultService({ isHost, finalizedAt }) {
             multiplayer_profiles: [{ user_id: userId, rp: 0 }],
           };
           if (!(table in rows)) throw new Error(`Unexpected list read: ${table}`);
-          return Promise.resolve({ data: rows[table], error: null }).then(resolve, reject);
+          return Promise.resolve({ data: rows[table], error: resultReadError && table === "multiplayer_submissions" ? { message: "offline" } : null }).then(resolve, reject);
         },
       };
       return query;
     },
     async rpc(name) {
+      if (name === "read_multiplayer_scoreboard") return { data: { status: "completed", players: [{ ...player, display_name: "Player", rp: 0,
+        round_result: { questionNumber: 2, outcome: "give-up", pointsEarned: 0, answerTimeMs: 5000 } }] }, error: null };
       assert.equal(name, "finalize_multiplayer_match");
       finalizationCalls += 1;
       return { error: null };
@@ -91,6 +93,8 @@ test("finished player results do not re-finalize the same room", async () => {
   const service = loadResultService({ isHost: false, finalizedAt: "2026-01-01T00:01:00Z" });
   const result = await service.getResult();
   assert.equal(result.placement, 1);
+  assert.equal(result.finalLeaderboard[0].roundResult.outcome, "give-up");
+  assert.equal(result.finalLeaderboard[0].roundResult.answerTimeMs, 5000);
   assert.equal(service.getFinalizationCalls(), 0);
 });
 
@@ -105,4 +109,9 @@ test("the host can still finalize if the worker has not finished", async () => {
   const result = await service.getResult();
   assert.equal(result.placement, 1);
   assert.equal(service.getFinalizationCalls(), 1);
+});
+
+test("a failed submission read does not misrepresent saved answers as blanks", async () => {
+  const service = loadResultService({ isHost: false, finalizedAt: "2026-01-01T00:01:00Z", resultReadError: true });
+  await assert.rejects(service.getResult(), /Unable to load match results/);
 });
