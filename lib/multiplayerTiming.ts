@@ -1,11 +1,12 @@
-export const FIRST_QUESTION_READY_MS = 10_000;
+export const FIRST_QUESTION_READY_MS = 5_000;
+export const FIRST_QUESTION_PREPARATION_MS = 3_000;
 export const QUESTION_PREPARATION_TIMEOUT_MS = 15_000;
 
 export function countdownSeconds(startsAt: number, now: number | null, questionNumber: number) {
   if (!startsAt || now === null) return null;
   const remaining = Math.max(0, Math.ceil((startsAt - now) / 1000));
-  // The server leaves a five-second announcement window before the countdown.
-  return remaining > (questionNumber === 1 ? 10 : 5) ? null : remaining;
+  // First round: 3s preparation then 5s countdown. Later-round timing is unchanged.
+  return remaining > (questionNumber === 1 ? FIRST_QUESTION_READY_MS / 1000 : 5) ? null : remaining;
 }
 
 export function questionDisplayDeadline(round: {

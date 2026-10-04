@@ -13,13 +13,7 @@ const userId = "00000000-0000-0000-0000-000000000003";
 
 function loadResultService({ isHost, finalizedAt, resultReadError = false }) {
   let finalizationCalls = 0;
-  const room = {
-    id: roomId, code: "TESTROOM", visibility: "private", mode: "unranked", division: "Mu",
-    question_count: 2, seconds_per_question: 60, status: "completed", capacity: 30,
-    host_player_id: isHost ? playerId : userId, countdown_ends_at: null,
-    created_at: "2026-01-01T00:00:00Z", started_at: "2026-01-01T00:00:10Z",
-    current_question_number: 2, state_version: 4,
-  };
+  let snapshotCalls = 0;
   const player = {
     id: playerId, user_id: isHost ? userId : null, guest_nickname: isHost ? null : "Guest",
     is_host: isHost, connected: true, score: 0, placement: 1,
@@ -32,41 +26,18 @@ function loadResultService({ isHost, finalizedAt, resultReadError = false }) {
   };
 
   const admin = {
-    from(table) {
-      let selection = "";
-      const query = {
-        select(columns) { selection = columns; return query; },
-        eq() { return query; },
-        is() { return query; },
-        in() { return query; },
-        order() { return query; },
-        async maybeSingle() {
-          if (table === "multiplayer_rooms") return { data: selection === "results_finalized_at" ? { results_finalized_at: finalizedAt } : room, error: null };
-          if (table === "multiplayer_players") return { data: player, error: null };
-          if (table === "multiplayer_result_receipts") return { data: null, error: null };
-          if (table === "multiplayer_match_results") return { data: result, error: null };
-          if (table === "profiles") return { data: { username: "Host" }, error: null };
-          throw new Error(`Unexpected single read: ${table}`);
-        },
-        then(resolve, reject) {
-          const rows = {
-            multiplayer_match_results: [result], multiplayer_players: [player],
-            multiplayer_submissions: [], multiplayer_match_questions: [],
-            profiles: [{ id: userId, username: "Host" }],
-            multiplayer_profiles: [{ user_id: userId, rp: 0 }],
-          };
-          if (!(table in rows)) throw new Error(`Unexpected list read: ${table}`);
-          return Promise.resolve({ data: rows[table], error: resultReadError && table === "multiplayer_submissions" ? { message: "offline" } : null }).then(resolve, reject);
-        },
-      };
-      return query;
-    },
-    async rpc(name) {
-      if (name === "read_multiplayer_scoreboard") return { data: { status: "completed", players: [{ ...player, display_name: "Player", rp: 0,
-        round_result: { questionNumber: 2, outcome: "give-up", pointsEarned: 0, answerTimeMs: 5000 } }] }, error: null };
-      assert.equal(name, "finalize_multiplayer_match");
-      finalizationCalls += 1;
-      return { error: null };
+    from(){assert.fail("Result reads must not fan out into table requests");},
+    async rpc(name,args) {
+      assert.equal(args.p_room_id,roomId);
+      if(name==="finalize_multiplayer_match"){finalizationCalls++;return {error:null};}
+      assert.equal(name,"read_multiplayer_result_snapshot");snapshotCalls++;
+      assert.equal(args.p_user_id,isHost?userId:null);
+      assert.equal(args.p_guest_hash===null,isHost);
+      if(resultReadError)return {data:null,error:{message:"offline"}};
+      if(!finalizedAt&&!finalizationCalls)return {data:{status:"pending",isHost},error:null};
+      return {data:{status:"ready",viewerMode:"player",result,placements:[{player_id:playerId,placement:1}],
+        submissions:[],questions:[],scoreboard:{status:"completed",players:[{...player,display_name:"Player",rp:0,
+          round_result:{questionNumber:2,outcome:"give-up",pointsEarned:0,answerTimeMs:5000}}]}},error:null};
     },
   };
   const exports = {};
@@ -86,7 +57,7 @@ function loadResultService({ isHost, finalizedAt, resultReadError = false }) {
       return require(name);
     },
   });
-  return { getResult: () => exports.getMultiplayerMatchResult(roomId), getFinalizationCalls: () => finalizationCalls };
+  return { getResult: () => exports.getMultiplayerMatchResult(roomId), getFinalizationCalls: () => finalizationCalls, getSnapshotCalls: () => snapshotCalls };
 }
 
 test("finished player results do not re-finalize the same room", async () => {
@@ -96,6 +67,7 @@ test("finished player results do not re-finalize the same room", async () => {
   assert.equal(result.finalLeaderboard[0].roundResult.outcome, "give-up");
   assert.equal(result.finalLeaderboard[0].roundResult.answerTimeMs, 5000);
   assert.equal(service.getFinalizationCalls(), 0);
+  assert.equal(service.getSnapshotCalls(), 1);
 });
 
 test("guests wait for the worker instead of competing to finalize", async () => {
@@ -109,6 +81,7 @@ test("the host can still finalize if the worker has not finished", async () => {
   const result = await service.getResult();
   assert.equal(result.placement, 1);
   assert.equal(service.getFinalizationCalls(), 1);
+  assert.equal(service.getSnapshotCalls(), 2);
 });
 
 test("a failed submission read does not misrepresent saved answers as blanks", async () => {

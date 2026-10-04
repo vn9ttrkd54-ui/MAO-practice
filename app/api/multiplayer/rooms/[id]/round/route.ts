@@ -16,6 +16,7 @@ export async function GET(_request: Request, { params }: RoundRouteContext) {
     const rawVersion = new URL(_request.url).searchParams.get("version");
     const version = rawVersion === null ? -1 : Number(rawVersion);
     const round = await measure("service", () => getMultiplayerRoundState(id, Number.isSafeInteger(version) ? version : -1));
+    if (round && "completed" in round) return new NextResponse(null, { status: 204, headers: { "Cache-Control": "no-store" } });
     if (round) return NextResponse.json({ ...round, serverReceivedAt, serverSentAt: Date.now() }, { headers: { "Cache-Control": "no-store" } });
     const access = await measure("service", () => getMultiplayerRoom(id));
     if (access?.room.status === "completed") return new NextResponse(null, { status: 204 });

@@ -28,7 +28,7 @@ function loadService({user=true,member=true,publicRoom=false,closed=false,rpcErr
   const player={id:"verified-player",user_id:user?"user":null,guest_nickname:user?null:"Guest",connected:true,
     is_host:true,score:closed?-300:0,placement:null,has_submitted_current_question:true,
     display_name:"Tester",rp:0,round_result:closed?feedback:null};
-  const snapshot={roomId:"room",status,stateVersion:4,totalQuestions:2,scoringVersion:2,questionDurationSeconds:90,roundClosed:closed,
+  const snapshot={roomId:"room",currentPlayerId:"verified-player",spectators:[],status,stateVersion:4,totalQuestions:2,scoringVersion:2,questionDurationSeconds:90,roundClosed:closed,
     question:{question_number:1,question_id:101,difficulty:2,started_at:"2026-01-01T00:00:00Z",ends_at:"2026-01-01T00:01:30Z",intermission_ends_at:null},
     players:[player],upcoming:null};
   const admin={
@@ -49,7 +49,7 @@ function loadService({user=true,member=true,publicRoom=false,closed=false,rpcErr
           return Promise.resolve({data:[],error:null}).then(resolve,reject);
         }};return q;
     },
-    async rpc(name,args){calls.push(["rpc",name,args]);return {data:snapshot,error:rpcError?{message:"failure"}:null};}
+    async rpc(name,args){calls.push(["rpc",name,args]);return {data:name==="read_multiplayer_round_for_actor"&&!member?null:snapshot,error:rpcError?{message:"failure"}:null};}
   };
   const exports={};
   vm.runInNewContext(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{
@@ -70,13 +70,15 @@ for(const user of [true,false])test(`${user?"account":"guest"} round maps safe f
   const f=loadService({user,closed:true});const round=await f.service.getMultiplayerRoundState("room");
   assert.equal(round.roundClosed,true);assert.equal(round.players[0].roundResult,f.feedback);
   assert.equal(round.players[0].score,-300);
-  assert.deepEqual(f.calls.find(c=>c[0]==="rpc").slice(0,2),["rpc","read_multiplayer_snapshot"]);
-  assert.equal(f.calls.find(c=>c[0]==="rpc")[2].p_player_id,"verified-player");
+  assert.deepEqual(f.calls.find(c=>c[0]==="rpc").slice(0,2),["rpc","read_multiplayer_round_for_actor"]);
+  assert.equal(round.currentPlayerId,"verified-player");
+  assert.equal(f.calls.find(c=>c[0]==="rpc")[2].p_user_id,user?"user":null);
+  assert.equal(f.calls.length,1,"only one database call for a complete round snapshot");
   assert.equal(round.question.answer,undefined);assert.equal(round.question.solution,undefined);
 });
 test("nonmembers cannot request a round scoreboard",async()=>{
   const f=loadService({member:false});assert.equal(await f.service.getMultiplayerRoundState("room"),null);
-  assert.equal(f.calls.filter(c=>c[0]==="rpc").length,0);
+  assert.equal(f.calls.filter(c=>c[0]==="rpc").length,1,"membership is checked inside the compact read");
 });
 test("spectator receives atomic question, safe totals and closed-round feedback",async()=>{
   const f=loadService({member:false,publicRoom:true,closed:true});const state=await f.service.spectatePublicMatch("room");

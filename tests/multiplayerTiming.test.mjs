@@ -1,18 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { countdownSeconds, FIRST_QUESTION_READY_MS, MultiplayerClock, questionDisplayDeadline } from "../lib/multiplayerTiming.ts";
+import { countdownSeconds, FIRST_QUESTION_READY_MS, FIRST_QUESTION_PREPARATION_MS, MultiplayerClock, questionDisplayDeadline } from "../lib/multiplayerTiming.ts";
 
 test("preparation and announcement time do not inflate or consume the countdown", () => {
   assert.equal(countdownSeconds(0, 1000, 1), null);
   assert.equal(countdownSeconds(13000, 1000, 1), null);
-  assert.equal(countdownSeconds(13000, 3000, 1), 10);
+  assert.equal(countdownSeconds(8000, 3000, 1), 5);
+  assert.equal(countdownSeconds(8000, 2000, 1), null);
   assert.equal(countdownSeconds(8000, 1000, 2), null);
   assert.equal(countdownSeconds(8000, 3000, 2), 5);
   assert.equal(countdownSeconds(8000, 8000, 2), 0);
 });
 
-test("first question is scheduled ten seconds ahead", () => {
-  assert.equal(FIRST_QUESTION_READY_MS, 10_000);
+test("first question has three-second preparation and five-second countdown", () => {
+  assert.equal(FIRST_QUESTION_READY_MS, 5_000);
+  assert.equal(FIRST_QUESTION_PREPARATION_MS, 3_000);
 });
 
 test("late delivery cannot extend the scheduled visible deadline", () => {

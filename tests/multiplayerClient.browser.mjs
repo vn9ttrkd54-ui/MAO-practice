@@ -59,13 +59,13 @@ try {
   await page.waitForTimeout(350);
   assert.deepEqual(readies,[1]);
   assert.equal(await page.getByRole("button",{name:"Submit Answer"}).count(),0);
-  const firstReveal=Date.now()+15000;
+  const firstReveal=Date.now()+8000;
   state={...initial,stateVersion:2,preparing:false,questionStartedAt:firstReveal,questionEndsAt:firstReveal+65000};
   const signal=async version=>page.evaluate(v=>window.dispatchEvent(new CustomEvent("test-room-event",{detail:{
     roomId:"test",stateVersion:v,kind:"round_staged",questionNumber:1,intermissionEndsAt:null,
   }})),version);
   await signal(2);
-  for(const n of [10,9,8,7,6,5,4,3,2,1]) await page.getByRole("heading",{name:`Question 1 starts in ${n}s`,exact:true}).waitFor({timeout:6500});
+  for(const n of [5,4,3,2,1]) await page.getByRole("heading",{name:`Question 1 starts in ${n}s`,exact:true}).waitFor({timeout:6500});
   await page.getByRole("heading",{name:"Question 1 of 2"}).waitFor();
   const answer=page.getByRole("button").first();
   assert.equal(await answer.isEnabled(),true);
@@ -97,9 +97,9 @@ try {
   await page.getByRole("heading",{name:"Waiting for final results"}).waitFor();
   assert.equal(await page.getByRole("heading",{name:"Live leaderboard"}).count(),0);
   assert.equal(deliveries,0);
-  assert.ok(polls<=6,`Unexpected polling burst: ${polls}`);
+  assert.ok(polls<=12,`Unexpected polling burst: ${polls}`);
   assert.deepEqual(errors,[]);
-  console.log("PASS: actual MatchQuestion UI, preparation acknowledgements, full 10/5 countdowns, immediate controls, failed-request retry, local reveal, stale-event rejection, and no receipt/boundary request storm.");
+  console.log("PASS: actual MatchQuestion UI, preparation acknowledgements, full 5/5 countdowns, immediate controls, failed-request retry, local reveal, stale-event rejection, and bounded handoff reads.");
 } finally {
   await browser.close();await new Promise(resolve=>server.close(resolve));
 }

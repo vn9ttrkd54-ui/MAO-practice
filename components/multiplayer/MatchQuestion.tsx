@@ -56,6 +56,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   const [pendingRound, setPendingRound] = useState<MultiplayerRoundState | null>(() => preloadedRound(initialRound));
   const questionNumber = useRef(initialRound.questionNumber);
   const refreshRound = useRef<() => void>(() => undefined);
+  const navigatingToResults = useRef(false);
   const currentPlayer = round.players.find((player) => player.playerId === round.currentPlayerId);
   const submitted = currentPlayer?.hasSubmittedCurrentQuestion ?? false;
   const secondsLeft = now === null ? null : Math.max(0, Math.ceil((displayEndsAt - now) / 1000));
@@ -96,6 +97,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     const clock = window.setInterval(() => setNow(serverClock.now(performance.now())), 250);
 
     async function pollRound() {
+      if (stopped || navigatingToResults.current) return;
       if (requestInFlight) {
         refreshQueued = true;
         return;
@@ -106,6 +108,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
         const response = await fetch(`/api/multiplayer/rooms/${round.roomId}/round?version=${stateVersion.current}`, { cache: "no-store", signal: AbortSignal.timeout(8_000) });
         if (stopped) return;
         if (response.status === 204) {
+          navigatingToResults.current = true;
           setFinished(true);
           router.replace(`/multiplayer/room/${round.roomId}/results`);
           return;
@@ -199,6 +202,18 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
     };
   }, [round.roomId, router, serverClock]);
 
+  // A few cheap, versioned reads cover lost broadcasts at critical handoffs.
+  // Never turn this into per-second polling throughout the game.
+  const finalDeadlineReached = round.questionNumber === round.totalQuestions
+    && round.questionEndsAt > 0 && now !== null && now >= round.questionEndsAt;
+  const fastRecovery = !finished && (round.preparing || finalDeadlineReached ||
+    (round.questionNumber === round.totalQuestions && (submitted || round.roundClosed === true)));
+  useEffect(() => {
+    if (!fastRecovery) return;
+    const timers = [800, 1800, 3000].map(delay => window.setTimeout(() => refreshRound.current(), delay + Math.random() * 150));
+    return () => timers.forEach(window.clearTimeout);
+  }, [fastRecovery, finalDeadlineReached, round.roomId, round.questionNumber]);
+
   // HTTP acknowledgements never own reveal or countdown. Re-arm only this local
   // timer on a clock correction; no network request is scheduled at a boundary.
   useEffect(() => {
@@ -260,6 +275,8 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
           : player),
       }));
       if (questionNumber.current === answer.questionNumber) setShowLeaderboard(true);
+      // Catch an all-answered completion even when its broadcast was missed.
+      refreshRound.current();
     } catch (failure) {
       const message = failure instanceof Error ? failure.message : "Unable to confirm answer.";
       setOutbox((current) => current.map((entry) => entry.questionId === answer.questionId

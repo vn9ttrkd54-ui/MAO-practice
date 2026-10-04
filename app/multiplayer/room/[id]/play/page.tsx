@@ -10,6 +10,7 @@ interface MatchPageProps {
 export default async function MatchPage({ params }: MatchPageProps) {
   const { id } = await params;
   const round = await getMultiplayerRoundState(id);
+  if (round && "completed" in round) redirect(`/multiplayer/room/${id}/results`);
   if (!round) {
     const access = await getMultiplayerRoom(id);
     if (!access) notFound();

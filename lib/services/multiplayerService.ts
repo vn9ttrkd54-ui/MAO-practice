@@ -533,16 +533,17 @@ export async function beginPublicRoomIfReady(roomId: string): Promise<Multiplaye
   return prepareRoomMatch(lobby, "countdown", identity);
 }
 
-export function getMultiplayerRoundState(roomId: string): Promise<MultiplayerRoundState | null>;
-export function getMultiplayerRoundState(roomId: string, knownVersion: number): Promise<MultiplayerRoundState | { unchanged: true } | null>;
-export async function getMultiplayerRoundState(roomId: string, knownVersion = -1): Promise<MultiplayerRoundState | { unchanged: true } | null> {
-  const access = await getMultiplayerRoom(roomId, false);
-  if (!access) return null;
+export function getMultiplayerRoundState(roomId: string): Promise<MultiplayerRoundState | { completed: true } | null>;
+export function getMultiplayerRoundState(roomId: string, knownVersion: number): Promise<MultiplayerRoundState | { unchanged: true } | { completed: true } | null>;
+export async function getMultiplayerRoundState(roomId: string, knownVersion = -1): Promise<MultiplayerRoundState | { unchanged: true } | { completed: true } | null> {
+  const identity = await lobbyIdentity(roomId);
+  if (!identity) return null;
   const admin = createAdminClient();
-  const { data, error } = await admin.rpc("read_multiplayer_snapshot", {
-    p_room_id: roomId, p_player_id: access.currentPlayer.playerId, p_known_version: knownVersion,
+  const { data, error } = await admin.rpc("read_multiplayer_round_for_actor", {
+    p_room_id: roomId, ...identity, p_known_version: knownVersion,
   });
   if (error) throw new Error("Unable to read multiplayer state.");
+  if (data?.status === "completed") return { completed: true };
   if (!data || data.status !== "in-progress") return null;
   if (data.unchanged) return { unchanged: true };
   const q = data.question as MatchQuestionRow | null;
@@ -556,7 +557,7 @@ export async function getMultiplayerRoundState(roomId: string, knownVersion = -1
   const upcoming = data.upcoming as MatchQuestionRow | null;
   const players = mapScoreboardPlayers(data.players);
   return {
-    roomId, stateVersion: data.stateVersion, currentPlayerId: access.currentPlayer.playerId,
+    roomId, stateVersion: data.stateVersion, currentPlayerId: data.currentPlayerId,
     questionNumber: q.question_number, totalQuestions: data.totalQuestions,
     scoringVersion: data.scoringVersion ?? 1,
     roundClosed: data.roundClosed === true,
@@ -565,7 +566,10 @@ export async function getMultiplayerRoundState(roomId: string, knownVersion = -1
     questionStartedAt: q.started_at ? new Date(q.started_at).getTime() : 0,
     questionEndsAt: q.ends_at ? new Date(q.ends_at).getTime() : 0,
     intermissionEndsAt: q.intermission_ends_at ? new Date(q.intermission_ends_at).getTime() : null,
-    players, spectators: await listActiveSpectators(roomId),
+    players, spectators: ((data.spectators ?? []) as Array<SpectatorRow & { display_name: string; rp: number }>).map(row => ({
+      playerId: row.user_id, userId: row.user_id, displayName: row.display_name, isGuest: false,
+      rankTier: tierForRp(row.rp), rp: row.rp, globalRank: null, joinedAt: new Date(row.joined_at).getTime(),
+    })),
     upcomingQuestion: upcoming ? {
       preparing: !upcoming.started_at,
       questionNumber: upcoming.question_number, question: presentQuestion(upcoming),
@@ -673,61 +677,37 @@ async function finalizeCompletedMatch(roomId: string): Promise<void> {
   if (error) throw new Error("Results are still being prepared. Please retry.");
 }
 export async function getMultiplayerMatchResult(roomId: string): Promise<MultiplayerMatchResult | null> {
-  const access = await getMultiplayerRoom(roomId);
+  const identity = await lobbyIdentity(roomId);
+  if (!identity) return null;
   const admin = createAdminClient();
-  let spectatorMode = false;
-
-  if (!access) {
-    const user = await currentUser();
-    if (!user) return null;
-    const { data: publicRoom } = await admin.from("multiplayer_rooms").select("id").eq("id", roomId).eq("visibility", "public").eq("status", "completed").maybeSingle();
-    if (!publicRoom) return null;
-    spectatorMode = true;
-  } else if (access.room.status !== "completed") {
-    return null;
-  } else {
-    const { data: receipt, error } = await admin.from("multiplayer_result_receipts")
-      .select("player_id").eq("room_id", roomId)
-      .eq("player_id", access.currentPlayer.playerId).maybeSingle();
+  async function read() {
+    const { data, error } = await admin.rpc("read_multiplayer_result_snapshot", { p_room_id: roomId, ...identity });
     if (error) throw new Error("Unable to load match results right now.");
-    if (receipt) return null;
+    return data;
   }
-
-  const { data: finalizedRoom, error: finalizationError } = await admin.from("multiplayer_rooms")
-    .select("results_finalized_at").eq("id", roomId).maybeSingle();
-  if (finalizationError || !finalizedRoom) throw new Error("Unable to load match results right now.");
-  if (!finalizedRoom.results_finalized_at) {
-    // The scheduled worker finalizes the match. Only the host provides an
-    // on-demand fallback so a full room does not queue on the same row lock.
-    if (spectatorMode || !access!.currentPlayer.isHost) return null;
+  let snapshot = await read();
+  if (!snapshot) return null;
+  if (snapshot.status === "pending") {
+    // Keep the single-host fallback; guests do not compete on finalization locks.
+    if (!snapshot.isHost) return null;
     await finalizeCompletedMatch(roomId);
+    snapshot = await read();
+    if (!snapshot || snapshot.status === "pending") return null;
   }
-
-  const [resultResponse, resultsResponse, playersResponse, submissionsResponse, matchQuestionsResponse] = await Promise.all([
-    spectatorMode ? Promise.resolve({ data: null }) : admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).eq("player_id", access!.currentPlayer.playerId).maybeSingle(),
-    admin.from("multiplayer_match_results").select("*").eq("room_id", roomId).order("placement"),
-    admin.rpc("read_multiplayer_scoreboard", { p_room_id: roomId }),
-    spectatorMode ? Promise.resolve({ data: [] }) : admin.from("multiplayer_submissions").select("player_id, question_number, question_id, selected_answer, correct, answer_time_ms, points_earned").eq("room_id", roomId).eq("player_id", access!.currentPlayer.playerId),
-    admin.from("multiplayer_match_questions").select("question_number, question_id, difficulty, started_at, ends_at, intermission_ends_at").eq("room_id", roomId).order("question_number"),
-  ]);
-  if ([resultResponse, resultsResponse, playersResponse, submissionsResponse, matchQuestionsResponse]
-    .some(response => "error" in response && response.error)) {
-    throw new Error("Unable to load match results right now.");
-  }
-  const result = resultResponse.data;
-  if (!spectatorMode && !result) return null;
-  if (playersResponse.error || !playersResponse.data || playersResponse.data.status !== "completed") {
-    throw new Error("Unable to load match results right now.");
-  }
-
-  const resultByPlayer = new Map((resultsResponse.data ?? []).map((entry) => [entry.player_id, entry]));
-  const finalLeaderboard = mapScoreboardPlayers(playersResponse.data.players).map((player) => {
+  const spectatorMode = snapshot.viewerMode === "spectator";
+  const result = snapshot.result;
+  if (snapshot.status !== "ready" || snapshot.scoreboard?.status !== "completed"
+    || (!spectatorMode && !result)) throw new Error("Unable to load match results right now.");
+  const placements = snapshot.placements as Array<{ player_id: string; placement: number }>;
+  const resultByPlayer = new Map(placements.map(entry => [entry.player_id, entry]));
+  const finalLeaderboard = mapScoreboardPlayers(snapshot.scoreboard.players).map((player) => {
     player.placement = resultByPlayer.get(player.playerId)?.placement ?? null;
     return player;
   }).sort((a, b) => (a.placement ?? 999) - (b.placement ?? 999));
-  const submissionByQuestion = new Map(((submissionsResponse.data ?? []) as SubmissionRow[]).map((submission) => [submission.question_number, submission]));
-  const rounds = ((matchQuestionsResponse.data ?? []) as MatchQuestionRow[]).map((matchQuestion) => {
-    const question = questions.find((entry) => entry.id === matchQuestion.question_id)!;
+  const submissionByQuestion = new Map((snapshot.submissions as SubmissionRow[]).map(submission => [submission.question_number, submission]));
+  const rounds = (snapshot.questions as MatchQuestionRow[]).map((matchQuestion) => {
+    const question = questions.find((entry) => entry.id === matchQuestion.question_id);
+    if (!question) throw new Error("Unable to load a match question.");
     const submission = submissionByQuestion.get(matchQuestion.question_number);
     return {
       questionId: question.id, questionNumber: matchQuestion.question_number,
