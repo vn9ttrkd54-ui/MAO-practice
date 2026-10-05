@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import MathText from "@/components/math/MathText";
+import QuestionImage from "@/components/questions/QuestionImage";
 import { RankPill } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { countdownSeconds } from "@/lib/multiplayerTiming";
@@ -155,6 +156,7 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
           <section className={`${styles.panel} rounded-2xl border bg-white p-6 shadow-sm`}>
             {preparing ? <p>Waiting for the shared question start…</p> : <>
             <div className="text-lg font-semibold leading-8"><MathText>{state.question.question}</MathText></div>
+            <QuestionImage illustration={state.question.illustration} />
             <div className="mt-5 grid gap-2">
               {state.question.choices.map((choice, index) => (
                 <div key={`${index}-${choice}`} className="flex items-start gap-3 rounded-xl border px-4 py-3">

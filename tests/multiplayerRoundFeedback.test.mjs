@@ -5,6 +5,7 @@ import { createRequire } from "node:module";
 import vm from "node:vm";
 import ts from "typescript";
 import { formatAnswerTime, formatRoundPoints, roundFeedbackForQuestion } from "../lib/multiplayerRoundFeedback.ts";
+import { muQuestions } from "../data/questions/mu.ts";
 
 test("round feedback is hidden until closed and never carries over to another question",()=>{
   const player={roundResult:{questionNumber:1,outcome:"incorrect",pointsEarned:-300,answerTimeMs:11000}};
@@ -20,7 +21,7 @@ test("feedback formats negative, zero and speed-bonus points plus actual answer 
 
 const require=createRequire(import.meta.url);
 const source=readFileSync(new URL("../lib/services/multiplayerService.ts",import.meta.url),"utf8");
-function loadService({user=true,member=true,publicRoom=false,closed=false,rpcError=false,status="in-progress"}={}) {
+function loadService({user=true,member=true,publicRoom=false,closed=false,rpcError=false,status="in-progress",illustrated=false}={}) {
   const calls=[];
   const room={id:"room",visibility:publicRoom?"public":"private",status,question_count:2,seconds_per_question:90,mode:"unranked",
     division:"Mu",capacity:30,created_at:new Date().toISOString(),current_question_number:1,state_version:4};
@@ -31,6 +32,10 @@ function loadService({user=true,member=true,publicRoom=false,closed=false,rpcErr
   const snapshot={roomId:"room",currentPlayerId:"verified-player",spectators:[],status,stateVersion:4,totalQuestions:2,scoringVersion:2,questionDurationSeconds:90,roundClosed:closed,
     question:{question_number:1,question_id:101,difficulty:2,started_at:"2026-01-01T00:00:00Z",ends_at:"2026-01-01T00:01:30Z",intermission_ends_at:null},
     players:[player],upcoming:null};
+  if(illustrated) {
+    snapshot.question.question_id=10238;
+    snapshot.upcoming={...snapshot.question,question_number:2,question_id:10239};
+  }
   const admin={
     from(table){
       let selection="",filters={};
@@ -57,7 +62,7 @@ function loadService({user=true,member=true,publicRoom=false,closed=false,rpcErr
       if(name==="server-only")return {};
       if(name==="@/lib/auth/publicNames")return {isPublicNameAllowed:()=>true};
       if(name==="next/headers")return {cookies:async()=>({get:()=>member?{value:"guest-token"}:undefined})};
-      if(name==="@/data/questions")return {questions:[{id:101,division:"Mu",topic:"Algebra",question:"Test?",choices:["1","2"],answer:"A",solution:"Secret"}]};
+      if(name==="@/data/questions")return {questions:illustrated?muQuestions:[{id:101,division:"Mu",topic:"Algebra",question:"Test?",choices:["1","2"],answer:"A",solution:"Secret"}]};
       if(name==="@/lib/security/request")return {RequestBodyError:class extends Error{}};
       if(name==="@/lib/supabase/admin")return {createAdminClient:()=>admin};
       if(name==="@/lib/supabase/server")return {createClient:async()=>({auth:{getUser:async()=>({data:{user:user?{id:"user"}:null}})}})};
@@ -79,6 +84,23 @@ for(const user of [true,false])test(`${user?"account":"guest"} round maps safe f
 test("nonmembers cannot request a round scoreboard",async()=>{
   const f=loadService({member:false});assert.equal(await f.service.getMultiplayerRoundState("room"),null);
   assert.equal(f.calls.filter(c=>c[0]==="rpc").length,1,"membership is checked inside the compact read");
+});
+for(const publicRoom of [false,true])test(`${publicRoom?"public":"private"} round and preload include 10238/10239 diagrams without solutions`,async()=>{
+  const f=loadService({publicRoom,illustrated:true});
+  const round=await f.service.getMultiplayerRoundState("room");
+  for(const [question,id] of [[round.question,10238],[round.upcomingQuestion.question,10239]]) {
+    assert.equal(question.illustration,muQuestions.find(q=>q.id===id).illustration);
+    assert.equal(question.illustration.src,"/questions/mu-238-240-graph.svg");
+    assert.equal(question.answer,undefined);assert.equal(question.solution,undefined);
+    assert.ok(readFileSync(new URL(`../public${question.illustration.src}`,import.meta.url),"utf8").includes("<svg"));
+  }
+  assert.equal(f.calls.length,1,"illustrations are catalog metadata, not another database read");
+});
+test("spectators receive the same real diagram as the players",async()=>{
+  const f=loadService({member:false,publicRoom:true,illustrated:true});
+  const state=await f.service.spectatePublicMatch("room");
+  assert.equal(state.question.illustration,muQuestions.find(q=>q.id===10238).illustration);
+  assert.equal(state.question.solution,undefined);
 });
 test("spectator receives atomic question, safe totals and closed-round feedback",async()=>{
   const f=loadService({member:false,publicRoom:true,closed:true});const state=await f.service.spectatePublicMatch("room");

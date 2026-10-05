@@ -13,7 +13,7 @@ const fixture=name=>resolve(import.meta.dirname,"browserFixtures",name);
 const compiler=require("next/dist/compiled/webpack/webpack").webpack({mode:"development",entry:fixture("scoring.tsx"),
   output:{path:dir,filename:"client.js"},devtool:false,
   resolve:{extensions:[".tsx",".ts",".js"],alias:{
-    "next/navigation":fixture("router.ts"),"next/link":fixture("link.tsx"),
+    "next/navigation":fixture("router.ts"),"next/link":fixture("link.tsx"),"next/image":fixture("image.tsx"),
     "@/lib/multiplayerRealtime":fixture("realtime.ts"),
     "@/components/math/MathText":fixture("math.tsx"),
     "@/components/multiplayer/RankTheme":fixture("rank.tsx"),"@":root,

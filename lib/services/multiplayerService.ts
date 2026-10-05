@@ -557,7 +557,8 @@ export async function getMultiplayerRoundState(roomId: string, knownVersion = -1
     const source = questionById.get(row.question_id);
     if (!source) throw new Error("Question unavailable.");
     return { questionId: source.id, number: row.question_number, division: source.division,
-      topic: source.topic, difficulty: row.difficulty, question: source.question, choices: source.choices };
+      topic: source.topic, difficulty: row.difficulty, question: source.question, choices: source.choices,
+      illustration: source.illustration };
   };
   const upcoming = data.upcoming as MatchQuestionRow | null;
   const players = mapScoreboardPlayers(data.players);
@@ -716,7 +717,7 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
     const submission = submissionByQuestion.get(matchQuestion.question_number);
     return {
       questionId: question.id, questionNumber: matchQuestion.question_number,
-      question: question.question, choices: question.choices,
+      question: question.question, choices: question.choices, illustration: question.illustration,
       selectedAnswer: submission?.selected_answer ?? null, correctAnswer: question.answer,
       correct: submission?.correct ?? false, answerTimeMs: submission?.answer_time_ms ?? null,
       pointsEarned: submission?.points_earned ?? 0, solution: question.solution,
@@ -938,7 +939,8 @@ export async function spectatePublicMatch(roomId: string): Promise<MultiplayerSp
   return { roomId, stateVersion: data.stateVersion, roundClosed: data.roundClosed === true,
     questionNumber: matchQuestion.question_number, totalQuestions: data.totalQuestions,
     question: { questionId: question.id, number: matchQuestion.question_number, division: question.division,
-      topic: question.topic, difficulty: matchQuestion.difficulty, question: question.question, choices: question.choices },
+      topic: question.topic, difficulty: matchQuestion.difficulty, question: question.question, choices: question.choices,
+      illustration: question.illustration },
     questionDurationSeconds: data.questionDurationSeconds,
     questionStartedAt: matchQuestion.started_at ? new Date(matchQuestion.started_at).getTime() : 0,
     questionEndsAt: matchQuestion.ends_at ? new Date(matchQuestion.ends_at).getTime() : 0,

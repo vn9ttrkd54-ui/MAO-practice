@@ -152,6 +152,7 @@ try {
     assert.equal(state.currentPlayer.lobby_ready,true);
     assert.equal(state.players.find(p=>p.id===ids[1]).lobby_ready,false);
     assert.equal((await lobby(r,users[3])).currentPlayer.id,ids[3]);
+    await db.query("update multiplayer_rooms set status='cancelled' where id=$1",[r]);
   });
   await check("all submitted closes early; next round clears outcomes and preserves previous totals",async()=>{
     const {r,ids}=await setup({players:2});await accept(r,ids[0],"B");await accept(r,ids[1],null);
@@ -187,5 +188,76 @@ try {
     assert.equal(Object.keys(result).length,5);
     assert.ok(Object.values(result).every(v=>v===true),JSON.stringify(result));
   });
-  console.log(`PASS ${checks} round-feedback database checks (isolated, not a live load test).`);
+  // Latest round-reader wrapper, then reproduce the reported stale-version bug
+  // before applying the corrective trigger. No hosted reads or writes.
+  for(const name of ["063_multiplayer_lobby_recovery","064_multiplayer_fast_handoffs"]) await db.exec(await migration(name));
+  await check("pre-067 reproduces stale version after an individual answer",async()=>{
+    const {r,ids}=await setup();const before=await snapshot(r,ids[0]);
+    await accept(r,ids[1],"A",true);
+    assert.equal((await snapshot(r,ids[0],before.stateVersion)).unchanged,true);
+    assert.equal((await board(r)).players.find(p=>p.id===ids[1]).has_submitted_current_question,true);
+  });
+  const signalMigration=await migration("067_multiplayer_submission_signals");
+  const beforeSignalRows=await rows(),beforeSignalFunctions=(await functions()).rows;
+  await db.exec(signalMigration);
+  await check("067 is repeatable and changes no saved data or scoring functions",async()=>{
+    assert.deepEqual(await rows(),beforeSignalRows);
+    assert.deepEqual((await functions()).rows,beforeSignalFunctions);
+    await db.exec(signalMigration);
+    assert.deepEqual(await rows(),beforeSignalRows);
+    assert.equal(await scalar("select count(*)::int from pg_trigger where tgname='multiplayer_submissions_bump_room_state'"),1);
+  });
+  for(const visibility of ["private","public"]) await check(`${visibility} correct/wrong/Give up wake versioned reads without leaking results`,async()=>{
+    const {r,ids,users}=await setup({visibility});
+    let current=await snapshot(r,ids[0]);
+    for(const [i,choice,correct] of [[1,"A",true],[2,"B",false],[3,null,false]]) {
+      const events=await scalar("select count(*) from realtime.test_events");
+      await accept(r,ids[i],choice,correct);
+      const next=await scalar("select read_multiplayer_round_for_actor($1,$2,null,$3)",[r,users[0],current.stateVersion]);
+      assert.equal(next.unchanged,undefined);assert.equal(next.stateVersion,current.stateVersion+1);
+      assert.equal(next.roundClosed,false);
+      assert.equal(next.players.find(p=>p.id===ids[i]).has_submitted_current_question,true);
+      assert.ok(next.players.every(p=>p.round_result===null&&p.score===0));
+      assert.equal(await scalar("select count(*) from realtime.test_events"),events+1);
+      const event=await scalar("select payload from realtime.test_events where payload->>'roomId'=$1 order by (payload->>'stateVersion')::bigint desc limit 1",[r]);
+      assert.equal(event.stateVersion,next.stateVersion);
+      assert.doesNotMatch(JSON.stringify(event),/selectedAnswer|selected_answer|correct|points|score|playerId|user_id|token/i);
+      assert.deepEqual(await snapshot(r,ids[0],next.stateVersion),{unchanged:true,stateVersion:next.stateVersion,status:"in-progress"});
+      // Repeated identical receipts and presence heartbeats must not signal again.
+      await accept(r,ids[i],choice,correct);
+      await db.query("update multiplayer_players set updated_at=clock_timestamp() where id=$1",[ids[i]]);
+      assert.equal((await board(r)).stateVersion,next.stateVersion);
+      assert.equal(await scalar("select count(*) from realtime.test_events"),events+1);
+      current=next;
+    }
+    await accept(r,ids[0],null);
+    const closed=await snapshot(r,ids[0],current.stateVersion);
+    assert.equal(closed.roundClosed,true);assert.ok(closed.stateVersion>current.stateVersion);
+  });
+  await check("30-player room signals new answers, and failed transactions roll signals back",async()=>{
+    const {r,ids}=await setup({players:30});const before=await board(r);
+    const events=await scalar("select count(*) from realtime.test_events");
+    await db.exec("begin");await accept(r,ids[1],"A",true);await db.exec("rollback");
+    assert.equal((await board(r)).stateVersion,before.stateVersion);
+    assert.equal(await scalar("select count(*) from realtime.test_events"),events);
+    for(let i=1;i<30;i++)await accept(r,ids[i],i%2?"A":null,i%2===1);
+    const next=await snapshot(r,ids[0],before.stateVersion);
+    assert.equal(next.players.filter(p=>p.has_submitted_current_question).length,29);
+    assert.equal(next.stateVersion,before.stateVersion+29);
+    assert.equal(next.roundClosed,false);
+    assert.equal(await scalar("select count(*) from realtime.test_events"),events+29);
+    assert.equal(await snapshot(r,randomUUID()),null);
+    for(const role of ["anon","authenticated"]) {
+      assert.equal(await scalar("select has_function_privilege($1,'public.read_multiplayer_scoreboard(uuid)','EXECUTE')",[role]),false);
+      assert.equal(await scalar("select has_function_privilege($1,'public.accept_multiplayer_answer(uuid,uuid,integer,text,boolean)','EXECUTE')",[role]),false);
+    }
+  });
+  await check("067 rollout verification returns all four true",async()=>{
+    const doc=await readFile(new URL("../docs/multiplayer-images-status-rollout.md",import.meta.url),"utf8");
+    const sql=doc.match(/```sql\n([\s\S]*?)\n```/)[1];
+    const result=(await db.query(sql)).rows[0];
+    assert.equal(Object.keys(result).length,4);
+    assert.ok(Object.values(result).every(value=>value===true),JSON.stringify(result));
+  });
+  console.log(`PASS ${checks} round-feedback and submission-signal database checks (isolated, not a live load test).`);
 } finally { await db.close(); }

@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { createServer } from "node:http";
 import { chromium, expect } from "@playwright/test";
+import { muQuestions } from "../data/questions/mu.ts";
 const require=createRequire(import.meta.url);
 const dir=await mkdtemp(join(tmpdir(),"multiplayer-feedback-"));
 const root=resolve(import.meta.dirname,"..");
@@ -13,16 +14,21 @@ const fixture=name=>resolve(import.meta.dirname,"browserFixtures",name);
 const compiler=require("next/dist/compiled/webpack/webpack").webpack({mode:"development",entry:fixture("roundFeedback.tsx"),
   output:{path:dir,filename:"client.js"},devtool:false,
   resolve:{extensions:[".tsx",".ts",".js"],alias:{
-    "next/navigation":fixture("router.ts"),"next/link":fixture("link.tsx"),"next/image":fixture("image.tsx"),
+    "next/navigation":fixture("router.ts"),"next/link":fixture("link.tsx"),"next/image":fixture("googleImage.tsx"),
     "@/lib/multiplayerRealtime":fixture("realtime.ts"),"@/components/math/MathText":fixture("math.tsx"),"@":root,
   }},module:{rules:[{test:/\.tsx?$/,exclude:/node_modules/,use:fixture("loader.cjs")},{test:/\.css$/,use:fixture("css.cjs")}]},
 });
 await new Promise((resolve,reject)=>compiler.run((error,stats)=>error||stats.hasErrors()
   ?reject(error??new Error(stats.toString())):compiler.close(resolve)));
 const bundle=await readFile(join(dir,"client.js"));
+const illustratedQuestion=muQuestions.find(q=>q.id===10238);
+const diagram=await readFile(join(root,"public",illustratedQuestion.illustration.src));
 const cssRoot=join(root,".next/static");
 const css=(await Promise.all((await readdir(cssRoot,{recursive:true})).filter(f=>f.endsWith(".css")).map(f=>readFile(join(cssRoot,f),"utf8")))).join("\n");
 const server=createServer((req,res)=>{
+  if(req.url===illustratedQuestion.illustration.src) {
+    res.setHeader("Content-Type","image/svg+xml");res.end(diagram);return;
+  }
   const script=req.url==="/client.js";
   res.setHeader("Content-Type",script?"text/javascript; charset=utf-8":"text/html; charset=utf-8");
   res.end(script?bundle:`<meta name="viewport" content="width=device-width, initial-scale=1"><style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
@@ -41,22 +47,37 @@ try {
   const close=state=>({...state,stateVersion:state.stateVersion+1,roundClosed:true,players:state.players.map((p,i)=>({...p,
     score:[1250,-300,0,0][i],roundResult:{questionNumber:state.questionNumber,outcome:["correct","incorrect","give-up","blank"][i],
       pointsEarned:[1250,-300,0,0][i],answerTimeMs:[45000,12000,12500,null][i]}}))});
-  async function setup({width=1280,spectator=false,final=false,result=false}={}) {
+  async function setup({width=1280,spectator=false,final=false,result=false,illustrated=false}={}) {
     const page=await browser.newPage({viewport:{width,height:1000}});
     page.on("pageerror",e=>errors.push(e.message));
     let state=base(),failure=false,reads=0;
+    if(illustrated) {
+      const q=illustratedQuestion;
+      state.question={questionId:q.id,number:1,division:q.division,topic:q.topic,difficulty:q.difficulty,
+        question:q.question,choices:q.choices,illustration:q.illustration};
+      state.players=state.players.map(p=>({...p,hasSubmittedCurrentQuestion:false}));
+    }
     if(final)state.totalQuestions=1;
     const initial=structuredClone(state);
     const finalData={roomId:"test",viewerMode:spectator?"spectator":"player",placement:2,score:-300,ranked:false,ratingChange:null,
       finalLeaderboard:close(state).players.map((p,i)=>({...p,placement:[1,4,2,3][i]})),rounds:[{questionId:42,questionNumber:1,
-        question:"What is 1 + 1?",choices:["2","3"],selectedAnswer:"B",correctAnswer:"A",correct:false,answerTimeMs:12000,pointsEarned:-300,solution:"Two."}]};
+        question:state.question.question,illustration:state.question.illustration,choices:state.question.choices,
+        selectedAnswer:"B",correctAnswer:"A",correct:false,answerTimeMs:12000,pointsEarned:-300,solution:"Two."}]};
     await page.addInitScript(({initial,spectator,result,finalData})=>{
       window.initialRound=initial;if(spectator)window.initialSpectator=initial;if(result)window.initialResult=finalData;
     },{initial,spectator,result,finalData});
     await page.route("**/api/multiplayer/**",async route=>{
-      if(route.request().method()!=="GET")return route.fulfill({json:{accepted:true}});
+      if(route.request().method()!=="GET") {
+        if(illustrated&&route.request().url().endsWith("/round")) {
+          state={...state,stateVersion:state.stateVersion+1,players:state.players.map((p,i)=>i===0?{...p,hasSubmittedCurrentQuestion:true}:p)};
+        }
+        return route.fulfill({json:{accepted:true}});
+      }
       reads++;if(failure)return route.fulfill({status:503,json:{error:"Offline"}});
       if(state.completed)return spectator?route.fulfill({json:{completed:true}}):route.fulfill({status:204});
+      if(new URL(route.request().url()).searchParams.get("version")===String(state.stateVersion)) {
+        return route.fulfill({json:{unchanged:true,serverReceivedAt:Date.now(),serverSentAt:Date.now()}});
+      }
       return route.fulfill({json:{...state,serverReceivedAt:Date.now(),serverSentAt:Date.now()}});
     });
     await page.goto(`http://127.0.0.1:${server.address().port}/`);
@@ -74,6 +95,40 @@ try {
       await expect(page.getByText(text,{exact:true})).toHaveCount(0);
   };
   for(const width of [1280,390]) {
+    // Exact reported diagram, with real SVG bytes and the actual multiplayer UI.
+    const live=await setup({width,illustrated:true});
+    const graph=live.page.getByRole("img",{name:illustratedQuestion.illustration.alt});
+    await expect(graph).toBeVisible();
+    await expect(graph).toHaveAttribute("src",illustratedQuestion.illustration.src);
+    await graph.evaluate(img=>img.decode());
+    assert.ok(await graph.evaluate(img=>img.naturalWidth>0));
+    assert.equal(await live.page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await live.page.screenshot({path:join(dir,`question-10238-${width}.png`),fullPage:true});
+    await live.page.getByRole("button",{name:"A 3",exact:true}).click();
+    await live.page.getByRole("button",{name:"Submit Answer",exact:true}).click();
+    const liveList=live.page.getByRole("list",{name:"Round standings"});
+    await expect(liveList.getByText("Answered",{exact:true})).toHaveCount(1);
+    await expect(liveList.getByText("Still answering",{exact:true})).toHaveCount(3);
+    live.set({...live.get(),stateVersion:3,players:live.get().players.map((p,i)=>i===1?{...p,hasSubmittedCurrentQuestion:true}:p)});
+    await live.signal();
+    await expect(liveList.getByText("Answered",{exact:true})).toHaveCount(2);
+    await expect(liveList.getByText("Still answering",{exact:true})).toHaveCount(2);
+    assert.equal(await liveList.getByText("Correct",{exact:true}).count(),0);
+    const beforeBurst=live.reads();
+    live.set({...live.get(),stateVersion:4,players:live.get().players.map((p,i)=>i===2?{...p,hasSubmittedCurrentQuestion:true}:p)});
+    await live.page.evaluate(()=>{for(let i=0;i<30;i++)window.dispatchEvent(new CustomEvent("test-room-event",{detail:{stateVersion:4}}));});
+    await expect(liveList.getByText("Answered",{exact:true})).toHaveCount(3);
+    assert.ok(live.reads()-beforeBurst<=2,"a burst of submission signals must coalesce instead of fetching per signal");
+    await live.page.reload();
+    await expect(live.page.getByRole("list",{name:"Round standings"}).getByText("Answered",{exact:true})).toHaveCount(3);
+    await live.page.close();
+    for(const mode of [{spectator:true},{result:true}]) {
+      const shown=await setup({width,illustrated:true,...mode});
+      const image=shown.page.getByRole("img",{name:illustratedQuestion.illustration.alt});
+      await expect(image).toBeVisible();await image.evaluate(img=>img.decode());
+      assert.ok(await image.evaluate(img=>img.naturalWidth>0));
+      await shown.page.close();
+    }
     const f=await setup({width}),{page}=f;
     await expect(page.getByTestId("remaining-time")).toBeVisible();
     const standings=page.getByRole("list",{name:"Round standings"});
@@ -141,6 +196,6 @@ try {
     await f.page.close();
   }
   assert.deepEqual(errors,[]);
-  console.log("PASS: waiting timer, closed-round feedback, refresh, stale snapshots, preload reset, final-question wait, reconnect, spectator and final results; desktop/mobile.");
+  console.log("PASS: real 10238 graph in player/spectator/review, live peer submission updates, coalesced bursts, waiting timer, feedback, refresh, stale snapshots, preload reset, final wait and reconnect; desktop/mobile.");
   console.log(`Screenshots: ${dir}`);
 } finally { await browser?.close();await new Promise(resolve=>server.close(resolve)); }

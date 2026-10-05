@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import vm from "node:vm";
 import ts from "typescript";
+import { muQuestions } from "../data/questions/mu.ts";
 
 const require = createRequire(import.meta.url);
 const source = readFileSync(new URL("../lib/services/multiplayerService.ts", import.meta.url), "utf8");
@@ -36,7 +37,7 @@ function loadResultService({ isHost, finalizedAt, resultReadError = false }) {
       if(resultReadError)return {data:null,error:{message:"offline"}};
       if(!finalizedAt&&!finalizationCalls)return {data:{status:"pending",isHost},error:null};
       return {data:{status:"ready",viewerMode:"player",result,placements:[{player_id:playerId,placement:1}],
-        submissions:[],questions:[],scoreboard:{status:"completed",players:[{...player,display_name:"Player",rp:0,
+        submissions:[],questions:[{question_number:1,question_id:10238,difficulty:2}],scoreboard:{status:"completed",players:[{...player,display_name:"Player",rp:0,
           round_result:{questionNumber:2,outcome:"give-up",pointsEarned:0,answerTimeMs:5000}}]}},error:null};
     },
   };
@@ -49,7 +50,7 @@ function loadResultService({ isHost, finalizedAt, resultReadError = false }) {
       if (name === "server-only") return {};
       if (name === "@/lib/auth/publicNames") return { isPublicNameAllowed: () => true, PUBLIC_NAME_ERROR: "Name is not allowed." };
       if (name === "next/headers") return { cookies: async () => ({ get: () => ({ value: "guest-token" }) }) };
-      if (name === "@/data/questions") return { questions: [] };
+      if (name === "@/data/questions") return { questions: muQuestions };
       if (name === "@/lib/security/request") return { RequestBodyError: class extends Error {} };
       if (name === "@/lib/multiplayerTiming") return { QUESTION_PREPARATION_TIMEOUT_MS: 15_000 };
       if (name === "@/lib/supabase/admin") return { createAdminClient: () => admin };
@@ -66,6 +67,7 @@ test("finished player results do not re-finalize the same room", async () => {
   assert.equal(result.placement, 1);
   assert.equal(result.finalLeaderboard[0].roundResult.outcome, "give-up");
   assert.equal(result.finalLeaderboard[0].roundResult.answerTimeMs, 5000);
+  assert.equal(result.rounds[0].illustration,muQuestions.find(q=>q.id===10238).illustration);
   assert.equal(service.getFinalizationCalls(), 0);
   assert.equal(service.getSnapshotCalls(), 1);
 });

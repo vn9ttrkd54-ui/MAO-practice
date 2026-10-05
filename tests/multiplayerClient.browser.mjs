@@ -15,6 +15,7 @@ const compiler=bundledWebpack.webpack({ mode:"development",entry:fixture("multip
   output:{path:dir,filename:"client.js"},devtool:false,
   resolve:{extensions:[".tsx",".ts",".js"],alias:{
     "next/navigation":fixture("router.ts"),
+    "next/image":fixture("image.tsx"),
     "@/lib/multiplayerRealtime":fixture("realtime.ts"),
     "@/components/math/MathText":fixture("math.tsx"),
     "@/components/multiplayer/RankTheme":fixture("rank.tsx"),"@":root,

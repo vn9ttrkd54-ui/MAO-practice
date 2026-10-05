@@ -4,6 +4,7 @@ import styles from "./matchSurface.module.css";
 import Link from "next/link";
 
 import MathText from "@/components/math/MathText";
+import QuestionImage from "@/components/questions/QuestionImage";
 import RoundLeaderboard from "./RoundLeaderboard";
 import { formatAnswerTime } from "@/lib/multiplayerRoundFeedback";
 import type { MultiplayerMatchResult } from "@/types/multiplayer";
@@ -52,6 +53,7 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
               <div className="mt-3 font-medium leading-7">
                 <MathText>{round.question}</MathText>
               </div>
+              <QuestionImage illustration={round.illustration} />
 
               <div className="mt-4 grid gap-2">
                 {round.choices.map((choice, index) => {

@@ -1,4 +1,4 @@
-import type { AnswerChoice, Division } from "@/types/question";
+import type { AnswerChoice, Division, QuestionIllustration } from "@/types/question";
 
 export type MultiplayerRoomVisibility = "public" | "private";
 export type MultiplayerRoomMode = "ranked" | "unranked";
@@ -95,6 +95,7 @@ export interface MultiplayerPublicRoom extends MultiplayerRoom {
 }
 
 export interface MultiplayerQuestion {
+  illustration?: QuestionIllustration;
   questionId: number;
   number: number;
   division: Division;
@@ -159,6 +160,7 @@ export interface MultiplayerAnswerSubmission {
 }
 
 export interface MultiplayerRoundResult {
+  illustration?: QuestionIllustration;
   questionId: number;
   questionNumber: number;
   question: string;
