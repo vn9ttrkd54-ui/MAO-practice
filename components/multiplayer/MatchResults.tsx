@@ -31,8 +31,7 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
       </header>
 
       <section className="mt-8">
-        <h2 className="text-xl font-bold">Final leaderboard</h2>
-        <p className="mb-3 mt-1 text-sm text-slate-600">Final totals, with the last question’s result below each player.</p>
+        <h2 className="mb-3 text-xl font-bold">Final leaderboard</h2>
         <RoundLeaderboard players={result.finalLeaderboard} questionNumber={result.rounds.at(-1)?.questionNumber ?? 0} closed final />
       </section>
 

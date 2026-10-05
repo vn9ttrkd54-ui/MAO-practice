@@ -38,7 +38,7 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Private room</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight">Choose your room settings</h1>
         <p className="mt-3 text-gray-600">You can invite up to 30 players after the room is created.</p>
-        {unlimitedCreation ? <p className="mt-2 text-sm text-blue-700">Admins and owners can create unlimited rooms, including multiple active private rooms.</p> : <p className="mt-2 text-sm text-slate-600">You can host one active private room and create up to 3 rooms every 10 minutes.</p>}
+        {!unlimitedCreation && <p className="mt-2 text-sm text-slate-600">You can host one active private room and create up to 3 rooms every 10 minutes.</p>}
         <div className={styles.roomDetails}><span><Users size={14} aria-hidden="true" />Up to 30 players</span><span><LockKeyhole size={14} aria-hidden="true" />Join with a code</span></div>
 
         {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}

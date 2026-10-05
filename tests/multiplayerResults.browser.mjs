@@ -39,6 +39,8 @@ try {
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
   await page.waitForTimeout(200);
   assert.deepEqual(errors, []);
+  assert.equal(await page.getByText("Final totals, with the last question’s result below each player.", { exact: true }).count(), 0);
+  await page.getByRole("heading", { name: "Final leaderboard", exact: true }).waitFor();
   for (const number of [1, 2]) await page.getByText(`Report an error · Question ${number}`, { exact: true }).click();
   const boxes = page.getByRole("textbox");
   assert.equal(await boxes.count(), 2);

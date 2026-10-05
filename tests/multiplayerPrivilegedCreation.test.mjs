@@ -58,7 +58,8 @@ test("admins and owners can create while hosting a waiting, countdown, or runnin
   for (const role of ["admin", "owner"]) for (const status of ["waiting", "countdown", "in-progress"]) {
     const f = await page({ role, rooms: [{ id: roomId, visibility: "private", isHost: true, status }] });
     assert.equal(f.button.props.disabled, false);
-    assert.match(content(f.tree), /unlimited rooms, including multiple active private rooms/);
+    assert.doesNotMatch(content(f.tree), /unlimited rooms, including multiple active private rooms/);
+    assert.doesNotMatch(content(f.tree), /3 rooms every 10 minutes/);
     assert.deepEqual(f.calls, [["from", "profiles"], ["select", "role"], ["eq", "id", userId]]);
     assert.equal(nodes(f.tree).find(n => n.type === "recovery").props.rooms.length, 1);
     if (status === "in-progress") assert.match(content(f.tree), /Rejoin Game/);

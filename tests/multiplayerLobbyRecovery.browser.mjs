@@ -40,6 +40,7 @@ try {
     await page.goto(`http://127.0.0.1:${server.address().port}/`);
     const host=page.getByRole("article").filter({hasText:"ABCD2345"});
     await expect(page.getByRole("article")).toHaveCount(2);
+    await expect(page.getByText("Going back does not close a room.", { exact: false })).toHaveCount(0);
     await expect(host.getByRole("link",{name:"Return to Room"})).toHaveAttribute("href","/multiplayer/room/host-room");
     await expect(page.getByRole("button",{name:"Close Room",exact:true})).toHaveCount(1);
     await host.getByRole("button",{name:"Close Room",exact:true}).click();
