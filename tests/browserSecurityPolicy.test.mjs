@@ -30,7 +30,7 @@ test("production rejects insecure or credential-bearing Auth endpoints", () => {
 
 test("auth and recovery surfaces suppress referrers and shared caching", () => {
   const result = config("https://example-project.supabase.co");
-  for (const source of ["/auth/:path*", "/reset-password", "/account", "/admin/:path*", "/api/auth/:path*", "/api/account", "/api/admin/:path*"]) {
+  for (const source of ["/auth/:path*", "/forgot-password", "/reset-password", "/account", "/admin/:path*", "/api/auth/:path*", "/api/account", "/api/admin/:path*"]) {
     const headers = Object.fromEntries(result.headers.find(h => h.source === source).headers.map(h => [h.key, h.value]));
     assert.equal(headers["Referrer-Policy"], "no-referrer");
     assert.match(headers["Cache-Control"], /private, no-store/);

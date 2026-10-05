@@ -27,7 +27,7 @@ try {
     await delay(100);
   }
   assert.ok(ready, "Local production server did not become ready");
-  for (const path of ["/reset-password", "/account", "/api/auth/login", "/api/account", "/api/admin/feedback"]) {
+  for (const path of ["/forgot-password", "/reset-password", "/account", "/api/auth/forgot-password", "/api/auth/login", "/api/account", "/api/admin/feedback"]) {
     const response = await fetch(base + path, { redirect: "manual", signal: AbortSignal.timeout(5000) });
     assert.ok(response.status < 500, `${path}: unexpected server failure`);
     assert.equal(response.headers.get("referrer-policy"), "no-referrer", path);

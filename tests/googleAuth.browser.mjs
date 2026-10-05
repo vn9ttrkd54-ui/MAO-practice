@@ -39,7 +39,7 @@ try {
   browser=await chromium.launch({headless:true});
   const url=`http://127.0.0.1:${server.address().port}`;
   for(const width of [1280,390]) {
-    for(const mode of ["login","signup","setup","account-password","account-google","account-verified"]) {
+    for(const mode of ["login","signup","setup","account-password","account-google","account-verified","forgot"]) {
       const page=await browser.newPage({viewport:{width,height:1000}}),errors=[],requests=[],dashboardNavigations=[];
       let setupAttempts=0,finishGoogleRequest;
       const googleResponseReady=new Promise(resolve=>{finishGoogleRequest=resolve;});
@@ -51,6 +51,9 @@ try {
         if(!route.request().url().startsWith(url)) return route.abort();
         if(!route.request().url().includes("/api/")) return route.continue();
         requests.push(route.request().postDataJSON());
+        if(route.request().url().endsWith("/api/auth/forgot-password")) {
+          return route.fulfill({status:200,json:{success:true,message:"If this email is linked to an account, you’ll receive a password-reset link."}});
+        }
         if(route.request().url().endsWith("/api/auth/setup")) {
           setupAttempts++;
           if(setupAttempts===1) return route.fulfill({status:409,json:{error:"That username is already taken."}});
@@ -91,6 +94,16 @@ try {
         assert.equal(await googleButton.evaluate(el=>el===document.activeElement),true);
         await clickGoogleButton();
         assert.equal(requests[0].mode,"signin");
+        if(mode==="login") assert.equal(await page.getByRole("link",{name:"Forgot password?"}).getAttribute("href"),"/forgot-password");
+      }
+      if(mode==="forgot") {
+        await page.getByLabel("Recovery email").fill("private@example.test");
+        await page.getByRole("button",{name:"Send reset link"}).click();
+        await page.getByRole("status").waitFor();
+        assert.equal(requests.length,1);
+        assert.deepEqual(requests[0],{email:"private@example.test"});
+        assert.equal(await page.getByRole("button",{name:/Try again in/}).isDisabled(),true);
+        assert.equal(await page.getByRole("link",{name:"Back to login"}).getAttribute("href"),"/login");
       }
       if(mode==="setup") {
         await page.getByLabel("Public username").fill("f_u_c_k");
@@ -152,5 +165,5 @@ try {
     assert.equal(failedRequests,1);
     await failedSetup.close();
   }
-  console.log(`PASS: six auth/account states, official Google icon, stable loading buttons, Google button actions, profanity blocking, legal setup, cookie-aware full-page setup completion, failed setup recovery and no overflow at desktop/mobile. Screenshots: ${dir}`);
+  console.log(`PASS: seven auth/account states including forgot-password request and cooldown, login recovery link, Google button actions, legal setup, failed setup recovery and no overflow at desktop/mobile. Screenshots: ${dir}`);
 } finally { if(browser) await browser.close();await new Promise(resolve=>server.close(resolve)); }

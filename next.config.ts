@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      ...["/auth/:path*", "/reset-password", "/account", "/admin/:path*",
+      ...["/auth/:path*", "/forgot-password", "/reset-password", "/account", "/admin/:path*",
         "/api/auth/:path*", "/api/account", "/api/admin/:path*"].map((source) => ({
         source,
         headers: [

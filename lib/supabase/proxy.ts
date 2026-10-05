@@ -41,7 +41,7 @@ export async function updateSession(request: NextRequest) {
 
   const { data } = await supabase.auth.getClaims();
   const path = request.nextUrl.pathname;
-  const allowedDuringSetup = ["/", "/login", "/signup", "/auth/setup", "/auth/callback", "/api/auth/setup", "/api/auth/google", "/privacy", "/terms"];
+  const allowedDuringSetup = ["/", "/login", "/signup", "/forgot-password", "/api/auth/forgot-password", "/auth/setup", "/auth/callback", "/api/auth/setup", "/api/auth/google", "/privacy", "/terms"];
   const metadata = data?.claims.app_metadata;
   let needsSetup = metadata?.needs_username === true;
   // Consult Auth only during setup or the first-token window. Completed
