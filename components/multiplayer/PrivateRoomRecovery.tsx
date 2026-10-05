@@ -12,7 +12,7 @@ export default function PrivateRoomRecovery({ rooms }: { rooms: MultiplayerActiv
   if (waiting.length === 0) return null;
   return <section className="mt-6 rounded-2xl border border-blue-200 bg-blue-50/70 p-5" aria-label="Your unfinished private rooms">
     <h2 className="text-lg font-bold text-slate-900">Your unfinished private rooms</h2>
-    <p className="mt-1 text-sm text-slate-600">Going back does not close a room. Return to it, or close a room you host before creating another.</p>
+    <p className="mt-1 text-sm text-slate-600">Going back does not close a room. Return to a room, or close an unstarted room you host when you no longer need it.</p>
     <div className="mt-4 space-y-3">{waiting.map(room => <article key={room.id} className="rounded-xl border border-slate-200 bg-white p-4">
       <h3 className="font-semibold text-slate-900">{room.settings.division} · {room.settings.questionCount} questions</h3>
       <p className="mt-1 break-words text-sm text-slate-600">{room.code} · {room.settings.secondsPerQuestion}s per question · {room.isHost ? "You are the host" : "Waiting for the host"}</p>

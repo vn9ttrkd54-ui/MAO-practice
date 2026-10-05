@@ -5,6 +5,7 @@ import { ArrowUpRight, Hash, Layers, LockKeyhole, Timer, Trophy, Users } from "l
 import { createPrivateRoomAction } from "@/app/multiplayer/actions";
 import PendingSubmitButton from "@/components/multiplayer/PendingSubmitButton";
 import PrivateRoomRecovery from "@/components/multiplayer/PrivateRoomRecovery";
+import { hasAdminAccess } from "@/lib/auth/roles";
 import { createClient } from "@/lib/supabase/server";
 import { getMultiplayerProfile, listMyActiveMultiplayerRooms } from "@/lib/services/multiplayerService";
 import { rankPageClass } from "@/components/multiplayer/RankTheme";
@@ -20,6 +21,11 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
   const [{ error }, supabase, profile, activeRooms] = await Promise.all([searchParams, createClient(), getMultiplayerProfile(),
     listMyActiveMultiplayerRooms().catch(failure => { unstable_rethrow(failure); return null; })]);
   const { data: { user } } = await supabase.auth.getUser();
+  // Display only: the creation RPC rechecks the protected role under a row lock.
+  const { data: accountProfile, error: roleError } = user
+    ? await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle<{ role: string }>()
+    : { data: null, error: null };
+  const unlimitedCreation = !roleError && hasAdminAccess(accountProfile?.role);
   const existingHostRoom = activeRooms?.find(room => room.visibility === "private" && room.isHost);
 
   return (
@@ -32,6 +38,7 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Private room</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight">Choose your room settings</h1>
         <p className="mt-3 text-gray-600">You can invite up to 30 players after the room is created.</p>
+        {unlimitedCreation ? <p className="mt-2 text-sm text-blue-700">Admins and owners can create unlimited rooms, including multiple active private rooms.</p> : <p className="mt-2 text-sm text-slate-600">You can host one active private room and create up to 3 rooms every 10 minutes.</p>}
         <div className={styles.roomDetails}><span><Users size={14} aria-hidden="true" />Up to 30 players</span><span><LockKeyhole size={14} aria-hidden="true" />Join with a code</span></div>
 
         {error ? <div role="alert" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : null}
@@ -57,7 +64,7 @@ export default async function CreateRoomPage({ searchParams }: CreateRoomPagePro
           <label className="block text-sm font-semibold"><span id="mode-label" className={styles.label}><Trophy size={16} aria-hidden="true" />Rating mode</span>
             <select name="mode" aria-labelledby="mode-label" defaultValue="unranked" className={fieldClass}><option value="unranked">Unranked</option><option value="ranked">Ranked (5+ questions)</option></select>
           </label>
-          <PendingSubmitButton pendingText="Creating room…" disabled={activeRooms === null || !!existingHostRoom} className="mt-1 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white shadow-md shadow-blue-600/15 hover:bg-blue-700 sm:col-span-2">Create Room<ArrowUpRight size={18} aria-hidden="true" /></PendingSubmitButton>
+          <PendingSubmitButton pendingText="Creating room…" disabled={activeRooms === null || (!!existingHostRoom && !unlimitedCreation)} className="mt-1 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white shadow-md shadow-blue-600/15 hover:bg-blue-700 sm:col-span-2">Create Room<ArrowUpRight size={18} aria-hidden="true" /></PendingSubmitButton>
         </form>}
       </section>
     </main>
