@@ -5,6 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { questions } from "@/data/questions";
 
+// Shared immutable catalog metadata; user statistics are still fetched per request.
+const questionDivisions = new Map(questions.map(question => [question.id, question.division]));
+
 export interface AdminUser {
   id: string; username: string; role: string; created_at: string; last_active: string | null;
   rp: number; ranked_matches: number; ranked_wins: number; current_streak: number;
@@ -28,7 +31,6 @@ export async function getAdminUsers({ search = "", role = "", sort = "activity",
 export async function getAdminUserDetails(userId: string) {
   await requireUsersAdmin();
   const db = createAdminClient();
-  const divisions = new Map(questions.map(q => [q.id,q.division]));
   const byDivision: Record<string, { attempts: number; correct: number }> = {
     Mu: { attempts: 0, correct: 0 }, Alpha: { attempts: 0, correct: 0 }, Theta: { attempts: 0, correct: 0 },
   };
@@ -36,7 +38,7 @@ export async function getAdminUserDetails(userId: string) {
     const { data, error } = await db.from("question_progress").select("question_id,attempts,correct").eq("user_id",userId).order("question_id").range(offset,offset+999);
     if(error) throw new Error("Unable to load practice statistics.");
     for(const row of data ?? []) {
-      const division=divisions.get(row.question_id) ?? "Other / removed";
+      const division=questionDivisions.get(row.question_id) ?? "Other / removed";
       byDivision[division] ??= { attempts:0,correct:0 };
       byDivision[division].attempts+=row.attempts; byDivision[division].correct+=row.correct;
     }

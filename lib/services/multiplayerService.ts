@@ -32,6 +32,11 @@ import type {
   MultiplayerSpectatorState,
 } from "@/types/multiplayer";
 
+// Static catalog only: build once per server module, not for every player's
+// round read, answer, spectator refresh or each question in the final results.
+// Never cache room state, permissions or player data here.
+const questionById = new Map(questions.map(question => [question.id, question]));
+
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const GUEST_COOKIE_PREFIX = "mao_mp_guest_";
 const ROOM_CODE_PATTERN = /^[A-Z0-9]{8}$/;
@@ -549,7 +554,7 @@ export async function getMultiplayerRoundState(roomId: string, knownVersion = -1
   const q = data.question as MatchQuestionRow | null;
   if (!q) return null;
   const presentQuestion = (row: MatchQuestionRow) => {
-    const source = questions.find((entry) => entry.id === row.question_id);
+    const source = questionById.get(row.question_id);
     if (!source) throw new Error("Question unavailable.");
     return { questionId: source.id, number: row.question_number, division: source.division,
       topic: source.topic, difficulty: row.difficulty, question: source.question, choices: source.choices };
@@ -645,7 +650,7 @@ export async function submitMultiplayerAnswer(input: MultiplayerAnswerSubmission
   }
   const access = await getMultiplayerRoom(input.roomId, false);
   if (!access) throw new RequestBodyError("Player is not in this room.", 403);
-  const question = questions.find((entry) => entry.id === input.questionId);
+  const question = questionById.get(input.questionId);
   if (!question) throw new RequestBodyError("Unknown question.", 400);
   const admin = createAdminClient();
   const { error } = await admin.rpc("accept_multiplayer_answer", {
@@ -706,7 +711,7 @@ export async function getMultiplayerMatchResult(roomId: string): Promise<Multipl
   }).sort((a, b) => (a.placement ?? 999) - (b.placement ?? 999));
   const submissionByQuestion = new Map((snapshot.submissions as SubmissionRow[]).map(submission => [submission.question_number, submission]));
   const rounds = (snapshot.questions as MatchQuestionRow[]).map((matchQuestion) => {
-    const question = questions.find((entry) => entry.id === matchQuestion.question_id);
+    const question = questionById.get(matchQuestion.question_id);
     if (!question) throw new Error("Unable to load a match question.");
     const submission = submissionByQuestion.get(matchQuestion.question_number);
     return {
@@ -928,7 +933,7 @@ export async function spectatePublicMatch(roomId: string): Promise<MultiplayerSp
   const data = snapshot.data;
   if (data.status !== "in-progress") throw new Error("That public match is no longer in progress.");
   const matchQuestion = data.question as MatchQuestionRow | null;
-  const question = matchQuestion ? questions.find((entry) => entry.id === matchQuestion.question_id) : null;
+  const question = matchQuestion ? questionById.get(matchQuestion.question_id) : null;
   if (!matchQuestion || !question) throw new Error("The current question is unavailable.");
   return { roomId, stateVersion: data.stateVersion, roundClosed: data.roundClosed === true,
     questionNumber: matchQuestion.question_number, totalQuestions: data.totalQuestions,

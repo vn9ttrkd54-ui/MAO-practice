@@ -1,6 +1,6 @@
 # Llama tutor pet
 
-The approved left-facing pixel llama replaces the circular tutor launcher. The original `public/llama-tutor.png` is retained for easy rollback.
+The approved left-facing pixel llama replaces the circular tutor launcher. The unused original `public/llama-tutor.png` was removed from the website during cleanup; it remains recoverable from Git history.
 
 `public/llama-pet.png` is a transparent 2172 x 724 PNG generated with the built-in image-generation tool from the user-approved interaction storyboard. Four equal-width cells, left to right: idle, attentive, happy, resting. Each cell is 543 x 724 (3:4); keep that ratio in the CSS. No API call or generated image is requested at runtime.
 
