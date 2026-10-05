@@ -172,6 +172,7 @@ test("onboarding guard protects pages/APIs without an extra database read on com
     let authoritativeReads=0;
     const response=(kind,value)=>({kind,value,cookies:{getAll:()=>[],set:()=>{}}});
     const proxy=await load("lib/supabase/proxy.ts",{
+      "./cookieOptions": await load("lib/supabase/cookieOptions.ts"),
       "@supabase/ssr":{createServerClient:()=>({auth:{getClaims:async()=>({data:{claims:{app_metadata:metadata}}}),getUser:async()=>{authoritativeReads++;return {data:{user:{app_metadata:actualMetadata}}};},refreshSession:async()=>({error:refreshError?{}:null}),signOut:async()=>({error:null})}})},
       "next/server":{NextResponse:{next:()=>response("next"),json:(value)=>response("json",value),redirect:(value)=>response("redirect",value.href)}},
     });

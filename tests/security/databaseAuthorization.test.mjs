@@ -20,7 +20,8 @@ test('database account authorization matrix', async (t) => {
   try {
     await db.exec(`set timezone='UTC'; create role anon; create role authenticated; create role service_role bypassrls;
       create schema auth;
-      create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb not null default '{}');
+      create table auth.users(id uuid primary key,email text,
+        raw_app_meta_data jsonb not null default '{}',raw_user_meta_data jsonb not null default '{}');
       create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
       create function auth.role() returns text language sql stable as $$ select current_setting('request.jwt.claim.role',true) $$;
       grant usage on schema auth to anon,authenticated,service_role;
@@ -33,7 +34,9 @@ test('database account authorization matrix', async (t) => {
       try { await db.exec(await readFile(new URL(name, directory), 'utf8')); }
       catch (error) { throw new Error(`Migration ${name}: ${error.message}`, { cause: error }); }
     }
-    for (let n = 1; n <= 4; n++) await db.query('insert into auth.users(id,raw_user_meta_data) values($1,$2)', [uid(n), { username: `fixture_${n}`, role: 'owner', is_admin: true }]);
+    for (let n = 1; n <= 4; n++) await db.query('insert into auth.users(id,email,raw_user_meta_data) values($1,$2,$3)',
+      [uid(n), `fixture_${n}@users.mao-practice.local`, { username: `fixture_${n}`, role: 'owner', is_admin: true,
+        age_13_or_older: true, terms_version: '2026-09-07', privacy_version: '2026-09-07', terms_accepted_at: new Date().toISOString() }]);
     await t.test('signup metadata cannot assign privileged roles', async () => {
       assert.deepEqual((await db.query('select distinct role from profiles')).rows, [{ role: 'user' }]);
     });
