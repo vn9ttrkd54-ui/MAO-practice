@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/client";
 import { memoryProgressStorage } from "@/lib/storage/progress/memoryProgressStorage";
 import { memoryBookmarkStorage, setMemoryQuestionBookmark } from "@/lib/storage/bookmarks/memoryBookmarkStorage";
 import { parseQuestionState, type QuestionState } from "@/lib/questionState";
-import { questionReadError } from "@/lib/questionReadError";
+import { QuestionBankReadAccountError, questionBankOwner, readQuestionBankState } from "@/lib/services/questionBankReadTransport";
 import { withRequestTimeout } from "@/lib/requestTimeout";
 
 export class QuestionStateAccountError extends Error {
@@ -25,22 +25,21 @@ async function readOwner(client: ReturnType<typeof createClient>, signal: AbortS
 export async function getQuestionState(questionId: number, signal?: AbortSignal): Promise<QuestionState> {
   checkId(questionId);
   return withRequestTimeout(async requestSignal => {
-    const client = createClient();
-    const userId = await readOwner(client, requestSignal);
-    let state: QuestionState;
-    if (userId === null) {
-      state = { userId, questionId, progress: await memoryProgressStorage.getQuestionProgress(questionId),
-        bookmarked: await memoryBookmarkStorage.isBookmarked(questionId) };
-    } else {
-      const { data, error } = await client.rpc("get_question_state", { p_question_id: questionId }).abortSignal(requestSignal)
-        .then(response => response, error => { requestSignal.throwIfAborted(); throw questionReadError("DETAIL", error); });
-      requestSignal.throwIfAborted();
-      if (await readOwner(client, requestSignal) !== userId) throw new QuestionStateAccountError();
-      if (error) throw questionReadError("DETAIL", error);
+    try {
+      const userId = questionBankOwner();
+      if (userId === null) {
+        const state = { userId, questionId, progress: await memoryProgressStorage.getQuestionProgress(questionId),
+          bookmarked: await memoryBookmarkStorage.isBookmarked(questionId) };
+        requestSignal.throwIfAborted();
+        if (questionBankOwner() !== userId) throw new QuestionStateAccountError();
+        return state;
+      }
+      const data = await readQuestionBankState(new URLSearchParams({ questionId: String(questionId) }), userId, requestSignal);
       return parseQuestionState(data, questionId, userId);
+    } catch (error) {
+      if (error instanceof QuestionBankReadAccountError) throw new QuestionStateAccountError();
+      throw error;
     }
-    if (await readOwner(client, requestSignal) !== userId) throw new QuestionStateAccountError();
-    return state;
   }, { signal, message: "Loading question statistics took too long. Please retry. Reference: QB-DETAIL-TIMEOUT." });
 }
 

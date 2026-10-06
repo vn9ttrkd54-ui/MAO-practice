@@ -17,7 +17,7 @@ async function asUser(n, work) {
 const read = (n,id) => asUser(n,()=>scalar("select public.get_question_state($1)",[id]));
 try {
   await db.exec(`set timezone='UTC'; create role anon; create role authenticated; create role service_role bypassrls;
-    create schema auth; create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb not null default '{}');
+    create schema auth; create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb not null default '{}',raw_app_meta_data jsonb not null default '{}');
     create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
     create function auth.role() returns text language sql stable as $$select current_setting('request.jwt.claim.role',true)$$;
     grant usage on schema auth to anon,authenticated,service_role;
@@ -28,7 +28,9 @@ try {
     await db.exec(await readFile(new URL(name,dir),"utf8"));
   }
   await db.exec("select set_config('request.jwt.claim.role','service_role',false)");
-  for (const n of [1,2,3]) await db.query("insert into auth.users(id,raw_user_meta_data) values($1,$2)",[uid(n),{username:`fixture_${n}`}]);
+  for (const n of [1,2,3]) await db.query("insert into auth.users(id,raw_user_meta_data,email) values($1,$2,$3)",[uid(n),{
+    username:`fixture_${n}`, age_13_or_older:true, terms_version:"2026-09-07", privacy_version:"2026-09-07", terms_accepted_at:"2026-10-01T00:00:00Z",
+  },`fixture_${n}@users.mao-practice.local`]);
   await db.query("update profiles set role='admin' where id=$1",[uid(3)]);
   await db.query(`insert into question_progress(user_id,question_id,attempts,correct,last_result,last_correct_at,
     correct_times_ms,timing_count,timing_total_seconds,timing_best_seconds)

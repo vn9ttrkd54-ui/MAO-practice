@@ -1,5 +1,6 @@
 type Session = { user: { id: string } } | null;
 let owner: string | null = "first";
+export function browserOwnerHint() { return owner; }
 const listeners = new Set<(event: string, session: Session) => void>();
 window.addEventListener("bank-account", ((event: CustomEvent<string | null>) => {
   owner = event.detail;
@@ -9,7 +10,8 @@ window.addEventListener("bank-account", ((event: CustomEvent<string | null>) => 
 export function createClient() {
   return {
     auth: {
-      getSession: async () => ({ data: { session: owner ? { user: { id: owner } } : null }, error: null }),
+      // Listing must not depend on the browser's pending Auth initialization.
+      getSession: async () => new Promise(() => {}),
       onAuthStateChange(listener: (event: string, session: Session) => void) {
         listeners.add(listener);
         queueMicrotask(() => { if (listeners.has(listener)) listener("INITIAL_SESSION", owner ? { user: { id: owner } } : null); });

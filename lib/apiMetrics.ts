@@ -1,6 +1,7 @@
 // Fixed labels only. Never pass a Request, URL, identity, payload or error here.
 export const API_OPERATIONS = {
   "dashboard.read": "GET",
+  "question-bank.read": "GET",
   "practice.attempt": "POST",
   "practice.result": "POST",
   "trainer.question": "GET",

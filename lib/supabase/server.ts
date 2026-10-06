@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { authCookieOptions } from "./cookieOptions";
 
-export async function createClient() {
+export async function createClient(signal?: AbortSignal) {
   const cookieStore = await cookies();
 
   return createServerClient(
@@ -10,6 +10,9 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookieOptions: authCookieOptions,
+      ...(signal ? { global: { fetch: (input: RequestInfo | URL, init?: RequestInit) => fetch(input, {
+        ...init, signal: init?.signal ? AbortSignal.any([signal, init.signal]) : signal,
+      }) } } : {}),
       cookies: {
         getAll() {
           return cookieStore.getAll();

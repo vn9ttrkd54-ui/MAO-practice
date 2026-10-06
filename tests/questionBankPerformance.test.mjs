@@ -80,6 +80,10 @@ test("bank and question clients do not statically import the full catalog or cat
 });
 
 const serviceSource = await readFile(new URL("../lib/services/questionBankUserDataService.ts", import.meta.url), "utf8");
+const serverSource = await readFile(new URL("../lib/questionBankServer.ts", import.meta.url), "utf8");
+const server = {};
+runInNewContext(`(function(exports,require){${ts.transpileModule(serverSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText}\n})`, { AbortController })(server, name => { assert.equal(name, "server-only"); return {}; });
+class AccountError extends Error {}
 function fixture() {
   const state = { owner: "first", authError: false, fail: false, stall: false, switchDuringRead: false, calls: [], progress: [], bookmarks: [], guest: new Map() };
   const supabase = {
@@ -110,13 +114,22 @@ function fixture() {
   const dependencies = {
     "@/lib/questionReadError": { questionReadError },
     "@/lib/supabase/client": { createClient: () => supabase },
+    "@/lib/services/questionBankReadTransport": {
+      QuestionBankReadAccountError: AccountError,
+      questionBankOwner: () => { if (state.authError) throw new AccountError(); return state.owner; },
+      readQuestionBankState: async (params, owner, signal) => {
+        const result = await server.readQuestionBankListing(supabase, owner, Number(params.get("min")), Number(params.get("max")), signal);
+        if (state.owner !== owner) throw new AccountError();
+        return result;
+      },
+    },
     "@/lib/storage/bookmarks/memoryBookmarkStorage": { getMemoryBookmarkIds: () => [2, 99] },
     "@/lib/storage/progress/memoryProgressStorage": { getMemoryProgressSnapshot: () => state.guest },
     "@/lib/requestTimeout": { withRequestTimeout: (operation, options) => withRequestTimeout(operation, { ...options, timeoutMs: 30 }) },
   };
   const exports = {};
   const { outputText } = ts.transpileModule(serviceSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } });
-  runInNewContext(`(function(exports,require){${outputText}\n})`, { AbortController })(exports, name => {
+  runInNewContext(`(function(exports,require){${outputText}\n})`, { AbortController, URLSearchParams })(exports, name => {
     assert.ok(dependencies[name], name);
     return dependencies[name];
   });

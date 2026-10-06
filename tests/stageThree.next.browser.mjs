@@ -18,7 +18,9 @@ await new Promise(resolve => portProbe.close(resolve));
 const origin = `http://127.0.0.1:${port}`;
 const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "--hostname", "127.0.0.1", "--port", String(port)], {
   cwd: root,
-  env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: `${origin}/blocked-supabase`, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "fixture-public", SUPABASE_SECRET_KEY: "fixture-server" },
+  // Production correctly rejects an HTTP Auth endpoint. Keep the stub on
+  // loopback but use HTTPS; no guest navigation should contact it at all.
+  env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: `https://127.0.0.1:${port}/blocked-supabase`, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "fixture-public", SUPABASE_SECRET_KEY: "fixture-server" },
   stdio: ["ignore", "pipe", "pipe"],
 });
 let browser;
@@ -30,6 +32,10 @@ try {
   });
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
+  const unauthenticated = await page.request.get(`${origin}/api/practice/question-bank/state?owner=11111111-1111-4111-8111-111111111111&questionId=10238`);
+  assert.equal(unauthenticated.status(), 401);
+  assert.match(unauthenticated.headers()["cache-control"], /private, no-store/);
+  assert.match(unauthenticated.headers()["server-timing"], /auth;dur=/);
   const errors = [], writes = [], documents = [], blockedExternal = [];
   page.on("pageerror", error => errors.push(error.message));
   page.on("request", request => { if (request.isNavigationRequest()) documents.push(request.url()); });
@@ -47,7 +53,12 @@ try {
   assert.equal(await tiles.count(), Math.min(muQuestions.length, 120));
   // Read-only filtering changes the URL without triggering an RSC request.
   const rsc = [];
-  page.on("request", request => { if (request.url().includes("_rsc=")) rsc.push(request.url()); });
+  page.on("request", request => {
+    const url = new URL(request.url());
+    // Navbar link prefetches may overlap hydration; only a re-fetch of the
+    // current bank page would mean filtering triggered a server navigation.
+    if (url.searchParams.has("_rsc") && url.pathname === "/practice/question-bank/mu") rsc.push(request.url());
+  });
   const topic = muQuestions[0].topic;
   await page.getByLabel("Topic", { exact: true }).selectOption(topic);
   const filtered = muQuestions.filter(q => q.topic === topic).sort((a, b) => a.number - b.number);

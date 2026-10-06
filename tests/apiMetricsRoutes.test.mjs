@@ -23,6 +23,7 @@ const sensitive = "PRIVATE_canary_payload_cookie_token_answer_error";
 const security = await load("lib/security/request.ts", { "server-only": {} });
 const routes = [
   ["dashboard.read", "dashboard", { query: `owner=${userId}` }],
+  ["question-bank.read", "practice/question-bank/state", { query: `owner=${userId}&min=1&max=500` }],
   ["practice.attempt", "practice/attempt", { body: { questionId: 42, trainer: false, requestId: clientId } }],
   ["practice.result", "practice/result", { body: { questionId: 42, trainer: false, attemptId: clientId, selectedAnswer: "A", elapsedSeconds: 3 } }],
   ["trainer.question", "practice/trainer/question", { query: "id=42" }],
@@ -67,6 +68,8 @@ async function fixture(path, { failure = false, round = "running", stallAuth = f
     "@/lib/practiceTiming": { isPracticeTiming, PRACTICE_TIMING_LIMIT },
     "@/lib/tutorRevealToken": { createTutorRevealToken: () => sensitive },
     "@/lib/dashboardServer": { readDashboardSnapshot: record("dashboard", { userId, secret: sensitive }) },
+    "@/lib/questionBankServer": { QuestionBankDatabaseError: class extends Error {}, readQuestionBankListing: record("question-bank", { userId, statuses: {}, bookmarkedQuestionIds: [] }) },
+    "@/lib/questionState": { parseQuestionState: value => value },
     "@/lib/requestTimeout": { withRequestTimeout: (work, options) => withRequestTimeout(work, { ...options, timeoutMs: 20 }) },
     "@/lib/supabase/server": { createClient: async () => ({ auth: { getUser: () => {
       calls.push({ name: "auth" }); return stallAuth ? new Promise(() => {}) : { data: { user: { id: userId } } };

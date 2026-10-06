@@ -111,7 +111,7 @@ test("unknown operation and phase labels never expose caller-controlled fields",
   assert.equal(response.headers.get("server-timing"), null); assert.equal(logs.length, 0);
   await observe("practice.result", async measure => { await measure("secret-user-id", () => 1); return new Response(); });
   assert.deepEqual(logs[0].phases, {});
-  assert.equal(Object.keys(API_OPERATIONS).length, 17);
+  assert.equal(Object.keys(API_OPERATIONS).length, 18);
 });
 test("concurrent requests keep phase timings isolated, including repeated phases", async () => {
   const { observe, logs, tick } = fixture(); let release;

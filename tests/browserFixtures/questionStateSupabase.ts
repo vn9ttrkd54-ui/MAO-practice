@@ -1,4 +1,5 @@
 let owner: string | null = new URLSearchParams(location.search).has("guest") ? null : "first";
+export function browserOwnerHint() { return owner; }
 const listeners = new Set<(event: string, session: { user: { id: string } } | null) => void>();
 window.addEventListener("question-account", ((event: CustomEvent<string | null>) => {
   owner = event.detail;
@@ -18,7 +19,8 @@ function request(path: string, body: unknown) {
 export function createClient() {
   return {
     auth: {
-      getSession: async () => ({ data: { session: owner ? { user: { id: owner } } : null }, error: null }),
+      getSession: async () => new URLSearchParams(location.search).has("stalled-auth")
+        ? new Promise(() => {}) : ({ data: { session: owner ? { user: { id: owner } } : null }, error: null }),
       onAuthStateChange(listener: (event: string, session: { user: { id: string } } | null) => void) {
         listeners.add(listener);
         queueMicrotask(() => { if (listeners.has(listener)) listener("INITIAL_SESSION", owner ? { user: { id: owner } } : null); });

@@ -10,7 +10,7 @@ async function load(path, dependencies) {
   const source = await readFile(new URL(`../${path}`, import.meta.url), "utf8");
   const code = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
   const exports = {};
-  runInNewContext(`(function(exports,require){${code}\n})`, { Error, Date })(exports, name => {
+  runInNewContext(`(function(exports,require){${code}\n})`, { Error, Date, URLSearchParams })(exports, name => {
     assert.ok(name in dependencies, name); return dependencies[name];
   });
   return exports;
@@ -19,6 +19,7 @@ const contract = await load("lib/questionState.ts", { "@/lib/practiceTiming": ti
 const progress = () => ({ attempts: 7, correct: 3, lastResult: "correct", lastCorrectAt: 1770000000000,
   timing: { count: 3, totalSeconds: 45, bestSeconds: 10 } });
 const snapshot = () => ({ userId: "first", questionId: 10001, progress: progress(), bookmarked: true });
+class AccountError extends Error {}
 async function fixture() {
   const state = { owner: "first", calls: [], authCalls: 0, error: null, authError: false, throwAt: null, stall: null, switchOwner: false, value: snapshot(), committed: false, lost: false };
   const client = {
@@ -56,6 +57,17 @@ async function fixture() {
     "@/lib/supabase/client": { createClient: () => client },
     "@/lib/requestTimeout": { withRequestTimeout: (work, options) => withRequestTimeout(work, { ...options, timeoutMs: 25 }) },
     "@/lib/questionState": contract, "@/lib/questionReadError": { questionReadError },
+    "@/lib/services/questionBankReadTransport": {
+      QuestionBankReadAccountError: AccountError,
+      questionBankOwner: () => { if (state.authError || state.throwAt === "auth") throw new AccountError(); return state.owner; },
+      readQuestionBankState: async (query, owner, signal) => {
+        const { data, error } = await client.rpc("get_question_state", { p_question_id: Number(query.get("questionId")) }).abortSignal(signal)
+          .catch(() => { throw questionReadError("DETAIL", null); });
+        if (state.owner !== owner) throw new AccountError();
+        if (error) throw questionReadError("DETAIL", error);
+        return data;
+      },
+    },
     "@/lib/storage/progress/memoryProgressStorage": { memoryProgressStorage: { getQuestionProgress: async () => ({ ...progress(), times: [10,15,20] }) } },
     "@/lib/storage/bookmarks/memoryBookmarkStorage": { memoryBookmarkStorage: { isBookmarked: async () => state.committed }, setMemoryQuestionBookmark: (_id, value) => { state.committed = value; } },
   });
@@ -72,17 +84,17 @@ test("question snapshot confirms owner/id and valid compact lifetime metrics", (
     const value = snapshot(); mutate(value); assert.throws(() => contract.parseQuestionState(value, 10001, "first"));
   }
 });
-test("question state uses one data RPC and rechecks identity without remote getUser", async () => {
+test("question state uses one server read and rechecks identity without waiting for browser Auth", async () => {
   const f = await fixture(); const result = await f.getQuestionState(10001);
   assert.equal(result.bookmarked, true); assert.equal(result.progress.attempts, 7);
   assert.equal(f.state.calls.length, 1); assert.equal(f.state.calls[0].name, "get_question_state");
-  assert.equal(f.state.authCalls, 2);
+  assert.equal(f.state.authCalls, 0);
   f.state.switchOwner = true; await assert.rejects(f.getQuestionState(10001), /account/);
   f.state.owner = "first"; f.state.error = {code:"42501"};
   await assert.rejects(f.getQuestionState(10001),error=>error instanceof f.QuestionStateAccountError);
 });
 test("read errors, malformed snapshots and deadlines never fabricate zero progress", async () => {
-  for (const stall of ["auth", "read"]) {
+  for (const stall of ["read"]) {
     const f = await fixture(); f.state.stall = stall;
     await assert.rejects(f.getQuestionState(10001), /TIMEOUT/);
     assert.ok(f.state.calls.every(call => call.signal.aborted));
@@ -93,6 +105,12 @@ test("read errors, malformed snapshots and deadlines never fabricate zero progre
   await assert.rejects(f.getQuestionState(10001), /QB-DETAIL-INVALID/);
   const controller = new AbortController(); controller.abort(); const count = f.state.calls.length;
   await assert.rejects(f.getQuestionState(10001, controller.signal)); assert.equal(f.state.calls.length, count);
+});
+test("a stalled browser Auth request does not block question statistics", async () => {
+  const f = await fixture(); f.state.stall = "auth";
+  const result = await f.getQuestionState(10001);
+  assert.equal(result.progress.attempts, 7);
+  assert.equal(f.state.authCalls, 0);
 });
 test("bookmark retries repeat explicit add/remove after a lost committed response", async () => {
   const f = await fixture();

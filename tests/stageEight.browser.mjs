@@ -5,14 +5,14 @@ import { mkdtemp, readFile, readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { createServer } from "node:http";
-import { chromium } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 const require = createRequire(import.meta.url);
 const webpack = require("next/dist/compiled/webpack/webpack");
 const root = resolve(import.meta.dirname,"..");
 const dir = await mkdtemp(join(tmpdir(),"stage-eight-ui-"));
 const fixture = name => resolve(import.meta.dirname,"browserFixtures",name);
 const compiler = webpack.webpack({ mode:"development",entry:fixture("stageEight.tsx"),output:{path:dir,filename:"client.js"},devtool:false,
-  resolve:{extensions:[".tsx",".ts",".js"],alias:{"next/navigation":fixture("questionRouter.ts"),"next/link":fixture("link.tsx"),"next/image":fixture("image.tsx"),"@/lib/supabase/client":fixture("questionStateSupabase.ts"),"@":root}},
+  resolve:{extensions:[".tsx",".ts",".js"],alias:{"next/navigation":fixture("questionRouter.ts"),"next/link":fixture("link.tsx"),"next/image":fixture("image.tsx"),"@/lib/supabase/client":fixture("questionStateSupabase.ts"),"@/lib/supabase/browserOwnerHint":fixture("questionStateSupabase.ts"),"@":root}},
   module:{rules:[{test:/\.tsx?$/,exclude:/node_modules/,use:fixture("loader.cjs")},{test:/\.css$/,use:fixture("css.cjs")}]},
 });
 await new Promise((resolve,reject)=>compiler.run((error,stats)=>error||stats.hasErrors()?reject(error??new Error(stats.toString())):compiler.close(resolve)));
@@ -38,13 +38,13 @@ try {
     await page.route("**/*",route=>{
       const req=route.request(),url=new URL(req.url());
       if(url.origin!==origin)return route.abort();
-      if(url.pathname==="/fixture/question-state") {
-        const body=req.postDataJSON();state.reads.push(body);assert.equal(body.name,"get_question_state");
-        const data={userId:body.owner,questionId:body.args.p_question_id,progress:progress(),bookmarked:state.bookmarked};
-        if(state.mode==="hold"){state.held.push({route,json:{data,error:null},kind:"read"});return;}
-        if(state.mode==="error")return route.fulfill({json:{data:null,error:{code:"42501",message:"private details"}}});
+      if(url.pathname==="/api/practice/question-bank/state") {
+        const body={owner:url.searchParams.get("owner"),questionId:Number(url.searchParams.get("questionId"))};state.reads.push(body);assert.equal(req.method(),"GET");
+        const data={userId:body.owner,questionId:body.questionId,progress:progress(),bookmarked:state.bookmarked};
+        if(state.mode==="hold"){state.held.push({route,json:data,kind:"read"});return;}
+        if(state.mode==="error")return route.fulfill({status:503,json:{code:"42501",error:"private details"}});
         if(state.mode==="wrong-owner")data.userId="second";
-        return route.fulfill({json:{data,error:null}});
+        return route.fulfill({json:data});
       }
       if(url.pathname==="/fixture/bookmark") {
         const body=req.postDataJSON();state.writes.push(body);state.bookmarked=body.action==="add";
@@ -65,7 +65,14 @@ try {
     });
     await page.goto(origin+query);
     await page.getByRole("heading",{name:"Question 1",exact:true}).waitFor();
+    if (!query.includes("guest")) await expect.poll(()=>state.reads.length).toBe(1);
     return {page,state};
+  }
+  {
+    const {page,state}=await open("saved","?stalled-auth");
+    await page.getByRole("button",{name:"Remove bookmark",exact:true}).waitFor();
+    assert.equal(state.reads.length,1,"stalled browser Auth must not hold up saved statistics");
+    assert.deepEqual(state.errors,[]);await page.close();
   }
   const stat=(page,name)=>page.getByText(name,{exact:true}).locator("..").locator("span").last();
   async function ready(page) { await page.getByRole("button",{name:"Remove bookmark",exact:true}).waitFor(); }
@@ -89,9 +96,9 @@ try {
     await page.clock.runFor(12100);
     await page.getByRole("alert").filter({hasText:"QB-DETAIL-TIMEOUT"}).waitFor();
     assert.equal(state.reads.length,1,"Strict Mode and initial event bursts share one active read");
-    const sent=page.waitForRequest("**/fixture/question-state");
+    const sent=page.waitForRequest("**/api/practice/question-bank/state*");
     await page.getByRole("button",{name:"Retry saved state",exact:true}).evaluate(button=>{button.click();button.click();});
-    await sent;assert.equal(state.reads.length,2);
+    await sent;await expect.poll(()=>state.reads.length).toBe(2);
     await state.held[0].route.fulfill({json:state.held[0].json}).catch(()=>undefined);
     assert.equal(await page.getByText("Attempts",{exact:true}).count(),0);
     await state.held[1].route.fulfill({json:state.held[1].json});await ready(page);
@@ -111,7 +118,7 @@ try {
     state.bookmarkMode="hold";
     const sent=page.waitForRequest("**/fixture/bookmark");
     await page.getByRole("button",{name:"Remove bookmark",exact:true}).evaluate(button=>{button.click();button.click();});await sent;
-    assert.equal(state.writes.length,1);assert.equal(state.bookmarked,false);
+    await expect.poll(()=>state.writes.length).toBe(1);assert.equal(state.bookmarked,false);
     await page.clock.runFor(12100);await page.getByRole("button",{name:"Retry bookmark",exact:true}).waitFor();
     await refresh(page);assert.equal(state.reads.length,1,"unconfirmed bookmark prevents focus from overriding pending intent");
     state.bookmarkMode="saved";
@@ -162,6 +169,7 @@ try {
     if(kind==="bookmark") {state.bookmarkMode="hold";await page.getByRole("button",{name:"Remove bookmark",exact:true}).click();}
     else {state.resultMode="hold";await page.getByRole("button",{name:"Give Up",exact:true}).click();}
     await sent;
+    await expect.poll(()=>state.held.length).toBe(1);
     await page.evaluate(()=>window.dispatchEvent(new CustomEvent("question-account",{detail:"second"})));
     await page.getByRole("heading",{name:"Reload this question"}).waitFor();
     await state.held[0].route.fulfill({json:state.held[0].json}).catch(()=>undefined);
@@ -177,7 +185,7 @@ try {
       window.dispatchEvent(new Event("focus"));document.dispatchEvent(new Event("visibilitychange"));
     });
     assert.equal(state.reads.length,1,"hidden pages do not refresh");
-    const sent=page.waitForResponse("**/fixture/question-state");
+    const sent=page.waitForResponse("**/api/practice/question-bank/state*");
     await page.evaluate(()=>{
       Object.defineProperty(document,"visibilityState",{value:"visible",configurable:true});document.dispatchEvent(new Event("visibilitychange"));
     });

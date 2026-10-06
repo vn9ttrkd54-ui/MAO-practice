@@ -16,7 +16,7 @@ const compiler = webpack.webpack({
   mode: "development", entry: fixture("stageThree.tsx"), output: { path: dir, filename: "client.js" }, devtool: false,
   resolve: { extensions: [".tsx", ".ts", ".js"], alias: {
     "next/navigation": fixture("bankRouter.ts"), "next/link": fixture("bankLink.tsx"),
-    "@/lib/supabase/client": fixture("bankSupabase.ts"), "@": root,
+    "@/lib/supabase/client": fixture("bankSupabase.ts"), "@/lib/supabase/browserOwnerHint": fixture("bankSupabase.ts"), "@": root,
   } },
   module: { rules: [{ test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") }] },
 });
@@ -42,12 +42,12 @@ try {
     await page.route("**/*", route => {
       const url = new URL(route.request().url());
       if (url.origin !== origin) return route.abort();
-      if (url.pathname !== "/fixture/progress") return route.continue();
+      if (url.pathname !== "/api/practice/question-bank/state") return route.continue();
       assert.equal(route.request().method(), "GET");
       state.reads.push(url.searchParams);
       if (state.stall) { state.stalled.push(route); return; }
       const id = url.searchParams.get("owner") === "first" ? 10001 : 10002;
-      return route.fulfill({ json: { data: [{ question_id: id, last_result: "correct" }], error: state.fail ? {} : null } });
+      return route.fulfill({ status: state.fail ? 503 : 200, json: state.fail ? { code: "42501" } : { userId: url.searchParams.get("owner"), statuses: { [id]: "solved" }, bookmarkedQuestionIds: [id] } });
     });
     await page.goto(`${origin}/practice/question-bank/mu${query}`);
     await page.getByRole("heading", { name: "Question Bank", exact: true }).waitFor();
@@ -58,7 +58,7 @@ try {
     await page.getByRole("status").waitFor({ state: "detached" });
     const tiles = page.getByRole("link", { name: /^Question \d+,/ });
     assert.equal(await tiles.count(), 120);
-    assert.equal(state.reads.length, 2);
+    assert.equal(state.reads.length, 1);
     assert.equal(await tiles.first().getAttribute("data-prefetch"), "off");
     const initial = new URL(await tiles.first().getAttribute("href"), origin);
     assert.equal(initial.searchParams.has("sequence"), false);
@@ -67,7 +67,7 @@ try {
     assert.equal(await tiles.first().getAttribute("data-prefetch"), "on");
     await page.getByLabel("Topic", { exact: true }).selectOption("Calculus");
     await page.getByRole("heading", { name: "200 questions", exact: true }).waitFor();
-    assert.equal(state.reads.length, 2, "changing metadata filters must not reread private data");
+    assert.equal(state.reads.length, 1, "changing metadata filters must not reread private data");
     const filtered = new URL(await tiles.first().getAttribute("href"), origin);
     assert.equal(filtered.searchParams.get("sequence"), "10001-10200");
     await page.getByRole("button", { name: "Show more questions" }).click();
@@ -76,11 +76,11 @@ try {
     await page.getByRole("button", { name: "Reset filters" }).click();
     await page.getByRole("heading", { name: "275 questions", exact: true }).waitFor();
     assert.equal(await tiles.count(), 120);
-    // A focus/pageshow burst shares one read pair, not dozens of concurrent reads.
+    // A focus/pageshow burst shares one API read, not dozens of concurrent reads.
     await page.clock.runFor(2100);
     await page.evaluate(() => { for (let i = 0; i < 100; i++) { window.dispatchEvent(new Event("focus")); window.dispatchEvent(new Event("pageshow")); } });
     await page.getByRole("status").waitFor({ state: "detached" });
-    assert.equal(state.reads.length, 4);
+    assert.equal(state.reads.length, 2);
     // Failed refresh retains same-account saved progress/bookmarks.
     state.fail = true;
     await page.clock.runFor(2100);
@@ -120,12 +120,12 @@ try {
     await page.evaluate(() => window.dispatchEvent(new Event("focus")));
     await page.clock.runFor(12100);
     await page.getByRole("alert").waitFor();
-    assert.equal(state.reads.length, 4);
+    assert.equal(state.reads.length, 2);
     assert.match(await page.getByRole("alert").innerText(), /Showing your last loaded progress/);
     state.stall = false;
     await page.getByRole("button", { name: "Retry progress" }).click();
     await page.getByRole("alert").waitFor({ state: "detached" });
-    assert.equal(state.reads.length, 6);
+    assert.equal(state.reads.length, 3);
     for (const route of state.stalled) await route.abort().catch(() => undefined);
     assert.deepEqual(state.errors, []);
     await page.close();
