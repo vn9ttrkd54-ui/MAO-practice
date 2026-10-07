@@ -47,6 +47,8 @@ import {
 } from "@/lib/services/trainerHistoryService";
 
 import TrainerSetup from "@/components/trainer/TrainerSetup";
+import detailStyles from "@/components/practice/question-detail.module.css";
+import sessionStyles from "@/components/trainer/trainer-session.module.css";
 import TrainerHeader from "@/components/trainer/TrainerHeader";
 import TrainerQuestion from "@/components/trainer/TrainerQuestion";
 import TrainerStatsSidebar from "@/components/trainer/TrainerStatsSidebar";
@@ -673,8 +675,8 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   }
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">
-      <div className="mx-auto max-w-7xl">
+    <main className={`${detailStyles.page} ${{ Mu: detailStyles.mu, Alpha: detailStyles.alpha, Theta: detailStyles.theta }[division]}`}>
+      <div className={sessionStyles.content}>
       {storageWarning ? <p role="alert" className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{storageWarning}</p> : null}
       {startError ? (
         <div
@@ -691,8 +693,8 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
         levelProgress={levelProgress.progress}
       />
 
-      <div className="trainer-workspace mt-6">
-        <div>
+      <div className={sessionStyles.workspace}>
+        <div className={sessionStyles.questionColumn}>
           <TrainerQuestion
             question={currentQuestion}
             selectedAnswer={selectedAnswer}
@@ -712,7 +714,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
           />
         </div>
 
-        <aside className="trainer-sidebar">
+        <aside aria-label="Trainer statistics">
           <TrainerStatsSidebar
             difficulty={currentQuestion.difficulty}
             questionSeconds={Math.max(
@@ -734,25 +736,6 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
           />
         </aside>
       </div>
-
-      <style jsx>{`
-        .trainer-workspace {
-          display: grid;
-          gap: 24px;
-          align-items: start;
-        }
-
-        @media (min-width: 1024px) {
-          .trainer-workspace {
-            grid-template-columns: minmax(0, 1fr) 300px;
-          }
-
-          .trainer-sidebar {
-            position: sticky;
-            top: 24px;
-          }
-        }
-      `}</style>
 
       <EndSessionDialog
         open={showEndDialog}

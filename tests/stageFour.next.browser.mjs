@@ -82,6 +82,27 @@ try {
     const { question } = await response.json();
     assert.deepEqual(question, catalog.find(item => item.id === question.id));
     await page.getByRole("button", { name: "Give Up", exact: true }).waitFor();
+    for (const width of [2560, 1440, 768, 390, 320]) {
+      await page.setViewportSize({ width, height: 960 });
+      const header = page.locator("main header"), choices = page.locator("main button[aria-pressed]");
+      assert.equal(await choices.count(), question.choices.length);
+      const color = { Mu: "rgb(37, 99, 235)", Alpha: "rgb(128, 67, 217)", Theta: "rgb(0, 143, 122)" }[division];
+      assert.equal(await header.evaluate(el => getComputedStyle(el).backgroundColor), color);
+      await header.locator("img").evaluate(img => img.decode());
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      const progress = await page.getByRole("progressbar").boundingBox();
+      assert.ok(progress.width <= 620, "level progress should not stretch across desktop");
+      if (width >= 1440) {
+        const bounds = await header.boundingBox(), a = await choices.nth(0).boundingBox(), b = await choices.nth(1).boundingBox();
+        assert.ok(bounds.width >= width - 81);
+        assert.ok(b.x > a.x && Math.abs(a.y - b.y) < 1, "wide trainer choices must have two columns");
+        assert.ok((await page.getByRole("complementary", { name: "Trainer statistics" }).boundingBox()).width <= 248);
+      }
+      await choices.nth(1).click();
+      assert.equal(await choices.nth(1).getAttribute("aria-pressed"), "true");
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({ path: `/tmp/trainer-session-${division}-${width}.png`, fullPage: true });
+    }
     const scriptCount = scripts.length;
     await page.getByRole("button", { name: "Give Up", exact: true }).click();
     await page.getByRole("heading", { name: "Gave Up", exact: true }).waitFor();
