@@ -112,8 +112,12 @@ try {
       const header = page.locator("main header");
       if (width >= 1440) {
         const bounds = await header.boundingBox();
-        assert.ok(bounds.width <= 928, "bank content must remain compact on wide monitors");
+        assert.ok(bounds.width >= width - 81, "bank should use the wide screen with modest gutters");
         assert.ok(Math.abs(bounds.x + bounds.width / 2 - width / 2) <= 1, "bank header must be centered");
+        const filters = await page.getByRole("region", { name: "Question filters" }).boundingBox();
+        const firstTile = await tiles.first().boundingBox();
+        assert.ok(filters.width <= 248 && filters.x + filters.width < firstTile.x, "wide filters must form a compact left sidebar");
+        assert.equal(firstTile.width, 48, "question tiles must not stretch");
       }
       assert.equal(await header.locator("strong").textContent(), String(questions.length));
       assert.equal(await header.evaluate(el => getComputedStyle(el).backgroundColor), color);
