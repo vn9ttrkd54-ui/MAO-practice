@@ -42,6 +42,23 @@ try {
     for (const width of [2560, 1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 1000 });
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${rank} fits ${width}px`);
+      const help = page.getByRole("button", { name: "How RP works" });
+      const tooltip = page.getByRole("tooltip");
+      await help.hover();
+      await tooltip.waitFor({ state: "visible" });
+      assert.ok((await tooltip.textContent()).includes("beating lower-RP players earns less"));
+      const tipBounds = await tooltip.boundingBox();
+      assert.ok(tipBounds.x >= 0 && tipBounds.x + tipBounds.width <= width);
+      if (rank === "Silver" && width === 1440) await page.screenshot({ path: "/tmp/rating-help-1440.png" });
+      await page.mouse.move(0, 0);
+      await help.focus();
+      await tooltip.waitFor({ state: "visible" });
+      await help.press("Escape");
+      await tooltip.waitFor({ state: "hidden" });
+      await help.click();
+      await tooltip.waitFor({ state: "visible" });
+      await help.press("Escape");
+      await page.mouse.move(0, 0);
       const bounds = await banner.boundingBox(), actions = await page.locator('.actions').boundingBox();
       assert.ok(bounds.y + bounds.height <= actions.y, "rating precedes room tools");
       if (width >= 1440) assert.ok(bounds.width >= width - 81);
@@ -58,6 +75,7 @@ try {
   await page.getByRole("heading", { name: "Match Lobby" }).waitFor();
   assert.equal(await page.getByRole("link", { name: "Sign in to join", exact: true }).count(), 9);
   assert.equal(await page.getByRole("textbox", { name: "Guest nickname" }).count(), 1);
+  assert.equal(await page.getByRole("button", { name: "How RP works" }).count(), 0);
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   assert.deepEqual(errors, []);
   console.log("PASS: nine rank themes, all nine division-colored rooms, five viewport widths, guest access and mocked public/private join actions.");

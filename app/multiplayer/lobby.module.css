@@ -3,7 +3,16 @@
 .eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; color:#2563eb; }
 .title { margin-top:8px; font-size:30px; font-weight:700; line-height:1.2; }
 .subtitle { font-size:13px; color:#60708a; max-width:400px; line-height:1.6; }
-.rankBanner { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:22px; border-width:1px; border-radius:8px; margin-top:24px; }
+.ratingPanel { position:relative; margin-top:24px; z-index:2; }
+.rankBanner { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:22px; padding-right:50px; border-width:1px; border-radius:8px; }
+.ratingPanel > .ratingHelp { position:absolute; top:8px; right:8px; z-index:3; }
+.ratingHelp button { display:grid; place-items:center; width:28px; height:28px; color:#18243e; border-radius:50%; cursor:pointer; background:rgb(255 255 255/.8); }
+.ratingHelp button:hover { background:#fff; }
+.ratingHelp button:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+.ratingTooltip { display:none; position:absolute; top:100%; right:0; width:310px; max-width:calc(100vw - 56px); padding:16px; border:1px solid #d9e3f2; border-radius:8px; background:#fff; color:#18243e; box-shadow:0 8px 28px #18243e26; font-size:12px; line-height:1.6; }
+.ratingTooltip h2 { font-size:14px; font-weight:700; }
+.ratingTooltip p { margin-top:8px; }
+.ratingHelp:hover .ratingTooltip,.ratingHelp:focus-within .ratingTooltip,.ratingHelp[data-open="true"] .ratingTooltip { display:block; }
 .rankIdentity { min-width:0; overflow-wrap:anywhere; }
 .rp { font-size:32px; font-weight:700; line-height:1.2; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .rankLabel { display:flex; align-items:center; gap:6px; margin-top:6px; font-size:12px; }

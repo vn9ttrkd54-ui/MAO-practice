@@ -71,6 +71,13 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
 
         <aside className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
           <h2 className="font-bold">Room settings</h2>
+          {publicRoom ? <section aria-label="How scoring works" className="mt-3 border-b border-blue-200 pb-4">
+            <h3 className="text-sm font-semibold">How scoring works</h3>
+            {lobby.room.scoringVersion === 2 ? <>
+              <p className="mt-2 text-sm text-gray-700">Correct answers earn 1,000 points plus up to 500 speed bonus. The faster you answer, the bigger the bonus.</p>
+              <p className="mt-2 text-sm text-gray-700">Wrong answers lose 300 points. Blank answers or giving up earn 0 points.</p>
+            </> : <p className="mt-2 text-sm text-gray-700">Correct answers earn 1,000–1,500 points based on speed and answer order. Wrong or blank answers earn 0 points.</p>}
+          </section> : null}
           {!publicRoom ? <p className="mt-2 text-sm text-gray-700">{lobby.room.scoringVersion === 2
             ? "Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0"
             : "Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0."}</p> : null}
