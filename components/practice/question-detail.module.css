@@ -78,3 +78,13 @@
   .stats dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
   .stats dl > div { flex-direction: column; gap: 7px; padding: 10px 0; }
 }
+@media (min-width: 1101px) {
+  .content { max-width: none; padding: 24px 40px 40px; }
+  .header { padding: 24px 28px; }
+  .body { grid-template-columns: minmax(0, 1fr) 248px; gap: 24px; }
+  .question { padding: 28px; }
+  .problem { max-width: 1000px; }
+  .choices { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .choice { min-width: 0; }
+  .stats { padding: 24px 20px; background: var(--detail-tint); border-left: 3px solid var(--detail-edge); }
+}

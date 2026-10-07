@@ -138,13 +138,19 @@ try {
       const questionHeader = page.locator("main header");
       if (width >= 1440) {
         const bounds = await questionHeader.boundingBox();
-        assert.ok(bounds.width <= 888, "question header must not stretch on wide monitors");
+        assert.ok(bounds.width >= width - 81, "question workspace must use the wide screen with modest gutters");
         assert.ok(Math.abs(bounds.x + bounds.width / 2 - width / 2) <= 1, "question header must be centered");
       }
       assert.equal(await questionHeader.evaluate(el => getComputedStyle(el).backgroundColor), color);
       await questionHeader.locator("img").evaluate(img => img.decode());
       const choices = page.locator("main button[aria-pressed]:not([aria-label])");
       assert.equal(await choices.count(), questions[0].choices.length);
+      if (width >= 1440) {
+        const first = await choices.nth(0).boundingBox(), second = await choices.nth(1).boundingBox();
+        assert.ok(second.x > first.x && Math.abs(second.y - first.y) <= 1, "wide answers must form two columns");
+        const stats = await page.locator("main aside").first().boundingBox();
+        assert.ok(stats.width <= 248, "statistics must stay compact");
+      }
       await choices.nth(1).click();
       assert.equal(await choices.nth(1).getAttribute("aria-pressed"), "true");
       assert.equal(await choices.first().getAttribute("aria-pressed"), "false");
@@ -168,6 +174,14 @@ try {
       await page.getByRole("button", { name: "Close", exact: true }).click();
       await page.getByRole("dialog").waitFor({ state: "detached" });
     }
+  }
+  const longQuestion = muQuestions.find(question => question.number === 21);
+  for (const width of [2560, 1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(`${origin}/practice/question-bank/${longQuestion.id}`);
+    await page.getByRole("heading", { name: "Question 21", exact: true }).waitFor();
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "long differential-equation problem must fit");
+    await page.screenshot({ path: resolve(screenshots, `long-question-${width}.png`), fullPage: true });
   }
   assert.deepEqual(writes, [], "navigation must not write any data");
   assert.deepEqual(errors, []);
