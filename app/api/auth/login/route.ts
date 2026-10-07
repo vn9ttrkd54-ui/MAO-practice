@@ -64,11 +64,18 @@ export async function POST(request: Request) {
       .eq("username", username)
       .maybeSingle();
 
-    if (profileError || !profile) {
+    if (profileError) throw profileError;
+    let userId = profile?.id;
+    if (!userId) {
+      const alias = await admin.rpc("resolve_login_username", { p_username: username });
+      if (alias.error) throw alias.error;
+      userId = alias.data;
+    }
+    if (!userId) {
       return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: 401 });
     }
 
-    const { data: userData, error: userError } = await admin.auth.admin.getUserById(profile.id);
+    const { data: userData, error: userError } = await admin.auth.admin.getUserById(userId);
     const email = userData.user?.email;
     if (userError || !email) {
       return NextResponse.json({ error: GENERIC_LOGIN_ERROR }, { status: 401 });

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAdminUsers, getAdminUserDetails, requireUsersAdmin } from "@/lib/services/adminUsersService";
 import { getMultiplayerSummary } from "@/lib/multiplayerSummary";
+import { moderationDetails } from "@/lib/services/accountModerationService";
+import AccountModerationPanel from "@/components/admin/AccountModerationPanel";
 export const dynamic = "force-dynamic";
 const date=(value:string|null)=>value?new Date(value).toLocaleString("en-US",{timeZone:"UTC"}):"No recorded activity";
 export default async function AdminUserPage({ params }: { params: Promise<{id:string}> }) {
@@ -11,9 +13,11 @@ export default async function AdminUserPage({ params }: { params: Promise<{id:st
   const {users}=await getAdminUsers({userId:id});
   const user=users[0]; if(!user) notFound();
   const {byDivision,matches}=await getAdminUserDetails(id);
+  const moderation=await moderationDetails(id);
   return <main className="min-h-screen bg-slate-100 px-5 py-10 text-slate-900"><div className="mx-auto max-w-5xl">
     <Link href="/admin/users" className="font-semibold text-blue-600">← Users</Link>
-    <header className="my-6 rounded-3xl border border-blue-100 bg-gradient-to-br from-white to-blue-50 p-7"><p className="text-sm font-semibold uppercase text-blue-600">{user.role} · Read-only</p><h1 className="mt-2 break-all text-4xl font-bold">{user.username}</h1><p className="mt-3 text-sm text-slate-500">Joined {date(user.created_at)} UTC · Last recorded activity: {date(user.last_active)}{user.last_active ? " UTC" : ""}</p></header>
+    <header className="my-6 rounded-3xl border border-blue-100 bg-gradient-to-br from-white to-blue-50 p-7"><p className="text-sm font-semibold uppercase text-blue-600">{user.role}</p><h1 className="mt-2 break-all text-4xl font-bold">{user.username}</h1><p className="mt-3 text-sm text-slate-500">Joined {date(user.created_at)} UTC · Last recorded activity: {date(user.last_active)}{user.last_active ? " UTC" : ""}</p></header>
+    {moderation ? <AccountModerationPanel targetId={id} targetRole={user.role} {...moderation} /> : <p role="status" className="my-5 rounded-lg bg-amber-50 p-4">Moderation controls are unavailable. Check that migration 068 is installed.</p>}
     <dl className="grid gap-4 sm:grid-cols-2">{[
       ["RP / rank",`${user.rp} · ${getMultiplayerSummary({rp:user.rp}).rank}`],
       ["Ranked multiplayer",`${user.ranked_matches} matches · ${user.ranked_wins} wins`],

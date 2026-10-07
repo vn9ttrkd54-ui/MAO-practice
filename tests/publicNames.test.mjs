@@ -11,7 +11,7 @@ const api = {};
 runInThisContext(`(function(exports,require){${output}})`)(api, name => {
   assert.equal(name,"./publicNameRules.json"); return { default: rules };
 });
-export const blockedNames = ["fuck", "FUCK", "f_u_c_k", "fuuck", "f u c k", "f\u200buck", "ｆｕｃｋ", "f4gg0t", "b1tch", "a$$hole", "shit_123", "dick123", "n1gg3r", "c_u_n_t", "motherfucker"];
+export const blockedNames = ["fuck", "FUCK", "f_u_c_k", "fuuck", "f u c k", "f\u200buck", "ｆｕｃｋ", "f4gg0t", "b1tch", "a$$hole", "shit_123", "dick123", "n1gg3r", "c_u_n_t", "motherfucker", "alligatorraper", "AlligatorR4P3R", "alligator_r_a_p_e_r", "alligatorraapper", "alligatorraper123", "ａｌｌｉｇａｔｏｒｒａｐｅｒ", "rapist99", "ra\u200bpist", "pedophile", "paedophile", "rape", "r_a_p_e"];
 export const allowedNames = ["math_student", "Euler123", "Gauss", "sigma", "series_solver", "Ada Lovelace", "hello", ...rules.allow, ...rules.allow.map(name=>name+"123")];
 
 test("public names reject common profanity, substitutions and separators", () => {

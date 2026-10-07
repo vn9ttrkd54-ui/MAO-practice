@@ -25,9 +25,15 @@ test("Google signup, atomic setup, moderation and single-use verification in Pos
       insert into auth.users(id) values('${uid(99)}');
       insert into profiles values('${uid(99)}','fuck_legacy','fuck_legacy');`);
     await db.exec(migration);
+    const upgrade=await readFile(new URL("../../supabase/migrations/068_account_moderation.sql",import.meta.url),"utf8");
+    // Exercise the incremental rules on the existing 057 schema; full 068
+    // permissions and moderation operations have their own database suite.
+    const addedRules=JSON.parse(upgrade.split("$rules$")[1]);
+    await db.query("insert into public_name_rules(term,match_kind) select jsonb_array_elements_text(value),key from jsonb_each($1::jsonb) on conflict do nothing",[JSON.stringify(addedRules)]);
     await db.exec("create trigger on_auth_user_created after insert on auth.users for each row execute function public.handle_new_user()");
     await t.test("client/server name rules agree, and existing names are untouched", async () => {
-      assert.deepEqual(JSON.parse(migration.split("$rules$")[1]),rules);
+      const originalRules=JSON.parse(migration.split("$rules$")[1]);
+      for(const kind of Object.keys(rules)) assert.deepEqual([...new Set([...originalRules[kind],...addedRules[kind]])],rules[kind]);
       for (const name of blockedNames) assert.equal(await scalar("select is_public_name_allowed($1)",[name]),false,name);
       for (const name of allowedNames) assert.equal(await scalar("select is_public_name_allowed($1)",[name]),true,name);
       assert.equal(await scalar("select username from profiles where id=$1",[uid(99)]),"fuck_legacy");

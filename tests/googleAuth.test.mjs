@@ -19,6 +19,7 @@ const security=await load("lib/security/request.ts",{"server-only":{}});
 const flow=await load("lib/auth/googleFlow.ts",{"server-only":{},"node:crypto":crypto});
 const names=await load("lib/auth/publicNames.ts",{"./publicNameRules.json":{default:rules}});
 const policy=await load("lib/auth/passwordPolicy.ts");
+const access=await load("lib/auth/accountAccess.ts");
 const USER="00000000-0000-4000-8000-000000000001";
 const OTHER="00000000-0000-4000-8000-000000000002";
 const SESSION="00000000-0000-4000-8000-000000000003";
@@ -49,6 +50,8 @@ async function invoke(path,{method="POST",body={},query="",...options}={}) {
     "@/lib/supabase/server":{createClient:async()=>client},"@/lib/supabase/admin":{createAdminClient:()=>admin},
     "@/lib/security/request":security,"@/lib/auth/googleFlow":flow,"@/lib/auth/publicNames":names,
     "@/lib/auth/passwordPolicy":policy,"@/lib/legal":{LEGAL_VERSION:"2026-09-07"},
+    "@/lib/auth/accountAccess":access,
+    "@/lib/services/accountModerationService":{moderationActor:async()=>options.admin?{user}:null},
   });
   const request=new Request(`https://site.test/fixture${query}`,{method,headers:{Origin:options.origin??"https://site.test"},...(method==="GET"?{}:{body:typeof body==="string"?body:JSON.stringify(body)})});
   const response=await handlers[method](request);
@@ -126,6 +129,28 @@ test("Google deletion proof is minted only after a new same-account PKCE callbac
   assert.equal(proof.value.p_token_hash,crypto.createHash("sha256").update(result.cookieValues.get(flow.GOOGLE_DELETE_COOKIE)).digest("hex"));
   const nonOauth=await invoke(callback,{method:"GET",query:"?code=code",noProviderToken:true,cookies:{[flow.GOOGLE_INTENT_COOKIE]:flow.createGoogleIntent("verify-delete",USER)}});
   assert.equal(nonOauth.effects.some(e=>e.kind==="rpc"),false);
+});
+test("moderation verification is admin-only, has a fixed return target, and uses a separate proof",async()=>{
+  assert.equal((await invoke(init,{body:{mode:"verify-moderation",targetId:OTHER}})).status,403);
+  assert.equal((await invoke(init,{admin:true,body:{mode:"verify-moderation",targetId:"https://evil.test"}})).status,403);
+  const start=await invoke(init,{admin:true,body:{mode:"verify-moderation",targetId:OTHER}});
+  assert.equal(start.status,200);
+  const token=start.cookieValues.get(flow.GOOGLE_INTENT_COOKIE);
+  assert.equal(flow.readGoogleIntent(token).targetId,OTHER);
+  const completed=await invoke(callback,{method:"GET",query:"?code=code",cookies:{[flow.GOOGLE_INTENT_COOKIE]:token}});
+  assert.equal(completed.location,`https://site.test/admin/users/${OTHER}?google=verified`);
+  assert.equal(completed.effects.find(e=>e.kind==="rpc").name,"issue_moderation_verification");
+  assert.ok(completed.cookieValues.has(flow.GOOGLE_MODERATION_COOKIE));
+  assert.equal(completed.cookieValues.has(flow.GOOGLE_DELETE_COOKIE),false);
+  const wrong=await invoke(callback,{method:"GET",query:"?code=code",userId:OTHER,cookies:{[flow.GOOGLE_INTENT_COOKIE]:token}});
+  assert.equal(wrong.effects.some(e=>e.kind==="rpc"),false);
+});
+test("Google login preserves a moderated account identity but requires resolution",async()=>{
+  for(const metadata of [{requires_name_change:true},{account_suspended:true}]) {
+    const result=await invoke(callback,{method:"GET",query:"?code=code",metadata,cookies:{[flow.GOOGLE_INTENT_COOKIE]:flow.createGoogleIntent("signin",null)}});
+    assert.equal(result.location,"https://site.test/auth/resolve");
+    assert.equal(result.effects.some(e=>e.kind==="rpc"),false);
+  }
 });
 test("setup requires literal legal agreement and ignores a forged target identity",async()=>{
   for(const acceptedLegal of [false,undefined,"true",1,{}]) {

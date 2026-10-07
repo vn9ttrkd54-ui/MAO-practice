@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import LogoutButton from "@/components/auth/LogoutButton";
 import MobileNavbarMenu from "@/components/MobileNavbarMenu";
+import AccountAccessGate from "@/components/auth/AccountAccessGate";
 import { createClient } from "@/lib/supabase/server";
 
 export function NavbarFallback() {
@@ -19,7 +20,7 @@ export function NavbarFallback() {
 }
 
 export default async function Navbar() {
-  const supabase = await createClient();
+  const supabase = await createClient(undefined, { allowRestricted: true });
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -32,6 +33,7 @@ export default async function Navbar() {
       aria-label="Primary navigation"
       className="sticky top-0 z-50 flex min-h-[72px] w-full items-center justify-between border-b border-slate-300 bg-white/95 px-4 py-3.5 shadow-[0_3px_12px_rgba(15,23,42,0.10)] backdrop-blur sm:px-7"
     >
+      {user ? <AccountAccessGate /> : null}
       <Link href="/" className="min-w-0 text-lg font-bold text-slate-950 sm:text-xl">
         <span className="flex items-center gap-2.5">
           <Image

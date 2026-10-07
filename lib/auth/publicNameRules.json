@@ -1,5 +1,5 @@
 {
-  "contains": ["fuck", "motherfucker", "bitch", "asshole", "dumbass", "dickhead", "bullshit", "shitty", "nigger", "nigga", "faggot", "nazihitler"],
-  "words": ["ass", "shit", "cunt", "dick", "cock", "pussy", "bastard", "slut", "whore", "fag", "retard", "retarded", "hitler", "nazi"],
-  "allow": ["assistant", "assassin", "assassins", "assassination", "classic", "classical", "passion", "cassidy", "scunthorpe", "dickens", "cockburn", "hancock", "shitake", "shital", "cockatoo", "cockatiel", "peacock"]
+  "contains": ["fuck", "motherfucker", "bitch", "asshole", "dumbass", "dickhead", "bullshit", "shitty", "nigger", "nigga", "faggot", "nazihitler", "raper", "rapist", "raping", "pedophile", "paedophile"],
+  "words": ["ass", "shit", "cunt", "dick", "cock", "pussy", "bastard", "slut", "whore", "fag", "retard", "retarded", "hitler", "nazi", "rape", "raped", "rapes"],
+  "allow": ["assistant", "assassin", "assassins", "assassination", "classic", "classical", "passion", "cassidy", "scunthorpe", "dickens", "cockburn", "hancock", "shitake", "shital", "cockatoo", "cockatiel", "peacock", "grape", "grapes", "grapefruit", "grapery", "graping", "scraper", "scrapers", "scraping", "skyscraper", "skyscrapers", "draper", "drapery", "draping", "therapist", "therapists", "physiotherapist", "psychotherapist"]
 }

@@ -3,14 +3,15 @@ import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
-import { createGoogleIntent, GOOGLE_INTENT_COOKIE, GOOGLE_DELETE_COOKIE, GOOGLE_FLOW_SECONDS, googleCookieOptions, type GoogleMode } from "@/lib/auth/googleFlow";
+import { createGoogleIntent, GOOGLE_INTENT_COOKIE, GOOGLE_DELETE_COOKIE, GOOGLE_MODERATION_COOKIE, GOOGLE_FLOW_SECONDS, googleCookieOptions, type GoogleMode } from "@/lib/auth/googleFlow";
+import { moderationActor } from "@/lib/services/accountModerationService";
 
 export async function POST(request: Request) {
   if (!isTrustedMutationRequest(request)) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
-  let body: { mode?: unknown; currentPassword?: unknown };
+  let body: { mode?: unknown; currentPassword?: unknown; targetId?: unknown };
   try { body = await readJsonBody<typeof body>(request, 4096); }
   catch (error) { return NextResponse.json({ error: "Invalid request." }, { status: error instanceof RequestBodyError ? error.status : 400 }); }
-  if (typeof body.mode !== "string" || !["signin", "link", "verify-delete"].includes(body.mode)) return NextResponse.json({ error: "Invalid Google action." }, { status: 400 });
+  if (typeof body.mode !== "string" || !["signin", "link", "verify-delete", "verify-moderation"].includes(body.mode)) return NextResponse.json({ error: "Invalid Google action." }, { status: 400 });
   const mode = body.mode as GoogleMode;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -23,11 +24,16 @@ export async function POST(request: Request) {
     const verified = await supabase.auth.signInWithPassword({ email: user.email, password: body.currentPassword });
     if (verified.error) return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });
   }
-  if (mode === "verify-delete" && !user?.identities?.some((identity) => identity.provider === "google")) {
+  if ((mode === "verify-delete" || mode === "verify-moderation") && !user?.identities?.some((identity) => identity.provider === "google")) {
     return NextResponse.json({ error: "Google is not connected to this account." }, { status: 400 });
+  }
+  if (mode === "verify-moderation" && (typeof body.targetId !== "string"
+    || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(body.targetId) || !(await moderationActor()))) {
+    return NextResponse.json({ error: "Administrator verification is not available." }, { status: 403 });
   }
   const cookieStore = await cookies();
   cookieStore.delete(GOOGLE_DELETE_COOKIE);
+  cookieStore.delete(GOOGLE_MODERATION_COOKIE);
   const options = { redirectTo: `${new URL(request.url).origin}/auth/callback`, skipBrowserRedirect: true, queryParams: { prompt: "select_account" } };
   const result = mode === "link"
     ? await supabase.auth.linkIdentity({ provider: "google", options })
@@ -35,6 +41,6 @@ export async function POST(request: Request) {
   if (result.error || !result.data.url) {
     return NextResponse.json({ error: mode === "link" ? "Unable to connect Google. Please try again later." : "Google sign-in is not available right now. Please try again later." }, { status: 503 });
   }
-  cookieStore.set(GOOGLE_INTENT_COOKIE, createGoogleIntent(mode, user?.id ?? null), { ...googleCookieOptions, maxAge: GOOGLE_FLOW_SECONDS });
+  cookieStore.set(GOOGLE_INTENT_COOKIE, createGoogleIntent(mode, user?.id ?? null, mode === "verify-moderation" ? body.targetId as string : undefined), { ...googleCookieOptions, maxAge: GOOGLE_FLOW_SECONDS });
   return NextResponse.json({ url: result.data.url });
 }

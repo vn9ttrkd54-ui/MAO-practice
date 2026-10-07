@@ -14,7 +14,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!user) redirect("/login");
   if (user.app_metadata.needs_username === true) redirect("/auth/setup");
 
-  const { data: profile } = await supabase.from("profiles").select("username").eq("id", user.id).single<{ username: string }>();
+  const { data: profile } = await supabase.from("profiles").select("username,role").eq("id", user.id).single<{ username: string; role: string }>();
   if (!profile) redirect("/dashboard");
 
   const usesInternalEmail = user.email?.endsWith("@users.mao-practice.local") ?? true;
@@ -41,6 +41,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       hasGoogle={user.identities?.some((identity) => identity.provider === "google") ?? false}
       googleDeleteVerified={googleDeleteVerified}
       googleStatus={google}
+      deletionProtected={profile.role === "admin" || profile.role === "owner"}
     />
   );
 }

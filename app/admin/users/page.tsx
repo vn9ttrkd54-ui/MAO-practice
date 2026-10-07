@@ -15,7 +15,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   return <main className="min-h-screen bg-slate-100 px-5 py-10 text-slate-900"><div className="mx-auto max-w-7xl">
     <Link href="/admin/feedback" className="font-semibold text-blue-600">← Admin tools</Link>
     <header className="my-6 rounded-3xl border border-blue-100 bg-gradient-to-br from-white to-blue-50 p-7 shadow-sm">
-      <p className="text-xs font-bold uppercase tracking-widest text-blue-600">Read-only · Owner & admin</p>
+      <p className="text-xs font-bold uppercase tracking-widest text-blue-600">Owner & admin · User management</p>
       <h1 className="mt-2 text-4xl font-bold">Users</h1>
       <p className="mt-3 text-slate-600">{result.total} matching accounts. Last active reflects recorded practice, challenges, or multiplayer activity—not online status. Dates are UTC.</p>
     </header>

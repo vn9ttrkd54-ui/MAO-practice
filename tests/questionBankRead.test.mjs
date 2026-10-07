@@ -161,9 +161,11 @@ test("server auth/data deadlines abort work; failures never return empty success
 test("request-scoped server fetch propagates cancellation to Auth and preserves normal client defaults", async () => {
   let options;
   const { createClient } = await load("lib/supabase/server.ts", {
-    "@supabase/ssr": { createServerClient: (_url, _key, settings) => { options = settings; return {}; } },
+    "@supabase/ssr": { createServerClient: (_url, _key, settings) => { options = settings; return {auth:{getUser:async()=>({data:{user:null}})}}; } },
     "next/headers": { cookies: async () => ({ getAll: () => [], set: () => {} }) },
     "./cookieOptions": { authCookieOptions: {} },
+    "next/navigation": { redirect: () => { throw new Error("Unexpected redirect"); } },
+    "@/lib/auth/accountAccess": await load("lib/auth/accountAccess.ts"),
   }, { process: { env: {} }, fetch: async (_input, init) => init });
   await createClient(); assert.equal(options.global, undefined);
   const controller = new AbortController(); await createClient(controller.signal);

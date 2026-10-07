@@ -2,10 +2,11 @@ import "server-only";
 
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
-export type GoogleMode = "signin" | "link" | "verify-delete";
-export type GoogleIntent = { mode: GoogleMode; userId: string | null; nonce: string; expiresAt: number };
+export type GoogleMode = "signin" | "link" | "verify-delete" | "verify-moderation";
+export type GoogleIntent = { mode: GoogleMode; userId: string | null; targetId?: string; nonce: string; expiresAt: number };
 export const GOOGLE_INTENT_COOKIE = "md_google_intent";
 export const GOOGLE_DELETE_COOKIE = "md_google_delete";
+export const GOOGLE_MODERATION_COOKIE = "md_google_moderation";
 export const GOOGLE_FLOW_SECONDS = 600;
 export const GOOGLE_DELETE_SECONDS = 300;
 export const googleCookieOptions = {
@@ -18,8 +19,8 @@ function signature(payload: string) {
   return createHmac("sha256", key).update(`google-intent:${payload}`).digest("hex");
 }
 
-export function createGoogleIntent(mode: GoogleMode, userId: string | null) {
-  const intent: GoogleIntent = { mode, userId, nonce: randomBytes(24).toString("hex"), expiresAt: Date.now() + GOOGLE_FLOW_SECONDS * 1000 };
+export function createGoogleIntent(mode: GoogleMode, userId: string | null, targetId?: string) {
+  const intent: GoogleIntent = { mode, userId, ...(targetId ? { targetId } : {}), nonce: randomBytes(24).toString("hex"), expiresAt: Date.now() + GOOGLE_FLOW_SECONDS * 1000 };
   const payload = Buffer.from(JSON.stringify(intent)).toString("base64url");
   return `${payload}.${signature(payload)}`;
 }
@@ -32,7 +33,8 @@ export function readGoogleIntent(value: string | undefined): GoogleIntent | null
   try {
     if (!timingSafeEqual(Buffer.from(signed, "hex"), Buffer.from(signature(payload), "hex"))) return null;
     const intent = JSON.parse(Buffer.from(payload, "base64url").toString()) as GoogleIntent;
-    if (!["signin", "link", "verify-delete"].includes(intent.mode)
+    if (!["signin", "link", "verify-delete", "verify-moderation"].includes(intent.mode)
+      || (intent.mode === "verify-moderation" && (typeof intent.targetId !== "string" || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(intent.targetId)))
       || !/^[0-9a-f]{48}$/.test(intent.nonce)
       || !Number.isSafeInteger(intent.expiresAt) || intent.expiresAt <= Date.now()
       || intent.expiresAt > Date.now() + GOOGLE_FLOW_SECONDS * 1000

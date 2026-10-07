@@ -17,9 +17,10 @@ type AccountSettingsProps = {
   passwordEnabled: boolean;
   googleDeleteVerified: boolean;
   googleStatus?: string;
+  deletionProtected?: boolean;
 };
 
-export default function AccountSettings({ initialUsername, initialEmail, emailVerified, hasGoogle, passwordEnabled, googleDeleteVerified, googleStatus }: AccountSettingsProps) {
+export default function AccountSettings({ initialUsername, initialEmail, emailVerified, hasGoogle, passwordEnabled, googleDeleteVerified, googleStatus, deletionProtected = false }: AccountSettingsProps) {
   const router = useRouter();
   const [username, setUsername] = useState(initialUsername);
   const [password, setPassword] = useState("");
@@ -78,11 +79,11 @@ export default function AccountSettings({ initialUsername, initialEmail, emailVe
 
       {passwordEnabled && <section className={`${styles.card} mt-5 rounded-2xl border bg-white p-6 shadow-sm`}><h2 className="text-xl font-bold"><LockKeyhole size={20} aria-hidden="true" />Password</h2><p className="mt-1 text-sm text-slate-500">Confirm your current password, then use at least {MIN_PASSWORD_LENGTH} characters for the new one.</p><input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} autoComplete="current-password" className="mt-4 w-full rounded-xl border p-3" placeholder="Current password" /><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" className="mt-3 w-full rounded-xl border p-3" placeholder="New password" /><button disabled={saving || !currentPassword || Boolean(getPasswordValidationError(password))} onClick={async () => { if (await request("PATCH", { action: "password", password, currentPassword })) { setPassword(""); setCurrentPassword(""); setMessage("Password changed successfully."); } }} className={`${styles.primary} mt-4 rounded-xl px-5 py-3 font-semibold text-white disabled:opacity-40`}>Change password</button></section>}
 
-      <section className={`${styles.danger} mt-8 rounded-2xl border border-red-200 bg-red-50 p-6`}><h2 className="text-xl font-bold text-red-800">Delete account</h2><p className="mt-2 text-sm text-red-700">This permanently deletes your account, progress, bookmarks, trainer history, challenge history, multiplayer profile, and feedback. This cannot be undone.</p>
+      {deletionProtected ? <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6"><h2 className="text-xl font-bold">Protected account</h2><p className="mt-2 text-sm text-slate-600">Admin and owner accounts cannot be deleted. Contact the owner to arrange a role change first.</p></section> : <section className={`${styles.danger} mt-8 rounded-2xl border border-red-200 bg-red-50 p-6`}><h2 className="text-xl font-bold text-red-800">Delete account</h2><p className="mt-2 text-sm text-red-700">This permanently deletes your account, progress, bookmarks, trainer history, challenge history, multiplayer profile, and feedback. This cannot be undone.</p>
         {passwordEnabled ? <><label htmlFor="delete-password" className="mt-4 block text-sm font-semibold text-red-900">Current password</label><input id="delete-password" type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)} autoComplete="current-password" className="mt-2 w-full rounded-xl border border-red-300 bg-white p-3" /></> : <div className="mt-4"><GoogleButton mode="verify-delete" disabled={saving} /></div>}
         <label htmlFor="delete-confirmation" className="mt-4 block text-sm font-semibold text-red-900">Type DELETE to confirm</label><input id="delete-confirmation" value={confirmation} onChange={(e) => setConfirmation(e.target.value)} className="mt-2 w-full rounded-xl border border-red-300 bg-white p-3" />
         <button disabled={saving || (passwordEnabled ? !deletePassword : !googleDeleteVerified) || confirmation !== "DELETE"} onClick={async () => { if (await request("DELETE", { confirmation, currentPassword: deletePassword })) { router.replace("/"); router.refresh(); } }} className="mt-4 rounded-xl bg-red-700 px-5 py-3 font-semibold text-white disabled:opacity-40">Permanently delete account</button>
-      </section>
+      </section>}
     </main>
   );
 }
