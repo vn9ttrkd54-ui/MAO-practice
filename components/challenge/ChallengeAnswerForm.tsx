@@ -65,23 +65,22 @@ export default function ChallengeAnswerForm({
 
   return (
     <>
-      <div className="mt-5 space-y-2.5">
+      <div className={styles.answers}>
         {answerChoices.map((choice) => {
           const selected = selectedAnswer === choice;
           return (
             <button
               type="button"
               key={choice}
+              aria-pressed={selected}
               disabled={completed || isSubmitting}
               onClick={() => setSelectedAnswer(choice)}
-              className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition ${
-                selected ? styles.selected : styles.choice
-              } disabled:cursor-not-allowed`}
+              className={`${styles.choice} ${selected ? styles.selected : ""} disabled:cursor-not-allowed`}
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 font-bold">
+              <span className={styles.choiceLabel}>
                 {choice}
               </span>
-              <span className="pt-1"><MathText>{choices[choice]}</MathText></span>
+              <span className={styles.choiceText}><MathText>{choices[choice]}</MathText></span>
             </button>
           );
         })}
@@ -91,14 +90,14 @@ export default function ChallengeAnswerForm({
         type="button"
         disabled={!selectedAnswer || completed || isSubmitting}
         onClick={() => void handleSubmit()}
-        className={`${styles.submit} mt-5 w-full rounded-xl px-6 py-3 font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50`}
+        className={`${styles.submit} disabled:cursor-not-allowed disabled:opacity-50`}
       >
         {completed ? "Answer Submitted" : isSubmitting ? "Submitting..." : "Submit Answer"}
       </button>
 
       {result && (
         <section
-          className={`mt-8 rounded-2xl border p-6 ${
+          className={`${styles.result} ${
             result.correct
               ? "border-green-200 bg-green-50"
               : "border-red-200 bg-red-50"

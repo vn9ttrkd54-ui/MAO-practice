@@ -1,4 +1,5 @@
 import styles from "./challenge.module.css";
+import { Flame } from "lucide-react";
 import type {
   ChallengeLeaderboardEntry,
   ChallengeUserStatistics,
@@ -11,8 +12,8 @@ export default function ChallengePersonalStats({
   statistics: ChallengeUserStatistics;
   position: ChallengeLeaderboardEntry | null;
 }) {
+  const currentWeekday = (new Date().getUTCDay() + 6) % 7;
   const metrics = [
-    ["Current Streak", `${statistics.currentStreak} 🔥`],
     ["Longest Streak", statistics.longestStreak.toString()],
     ["Completed", statistics.totalChallenges.toString()],
     ["Correct", statistics.correctChallenges.toString()],
@@ -20,30 +21,37 @@ export default function ChallengePersonalStats({
   ];
 
   return (
-    <section className={`${styles.panel} rounded-2xl border p-5`}>
-      <div className="border-b border-slate-300 pb-4">
+    <section className={`${styles.panel} ${styles.record}`} aria-label="Your challenge record">
+      <div className={styles.identity}>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
+          <p className={styles.eyebrow}>
             Your Challenge Record
           </p>
-          <h2 className="mt-1 truncate text-xl font-bold">
+          <h2 className={styles.username}>
             {position ? `#${position.rank} · ${position.username}` : "Not ranked yet"}
           </h2>
         </div>
         {!position && (
-          <p className="mt-2 text-sm text-slate-600">
+          <p className={styles.unranked}>
             Complete a Challenge while signed in to enter the rankings.
           </p>
         )}
       </div>
 
-      <dl className="mt-4 grid grid-cols-2 gap-3">
+      <div className={styles.streak}><Flame size={22} aria-hidden="true" /><div><strong>{statistics.currentStreak}</strong><span>Current streak</span></div></div>
+      <div className={styles.week} aria-label="Current UTC week">
+        {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day, index) => {
+          const today = index === currentWeekday;
+          return <span key={day} className={today ? styles.today : undefined} aria-current={today ? "date" : undefined} aria-label={`${day}${today ? ", today (UTC)" : ""}`}>{day[0]}</span>;
+        })}
+      </div>
+      <dl className={styles.metrics}>
         {metrics.map(([label, value]) => (
-          <div key={label} className="rounded-xl border border-slate-300 bg-white p-3 last:col-span-2">
-            <dt className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <div key={label}>
+            <dt>
               {label}
             </dt>
-            <dd className="mt-1 text-lg font-bold">{value}</dd>
+            <dd>{value}</dd>
           </div>
         ))}
       </dl>

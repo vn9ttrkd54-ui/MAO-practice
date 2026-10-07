@@ -1,4 +1,5 @@
 import styles from "./challenge.module.css";
+import { Trophy } from "lucide-react";
 import type { ChallengeLeaderboardEntry } from "@/types/challenge";
 
 export default function ChallengeLeaderboard({
@@ -7,17 +8,15 @@ export default function ChallengeLeaderboard({
   entries: ChallengeLeaderboardEntry[];
 }) {
   return (
-    <section className={`${styles.panel} rounded-2xl border p-5`}>
+    <section className={`${styles.panel} ${styles.leaderboard}`}>
       <div className="flex items-end justify-between gap-4 border-b border-slate-300 pb-4">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-blue-700">
+          <p className={styles.eyebrow}>
             Community
           </p>
-          <h2 className="mt-1 text-xl font-bold">Top Challenge Streaks</h2>
+          <h2 className={styles.leaderTitle}>Top Challenge Streaks</h2>
         </div>
-        <span className="text-2xl" aria-hidden="true">
-          🏆
-        </span>
+        <Trophy size={20} className={styles.trophy} aria-hidden="true" />
       </div>
 
       {entries.length === 0 ? (
