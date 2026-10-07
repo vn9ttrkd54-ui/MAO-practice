@@ -31,14 +31,14 @@ const cssDir = join(root, ".next/static/css");
 const css = (await Promise.all((await readdir(cssDir)).filter(name => name.endsWith(".css")).map(name => readFile(join(cssDir, name), "utf8")))).join("\n");
 const server = createServer((req, res) => {
   res.setHeader("Content-Type", req.url === "/client.js" ? "text/javascript; charset=utf-8" : "text/html; charset=utf-8");
-  res.end(req.url === "/client.js" ? bundle : `<style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
+  res.end(req.url === "/client.js" ? bundle : `<meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
 });
 await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
 const origin = `http://127.0.0.1:${server.address().port}`;
 let browser;
 try {
   browser = await chromium.launch({ headless: true });
-  async function open(mode = "success") {
+  async function open(mode = "success", options = {}) {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     const state = { mode, reads: 0, errors: [], held: [] };
     page.on("pageerror", error => state.errors.push(error.message));
@@ -53,7 +53,15 @@ try {
       if (state.mode === "fail") return route.fulfill({ status: 503, json: { error: "Unavailable" } });
       if (state.mode === "wrong-owner") return route.fulfill({ json: dashboardFixture("other") });
       if (state.mode === "malformed") return route.fulfill({ json: {} });
-      return route.fulfill({ json: dashboardFixture() });
+      const data = dashboardFixture();
+      if (options.rank) data.multiplayer.rank = options.rank;
+      if (options.admin) data.isAdmin = true;
+      if (options.empty) {
+        data.trainer.recentSessionAccuracy = [];
+        data.trainer.sessionsByDivision.forEach(item => item.sessions = 0);
+        data.trainer.sessionsCompleted = 0;
+      }
+      return route.fulfill({ json: data });
     });
     await page.goto(origin);
     await expect.poll(() => state.reads).toBe(1);
@@ -68,8 +76,11 @@ try {
   {
     const { page, state } = await open();
     await expect(welcome(page)).toBeVisible();
-    await expect(page.getByText("1105 Total", { exact: true })).toBeVisible();
-    assert.equal(await page.locator("section").filter({ has: page.getByRole("heading", { name: "Recent Trainer Sessions", exact: true }) }).getByRole("article").count(), 1);
+    await expect(page.getByText("1105 saved sessions", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Recent Trainer Sessions", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Recent Activity", exact: true })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Recent Session Accuracy", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Admin feedback", exact: true })).toHaveCount(0);
     await page.screenshot({ path: join(dir, "dashboard-desktop.png"), fullPage: true });
     await page.evaluate(owner => window.dispatchEvent(new CustomEvent("dashboard-account", { detail: owner })), dashboardOwner);
     await page.clock.runFor(120_000);
@@ -81,7 +92,35 @@ try {
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("dashboard-account", { detail: null })));
     await expect(page.getByRole("heading", { name: "Your account changed" })).toBeVisible();
     await expect(welcome(page)).toHaveCount(0);
-    await expect(page.getByText("1105 Total", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("1105 saved sessions", { exact: true })).toHaveCount(0);
+    await close(page, state);
+  }
+  for (const rank of ["Novice", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Legend"]) {
+    const { page, state } = await open("success", { rank, admin: true });
+    await expect(welcome(page)).toBeVisible();
+    const rankPanel = page.locator('[aria-label="Your multiplayer rank"]');
+    assert.ok(await rankPanel.evaluate((el, rank) => rank === "Novice" || el.classList.contains(rank.toLowerCase()), rank));
+    assert.equal(await page.locator('.chapter').count(), 5);
+    const colors = await page.locator('.chapterHeader').evaluateAll(els => els.map(el => getComputedStyle(el).backgroundColor));
+    assert.equal(new Set(colors).size, 5, "Each chapter has a distinct header");
+    for (const width of [2560, 1440, 768, 390, 320]) {
+      await page.setViewportSize({ width, height: 1000 });
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${rank} fits ${width}px`);
+      for (const title of ["Trainer Analytics", "Trainer Trends", "Challenge Streaks", "Multiplayer", "Question Bank"]) {
+        await expect(page.getByRole("region", { name: title, exact: true })).toBeVisible();
+      }
+      if (width >= 1440) assert.ok((await page.locator('.chapter').first().boundingBox()).width >= width - 81);
+      if (rank === "Silver") await page.screenshot({ path: join(dir, `chapter-bands-${width}.png`), fullPage: true });
+    }
+    for (const [name, href] of [["Start Training", "/practice/trainer"], ["Account settings", "/account"], ["Make a suggestion", "/suggestions/new"], ["Admin feedback", "/admin/feedback"], ["Play Multiplayer", "/multiplayer"]]) {
+      assert.equal(await page.getByRole("link", { name, exact: true }).getAttribute("href"), href);
+    }
+    await close(page, state);
+  }
+  {
+    const { page, state } = await open("success", { empty: true });
+    await expect(page.getByText("Complete a Trainer session to start building your accuracy trend.")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sessions by Division" })).toBeVisible();
     await close(page, state);
   }
   for (const mode of ["hold", "fail", "wrong-owner", "malformed"]) {

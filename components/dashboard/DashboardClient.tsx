@@ -10,8 +10,6 @@ import DashboardQuickActions from "@/components/dashboard/DashboardQuickActions"
 import MultiplayerSection from "@/components/dashboard/MultiplayerSection";
 import OverviewSection from "@/components/dashboard/OverviewSection";
 import QuestionBankSection from "@/components/dashboard/QuestionBankSection";
-import RecentActivitySection from "@/components/dashboard/RecentActivitySection";
-import RecentSessionsSection from "@/components/dashboard/RecentSessionsSection";
 import TrainerChartsSection from "@/components/dashboard/TrainerChartsSection";
 import TrainerSection from "@/components/dashboard/TrainerSection";
 import { rankPageClass } from "@/components/multiplayer/RankTheme";
@@ -118,13 +116,11 @@ function DashboardSession({ userId }: { userId: string }) {
     questionBank,
     challenge,
     level,
-    recentTrainerSessions,
-    recentActivity,
   } = dashboardData;
 
   return (
     <div className={`${styles.dashboard} ${rankPageClass(multiplayer.rank)} min-h-screen`}>
-      <main className="mx-auto max-w-6xl px-6 py-10 sm:px-8 lg:py-14">
+      <main className={styles.main}>
         <DashboardHeader username={username} level={level} />
 
         <DashboardQuickActions isAdmin={isAdmin} />
@@ -135,23 +131,16 @@ function DashboardSession({ userId }: { userId: string }) {
           multiplayer={multiplayer}
         />
 
+        <TrainerSection level={level} trainer={trainer} />
+
+        <TrainerChartsSection trainer={trainer} />
+
         <ChallengeSection
           currentStreak={challenge.currentStreak}
           longestStreak={challenge.longestStreak}
         />
 
         <MultiplayerSection multiplayer={multiplayer} />
-
-        <TrainerSection level={level} trainer={trainer} />
-
-        <TrainerChartsSection trainer={trainer} />
-
-        <RecentActivitySection activities={recentActivity} />
-
-        <RecentSessionsSection
-          sessionsCompleted={trainer.sessionsCompleted}
-          sessions={recentTrainerSessions}
-        />
 
         <QuestionBankSection questionBank={questionBank} />
       </main>
