@@ -1,4 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, RotateCcw } from "lucide-react";
+import logo from "@/app/apple-icon.png";
+import styles from "./trainer-summary.module.css";
 
 import type { Division } from "@/types/question";
 import type { LevelProgress } from "@/types/level";
@@ -173,41 +177,40 @@ export default function TrainerSummary({
     ).current;
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-5 py-8 sm:px-8 sm:py-10">
-      <div className="mx-auto max-w-7xl">
-        <section className="overflow-hidden rounded-[2rem] border-2 border-slate-900 bg-[#f8fafc] shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
-          <header className="bg-gradient-to-r from-[#2563eb] via-[#2457d6] to-[#172554] px-6 py-8 text-white sm:px-10">
-            <p className="text-sm font-bold uppercase tracking-[0.24em] text-blue-100">
+    <main className={styles.page}>
+      <div className={styles.content}>
+        <section>
+          <header className={styles.header}>
+            <Image src={logo} alt="" width={170} height={170} unoptimized className={styles.watermark} />
+            <div className={styles.title}>
+            <p className={styles.eyebrow}>
               {division} Division
             </p>
 
-            <div className="mt-2 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-              <div>
-                <h1 className="text-4xl font-black sm:text-5xl">
+                <h1>
                   Daily Trainer Summary
                 </h1>
-                <p className="mt-3 max-w-2xl text-blue-100">
+                <p className={styles.intro}>
                   See what improved, where to focus next, and how this
                   session compares with your recent training.
                 </p>
-              </div>
-
-              <div className="rounded-2xl border border-white/30 bg-white/10 px-6 py-4 backdrop-blur">
-                <p className="text-xs font-bold uppercase tracking-widest text-blue-100">
+                <span className={styles.goldRule} aria-hidden="true" />
+            </div>
+              <div className={styles.accuracy}>
+                <p>
                   Overall accuracy
                 </p>
-                <p className="mt-1 text-4xl font-black">{stats.accuracy}%</p>
+                <strong>{stats.accuracy}%</strong>
               </div>
-            </div>
           </header>
 
-          <div className="p-5 sm:p-8">
+          <div className={styles.body}>
             {!saveReady ? <div role={saveStatus === "error" ? "alert" : "status"} className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
               <p>{saveStatus === "error" ? saveError : "Saving your session history…"}</p>
               <p className="mt-1 text-sm">Keep this page open until the session is confirmed. Answers already confirmed during practice are saved separately.</p>
               {saveStatus === "error" ? <button type="button" onClick={onRetrySave} className="mt-3 rounded-lg bg-slate-950 px-4 py-2 font-bold text-white">Retry session save</button> : null}
             </div> : <p role="status" className="mb-6 text-sm font-semibold text-emerald-800">{hasAccount ? "Session history saved." : "Session kept for this visit. Sign in before your next session to save history to an account."}</p>}
-            <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <section className={styles.totals} aria-label="Session totals">
               <SummaryCard
                 label="Questions"
                 value={stats.questionsAnswered}
@@ -234,7 +237,7 @@ export default function TrainerSummary({
               />
             </section>
 
-            <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+            <section className={styles.metrics} aria-label="Session metrics">
               <SummaryCard
                 label="Session score"
                 value={sessionScore > 0 ? `+${sessionScore}` : sessionScore}
@@ -271,14 +274,14 @@ export default function TrainerSummary({
               />
             </section>
 
-            <section className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <section className={styles.analytics}>
+              <div className={styles.chart}>
                 <div className="flex flex-wrap items-end justify-between gap-3">
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+                    <p className={styles.sectionLabel}>
                       This session
                     </p>
-                    <h2 className="mt-1 text-2xl font-black text-slate-950">
+                    <h2 className={styles.sectionTitle}>
                       Topic performance
                     </h2>
                   </div>
@@ -303,9 +306,9 @@ export default function TrainerSummary({
                             {topic.accuracy}% · {topic.correct}/{topic.attempted}
                           </p>
                         </div>
-                        <div className="mt-2 h-3 overflow-hidden rounded-full border border-slate-300 bg-slate-100">
+                        <div className={styles.topicTrack}>
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-blue-600 to-indigo-500"
+                            className={styles.topicFill}
                             style={{ width: `${topic.accuracy}%` }}
                           />
                         </div>
@@ -315,22 +318,22 @@ export default function TrainerSummary({
                 )}
               </div>
 
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+              <div className={styles.chart}>
+                <p className={styles.sectionLabel}>
                   Recent progress
                 </p>
-                <h2 className="mt-1 text-2xl font-black text-slate-950">
+                <h2 className={styles.sectionTitle}>
                   Last five sessions
                 </h2>
 
                 {!hasAccount ? (
-                  <div className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-6 text-center">
+                  <div className={styles.accountPrompt}>
                     <p className="font-bold text-blue-950">
                       Create an account to compare sessions
                     </p>
                     <Link
                       href="/signup"
-                      className="mt-4 inline-flex rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
+                      className={styles.accountLink}
                     >
                       Create Account
                     </Link>
@@ -359,12 +362,12 @@ export default function TrainerSummary({
                               {session.questionsAnswered} Q
                             </p>
                           </div>
-                          <div className="flex h-36 w-full items-end overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                          <div className={styles.historyTrack}>
                             <div
                               className={
                                 isCurrent
-                                  ? "w-full rounded-t-xl bg-gradient-to-t from-blue-700 to-blue-400"
-                                  : "w-full rounded-t-xl bg-slate-400"
+                                  ? styles.historyCurrent
+                                  : styles.historyPast
                               }
                               style={{
                                 height: `${Math.max(accuracy, 4)}%`,
@@ -382,7 +385,7 @@ export default function TrainerSummary({
               </div>
             </section>
 
-            <section className="mt-6 grid gap-4 md:grid-cols-2">
+            <section className={styles.insights}>
               <InsightCard
                 eyebrow="Strongest topic"
                 title={noCorrectTopics ? ":(" : strongestTopic?.topic ?? "Not enough data"}
@@ -409,10 +412,10 @@ export default function TrainerSummary({
 
             <section className="mt-10">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+                <p className={styles.sectionLabel}>
                   Review
                 </p>
-                <h2 className="mt-1 text-3xl font-black text-slate-950">
+                <h2 className={styles.sectionTitle}>
                   Session results
                 </h2>
               </div>
@@ -429,11 +432,11 @@ export default function TrainerSummary({
                     return (
                       <article
                         key={`${result.questionId}-${index}`}
-                        className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+                        className={styles.result}
                       >
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
-                            <p className="text-lg font-black text-slate-950">
+                            <p className="text-base font-bold text-slate-950">
                               Question {index + 1}
                             </p>
                             {question ? (
@@ -461,7 +464,7 @@ export default function TrainerSummary({
                           </span>
                           {saveReady ? <Link
                             href={`/practice/question-bank/${result.questionId}`}
-                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-bold text-slate-800 transition hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700"
+                            className={styles.review}
                           >
                             Review question
                           </Link> : <span className="text-sm text-slate-500">Review links unlock after the session is confirmed.</span>}
@@ -473,22 +476,22 @@ export default function TrainerSummary({
               )}
             </section>
 
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <div className={styles.actions}>
               <button
                 type="button"
                 onClick={onStartNewSession}
                 disabled={!saveReady}
-                className="rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 px-6 py-3 font-bold text-white shadow-lg shadow-blue-900/15 transition hover:brightness-110 disabled:opacity-50"
+                className={styles.primary}
               >
-                Start New Session
+                <RotateCcw size={16} aria-hidden="true" />Start New Session
               </button>
               <button
                 type="button"
                 onClick={onReturnToPractice}
                 disabled={!saveReady}
-                className="rounded-xl border-2 border-slate-900 bg-white px-6 py-3 font-bold text-slate-900 transition hover:bg-slate-100 disabled:opacity-50"
+                className={styles.secondary}
               >
-                Return to Practice
+                Return to Practice<ArrowRight size={16} aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -502,7 +505,7 @@ function SummaryCard({
   label,
   value,
   detail,
-  className = "border-slate-200 bg-white text-slate-900",
+  className = "text-slate-900",
 }: {
   label: string;
   value: string | number;
@@ -510,12 +513,12 @@ function SummaryCard({
   className?: string;
 }) {
   return (
-    <div className={`rounded-2xl border p-5 shadow-sm ${className}`}>
-      <p className="text-xs font-bold uppercase tracking-[0.14em] opacity-70">
+    <div className={`${styles.metric} ${className}`}>
+      <p className={styles.metricLabel}>
         {label}
       </p>
-      <p className="mt-2 text-2xl font-black">{value}</p>
-      <p className="mt-1 text-sm opacity-70">{detail}</p>
+      <p className={styles.metricValue}>{value}</p>
+      <p className={styles.metricDetail}>{detail}</p>
     </div>
   );
 }
@@ -532,11 +535,11 @@ function InsightCard({
   className: string;
 }) {
   return (
-    <div className={`rounded-2xl border p-5 ${className}`}>
-      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-600">
+    <div className={`${styles.insight} ${className}`}>
+      <p className={styles.sectionLabel}>
         {eyebrow}
       </p>
-      <p className="mt-1 text-xl font-black text-slate-950">{title}</p>
+      <p className="mt-1 text-lg font-bold text-slate-950">{title}</p>
       <p className="mt-2 text-sm text-slate-600">{description}</p>
     </div>
   );

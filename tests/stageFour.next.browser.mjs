@@ -128,6 +128,20 @@ try {
     await page.getByRole("button", { name: "End Session", exact: true }).click();
     await page.getByRole("dialog").getByRole("button", { name: "End Session", exact: true }).click();
     await page.getByRole("heading", { name: "Daily Trainer Summary", exact: true }).waitFor();
+    for (const width of [2560, 1440, 768, 390, 320]) {
+      await page.setViewportSize({ width, height: 960 });
+      const header = page.locator("main header");
+      await header.locator("img").evaluate(img => img.decode());
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "summary must fit every viewport");
+      assert.equal(await page.getByRole("region", { name: "Session totals" }).locator(":scope > div").count(), 4);
+      assert.equal(await page.getByRole("region", { name: "Session metrics" }).locator(":scope > div").count(), 6);
+      if (width >= 1440) assert.ok((await header.boundingBox()).width >= width - 81, "summary should use the desktop width");
+      for (const name of ["Start New Session", "Return to Practice"]) {
+        assert.ok(await page.getByRole("button", { name, exact: true }).evaluate(el => el.scrollWidth <= el.clientWidth && el.getBoundingClientRect().height >= 44));
+      }
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({ path: `/tmp/trainer-summary-${division}-${width}.png`, fullPage: true });
+    }
     assert.equal(await page.getByRole("link", { name: "Review question", exact: true }).getAttribute("href"), `/practice/question-bank/${question.id}`);
     await page.getByRole("button", { name: "Start New Session", exact: true }).click();
     await page.getByRole("button", { name: "Start Trainer", exact: true }).waitFor();
