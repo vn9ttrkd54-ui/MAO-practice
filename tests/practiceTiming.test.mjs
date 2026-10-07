@@ -20,7 +20,7 @@ const timing = await load("lib/practiceTiming.ts");
 const empty = await load("lib/storage/progress/progressStorage.ts");
 const { memoryProgressStorage } = await load("lib/storage/progress/memoryProgressStorage.ts", { "@/lib/practiceTiming": timing, "@/lib/storage/progress/progressStorage": empty });
 const { createSupabaseProgressStorage } = await load("lib/storage/progress/supabaseProgressStorage.ts", { "@/lib/practiceTiming": timing, "@/lib/storage/progress/progressStorage": empty });
-const { default: QuestionStats } = await load("components/practice/QuestionStats.tsx", { "react/jsx-runtime": jsxRuntime, "@/lib/practiceTiming": timing });
+const { default: QuestionStats } = await load("components/practice/QuestionStats.tsx", { "react/jsx-runtime": jsxRuntime, "@/lib/practiceTiming": timing, "./question-detail.module.css": { default: { stats: "stats" } } });
 
 test("empty statistics and lifetime best/mean keep the existing presentation", () => {
   assert.deepEqual(timing.getPracticeTiming({ times: [] }), { count: 0, totalSeconds: 0, bestSeconds: null });

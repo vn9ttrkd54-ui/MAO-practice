@@ -17,7 +17,7 @@ import { createClient } from "@/lib/supabase/client";
 import { questionBankHref, questionBankReturnTo, type questionBankNavigation } from "@/lib/questionBankListing";
 import { createPracticeAttempt, type PracticeAttempt } from "@/lib/services/practiceAttemptService";
 
-import QuestionHeader from "@/components/practice/QuestionHeader";
+import QuestionHeader from "@/components/practice/QuestionDetailHeader";
 import QuestionStats from "@/components/practice/QuestionStats";
 import Timer from "@/components/practice/Timer";
 import MultipleChoice from "@/components/practice/MultipleChoice";
@@ -28,6 +28,7 @@ import QuestionReportButton from "@/components/feedback/QuestionReportButton";
 import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
 import LlamaTutor from "@/components/practice/LlamaTutor";
+import styles from "@/components/practice/question-detail.module.css";
 
 export default function QuestionClient({
   question,
@@ -257,8 +258,8 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
   </main>;
 
   return (
-    <main className="min-h-[calc(100vh-4rem)] bg-[#e5e7eb] px-4 py-8 sm:px-8 sm:py-10">
-      <div className="mx-auto w-full min-w-0 max-w-7xl">
+    <main className={`${styles.page} ${{ Mu: styles.mu, Alpha: styles.alpha, Theta: styles.theta }[question.division]}`}>
+      <div className={styles.content}>
       <QuestionHeader
         questionNumber={question.number}
         division={question.division}
@@ -279,15 +280,16 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
         <button type="button" disabled={isBookmarkSaving} onClick={() => { void handleBookmarkToggle(); }} className="mt-2 font-bold underline disabled:opacity-50">{isBookmarkSaving ? "Saving bookmark…" : "Retry bookmark"}</button>
       </div> : null}
 
-      <div className="flex flex-wrap justify-between items-center gap-3 mt-6 mb-6">
+      <div className={styles.tools}>
         <Timer
           key={`${question.id}-${attemptNumber}`}
           running={!submitted && !hasPending}
         />
 
-        <div className="flex flex-wrap items-center gap-3">
-          <QuestionReportButton questionId={question.id} division={question.division} />
+        <div className={styles.toolButtons}>
+          <QuestionReportButton questionId={question.id} division={question.division} compact />
           <BookmarkButton
+            compact
             bookmarked={bookmarked}
             known={dataReady}
             saving={isBookmarkSaving}
@@ -299,26 +301,27 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
         </div>
       </div>
 
-      <div className="grid min-w-0 gap-8 lg:grid-cols-4">
-        <div className="min-w-0 lg:col-span-3">
-          <div className="min-w-0 rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-4 shadow-[0_12px_30px_rgba(17,24,39,0.14)] sm:p-7">
-            <h2 className="text-2xl font-bold mb-6">
+      <div className={styles.body}>
+        <div className={styles.questionColumn}>
+          <div className={styles.question}>
+            <h2 className={styles.questionHeading}>
               Question
             </h2>
 
-            <div className="mb-8 text-lg leading-8">
+            <div className={styles.problem}>
               <MathText>{question.question}</MathText>
               <QuestionImage illustration={question.illustration} />
             </div>
 
             <MultipleChoice
+              appearance="division"
               choices={question.choices}
               selectedAnswer={selectedAnswer}
               submitted={submitted || isSaving || hasPending}
               onSelect={setSelectedAnswer}
             />
 
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className={styles.actions}>
               <button
                 disabled={
                   (!selectedAnswer && !hasPending) ||
@@ -328,21 +331,7 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
                 onClick={() => {
                   void handleSave(selectedAnswer);
                 }}
-                className="
-                  rounded-lg
-                  bg-gradient-to-br
-                  from-[#2563eb]
-                  to-[#111827]
-                  px-6
-                  py-3
-                  font-semibold
-                  text-white
-                  shadow-md
-                  transition
-                  hover:brightness-110
-                  disabled:cursor-not-allowed
-                  disabled:opacity-50
-                "
+                className={styles.submit}
               >
                 {submitted ? "Saved" : isSaving ? "Saving..." : hasPending ? "Retry save" : "Submit"}
               </button>
@@ -352,20 +341,7 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
                 onClick={() => {
                   void handleSave(null);
                 }}
-                className="
-                  rounded-lg
-                  border-2
-                  border-[#111827]
-                  bg-white
-                  px-6
-                  py-3
-                  font-semibold
-                  text-slate-950
-                  transition
-                  hover:bg-slate-100
-                  disabled:cursor-not-allowed
-                  disabled:opacity-50
-                "
+                className={styles.giveUp}
               >
                 Give Up
               </button>
@@ -381,6 +357,8 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
               onReattempt={handleReattempt}
             />
 
+          </div>
+          <div className={styles.navigation}>
             <QuestionNavigation
               previousDisabled={!navigation.previousId || (hasPending && !submitted)}
               nextDisabled={!navigation.nextId || (hasPending && !submitted)}
@@ -403,8 +381,8 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
           correct={progress.correct}
           times={progress.times}
           timing={progress.timing}
-        /> : <aside className="self-start rounded-2xl border-2 border-slate-900 bg-[#f8fafc] p-5">
-          <h2 className="mb-4 text-xl font-bold">Statistics</h2>
+        /> : <aside className={styles.stats}>
+          <h2>Statistics</h2>
           <p>{stateLoading ? "Loading your saved statistics…" : "Statistics are unavailable. Retry saved state to load them."}</p>
         </aside>}
       </div>

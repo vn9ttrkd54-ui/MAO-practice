@@ -2,6 +2,7 @@
 
 import { getPracticeTiming } from "@/lib/practiceTiming";
 import type { PracticeTiming } from "@/types/progress";
+import styles from "./question-detail.module.css";
 
 type Props = {
   attempts:number;
@@ -53,22 +54,22 @@ export default function QuestionStats({
 
   return (
 
-    <div className="rounded-2xl border-2 border-[#111827] bg-[#f8fafc] p-5 shadow-[0_12px_30px_rgba(17,24,39,0.14)]">
+    <aside className={styles.stats}>
 
-      <h2 className="font-bold text-xl mb-4">
+      <h2>
         Statistics
       </h2>
 
 
-      <div className="space-y-3">
+      <dl>
         <Stat label="Attempts" value={attempts} />
         <Stat label="Correct" value={correct} />
         <Stat label="Best Time" value={formatTime(bestTime)} />
         <Stat label="Average Time" value={formatTime(averageTime)} />
-      </div>
+      </dl>
 
 
-    </div>
+    </aside>
 
   );
 
@@ -76,9 +77,9 @@ export default function QuestionStats({
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-white px-4 py-3 ring-1 ring-slate-200">
-      <span className="text-sm font-semibold text-slate-600">{label}</span>
-      <span className="font-bold text-slate-950">{value}</span>
+    <div>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
     </div>
   );
 }

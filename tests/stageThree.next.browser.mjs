@@ -124,6 +124,35 @@ try {
         }), true, `${label} select and chevron fit at ${width}px`);
       }
       await page.screenshot({ path: resolve(screenshots, `${division}-${width}.png`), fullPage: true });
+      await tiles.first().click();
+      await page.getByRole("heading", { name: `Question ${questions[0].number}`, exact: true }).waitFor();
+      const questionHeader = page.locator("main header");
+      assert.equal(await questionHeader.evaluate(el => getComputedStyle(el).backgroundColor), color);
+      await questionHeader.locator("img").evaluate(img => img.decode());
+      const choices = page.locator("main button[aria-pressed]:not([aria-label])");
+      assert.equal(await choices.count(), questions[0].choices.length);
+      await choices.nth(1).click();
+      assert.equal(await choices.nth(1).getAttribute("aria-pressed"), "true");
+      assert.equal(await choices.first().getAttribute("aria-pressed"), "false");
+      await page.getByRole("button", { name: "Give Up", exact: true }).waitFor();
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `question detail must fit ${width}px`);
+      for (const choice of await choices.all()) {
+        assert.equal(await choice.evaluate(el => el.getBoundingClientRect().height >= 44), true);
+      }
+      await page.screenshot({ path: resolve(screenshots, `question-${division}-${width}.png`), fullPage: true });
+      if (width === 390) {
+        await page.getByRole("button", { name: "Submit", exact: true }).click();
+        await page.getByRole("button", { name: "Saved", exact: true }).waitFor();
+        await page.getByRole("heading", { name: "Solution", exact: true }).waitFor();
+        await page.getByRole("button", { name: "Reattempt", exact: true }).click();
+        await page.getByRole("button", { name: "Give Up", exact: true }).click();
+        await page.getByRole("heading", { name: "Gave Up", exact: true }).waitFor();
+        assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "solution must fit mobile");
+      }
+      await page.getByRole("button", { name: "Report typo / suggest change", exact: true }).click();
+      await page.getByRole("dialog").waitFor();
+      await page.getByRole("button", { name: "Close", exact: true }).click();
+      await page.getByRole("dialog").waitFor({ state: "detached" });
     }
   }
   assert.deepEqual(writes, [], "navigation must not write any data");

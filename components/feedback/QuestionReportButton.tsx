@@ -5,13 +5,16 @@ import { useState } from "react";
 
 import FeedbackForm from "@/components/feedback/FeedbackForm";
 import type { Division } from "@/types/question";
+import styles from "@/components/practice/question-detail.module.css";
 
 export default function QuestionReportButton({
   questionId,
   division,
+  compact = false,
 }: {
   questionId: number;
   division: Division;
+  compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -20,10 +23,11 @@ export default function QuestionReportButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+        className={compact ? styles.iconButton : "inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"}
+        aria-label="Report typo / suggest change"
       >
-        <Flag size={16} />
-        Report typo / suggest change
+        <Flag size={16} aria-hidden="true" />
+        <span className={compact ? styles.tooltip : undefined}>Report typo / suggest change</span>
       </button>
 
       {open ? (

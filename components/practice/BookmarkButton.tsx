@@ -2,6 +2,7 @@ import {
   Bookmark,
   BookmarkCheck,
 } from "lucide-react";
+import styles from "./question-detail.module.css";
 
 type BookmarkButtonProps = {
   bookmarked: boolean;
@@ -9,6 +10,7 @@ type BookmarkButtonProps = {
   disabled?: boolean;
   saving?: boolean;
   known?: boolean;
+  compact?: boolean;
 };
 
 export default function BookmarkButton({
@@ -17,6 +19,7 @@ export default function BookmarkButton({
   disabled = false,
   saving = false,
   known = true,
+  compact = false,
 }: BookmarkButtonProps) {
   return (
     <button
@@ -30,7 +33,7 @@ export default function BookmarkButton({
           ? "Remove bookmark"
           : "Bookmark question"
       }
-      className="
+      className={compact ? styles.iconButton : `
         inline-flex
         items-center
         gap-2
@@ -42,7 +45,7 @@ export default function BookmarkButton({
         transition
         disabled:opacity-50
         disabled:cursor-not-allowed
-      "
+      `}
     >
       {bookmarked ? (
         <BookmarkCheck
@@ -56,7 +59,7 @@ export default function BookmarkButton({
         />
       )}
 
-      <span>
+      <span className={compact ? styles.tooltip : undefined}>
         {saving ? "Saving bookmark…" : !known ? "Bookmark unavailable" : bookmarked
           ? "Bookmarked"
           : "Bookmark"}
