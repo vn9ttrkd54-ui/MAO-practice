@@ -1,138 +1,55 @@
-.lobby {
-  color: #172033;
-}
-
-.header {
-  position: relative;
-  padding-left: 18px;
-  border-left: 3px solid #2563eb;
-}
-
-.actionCard,
-.roomCard,
-.leaderboard {
-  border-color: #d7e0ee;
-  box-shadow: 0 4px 8px -6px #14234124, 0 14px 35px -24px #14234145;
-}
-
-.actionCard {
-  position: relative;
-  background: linear-gradient(145deg, #fff 65%, #f3f7ff);
-}
-
-.createCard {
-  background: radial-gradient(ellipse at top right, #e8efff, transparent 70%), #fff;
-}
-
-.cardHeading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.iconTile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  border: 1px solid #dbe6ff;
-  border-radius: 13px;
-  color: #2563eb;
-  background: #edf3ff;
-}
-
-.actionCard input {
-  min-height: 44px;
-  border-color: #ccd7e8;
-  background: #f8faff;
-}
-
-.actionCard input:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-}
-
-.roomCard {
-  background: linear-gradient(155deg, #fff 55%, #f4f7fc);
-  transition: border-color 160ms, box-shadow 160ms, transform 160ms;
-}
-
-.roomCard:hover,
-.roomCard:focus-within {
-  border-color: #a5bce8;
-  box-shadow: 0 10px 25px -15px #1e40af55;
-  transform: translateY(-2px);
-}
-
-.roomAccent {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background: linear-gradient(90deg, #adc4f0, #e7eefb 80%);
-}
-
-.occupied {
-  border-color: #a7c3ff;
-  background: linear-gradient(145deg, #fff, #edf3ff);
-  box-shadow: 0 8px 24px -16px #2563eb70;
-}
-
-.occupied .roomAccent {
-  background: linear-gradient(90deg, #2563eb, #818cf8);
-}
-
-.divisionMark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 38px;
-  height: 44px;
-  border-radius: 11px;
-  background: #edf2fc;
-  color: #476aa7;
-  font-family: Georgia, serif;
-  font-size: 29px;
-  font-style: italic;
-}
-
-.occupied .divisionMark {
-  color: #1d4ed8;
-  background: #dfeaff;
-}
-
-.roomMeta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  margin-top: 18px;
-  padding-top: 12px;
-  border-top: 1px solid #e4ebf5;
-  color: #65748b;
-  font-size: 11px;
-}
-
-.roomMeta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.roomCard button,
-.roomCard > a,
-.actionCard button,
-.actionCard > a {
-  min-height: 44px;
-}
-
-.leaderboard {
-  background: linear-gradient(160deg, #fff, #f5f8fd);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .roomCard { transition: none; }
-  .roomCard:hover, .roomCard:focus-within { transform: none; }
-}
+.lobby { color:#18243e; padding:24px 40px 40px; min-height:calc(100vh - 4rem); letter-spacing:0; }
+.header { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-bottom:24px; }
+.eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; color:#2563eb; }
+.title { margin-top:8px; font-size:30px; font-weight:700; line-height:1.2; }
+.subtitle { font-size:13px; color:#60708a; max-width:400px; line-height:1.6; }
+.rankBanner { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:22px; border-width:1px; border-radius:8px; margin-top:24px; }
+.rankIdentity { min-width:0; overflow-wrap:anywhere; }
+.rp { font-size:32px; font-weight:700; line-height:1.2; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.rankLabel { display:flex; align-items:center; gap:6px; margin-top:6px; font-size:12px; }
+.rankProgress { width:240px; flex-shrink:0; }
+.progressTrack { height:6px; background:rgb(255 255 255/.28); }
+.progressTrack > div { height:100%; background:currentColor; }
+.guestRating { padding:20px; margin-top:24px; }
+.actions { display:grid; grid-template-columns:1.15fr 1fr; gap:20px; margin:22px 0; align-items:stretch; }
+.actionCard,.leaderboard { border:1px solid #d9e3f2; border-radius:8px; box-shadow:0 3px 12px #18243e0a; }
+.actionCard { background:#f5f8fd; padding:20px; }
+.createCard { background:#f5f8fd; }
+.cardHeading { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.cardHeading h2 { font-size:16px; }
+.iconTile { display:grid; place-items:center; flex-shrink:0; width:32px; height:32px; border-radius:6px; color:#2563eb; background:#e4ecfa; }
+.actionCard input { min-height:44px; border-color:#d9e3f2; background:#fff; letter-spacing:0; }
+.actionCard input:focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
+.actionCard form { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:12px; }
+.actionCard form > :last-child { margin-top:0; padding-inline:20px; }
+.actionCard form:has(input[name="guestNickname"]) { grid-template-columns:1fr 1fr; }
+.actionCard form:has(input[name="guestNickname"]) > :last-child { grid-column:1 / -1; }
+.createCard > a { width:auto; display:inline-flex; padding-inline:20px; }
+.publicLayout { display:grid; grid-template-columns:minmax(0,1fr) 270px; align-items:start; gap:24px; margin-top:28px; }
+.publicRooms { min-width:0; }
+.publicRooms h2 { font-size:20px; }
+.roomGrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:20px; }
+.muRoom { --division:#2563eb; --room-fill:#f2f6ff; --room-header:#dce8ff; --room-ink:#214fa8; }
+.alphaRoom { --division:#8043d9; --room-fill:#f8f3ff; --room-header:#ecddfa; --room-ink:#6e32af; }
+.thetaRoom { --division:#008f7a; --room-fill:#eefaf7; --room-header:#d0eee6; --room-ink:#006e5d; }
+.roomCard { background:var(--room-fill); border:1px solid #d9e3f2; border-radius:8px; padding:0 16px 16px; overflow:hidden; min-width:0; box-shadow:0 3px 12px #18243e0a; transition:box-shadow 160ms; }
+.roomCard:hover,.roomCard:focus-within { box-shadow:0 6px 20px #18243e18; }
+.roomHeading { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:16px; margin:0 -16px; background:var(--room-header); color:var(--room-ink); border-top:3px solid var(--division); border-bottom:1px solid #d9e3f2; }
+.roomDivision { font-size:16px; font-weight:700; }
+.occupancy { font-size:12px; font-weight:600; white-space:nowrap; }
+.occupied .occupancy { font-weight:800; }
+.questionCount { margin:16px 0 14px; font-size:14px; font-weight:600; }
+.roomMeta { display:flex; flex-wrap:wrap; gap:8px 12px; padding-top:12px; border-top:1px solid #d9e3f2; color:#60708a; font-size:11px; }
+.roomMeta span { display:inline-flex; align-items:center; gap:5px; }
+.joinRoom,.guestJoin { display:flex; justify-content:center; align-items:center; width:100%; min-height:44px; padding:12px; border-radius:6px; background:var(--division); color:#fff; font-size:13px; font-weight:600; }
+.guestJoin { margin-top:12px; }
+.joinRoom:hover:not(:disabled),.guestJoin:hover { filter:brightness(.94); }
+.roomCard button:focus-visible,.guestJoin:focus-visible { outline:2px solid var(--division); outline-offset:3px; }
+.actionCard button,.actionCard > a { min-height:44px; }
+.leaderboard { background:#fff; padding:20px; }
+.leaderboard li { border-radius:6px; }
+@media(min-width:1800px) { .publicLayout { grid-template-columns:minmax(0,1fr) 320px; } }
+@media(max-width:1100px) { .lobby { padding:24px; } .publicLayout { grid-template-columns:minmax(0,1fr) 240px; gap:20px; } .roomGrid { grid-template-columns:repeat(2,minmax(0,1fr)); } .rankProgress { width:200px; } }
+@media(max-width:760px) { .publicLayout { grid-template-columns:1fr; } .actions { grid-template-columns:1fr; } .rankBanner { flex-wrap:wrap; gap:20px; } .rankProgress { width:100%; } .header { align-items:flex-start; flex-direction:column; gap:12px; } }
+@media(max-width:560px) { .lobby { padding:22px 18px 32px; } .roomGrid { grid-template-columns:1fr; } .title { font-size:28px; } .rankBanner { padding:18px; } .rp { font-size:28px; } .actionCard form,.actionCard form:has(input[name="guestNickname"]) { grid-template-columns:1fr; } .actionCard form > :last-child { grid-column:1; } }
+@media(prefers-reduced-motion:reduce) { .roomCard { transition:none; } }
