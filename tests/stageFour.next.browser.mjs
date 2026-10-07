@@ -17,7 +17,7 @@ const port = probe.address().port;
 await new Promise(resolve => probe.close(resolve));
 const origin = `http://127.0.0.1:${port}`;
 const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "--hostname", "127.0.0.1", "--port", String(port)], {
-  cwd: root, env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: `${origin}/blocked-supabase`, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "fixture-public", SUPABASE_SECRET_KEY: "fixture-server" },
+  cwd: root, env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: "https://example.invalid", NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "fixture-public", SUPABASE_SECRET_KEY: "fixture-server" },
   stdio: ["ignore", "pipe", "pipe"],
 });
 let browser;
@@ -47,8 +47,33 @@ try {
   await page.getByRole("button", { name: "Start Trainer", exact: true }).waitFor();
   assert.equal(deliveries.length, 0, "setup must not fetch full questions");
 
+  for (const width of [1440, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 960 });
+    for (const division of ["Mu", "Alpha", "Theta"]) {
+      const radio = page.getByRole("radio", { name: division.toUpperCase(), exact: true });
+      await radio.check();
+      assert.equal(await radio.isChecked(), true);
+      const canvas = page.locator("main canvas");
+      await canvas.hover();
+      await page.waitForTimeout(100);
+      const before = await canvas.evaluate(el => el.toDataURL());
+      await page.waitForTimeout(200);
+      assert.notEqual(await canvas.evaluate(el => el.toDataURL()), before, "division animation must move");
+      assert.ok(await canvas.evaluate(el => el.getContext("2d").getImageData(0, 0, el.width, el.height).data.some((v, i) => i % 4 === 3 && v > 0)));
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    }
+    await page.screenshot({ path: `/tmp/trainer-studio-${width}.png`, fullPage: true });
+  }
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.waitForTimeout(100);
+  const still = await page.locator("main canvas").evaluate(el => el.toDataURL());
+  await page.locator("main canvas").hover();
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator("main canvas").evaluate(el => el.toDataURL()), still);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+
   for (const [division, catalog] of [["Mu", muQuestions], ["Alpha", alphaQuestions], ["Theta", thetaQuestions]]) {
-    await page.getByLabel("Division", { exact: true }).selectOption(division);
+    await page.getByRole("radio", { name: division.toUpperCase(), exact: true }).check();
     const responsePromise = page.waitForResponse(response => response.url().includes("/api/practice/trainer/question?"));
     await page.getByRole("button", { name: "Start Trainer", exact: true }).click();
     const response = await responsePromise;
