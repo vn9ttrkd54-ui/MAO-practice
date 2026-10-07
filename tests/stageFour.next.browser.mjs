@@ -114,6 +114,18 @@ try {
     assert.notEqual(next.id, question.id);
     await page.getByRole("button", { name: "Give Up", exact: true }).waitFor();
     await page.getByRole("button", { name: "End Session", exact: true }).click();
+    const dialog = page.getByRole("dialog");
+    for (const width of [1440, 390, 320]) {
+      await page.setViewportSize({ width, height: 960 });
+      const surface = await dialog.locator(":scope > div").boundingBox();
+      assert.ok(surface.width <= 460 && surface.x >= 0 && surface.x + surface.width <= width);
+      assert.equal(await dialog.locator("dt").allTextContents().then(labels => labels.sort()).then(labels => labels.join(",")), "Correct,Gave Up,Incorrect,Questions");
+      for (const button of await dialog.getByRole("button").all()) assert.ok(await button.evaluate(el => el.scrollWidth <= el.clientWidth && el.getBoundingClientRect().height >= 44));
+      await page.screenshot({ path: `/tmp/trainer-end-dialog-${division}-${width}.png` });
+    }
+    await dialog.getByRole("button", { name: "Continue Session", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    await page.getByRole("button", { name: "End Session", exact: true }).click();
     await page.getByRole("dialog").getByRole("button", { name: "End Session", exact: true }).click();
     await page.getByRole("heading", { name: "Daily Trainer Summary", exact: true }).waitFor();
     assert.equal(await page.getByRole("link", { name: "Review question", exact: true }).getAttribute("href"), `/practice/question-bank/${question.id}`);

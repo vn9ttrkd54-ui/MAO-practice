@@ -1,3 +1,6 @@
+import { ArrowRight, ChartNoAxesColumn, Play } from "lucide-react";
+import styles from "./end-session-dialog.module.css";
+
 type EndSessionDialogProps = {
   open: boolean;
   questionsAnswered: number;
@@ -8,119 +11,25 @@ type EndSessionDialogProps = {
   onConfirmEnd: () => void;
 };
 
-export default function EndSessionDialog({
-  open,
-  questionsAnswered,
-  correct,
-  incorrect,
-  giveUps,
-  onContinue,
-  onConfirmEnd,
-}: EndSessionDialogProps) {
-  if (!open) {
-    return null;
-  }
-
+export default function EndSessionDialog({ open, questionsAnswered, correct, incorrect, giveUps, onContinue, onConfirmEnd }: EndSessionDialogProps) {
+  if (!open) return null;
   return (
-    <div
-      className="
-        fixed
-        inset-0
-        z-50
-        flex
-        items-center
-        justify-center
-        bg-black/50
-        p-4
-      "
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="end-session-title"
-    >
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-        <h2
-          id="end-session-title"
-          className="text-2xl font-bold"
-        >
-          End Daily Trainer?
-        </h2>
-
-        <p className="mt-3 text-gray-600">
-          Your session summary will be shown after
-          you end the session.
-        </p>
-
-        <div className="mt-6 grid grid-cols-2 gap-4">
-          <div className="rounded-lg border p-4">
-            <p className="text-sm text-gray-500">
-              Questions
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {questionsAnswered}
-            </p>
-          </div>
-
-          <div className="rounded-lg border p-4">
-            <p className="text-sm text-gray-500">
-              Correct
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {correct}
-            </p>
-          </div>
-
-          <div className="rounded-lg border p-4">
-            <p className="text-sm text-gray-500">
-              Incorrect
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {incorrect}
-            </p>
-          </div>
-
-          <div className="rounded-lg border p-4">
-            <p className="text-sm text-gray-500">
-              Gave Up
-            </p>
-
-            <p className="mt-1 text-2xl font-bold">
-              {giveUps}
-            </p>
-          </div>
+    <div className={styles.overlay} role="dialog" aria-modal="true" aria-labelledby="end-session-title" aria-describedby="end-session-description">
+      <div className={styles.dialog}>
+        <ChartNoAxesColumn size={24} className={styles.icon} aria-hidden="true" />
+        <h2 id="end-session-title">End Daily Trainer?</h2>
+        <p id="end-session-description" className={styles.description}>Your session summary will be shown after you end the session.</p>
+        <div className={styles.summary}>
+          <dl className={styles.total}><dt>Questions</dt><dd>{questionsAnswered}</dd></dl>
+          <dl className={styles.results}>
+            <div className={styles.correct}><dt>Correct</dt><dd>{correct}</dd></div>
+            <div className={styles.incorrect}><dt>Incorrect</dt><dd>{incorrect}</dd></div>
+            <div className={styles.gaveUp}><dt>Gave Up</dt><dd>{giveUps}</dd></div>
+          </dl>
         </div>
-
-        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <button
-            type="button"
-            onClick={onContinue}
-            className="
-              rounded-lg
-              border
-              px-5
-              py-3
-              hover:bg-gray-100
-            "
-          >
-            Continue Session
-          </button>
-
-          <button
-            type="button"
-            onClick={onConfirmEnd}
-            className="
-              rounded-lg
-              bg-black
-              px-5
-              py-3
-              text-white
-              hover:bg-gray-800
-            "
-          >
-            End Session
-          </button>
+        <div className={styles.actions}>
+          <button type="button" onClick={onContinue} className={styles.continue}><Play size={16} aria-hidden="true" />Continue Session</button>
+          <button type="button" onClick={onConfirmEnd} className={styles.end}>End Session<ArrowRight size={16} aria-hidden="true" /></button>
         </div>
       </div>
     </div>
