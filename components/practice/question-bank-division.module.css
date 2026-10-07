@@ -2,7 +2,7 @@
 .mu { --division-color: #2563eb; }
 .alpha { --division-color: #8043d9; --division-paper: #faf7ff; --division-filter: #eee5fc; --division-edge: #c2a5ed; }
 .theta { --division-color: #008f7a; --division-paper: #f2fbf8; --division-filter: #ddf3eb; --division-edge: #8bcdbf; }
-.content { max-width: 1120px; margin: 0 auto; padding: 28px 36px 48px; }
+.content { max-width: 1000px; margin: 0 auto; padding: 28px 36px 48px; }
 .back { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; color: var(--division-color); font-size: 14px; font-weight: 600; }
 .back:hover { text-decoration: underline; }
 .header { position: relative; overflow: hidden; margin: 16px -36px 0; padding: 28px 36px; background: var(--division-color); color: #fff; }
@@ -52,6 +52,13 @@
 .more { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 24px; color: #5c6c82; font-size: 13px; }
 .more button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 6px; background: var(--division-color); color: #fff; font-size: 13px; font-weight: 600; }
 .more button:hover { filter: brightness(.92); }
+@media (min-width: 901px) {
+  .header { margin-inline: 0; padding-inline: 28px; }
+  .filters { margin-inline: 0; padding-inline: 28px; }
+  .browse { padding-inline: 28px; }
+  .headerInner { min-height: 100px; }
+  .watermark { right: 170px; width: 185px; height: 185px; }
+}
 @media (max-width: 900px) {
   .content { padding-inline: 24px; }
   .header { margin-inline: -24px; padding-inline: 24px; }

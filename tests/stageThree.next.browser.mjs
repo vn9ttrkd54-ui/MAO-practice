@@ -104,12 +104,17 @@ try {
   await page.getByRole("heading", { name: `Question ${ordered[1].number}`, exact: true }).waitFor();
   const screenshots = await mkdtemp(resolve(tmpdir(), "division-bank-"));
   for (const [division, questions, color] of [["mu", muQuestions, "rgb(37, 99, 235)"], ["alpha", alphaQuestions, "rgb(128, 67, 217)"], ["theta", thetaQuestions, "rgb(0, 143, 122)"]]) {
-    for (const width of [1440, 768, 390, 320]) {
+    for (const width of [2560, 1920, 1440, 768, 390, 320]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`${origin}/practice/question-bank/${division}`);
       await tiles.first().waitFor();
       assert.equal(await tiles.count(), Math.min(120, questions.length));
       const header = page.locator("main header");
+      if (width >= 1440) {
+        const bounds = await header.boundingBox();
+        assert.ok(bounds.width <= 928, "bank content must remain compact on wide monitors");
+        assert.ok(Math.abs(bounds.x + bounds.width / 2 - width / 2) <= 1, "bank header must be centered");
+      }
       assert.equal(await header.locator("strong").textContent(), String(questions.length));
       assert.equal(await header.evaluate(el => getComputedStyle(el).backgroundColor), color);
       await header.locator("img").evaluate(img => img.decode());
@@ -127,6 +132,11 @@ try {
       await tiles.first().click();
       await page.getByRole("heading", { name: `Question ${questions[0].number}`, exact: true }).waitFor();
       const questionHeader = page.locator("main header");
+      if (width >= 1440) {
+        const bounds = await questionHeader.boundingBox();
+        assert.ok(bounds.width <= 888, "question header must not stretch on wide monitors");
+        assert.ok(Math.abs(bounds.x + bounds.width / 2 - width / 2) <= 1, "question header must be centered");
+      }
       assert.equal(await questionHeader.evaluate(el => getComputedStyle(el).backgroundColor), color);
       await questionHeader.locator("img").evaluate(img => img.decode());
       const choices = page.locator("main button[aria-pressed]:not([aria-label])");
@@ -158,7 +168,7 @@ try {
   assert.deepEqual(writes, [], "navigation must not write any data");
   assert.deepEqual(errors, []);
   console.log(`PASS: production Next.js routing, native filter URLs without RSC reads, all divisions, filtered/legacy/direct next and previous, expanded return list, and read-only navigation (${documents.length} document requests).`);
-  console.log(`PASS: division colors, available counts, logo loading, dropdown sizing, and no overflow across 12 desktop/mobile views. Screenshots: ${screenshots}`);
+  console.log(`PASS: division colors, available counts, logo loading, dropdown sizing, bounded centered headers, and no overflow across 18 ultrawide/desktop/mobile views. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
   if (child.exitCode === null) { const exited = once(child, "exit"); child.kill("SIGTERM"); await exited; }

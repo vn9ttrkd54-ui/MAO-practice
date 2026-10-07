@@ -2,7 +2,7 @@
 .mu { --detail-color: #2563eb; }
 .alpha { --detail-color: #8043d9; --detail-paper: #faf7ff; --detail-tint: #eee5fc; --detail-edge: #c2a5ed; }
 .theta { --detail-color: #008f7a; --detail-paper: #f2fbf8; --detail-tint: #ddf3eb; --detail-edge: #8bcdbf; }
-.content { max-width: 1120px; margin: auto; padding: 24px 36px 40px; }
+.content { max-width: 960px; margin: auto; padding: 24px 36px 40px; }
 .back { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-size: 13px; font-weight: 600; color: var(--detail-color); }
 .back:hover { text-decoration: underline; }
 .header { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 144px; margin: 14px -36px 0; padding: 24px 36px; background: var(--detail-color); color: #fff; }
@@ -53,6 +53,12 @@
 .navigation > div { margin-top: 24px; }
 .navigation button { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 0; background: none; color: var(--detail-color); border-radius: 0; font-size: 13px; font-weight: 600; }
 .navigation button:not(:disabled):hover { background: none; text-decoration: underline; }
+@media (min-width: 761px) {
+  .header { margin-inline: 0; padding-inline: 24px; min-height: 132px; }
+  .body { grid-template-columns: minmax(0, 1fr) 200px; gap: 24px; }
+  .metadata { max-width: 360px; justify-content: flex-end; }
+  .watermark { right: 170px; width: 160px; height: 160px; top: -14px; }
+}
 @media (max-width: 760px) {
   .content { padding-inline: 24px; }
   .header { margin-inline: -24px; padding-inline: 24px; }
