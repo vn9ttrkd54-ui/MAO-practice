@@ -20,7 +20,7 @@ const security=await load("lib/security/request.ts",{"server-only":{}});
 const names=await load("lib/auth/publicNames.ts",{"./publicNameRules.json":{default:rules}});
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,"0")}`;
 const ACTOR=id(1),TARGET=id(2),SESSION=id(3);
-const base={action:"require_name_change",reason:"Reviewed an inappropriate name",confirmation:`CONFIRM ${TARGET}`,version:0,requestId:id(4),currentPassword:"correct-password"};
+const base={action:"require_name_change",reason:"Reviewed an inappropriate name",version:0,requestId:id(4),currentPassword:"correct-password"};
 
 async function invoke(options={}) {
   const effects=[];
@@ -48,19 +48,32 @@ async function invoke(options={}) {
   return {response,body:await response.json(),effects,cookies};
 }
 
-test("moderation rejects cross-origin, oversized/malformed bodies and unconfirmed actions before effects",async()=>{
-  for(const options of [{origin:"https://evil.test"},{raw:"{"},{raw:"x".repeat(9000)},{body:{action:"promote"}},{body:{confirmation:"DELETE"}},{body:{version:-1}},{body:{requestId:"bad"}},{body:{reason:""}}]) {
+test("moderation rejects cross-origin, oversized/malformed bodies and invalid actions before effects",async()=>{
+  for(const options of [{origin:"https://evil.test"},{raw:"{"},{raw:"x".repeat(9000)},{body:{action:"promote"}},{body:{version:-1}},{body:{requestId:"bad"}},{body:{reason:""}}]) {
     const result=await invoke(options);assert.ok(result.response.status>=400);assert.deepEqual(result.effects,[]);
   }
 });
 test("server denies regular users, self, protected targets and administrator deletion",async()=>{
-  for(const options of [{denied:true},{target:ACTOR,body:{confirmation:`CONFIRM ${ACTOR}`}},{targetRole:"admin"},{targetRole:"owner"},{body:{action:"delete",confirmation:`DELETE ${TARGET}`}}]) {
+  for(const options of [{denied:true},{target:ACTOR},{targetRole:"admin"},{targetRole:"owner"},{body:{action:"delete"}}]) {
     const result=await invoke(options);assert.equal(result.response.status,403);assert.deepEqual(result.effects,[]);
   }
 });
 test("fresh actor password and identity are required; limiter failures fail closed",async()=>{
   for(const options of [{badPassword:true},{wrongIdentity:true},{limited:true},{limiterError:true},{body:{currentPassword:""}}]) {
     const result=await invoke(options);assert.ok(result.response.status>=400);assert.equal(result.effects.some(e=>e.name==="moderate_account"),false);assert.doesNotMatch(JSON.stringify(result.body),/private|correct-password/);
+  }
+});
+test("all moderation actions accept verified passwords without typed confirmation, never without verification",async()=>{
+  for(const action of constants.MODERATION_ACTIONS) {
+    const options={role:"owner",body:{action}};
+    const success=await invoke(options);
+    assert.equal(success.response.status,200);
+    assert.equal(success.effects.find(e=>e.name==="moderate_account").params.p_action,action);
+    for(const extra of [{badPassword:true},{body:{action,currentPassword:""}}]) {
+      const denied=await invoke({...options,...extra});
+      assert.ok(denied.response.status>=400);
+      assert.equal(denied.effects.some(e=>e.name==="moderate_account"),false);
+    }
   }
 });
 test("successful action uses verified actor, bounded reason/version, private fresh session and no-store response",async()=>{
@@ -73,7 +86,7 @@ test("successful action uses verified actor, bounded reason/version, private fre
   assert.equal(verifier.key,"public-fixture-key");assert.equal(verifier.config.auth.persistSession,false);
   assert.equal(result.effects.find(e=>e.name==="signout").params.scope,"local");
   assert.deepEqual(result.body,{success:true});
-  const owner=await invoke({role:"owner",body:{action:"delete",confirmation:`DELETE ${TARGET}`}});
+  const owner=await invoke({role:"owner",body:{action:"delete"}});
   assert.equal(owner.response.status,200);assert.equal(owner.effects.find(e=>e.name==="moderate_account").params.p_action,"delete");
 });
 test("Google proof is actor/session-bound, hashed, consumed once, and cannot use deletion proof cookie",async()=>{

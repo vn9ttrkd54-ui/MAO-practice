@@ -4,7 +4,7 @@ import { createClient as createVerifier } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { moderationActor } from "@/lib/services/accountModerationService";
 import { isTrustedMutationRequest, readJsonBody, RequestBodyError } from "@/lib/security/request";
-import { MODERATION_ACTIONS, UUID_PATTERN, moderationConfirmation, type ModerationAction } from "@/lib/auth/moderation";
+import { MODERATION_ACTIONS, UUID_PATTERN, type ModerationAction } from "@/lib/auth/moderation";
 import { GOOGLE_MODERATION_COOKIE } from "@/lib/auth/googleFlow";
 
 const reply = (body: object, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -13,13 +13,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!isTrustedMutationRequest(request)) return reply({ error: "Invalid request origin." }, 403);
   try {
     const { id } = await params;
-    const body = await readJsonBody<{ action?: unknown; reason?: unknown; confirmation?: unknown; currentPassword?: unknown; version?: unknown; requestId?: unknown }>(request, 8192);
+    const body = await readJsonBody<{ action?: unknown; reason?: unknown; currentPassword?: unknown; version?: unknown; requestId?: unknown }>(request, 8192);
     if (!UUID_PATTERN.test(id) || typeof body.action !== "string" || !MODERATION_ACTIONS.includes(body.action as ModerationAction)
       || typeof body.reason !== "string" || body.reason.trim().length < 5 || body.reason.trim().length > 500
       || !Number.isSafeInteger(body.version) || (body.version as number) < 0
       || typeof body.requestId !== "string" || !UUID_PATTERN.test(body.requestId)) return reply({ error: "Check the action, reason, and account version." }, 400);
     const action = body.action as ModerationAction;
-    if (body.confirmation !== moderationConfirmation(action, id)) return reply({ error: "Type the full confirmation shown on this account." }, 400);
     const actor = await moderationActor();
     if (!actor) return reply({ error: "Administrator access required." }, 403);
     if (actor.user.id === id || (action === "delete" && actor.role !== "owner")) return reply({ error: "This action is not permitted." }, 403);

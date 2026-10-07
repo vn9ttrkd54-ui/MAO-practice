@@ -19,7 +19,7 @@
 - Self-targeting, targeting admins/owners, and administrator deletion are denied.
   A database trigger also protects privileged accounts from the existing self-
   deletion API. This includes the last owner. Role changes are not added here.
-- Every moderation action needs a private reason, exact account-ID confirmation,
+- Every moderation action needs a private reason,
   current account version, and fresh **actor** verification. Password verification
   uses an isolated, nonpersistent session; Google-only administrators use a fresh
   same-account OAuth flow and a five-minute, single-use, session-bound proof.
@@ -226,8 +226,8 @@ Wait for Vercel's production deployment to be Ready before using the new control
 1. Create an ordinary disposable user, for example `moderation_test_1` if available.
    Save one practice result/bookmark. Keep that session open in another browser.
 2. In **Admin → Users → that account**, choose **Require a new username**, enter
-   a test reason and your current password (or verify with Google first), and type
-   the exact confirmation shown. Check the private audit entry and neutral name.
+   a test reason and your current password (or verify with Google first), and submit
+   the action. No typed confirmation is required. Check the private audit entry and neutral name.
 3. In the other browser, try an action or refresh. It must stop signed-in activity
    and request a new name. Sign out and confirm the **old** username/password still
    reaches that screen. Choose a different allowed name, then verify old progress,

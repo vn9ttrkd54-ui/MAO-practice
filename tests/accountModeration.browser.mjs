@@ -73,10 +73,11 @@ try {
           const button=page.locator('button:not([type="button"])');
           assert.equal(await button.isDisabled(),true);
           await page.getByLabel("Reason (private audit record)").fill("Testing with an ordinary safe name");
+          assert.equal(await page.getByLabel(/^Type /).count(),0);
+          await button.click();
+          assert.equal(requests.length,0,"password remains required without typed confirmation");
           await page.getByLabel("Your current password").fill("fixture-password");
-          await page.getByLabel(/^Type /).fill("CONFIRM wrong-account");
-          assert.equal(await button.isDisabled(),true);assert.equal(requests.length,0);
-          await page.getByLabel(/^Type /).fill(`${action==="delete"?"DELETE":"CONFIRM"} ${target}`);
+          assert.equal(await button.isDisabled(),false);
           await page.screenshot({path:join(dir,`${mode}-${width}.png`),fullPage:true});
           await button.click();
           if(mode==="owner") {
@@ -85,6 +86,7 @@ try {
             assert.match(await page.getByRole("alert").innerText(),/account changed/);
           } else await page.getByRole("heading",{name:"Updated account"}).waitFor();
           assert.equal(requests[0].version,7);assert.equal(requests[0].action,action);
+          assert.equal(Object.hasOwn(requests[0],"confirmation"),false);
           assert.match(requests[0].requestId,/^[0-9a-f-]{36}$/);
           assert.equal(requests.length,1);
         }
