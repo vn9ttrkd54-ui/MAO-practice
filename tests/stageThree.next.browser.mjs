@@ -5,6 +5,8 @@ import { spawn } from "node:child_process";
 import { createServer } from "node:http";
 import { once } from "node:events";
 import { resolve } from "node:path";
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { chromium } from "@playwright/test";
 import { muQuestions } from "../data/questions/mu.ts";
 import { alphaQuestions } from "../data/questions/alpha.ts";
@@ -100,14 +102,34 @@ try {
   await page.goto(`${origin}/practice/question-bank/${ordered[0].id}`);
   await page.getByRole("button", { name: "Next →", exact: true }).click();
   await page.getByRole("heading", { name: `Question ${ordered[1].number}`, exact: true }).waitFor();
-  for (const [division, questions] of [["alpha", alphaQuestions], ["theta", thetaQuestions]]) {
-    await page.goto(`${origin}/practice/question-bank/${division}`);
-    await tiles.first().waitFor();
-    assert.equal(await tiles.count(), Math.min(120, questions.length));
+  const screenshots = await mkdtemp(resolve(tmpdir(), "division-bank-"));
+  for (const [division, questions, color] of [["mu", muQuestions, "rgb(37, 99, 235)"], ["alpha", alphaQuestions, "rgb(128, 67, 217)"], ["theta", thetaQuestions, "rgb(0, 143, 122)"]]) {
+    for (const width of [1440, 768, 390, 320]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`${origin}/practice/question-bank/${division}`);
+      await tiles.first().waitFor();
+      assert.equal(await tiles.count(), Math.min(120, questions.length));
+      const header = page.locator("main header");
+      assert.equal(await header.locator("strong").textContent(), String(questions.length));
+      assert.equal(await header.evaluate(el => getComputedStyle(el).backgroundColor), color);
+      await header.locator("img").evaluate(img => img.decode());
+      assert.equal(await page.locator("main canvas").count(), 0);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `${division} must fit ${width}px`);
+      for (const label of ["Topic", "Method", "Difficulty", "Progress", "Bookmarks"]) {
+        const select = page.getByLabel(label, { exact: true });
+        assert.equal(await select.evaluate(el => {
+          const rect = el.getBoundingClientRect();
+          const arrow = el.nextElementSibling.getBoundingClientRect();
+          return rect.width >= 120 && rect.height >= 44 && arrow.right <= rect.right && arrow.left >= rect.left;
+        }), true, `${label} select and chevron fit at ${width}px`);
+      }
+      await page.screenshot({ path: resolve(screenshots, `${division}-${width}.png`), fullPage: true });
+    }
   }
   assert.deepEqual(writes, [], "navigation must not write any data");
   assert.deepEqual(errors, []);
   console.log(`PASS: production Next.js routing, native filter URLs without RSC reads, all divisions, filtered/legacy/direct next and previous, expanded return list, and read-only navigation (${documents.length} document requests).`);
+  console.log(`PASS: division colors, available counts, logo loading, dropdown sizing, and no overflow across 12 desktop/mobile views. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
   if (child.exitCode === null) { const exited = once(child, "exit"); child.kill("SIGTERM"); await exited; }
