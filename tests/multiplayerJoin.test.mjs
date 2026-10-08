@@ -56,7 +56,12 @@ test("guest join page displays the 13-plus notice without a checkbox or age ques
 test("signed-in join page preserves account identity rather than accepting a guest nickname", async () => {
   const tree = await page({ signedIn: true });
   assert.deepEqual(nodes(tree).filter(node => node.type === "input").map(input => input.props.name), ["code"]);
-  assert.match(content(tree), /including as a guest/);
+  assert.doesNotMatch(content(tree), /You must be 13 or older|By joining, you confirm/);
+  assert.equal(nodes(tree).some(node => node.props?.id === "join-eligibility"), false);
+  const button = nodes(tree).find(node => node.type === "pending-submit");
+  assert.equal(button.props["aria-describedby"], undefined);
+  assert.equal(button.props.name, "ageConfirmation");
+  assert.equal(button.props.value, "13-or-older");
 });
 
 test("join errors are rendered as text in the dedicated form", async () => {

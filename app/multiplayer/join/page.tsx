@@ -67,18 +67,18 @@ export default async function JoinPrivateRoomPage({ searchParams }: JoinPageProp
               ) : null}
             </div>
             {!user ? <p id="nickname-notice" className={styles.note}>Use a nickname, not your real name or contact information.</p> : null}
-            <div className={styles.eligibility} id="join-eligibility">
+            {!user ? <div className={styles.eligibility} id="join-eligibility">
               <ShieldCheck size={18} aria-hidden="true" />
               <div>
                 <p><strong>You must be 13 or older to play, including as a guest.</strong></p>
                 <p>By joining, you confirm that you are 13 or older and agree to our <Link href="/terms">Terms of Service</Link> and <Link href="/privacy">Privacy Policy</Link>.</p>
               </div>
-            </div>
+            </div> : null}
             <PendingSubmitButton
               name="ageConfirmation"
               value="13-or-older"
               pendingText="Joining room..."
-              aria-describedby="join-eligibility"
+              aria-describedby={!user ? "join-eligibility" : undefined}
               className={styles.submit}
             >
               Join Room <ArrowRight size={18} aria-hidden="true" />
