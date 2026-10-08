@@ -26,7 +26,13 @@ export function createClient() {
   return { auth: { getUser: async () => ({ data: { user: params().has("guest") ? null : { id: "fixture" } } }) }, channel: () => channel, removeChannel: async () => {} };
 }
 export async function joinPublicRoomAction(data: FormData) { document.body.dataset.joined = String(data.get("roomId")); }
-export async function joinPrivateRoomAction(data: FormData) { document.body.dataset.code = String(data.get("code")); }
+export async function joinPrivateRoomAction(data: FormData) {
+  document.body.dataset.submissions = String(Number(document.body.dataset.submissions ?? 0) + 1);
+  document.body.dataset.code = String(data.get("code"));
+  document.body.dataset.nickname = String(data.get("guestNickname") ?? "");
+  document.body.dataset.ageConfirmation = String(data.get("ageConfirmation"));
+  if (params().has("pending")) await new Promise<void>(resolve => Object.assign(window, { releasePrivateJoin: resolve }));
+}
 export async function closePrivateLobbyAction() {}
 export async function spectatePublicRoomAction() {}
 export const fixtureRanks: MultiplayerRankTier[] = ["Novice", "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Master", "Grandmaster", "Legend"];

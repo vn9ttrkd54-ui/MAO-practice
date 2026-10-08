@@ -27,12 +27,6 @@
 .cardHeading { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .cardHeading h2 { font-size:16px; }
 .iconTile { display:grid; place-items:center; flex-shrink:0; width:32px; height:32px; border-radius:6px; color:#2563eb; background:#e4ecfa; }
-.actionCard input { min-height:44px; border-color:#d9e3f2; background:#fff; letter-spacing:0; }
-.actionCard input:focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
-.actionCard form { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:12px; }
-.actionCard form > :last-child { margin-top:0; padding-inline:20px; }
-.actionCard form:has(input[name="guestNickname"]) { grid-template-columns:1fr 1fr; }
-.actionCard form:has(input[name="guestNickname"]) > :last-child { grid-column:1 / -1; }
 .createCard > a { width:auto; display:inline-flex; padding-inline:20px; }
 .publicLayout { display:grid; grid-template-columns:minmax(0,1fr) 270px; align-items:start; gap:24px; margin-top:28px; }
 .publicRooms { min-width:0; }
@@ -60,5 +54,5 @@
 @media(min-width:1800px) { .publicLayout { grid-template-columns:minmax(0,1fr) 320px; } }
 @media(max-width:1100px) { .lobby { padding:24px; } .publicLayout { grid-template-columns:minmax(0,1fr) 240px; gap:20px; } .roomGrid { grid-template-columns:repeat(2,minmax(0,1fr)); } .rankProgress { width:200px; } }
 @media(max-width:760px) { .publicLayout { grid-template-columns:1fr; } .actions { grid-template-columns:1fr; } .rankBanner { flex-wrap:wrap; gap:20px; } .rankProgress { width:100%; } .header { align-items:flex-start; flex-direction:column; gap:12px; } }
-@media(max-width:560px) { .lobby { padding:22px 18px 32px; } .roomGrid { grid-template-columns:1fr; } .title { font-size:28px; } .rankBanner { padding:18px; } .rp { font-size:28px; } .actionCard form,.actionCard form:has(input[name="guestNickname"]) { grid-template-columns:1fr; } .actionCard form > :last-child { grid-column:1; } }
+@media(max-width:560px) { .lobby { padding:22px 18px 32px; } .roomGrid { grid-template-columns:1fr; } .title { font-size:28px; } .rankBanner { padding:18px; } .rp { font-size:28px; } }
 @media(prefers-reduced-motion:reduce) { .roomCard { transition:none; } }

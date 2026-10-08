@@ -56,6 +56,9 @@ export async function joinPrivateRoomAction(formData: FormData) {
   let roomId: string;
   let destination: "lobby" | "play" | "results" = "lobby";
   try {
+    if (value(formData, "ageConfirmation") !== "13-or-older") {
+      throw new Error("You must be 13 or older to play, including as a guest. Join through the private-room join page to confirm.");
+    }
     const room = await joinPrivateRoom({
       code: value(formData, "code"),
       guestNickname: value(formData, "guestNickname"),
@@ -64,7 +67,7 @@ export async function joinPrivateRoomAction(formData: FormData) {
     if (room.status === "in-progress") destination = "play";
     if (room.status === "completed") destination = "results";
   } catch (error) {
-    errorRedirect(error);
+    errorRedirect(error, "/multiplayer/join");
   }
   redirect(`/multiplayer/room/${roomId}${destination === "lobby" ? "" : `/${destination}`}`);
 }

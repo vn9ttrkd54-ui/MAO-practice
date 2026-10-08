@@ -13,15 +13,17 @@ export default function TermsPage() {
   return (
     <LegalPage title="Terms of Service" summary="These terms are the rules for using Mathematics Daily. Please read them before creating an account.">
       <p><strong>Effective date:</strong> {LEGAL_EFFECTIVE_DATE}</p>
+      <p><strong>Last updated:</strong> October 7, 2026</p>
 
       <h2>Agreement and eligibility</h2>
-      <p>By creating an account or using Mathematics Daily, you agree to these Terms and our <Link href="/privacy">Privacy Policy</Link>. You must be at least 13 years old. If you are not old enough to enter a binding agreement where you live, a parent or legal guardian must review and agree to these Terms for you.</p>
+      <p>By creating an account or using Mathematics Daily, you agree to these Terms and our <Link href="/privacy">Privacy Policy</Link>. You must be at least 13 years old, including to play as a guest. If you are not old enough to enter a binding agreement where you live, a parent or legal guardian must review and agree to these Terms for you.</p>
 
       <h2>The service</h2>
-      <p>Mathematics Daily provides math questions, practice tools, progress tracking, challenges, multiplayer games, and an AI tutor. Features may change, be limited, or be discontinued. We may perform maintenance or experience outages.</p>
+      <p>Mathematics Daily is for high-school math competitors, coaches, and teachers age 13 or older. It provides math questions, practice tools, progress tracking, challenges, multiplayer games, and an AI tutor. Features may change, be limited, or be discontinued. We may perform maintenance or experience outages.</p>
 
       <h2>Accounts</h2>
       <p>Provide accurate eligibility information, keep your password confidential, and use only accounts you are authorized to use. You are responsible for activity under your account. Usernames and multiplayer nicknames must follow our <Link href="/acceptable-use">Acceptable Use Policy</Link>. You may delete your account in Account Settings.</p>
+      <p>Do not invite or readmit someone you know is under 13, including as a guest. Report suspected under-13 participation through our <Link href="/contact#underage-player">contact page</Link>. A parent&apos;s or teacher&apos;s permission does not change the minimum age for this service.</p>
 
       <h2>Educational and AI limitations</h2>
       <p>The service is for practice and general educational support. It is not a substitute for a teacher, school, test administrator, or professional advice. Questions, solutions, scoring, adaptive recommendations, and AI tutor responses may contain mistakes. Check important work independently and report suspected errors. Do not rely on Mathematics Daily for official grades, admissions, placement, or other high-stakes decisions.</p>

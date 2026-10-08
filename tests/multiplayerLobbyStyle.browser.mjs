@@ -39,8 +39,14 @@ function load(relative) {
     if (name.includes("LiveRoomListRefresh")) return { LiveRoomListRefresh: () => null };
     if (name.includes("PendingSubmitButton")) return function MockSubmitButton({ children, ...props }) { delete props.pendingText; return React.createElement("button", { type: "submit", ...props }, children); };
     if (name === "@/lib/services/multiplayerService") return services;
-    if (name === "@/lib/supabase/server") return { createClient: async () => ({ auth: { getUser: async () => ({ data: { user: { id: "sample" } } }) } }) };
-    if (name.startsWith("@/")) return load(name.slice(2) + ".tsx");
+    if (name === "@/lib/supabase/server") return { createClient: async () => ({
+      auth: { getUser: async () => ({ data: { user: { id: "sample" } } }) },
+      from: () => { const query = { select: () => query, eq: () => query, maybeSingle: async () => ({ data: { role: "user" }, error: null }) }; return query; },
+    }) };
+    if (name.startsWith("@/")) {
+      const relative = name.slice(2);
+      return load(relative + (fs.existsSync(path.join(root, `${relative}.tsx`)) ? ".tsx" : ".ts"));
+    }
     return require(name);
   }
   new Function("require", "module", "exports", code)(resolve, loadedModule, loadedModule.exports);

@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 const description =
-  "Practice mathematics daily, strengthen your problem-solving skills, take on challenges, and compete with other students in real-time multiplayer.";
+  "Mathematics practice for high-school competitors, coaches, and teachers ages 13 and older. Build problem-solving skills, take on challenges, and compete in real-time multiplayer.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mathematicsdaily.com"),
