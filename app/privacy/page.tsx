@@ -16,7 +16,7 @@ export default function PrivacyPage() {
       summary="This policy explains what information Mathematics Daily handles and the choices available to you."
     >
       <p><strong>Effective date:</strong> {LEGAL_EFFECTIVE_DATE}</p>
-      <p><strong>Last updated:</strong> October 7, 2026</p>
+      <p><strong>Last updated:</strong> October 9, 2026</p>
 
       <h2>Who we are</h2>
       <p>Mathematics Daily is an online mathematics practice and multiplayer service for high-school math competitors, coaches, and teachers age 13 or older. In this policy, “we,” “us,” and “our” refer to Mathematics Daily.</p>
@@ -69,7 +69,10 @@ export default function PrivacyPage() {
 
       <h2>Retention</h2>
       <p>Account, learning, and account match-history records are generally retained while your account remains active. Feedback, security, and diagnostic records may be kept as reasonably needed to operate, secure, and improve the service or meet legal obligations.</p>
-      <p>Private moderation audit records can include the account identifier, username, action, and reason, and are not automatically removed by account deletion. Privacy and under-13 reports require a separate review of these records; any continued retention must be limited to what is necessary and permitted by applicable law.</p>
+      <p>Private moderation audit records contain account identifiers, usernames, the action, its time, and a limited reason. We use them to review administrative decisions, handle disputes, and investigate abuse. Routine audit records become eligible for deletion 90 days after the action; an hourly background job removes eligible records in capped batches. Backlogs or service interruptions can delay removal. Active suspension and required-name-change settings are separate from historical audit records and remain in effect while needed for an existing account.</p>
+      <p>Deleting an account automatically removes audit records about that account from the active database. If the deleted account acted as a moderator for another account, we remove its moderator identifier and replace the related free-text reason with a neutral deletion notice; the other account&apos;s record still follows the 90-day schedule. This applies to self-deletion and operator-handled deletion, including known under-13 accounts. Reports, emails, and provider or backup copies still require the separate review described below.</p>
+      <p>A separate, restricted security receipt contains a random request identifier, cryptographic request fingerprint, hashed moderator identifier, and timestamps, but no username, original reason text, or raw account identifier. It lets us recognize a repeated moderation request and enforce action limits even after audit data is removed. These receipts are pseudonymous, not necessarily anonymous. They expire 24 hours after the action, cannot authorize a replay after expiry, and become eligible for removal by the hourly cleanup job. Deleting a moderator&apos;s account also removes its receipts. We do not use these receipts for advertising or public profiles.</p>
+      <p>Any separate retention needed for a specific legal obligation or necessary, legally permitted security case must have a documented purpose, restricted access, and an expiry or review date. It is not a blanket exception permitting indefinite storage. Known under-13 information is not automatically retained for the full routine audit period.</p>
       <p>Guest multiplayer records are tied to the room, rather than a permanent guest account. Deleting a room removes its guest-player records, reconnect-token hashes, answer submissions, and room results from the active database. A completed room can be deleted once all remaining players acknowledge receipt of the finalized results. Our cleanup job is also scheduled to run every minute, with rooms becoming eligible for removal as follows:</p>
       <ul>
         <li><strong>Finalized results:</strong> two minutes after the results are finalized.</li>

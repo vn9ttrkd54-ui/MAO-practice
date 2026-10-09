@@ -55,7 +55,7 @@ export default function AccountModerationPanel({ targetId, targetRole, actorId, 
       </select></div>
       <p className={`rounded-lg border p-4 ${action === "delete" ? "border-red-200 bg-red-50 text-red-800" : "border-blue-100 bg-blue-50 text-slate-700"}`}>
         {action === "require_name_change" ? "The public name becomes a neutral placeholder immediately. Their old login still works until they choose a new name. Progress and passwords are preserved. This can also be tested with an ordinary allowed username."
-          : action === "delete" ? "Permanent and not reversible here. This deletes this user's account and its linked personal records. Other players' accounts and games are preserved. A private moderation audit is retained. Consider suspension first."
+          : action === "delete" ? "Permanent and not reversible here. This deletes this user's account, linked personal records, and moderation history. Other players' accounts and games are preserved. A limited private retry receipt expires after 24 hours. Consider suspension first."
           : action === "suspend" ? "Stops this account from using signed-in features, including existing sessions. Progress is kept. You can restore access later."
           : "Restores access. If a new name is still required, they must choose it before playing."}
       </p>
@@ -66,6 +66,6 @@ export default function AccountModerationPanel({ targetId, targetRole, actorId, 
       <button disabled={busy || reason.trim().length < 5} className={`rounded-lg px-5 py-3 font-semibold text-white disabled:opacity-40 ${action === "delete" ? "bg-red-700" : "bg-blue-700"}`}>{busy ? "Checking…" : labels[action]}</button>
     </form>}
     <h3 className="mt-8 text-lg font-bold">Recent moderation history</h3>
-    {audit.length ? <ol className="mt-3 space-y-3">{audit.map(entry => <li key={entry.request_id} className="rounded-lg bg-slate-50 p-3 text-sm"><p className="font-semibold">{entry.action.replaceAll("_", " ")} · {new Date(entry.created_at).toLocaleString()}</p><p className="mt-1 whitespace-pre-wrap break-words">{entry.reason}</p><p className="mt-1 break-all text-xs text-slate-500">Actor: {entry.actor_id}</p></li>)}</ol> : <p className="mt-3 text-sm text-slate-500">No moderation actions recorded.</p>}
+    {audit.length ? <ol className="mt-3 space-y-3">{audit.map(entry => <li key={entry.request_id} className="rounded-lg bg-slate-50 p-3 text-sm"><p className="font-semibold">{entry.action.replaceAll("_", " ")} · {new Date(entry.created_at).toLocaleString()}</p><p className="mt-1 whitespace-pre-wrap break-words">{entry.reason}</p><p className="mt-1 break-all text-xs text-slate-500">Actor: {entry.actor_id ?? "Deleted moderator"}</p></li>)}</ol> : <p className="mt-3 text-sm text-slate-500">No moderation actions recorded.</p>}
   </section>;
 }

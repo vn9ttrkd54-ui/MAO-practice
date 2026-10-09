@@ -1,5 +1,10 @@
 # Account moderation (migration 068)
 
+For current retention behavior, also install [migration 069](moderation-retention-rollout.md)
+before deploying the updated audit/deletion notices. It replaces the original
+audit-survives-deletion behavior with account-linked audit removal and a separate
+24-hour retry/rate-limit receipt ledger. Active account restrictions are unchanged.
+
 ## Behavior
 
 - Admins and owners can require a new username for ordinary users. The profile
@@ -47,9 +52,10 @@ present. Existing ownership policies remain in place. The migration **stops and
 rolls back** if an unrelated pre-request hook is already configured; do not erase
 that hook to force installation. Review and compose its checks first.
 
-Moderation tables and old login aliases have no browser-role privileges. The
-audit is append-only through scoped functions, not editable through the service
-role's table API. New endpoints enforce same-origin requests, bounded bodies,
+Moderation tables and old login aliases have no browser-role privileges. Normal
+moderation appends audits through scoped functions, not through the service role's
+table API. Migration 069 adds trusted retention cleanup and deletion redaction;
+application roles still cannot edit audit history directly. New endpoints enforce same-origin requests, bounded bodies,
 rate limits, generic provider/database errors, and no-store responses. Request
 IDs and version checks protect retries and stale administrative pages. Passwords,
 session tokens, and Google tokens are neither audited nor returned.

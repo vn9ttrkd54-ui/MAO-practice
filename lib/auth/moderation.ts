@@ -4,4 +4,4 @@ export const UUID_PATTERN = /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i;
 export type ModerationState = {
   version: number; suspended: boolean; requires_name_change: boolean; previous_login_username: string | null;
 };
-export type ModerationAuditEntry = { request_id: string; actor_id: string; action: string; reason: string; created_at: string };
+export type ModerationAuditEntry = { request_id: string; actor_id: string | null; action: string; reason: string; created_at: string };

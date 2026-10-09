@@ -57,6 +57,7 @@ try {
       assert.equal(await page.getByRole("link",{name:"Continue",exact:true}).getAttribute("href"),"/dashboard");
     } else {
       assert.equal(await page.locator("script").count(),1,"audit text is escaped, not interpreted as markup");
+      await page.getByText("Actor: Deleted moderator",{exact:true}).waitFor();
       if(mode==="protected") {assert.equal(await page.locator("form").count(),0);assert.equal(requests.length,0);}
       else {
         assert.equal(await page.locator('option[value="delete"]').count(),mode==="owner"?1:0);
@@ -68,7 +69,11 @@ try {
           await page.getByRole("alert").waitFor();
           assert.deepEqual(requests[0],{mode:"verify-moderation",targetId:target});
         } else {
-          if(mode==="owner") await page.getByLabel("Action",{exact:true}).selectOption("delete");
+          if(mode==="owner") {
+            await page.getByLabel("Action",{exact:true}).selectOption("delete");
+            await page.getByText(/A limited private retry receipt expires after 24 hours/).waitFor();
+            assert.equal(await page.getByText(/A private moderation audit is retained/).count(),0);
+          }
           const action=await page.getByLabel("Action",{exact:true}).inputValue();
           const button=page.locator('button:not([type="button"])');
           assert.equal(await button.isDisabled(),true);

@@ -36,7 +36,10 @@ test("public reporting covers guests without demanding a child identity document
   assert.match(policy, /invalidates its reconnect token/);
   assert.match(policy, /operator-handled actions, not automatic age detection/);
   assert.match(policy, /restricted backup copies/);
-  assert.match(policy, /moderation audit records.*not automatically removed by account deletion/);
+  assert.match(policy, /Deleting an account automatically removes audit records about that account/);
+  assert.match(policy, /90 days after the action/);
+  assert.match(policy, /expire 24 hours after the action/);
+  assert.match(policy, /pseudonymous, not necessarily anonymous/);
 });
 
 test("manual deletion stays outside the join/game paths and is rollback-first", () => {
@@ -53,7 +56,8 @@ test("manual deletion stays outside the join/game paths and is rollback-first", 
   assert.match(runbook, /does not create an identity\/device ban/);
   assert.match(runbook, /has not deleted anything permanently/);
   assert.match(runbook, /not.*certification of COPPA compliance/);
-  assert.match(runbook, /account_moderation_audit.*survives deletion/);
+  assert.match(runbook, /account_moderation_audit.*automatically removed/);
+  assert.match(runbook, /do not keep an under-13 account's audit for 90 days by default/);
   for (const path of ["app/multiplayer/actions.ts", "app/multiplayer/join/page.tsx"]) {
     assert.doesNotMatch(source(path), /guest-player-removal|underage-player-response|termsAccepted|JoinAgreement/);
   }

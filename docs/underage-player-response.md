@@ -5,7 +5,7 @@ Mathematics Daily is for high-school math competitors, coaches, and teachers age
 ## Before publishing
 
 - Confirm `privacy@mathematicsdaily.com` receives messages and assign an operator to monitor it and respond promptly. Reports must not depend on signing in.
-- Verify migration 047 (host-safe deletion), 049 (room lifecycle), and the existing account moderation migration 068 are installed on the hosted database. Follow [account moderation rollout](account-moderation-rollout.md); installation is database-first and must preserve existing security checks.
+- Verify migration 047 (host-safe deletion), 049 (room lifecycle), account moderation 068, and retention 069 are installed on the hosted database. Follow [account moderation rollout](account-moderation-rollout.md) and [retention rollout](moderation-retention-rollout.md); installation is database-first and must preserve existing security checks.
 - Keep the join-page 13+ notice and Terms/Privacy links. No checkbox or consent claim is a substitute for eligibility rules or actual handling of reports.
 - Keep content, outreach, and classroom invitations aimed at high-school competitors and adults. Do not invite elementary/middle-school children under 13 or advertise the service as available to all ages.
 
@@ -21,7 +21,9 @@ Use the existing admin user directory to locate the exact account. An admin/owne
 
 Account deletion covers account-linked data through the installed cascades. Also investigate separately reported guest participation, feedback or tutor/provider records, and the copies described below. Suspension alone preserves data and is not completion of the deletion request. See [account deletion rollout](account-deletion-rollout.md).
 
-The existing `account_moderation_audit` intentionally survives deletion and includes prior/new usernames, reason and target ID. Do not put a child's real name, date of birth or other unnecessary age evidence in a moderation reason. Review existing rows tied to the exact account as part of the privacy response: retain identifiable material only for a specific necessary, legally permitted purpose with a defined expiry; otherwise arrange targeted redaction/removal by the trusted database operator. Do not assume the account-delete button purges the audit or close the privacy case before resolving this review. Do not weaken the normal moderation permissions or fresh-verification safeguards.
+With migration 069 installed, `account_moderation_audit` records about an account are automatically removed by either self-deletion or owner deletion. A deleted moderator's identifier and related free-text reasons are cleared from other accounts' audits without removing those accounts' active restrictions. Confirm this behavior in the installed database rather than assuming a successful button press covers older deployments. Do not put a child's real name, date of birth or other unnecessary age evidence in a moderation reason. Review reports, email, free text in unrelated records, and provider copies separately; retain identifiable material only for a specific necessary, legally permitted purpose with a defined expiry or review date.
+
+The separate private `account_moderation_receipts` ledger holds request fingerprints and hashed moderator identifiers for retry integrity and action limits. It contains no username, original reason, or raw account ID. These are pseudonymous records, not a claim of anonymization. Receipts expire 24 hours after the original action (including a deletion action) and cannot authorize a later replay. The capped hourly job removes expired receipts. Review any request for earlier removal with the trusted operator; do not keep an under-13 account's audit for 90 days by default or weaken fresh verification, authorization, or rate limits to remove it. Removing a moderator account also removes its receipts.
 
 ## A guest player
 
