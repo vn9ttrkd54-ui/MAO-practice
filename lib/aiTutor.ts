@@ -5,7 +5,7 @@ import { createHash } from "node:crypto";
 import type { Question } from "@/types/question";
 import { containsProgrammingInstructions, revealsFinalAnswer } from "@/lib/tutorSafety";
 import { formatTutorGuidance, getTutorGuidance } from "@/lib/tutorGuidance";
-import { tutorInstructions, tutorWebsiteContext } from "@/lib/tutorInstructions";
+import { TUTOR_EMERGENCY_REPLY, TUTOR_TRUSTED_ADULT_REPLY, tutorInstructions, tutorWebsiteContext } from "@/lib/tutorInstructions";
 
 export const TUTOR_MAX_MESSAGE_LENGTH = 600;
 export const TUTOR_MAX_HISTORY_MESSAGES = 6;
@@ -16,7 +16,7 @@ const configuredDailyLimit = Number.parseInt(process.env.TUTOR_DAILY_MESSAGE_LIM
 export const TUTOR_DAILY_MESSAGE_LIMIT = Number.isSafeInteger(configuredDailyLimit) && configuredDailyLimit > 0
   ? configuredDailyLimit
   : 15;
-export const TUTOR_PROMPT_VERSION = "2.5";
+export const TUTOR_PROMPT_VERSION = "2.6";
 
 const TUTOR_SAFETY_FALLBACK = "I can't give the final answer before you submit or give up. After that, I can explain the complete solution. For now, share your current work and I'll help with the next step.";
 const TUTOR_SCOPE_FALLBACK = "I can help with this math problem or basic questions about Mathematics Daily and Llama Tutor.";
@@ -30,8 +30,8 @@ const TUTOR_RESPONSE_FORMAT = {
     properties: {
       scope: {
         type: "string",
-        enum: ["math", "website", "off_topic"],
-        description: "math: the supplied problem or its needed concepts; website: only supplied public site and tutor facts; off_topic: everything else, including programming.",
+        enum: ["math", "website", "off_topic", "safety_support", "safety_urgent"],
+        description: "math: the supplied problem or its needed concepts; website: supplied public site and tutor facts; safety_support: personal safety concern without immediate danger; safety_urgent: apparent immediate danger; off_topic: other requests, including programming. Ordinary math frustration is not a safety disclosure.",
       },
       message: { type: "string", description: "The brief user-facing reply following all tutoring and scope rules." },
     },
@@ -106,7 +106,7 @@ function outputText(response: Record<string, unknown>) {
 function parsedTutorReply(text: string) {
   const reply: unknown = JSON.parse(text);
   if (!isRecord(reply) || Object.keys(reply).length !== 2
-    || typeof reply.scope !== "string" || !["math", "website", "off_topic"].includes(reply.scope)
+    || typeof reply.scope !== "string" || !["math", "website", "off_topic", "safety_support", "safety_urgent"].includes(reply.scope)
     || typeof reply.message !== "string" || !reply.message.trim()) {
     throw new Error("Invalid tutor reply.");
   }
@@ -198,6 +198,9 @@ export async function createTutorResponse(params: TutorResponseParams): Promise<
     }
 
     const reply = parsedTutorReply(text);
+    // Safety scopes expose only these fixed referrals, never generated advice.
+    if (reply.scope === "safety_support") return { text: TUTOR_TRUSTED_ADULT_REPLY, totalTokens };
+    if (reply.scope === "safety_urgent") return { text: TUTOR_EMERGENCY_REPLY, totalTokens };
     if (reply.scope === "off_topic" || containsProgrammingInstructions(reply.message)) {
       return { text: TUTOR_SCOPE_FALLBACK, totalTokens };
     }

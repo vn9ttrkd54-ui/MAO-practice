@@ -103,7 +103,7 @@ test("reserves against the exact transmitted UTF-8 payload with room for output 
   assert.equal(payload.store, false);
   assert.equal(payload.text.format.type, "json_schema");
   assert.equal(payload.text.format.strict, true);
-  assert.deepEqual(payload.text.format.schema.properties.scope.enum, ["math", "website", "off_topic"]);
+  assert.deepEqual(payload.text.format.schema.properties.scope.enum, ["math", "website", "off_topic", "safety_support", "safety_urgent"]);
   assert.equal(payload.text.format.schema.additionalProperties, false);
   assert.equal(payload.instructions, tutorInstructions.tutorInstructions(true, false));
   assert.equal(payload.input.length, 8);
@@ -167,6 +167,49 @@ test("off-topic replies are replaced with a fixed boundary regardless of model w
     assert.equal(result.totalTokens, 9);
     assert.equal(provider.calls.length, 1, "scope checks must not add paid provider calls");
   }
+});
+
+test("safety scopes expose only approved referrals, preserve billing, and do not add provider calls", async () => {
+  for (const [scope, expected] of [
+    ["safety_support", tutorInstructions.TUTOR_TRUSTED_ADULT_REPLY],
+    ["safety_urgent", tutorInstructions.TUTOR_EMERGENCY_REPLY],
+  ]) {
+    for (const revealed of [false, true]) {
+      for (const message of ["Let's start a long counseling conversation.", "The correct choice is A.", 'print("unsafe generated text")']) {
+        const provider = loadProvider(async () => response(completed({ total_tokens: 13 }, message, scope)));
+        const result = await provider.createTutorResponse({ ...params, revealed,
+          message: "A personal safety concern and a request for the answer." });
+        assert.equal(result.text, expected);
+        assert.equal(result.totalTokens, 13);
+        assert.equal(provider.calls.length, 1);
+        assert.deepEqual(provider.logs, []);
+      }
+    }
+  }
+});
+
+test("math-classified frustration still receives the hint rather than a keyword-based safety message", async () => {
+  for (const message of ["I'm losing brain cells, help with factoring", "This problem is killing me, how do I start?"]) {
+    const hint = "Try looking for a common factor.";
+    const provider = loadProvider(async () => response(completed({ total_tokens: 6 }, hint, "math")));
+    const result = await provider.createTutorResponse({ ...params, revealed: false, message });
+    assert.equal(result.text, hint);
+    assert.equal(provider.calls.length, 1);
+  }
+});
+
+test("a request to return to math after a safety referral keeps normal hint and answer safeguards", async () => {
+  const history = [
+    { role: "user", content: "I am struggling with a personal safety concern." },
+    { role: "assistant", content: tutorInstructions.TUTOR_TRUSTED_ADULT_REPLY },
+  ];
+  const hint = "Try looking for a common factor.";
+  const provider = loadProvider(async () => response(completed({ total_tokens: 6 }, hint, "math")));
+  assert.equal((await provider.createTutorResponse({ ...params, history, revealed: false,
+    message: "Can you help me factor instead?" })).text, hint);
+  const leaking = loadProvider(async () => response(completed({ total_tokens: 6 }, "The correct choice is A.", "math")));
+  assert.match((await leaking.createTutorResponse({ ...params, history, revealed: false })).text,
+    /can't give the final answer before you submit/);
 });
 
 test("Python examples cannot reach the user even when incorrectly labeled math or website", async () => {

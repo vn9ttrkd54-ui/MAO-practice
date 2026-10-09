@@ -8,6 +8,7 @@ import { createServer } from "node:http";
 import { chromium, expect } from "@playwright/test";
 
 const require = createRequire(import.meta.url);
+const tutorNotice = "Mathematics Daily is for studying and practicing mathematics. Its AI tutor is designed for math learning, may make mistakes, and is not a medical, counseling, or emergency service.";
 const webpack = require("next/dist/compiled/webpack/webpack");
 const root = resolve(import.meta.dirname, "..");
 const dir = await mkdtemp(join(tmpdir(), "stage-five-ui-"));
@@ -36,7 +37,7 @@ let browser;
 try {
   browser = await chromium.launch({ headless: true });
   async function open(options = {}) {
-    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    const page = await browser.newPage({ viewport: options.viewport ?? { width: 1280, height: 900 } });
     const state = { posts: [], gets: 0, errors: [], held: [], mode: "success", getMode: "success", remaining: 14, ...options };
     page.on("pageerror", error => state.errors.push(error.message));
     await page.clock.install(); await page.clock.pauseAt(new Date());
@@ -64,6 +65,8 @@ try {
     assert.equal(state.gets, 0, "closed tutor makes no allowance request");
     await page.getByRole("button", { name: "Open Llama Tutor", exact: true }).click();
     await expect.poll(() => state.gets).toBe(1);
+    await expect(page.locator("#llama-tutor-notice")).toHaveText(tutorNotice);
+    await expect(page.getByLabel("Message Llama Tutor")).toHaveAttribute("aria-describedby", "llama-tutor-notice");
     if (state.getMode === "success") await expect(page.getByLabel("Message Llama Tutor")).toBeEnabled();
     return { page, state };
   }
@@ -75,6 +78,36 @@ try {
     for (const route of state.held) await route.abort().catch(() => undefined);
     assert.deepEqual(state.errors, []);
     await page.close();
+  }
+  for (const viewport of [{ width: 1280, height: 900 }, { width: 1024, height: 700 }]) {
+    const { page, state } = await open({ viewport });
+    await send(page);
+    await page.getByText("Try drawing the tangent first.", { exact: true }).waitFor();
+    await expect(page.locator("#llama-tutor-notice")).toBeVisible();
+    const bounds = await page.evaluate(() => {
+      const box = selector => {
+        const element = document.querySelector(selector), rect = element.getBoundingClientRect();
+        return { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right,
+          clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
+          clientHeight: element.clientHeight, scrollHeight: element.scrollHeight };
+      };
+      return { panel: box("#llama-tutor-panel"), notice: box("#llama-tutor-notice"),
+        input: box("textarea"), send: box('button[aria-label="Send message"]') };
+    });
+    assert.ok(bounds.panel.top >= 0 && bounds.panel.bottom <= viewport.height, "chat stays inside the viewport");
+    assert.ok(bounds.panel.left >= 0 && bounds.panel.right <= viewport.width, "chat does not overflow horizontally");
+    assert.ok(bounds.notice.bottom <= bounds.input.top, "notice does not overlap the composer");
+    assert.ok(bounds.notice.scrollWidth <= bounds.notice.clientWidth && bounds.notice.scrollHeight <= bounds.notice.clientHeight,
+      "notice fits without clipping");
+    for (const control of [bounds.input, bounds.send]) {
+      assert.ok(control.top >= bounds.panel.top && control.bottom <= bounds.panel.bottom, "composer controls remain inside the panel");
+    }
+    assert.equal(state.gets, 1, "the notice adds no allowance calls");
+    assert.equal(state.posts.length, 1, "the notice adds no tutor requests");
+    await page.screenshot({ path: join(dir, `tutor-notice-${viewport.width}.png`) });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.locator("#llama-tutor-panel")).not.toBeVisible();
+    await close(page, state);
   }
   {
     const { page, state } = await open({ mode: "busy" });
@@ -216,7 +249,8 @@ try {
     await expect(page.getByLabel("Message Llama Tutor")).toBeEnabled();
     await close(page, state);
   }
-  console.log("PASS: tutor bounded busy retries, single-flight send, restored drafts, allowance/post deadlines, no ambiguous resends, sleep/thought bubbles, tab-switch continuity, cancellation, account/question changes, and stale response isolation.");
+  console.log("PASS: readable persistent tutor notice, bounded busy retries, single-flight send, restored drafts, allowance/post deadlines, no ambiguous resends, sleep/thought bubbles, tab-switch continuity, cancellation, account/question changes, and stale response isolation.");
+  console.log(`Notice screenshots: ${join(dir, "tutor-notice-1280.png")} and ${join(dir, "tutor-notice-1024.png")}`);
   console.log(`Screenshots: ${join(dir, "tutor-waiting.png")} and ${join(dir, "tutor-busy.png")}`);
 } finally {
   await browser?.close();
