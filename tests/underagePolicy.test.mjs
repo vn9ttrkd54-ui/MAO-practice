@@ -4,15 +4,21 @@ import test from "node:test";
 
 const source = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("home, metadata and legal pages consistently describe the high-school 13-plus audience", () => {
-  for (const path of ["app/page.tsx", "app/layout.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"]) {
+test("metadata and legal pages consistently describe the high-school 13-plus audience", () => {
+  for (const path of ["app/layout.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"]) {
     const text = source(path);
     assert.match(text, /high-school/);
     assert.match(text, /coaches, and teachers/);
     assert.match(text, /13\+|13 (?:and|or) older/);
   }
-  assert.match(source("app/page.tsx"), /Practice math\. Improve skills\. Compete\./);
   assert.match(source("app/terms/page.tsx"), /Do not invite or readmit someone you know is under 13, including as a guest/);
+});
+
+test("homepage omits the audience sentence without changing the tagline or Play destination", () => {
+  const home = source("app/page.tsx");
+  assert.doesNotMatch(home, /For high-school math competitors, coaches, and teachers\. Ages 13\+\./);
+  assert.match(home, /Practice math\. Improve skills\. Compete\./);
+  assert.match(home, /href="\/multiplayer"/);
 });
 
 test("public reporting covers guests without demanding a child identity document", () => {

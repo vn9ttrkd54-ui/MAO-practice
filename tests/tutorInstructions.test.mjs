@@ -3,6 +3,19 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import { TUTOR_EMERGENCY_REPLY, TUTOR_TRUSTED_ADULT_REPLY, tutorInstructions, tutorWebsiteContext } from "../lib/tutorInstructions.ts";
 
+test("the math formatting instructions include a correctly JSON-escaped example for every tutoring stage", () => {
+  for (const revealed of [false, true]) {
+    for (const firstMessage of [false, true]) {
+      const prompt = tutorInstructions(revealed, firstMessage);
+      assert.match(prompt, /Put long formulas on their own line using display math/);
+      assert.match(prompt, /not control characters or literal Unicode escape text/);
+      const example = prompt.match(/valid serialized output is: (\{[^\n]+\}) Never leave/)[1];
+      assert.equal(JSON.parse(example).message,
+        String.raw`Differentiate \(f(x)=x^2\) using the power rule. Write the derivative as \(\frac{d}{dx}f(x)\).`);
+    }
+  }
+});
+
 test("the approved math-only notice is visible in chat and included in trusted public facts", () => {
   const notice = "Mathematics Daily is for studying and practicing mathematics. Its AI tutor is designed for math learning, may make mistakes, and is not a medical, counseling, or emergency service.";
   const source = readFileSync(new URL("../components/practice/LlamaTutor.tsx", import.meta.url), "utf8");

@@ -14,10 +14,12 @@ try {
     await page.goto(origin);
     await page.getByRole("heading", { name: "Mathematics Daily", exact: true }).waitFor();
     const audience = page.getByText("For high-school math competitors, coaches, and teachers. Ages 13+.", { exact: true });
-    assert.ok(await audience.isVisible());
-    const bounds = await audience.boundingBox();
+    assert.equal(await audience.count(), 0);
+    const play = page.getByRole("link", { name: "Play", exact: true });
+    const bounds = await play.boundingBox();
     assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= width);
-    assert.equal(await page.getByRole("link", { name: "Play", exact: true }).getAttribute("href"), "/multiplayer");
+    assert.equal(await play.getAttribute("href"), "/multiplayer");
+    assert.ok(await page.getByText("Practice math. Improve skills. Compete.", { exact: true }).isVisible());
     assert.match(await page.locator('meta[name="description"]').getAttribute("content"), /high-school.*13 and older/);
     await page.screenshot({ path: `/tmp/underage-home-${width}.png`, fullPage: true });
 
@@ -50,7 +52,7 @@ try {
     assert.equal(await page.getByRole("checkbox").count(), 0);
     assert.equal(await page.locator('input[type="date"]').count(), 0);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-    console.log(`PASS public audience, guest reporting, policies and unchanged join form at ${width}px`);
+    console.log(`PASS removed homepage sentence, preserved audience metadata, guest reporting, policies and unchanged join form at ${width}px`);
   }
   assert.deepEqual(errors, []);
 } finally { await browser.close(); }

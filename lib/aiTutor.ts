@@ -6,6 +6,7 @@ import type { Question } from "@/types/question";
 import { containsProgrammingInstructions, revealsFinalAnswer } from "@/lib/tutorSafety";
 import { formatTutorGuidance, getTutorGuidance } from "@/lib/tutorGuidance";
 import { TUTOR_EMERGENCY_REPLY, TUTOR_TRUSTED_ADULT_REPLY, tutorInstructions, tutorWebsiteContext } from "@/lib/tutorInstructions";
+import { normalizeTutorMath } from "@/lib/tutorMath";
 
 export const TUTOR_MAX_MESSAGE_LENGTH = 600;
 export const TUTOR_MAX_HISTORY_MESSAGES = 6;
@@ -16,7 +17,7 @@ const configuredDailyLimit = Number.parseInt(process.env.TUTOR_DAILY_MESSAGE_LIM
 export const TUTOR_DAILY_MESSAGE_LIMIT = Number.isSafeInteger(configuredDailyLimit) && configuredDailyLimit > 0
   ? configuredDailyLimit
   : 15;
-export const TUTOR_PROMPT_VERSION = "2.6";
+export const TUTOR_PROMPT_VERSION = "2.7";
 
 const TUTOR_SAFETY_FALLBACK = "I can't give the final answer before you submit or give up. After that, I can explain the complete solution. For now, share your current work and I'll help with the next step.";
 const TUTOR_SCOPE_FALLBACK = "I can help with this math problem or basic questions about Mathematics Daily and Llama Tutor.";
@@ -33,7 +34,7 @@ const TUTOR_RESPONSE_FORMAT = {
         enum: ["math", "website", "off_topic", "safety_support", "safety_urgent"],
         description: "math: the supplied problem or its needed concepts; website: supplied public site and tutor facts; safety_support: personal safety concern without immediate danger; safety_urgent: apparent immediate danger; off_topic: other requests, including programming. Ordinary math frustration is not a safety disclosure.",
       },
-      message: { type: "string", description: "The brief user-facing reply following all tutoring and scope rules." },
+      message: { type: "string", description: "The brief user-facing reply following all tutoring and scope rules. Delimit LaTeX math and JSON-escape its backslashes." },
     },
     required: ["scope", "message"],
     additionalProperties: false,
@@ -204,8 +205,10 @@ export async function createTutorResponse(params: TutorResponseParams): Promise<
     if (reply.scope === "off_topic" || containsProgrammingInstructions(reply.message)) {
       return { text: TUTOR_SCOPE_FALLBACK, totalTokens };
     }
-    const safetyFiltered = !params.revealed && revealsFinalAnswer(reply.message, params.question);
-    return { text: safetyFiltered ? TUTOR_SAFETY_FALLBACK : reply.message, totalTokens };
+    const formatted = normalizeTutorMath(reply.message);
+    if (containsProgrammingInstructions(formatted)) return { text: TUTOR_SCOPE_FALLBACK, totalTokens };
+    const safetyFiltered = !params.revealed && revealsFinalAnswer(formatted, params.question);
+    return { text: safetyFiltered ? TUTOR_SAFETY_FALLBACK : formatted, totalTokens };
   } catch (error) {
     if (error instanceof TutorProviderError) throw error;
     // A timeout, transport failure, or unreadable body does not establish zero cost.

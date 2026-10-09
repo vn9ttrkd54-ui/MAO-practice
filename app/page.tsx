@@ -61,10 +61,6 @@ export default function Home() {
         Practice math. Improve skills. Compete.
       </p>
 
-      <p className="relative mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
-        For high-school math competitors, coaches, and teachers. Ages 13+.
-      </p>
-
       <Link
         href="/multiplayer"
         className={`${styles.play} inline-flex items-center justify-center bg-black font-semibold text-white transition hover:bg-gray-800`}

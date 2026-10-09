@@ -6,6 +6,8 @@ import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { createServer } from "node:http";
 import { chromium, expect } from "@playwright/test";
+import { normalizeTutorMath } from "../lib/tutorMath.ts";
+import { chainRuleFormula, garbledTutorMessage } from "./browserFixtures/tutorMath.mjs";
 
 const require = createRequire(import.meta.url);
 const tutorNotice = "Mathematics Daily is for studying and practicing mathematics. Its AI tutor is designed for math learning, may make mistakes, and is not a medical, counseling, or emergency service.";
@@ -26,8 +28,14 @@ const bundle = await readFile(join(dir, "client.js"));
 const pet = await readFile(join(root, "public/llama-pet.png"));
 const cssDir = join(root, ".next/static/css");
 const css = (await Promise.all((await readdir(cssDir)).filter(name => name.endsWith(".css")).map(name => readFile(join(cssDir, name), "utf8")))).join("\n");
+const fonts = new Map();
+const mediaDir = join(root, ".next/static/media");
+for (const name of (await readdir(mediaDir)).filter(name => name.endsWith(".woff2"))) {
+  fonts.set(`/_next/static/media/${name}`, await readFile(join(mediaDir, name)));
+}
 const server = createServer((req, res) => {
   if (req.url === "/llama-pet.png") { res.setHeader("Content-Type", "image/png"); res.end(pet); return; }
+  if (fonts.has(req.url)) { res.setHeader("Content-Type", "font/woff2"); res.end(fonts.get(req.url)); return; }
   res.setHeader("Content-Type", req.url === "/client.js" ? "text/javascript; charset=utf-8" : "text/html; charset=utf-8");
   res.end(req.url === "/client.js" ? bundle : `<style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
 });
@@ -56,7 +64,7 @@ try {
       if (state.mode === "hold") { state.held.push(route); return; }
       if (state.mode === "busy") return route.fulfill({ status: 429, headers: { "Retry-After": "3" }, json: { code: "busy", retryAfterMs: 3000 } });
       if (state.mode === "fail") return route.fulfill({ status: 503, json: { code: "unavailable" } });
-      return route.fulfill({ json: { message: "Try drawing the tangent first.", messagesRemaining: state.remaining } });
+      return route.fulfill({ json: { message: state.reply ?? "Try drawing the tangent first.", messagesRemaining: state.remaining } });
     });
     await page.goto(origin);
     await page.getByRole("button", { name: "Open Llama Tutor", exact: true }).waitFor().catch(async error => {
@@ -78,6 +86,36 @@ try {
     for (const route of state.held) await route.abort().catch(() => undefined);
     assert.deepEqual(state.errors, []);
     await page.close();
+  }
+  for (const viewport of [{ width: 1280, height: 900 }, { width: 1024, height: 700 }]) {
+    const { page, state } = await open({ viewport, reply: normalizeTutorMath(garbledTutorMessage) });
+    await send(page);
+    await expect(page.locator("#llama-tutor-panel .katex")).toHaveCount(2);
+    await expect(page.locator("#llama-tutor-panel .katex-error")).toHaveCount(0);
+    await expect(page.locator('#llama-tutor-panel annotation[encoding="application/x-tex"]').first()).toHaveText(chainRuleFormula);
+    const loadedMathFonts = await page.evaluate(async () => {
+      await document.fonts.ready;
+      return [...document.fonts].filter(font => font.family.startsWith("KaTeX") && font.status === "loaded").map(font => font.family);
+    });
+    assert.ok(loadedMathFonts.includes("KaTeX_Main") && loadedMathFonts.includes("KaTeX_Math"), "real math fonts load locally");
+    const layout = await page.locator("#llama-tutor-panel .katex-display").evaluate(element => {
+      const bubble = element.closest(".rounded-lg"), panel = document.querySelector("#llama-tutor-panel");
+      return { formulaWidth: element.clientWidth, formulaScroll: element.scrollWidth,
+        overflow: getComputedStyle(element).overflowX,
+        bubbleWidth: bubble.clientWidth, bubbleScroll: bubble.scrollWidth,
+        panelWidth: panel.clientWidth, panelScroll: panel.scrollWidth };
+    });
+    assert.ok(layout.formulaScroll > layout.formulaWidth, "the full derivative is wider than the chat bubble");
+    assert.equal(layout.overflow, "auto", "long formulas stay accessible by scrolling");
+    assert.ok(layout.bubbleScroll <= layout.bubbleWidth && layout.panelScroll <= layout.panelWidth,
+      "math does not stretch or overflow the chat layout");
+    assert.ok(await page.locator("#llama-tutor-panel .katex-display").evaluate(element => {
+      element.scrollLeft = element.scrollWidth;
+      return element.scrollLeft > 0;
+    }), "the right-hand side of the long equation can be reached");
+    assert.equal(state.posts.length, 1, "math formatting needs no extra request");
+    await page.screenshot({ path: join(dir, `tutor-math-${viewport.width}.png`) });
+    await close(page, state);
   }
   for (const viewport of [{ width: 1280, height: 900 }, { width: 1024, height: 700 }]) {
     const { page, state } = await open({ viewport });
@@ -249,7 +287,8 @@ try {
     await expect(page.getByLabel("Message Llama Tutor")).toBeEnabled();
     await close(page, state);
   }
-  console.log("PASS: readable persistent tutor notice, bounded busy retries, single-flight send, restored drafts, allowance/post deadlines, no ambiguous resends, sleep/thought bubbles, tab-switch continuity, cancellation, account/question changes, and stale response isolation.");
+  console.log("PASS: repaired KaTeX math and scrollable long formulas, readable persistent tutor notice, bounded busy retries, single-flight send, restored drafts, allowance/post deadlines, no ambiguous resends, sleep/thought bubbles, tab-switch continuity, cancellation, account/question changes, and stale response isolation.");
+  console.log(`Math screenshots: ${join(dir, "tutor-math-1280.png")} and ${join(dir, "tutor-math-1024.png")}`);
   console.log(`Notice screenshots: ${join(dir, "tutor-notice-1280.png")} and ${join(dir, "tutor-notice-1024.png")}`);
   console.log(`Screenshots: ${join(dir, "tutor-waiting.png")} and ${join(dir, "tutor-busy.png")}`);
 } finally {

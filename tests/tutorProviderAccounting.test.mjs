@@ -8,6 +8,8 @@ import ts from "typescript";
 import * as tutorSafety from "../lib/tutorSafety.ts";
 import * as tutorGuidance from "../lib/tutorGuidance.ts";
 import * as tutorInstructions from "../lib/tutorInstructions.ts";
+import * as tutorMath from "../lib/tutorMath.ts";
+import { chainRuleFormula, garbledTutorJson } from "./browserFixtures/tutorMath.mjs";
 
 // Run the real wrapper with isolated environment values and an in-memory fetch.
 // No Next server, real credentials, or provider requests are used by this suite.
@@ -36,6 +38,7 @@ function loadProvider(fetchImpl, { apiKey = fixtureKey, model, dailyLimit } = {}
     "@/lib/tutorSafety": tutorSafety,
     "@/lib/tutorGuidance": tutorGuidance,
     "@/lib/tutorInstructions": tutorInstructions,
+    "@/lib/tutorMath": tutorMath,
   };
   runInNewContext(outputText, {
     exports: provider,
@@ -231,6 +234,31 @@ test("allowed website explanations and LaTeX hints pass through without schema l
     const provider = loadProvider(async () => response(completed({ total_tokens: 7 }, message, scope)));
     const result = await provider.createTutorResponse({ ...params, revealed: false });
     assert.equal(result.text, message);
+  }
+});
+
+test("mis-escaped math from valid provider JSON is repaired with one call and unchanged billing", async () => {
+  const provider = loadProvider(async () => response({
+    ...completed({ total_tokens: 23 }), output_text: garbledTutorJson,
+  }));
+  const result = await provider.createTutorResponse(params);
+  assert.ok(result.text.includes(`\\[${chainRuleFormula}\\]`));
+  assert.ok(result.text.includes(String.raw`\(x=\pi^2\)`));
+  assert.doesNotMatch(result.text, /[\u0008\u000c]|\\u03c0/);
+  assert.equal(result.totalTokens, 23);
+  assert.equal(provider.calls.length, 1);
+  assert.deepEqual(provider.logs, []);
+});
+
+test("repaired LaTeX still passes the existing final-answer check before display", async () => {
+  for (const revealed of [false, true]) {
+    const output = String.raw`{"scope":"math","message":"The result is \boxed{1}."}`;
+    const provider = loadProvider(async () => response({ ...completed({ total_tokens: 8 }), output_text: output }));
+    const result = await provider.createTutorResponse({ ...params, revealed });
+    if (revealed) assert.equal(result.text, String.raw`The result is \(\boxed{1}\).`);
+    else assert.match(result.text, /can't give the final answer before you submit/);
+    assert.equal(result.totalTokens, 8);
+    assert.equal(provider.calls.length, 1);
   }
 });
 
