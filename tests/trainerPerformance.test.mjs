@@ -120,6 +120,23 @@ async function selectionFixture() {
   return { state, items, read: service.getNextTrainerSelection };
 }
 
+test("Trainer honors each starting difficulty and keeps the existing nearest eligible fallback", async () => {
+  const { state, items, read } = await selectionFixture();
+  const starters = items.slice(0, 5);
+  starters.forEach((item, index) => { item.difficulty = index + 1; });
+  for (const difficulty of [1, 2, 3, 4, 5]) {
+    const result = await read(starters, { division: "Mu", previousQuestionId: null, targetDifficulty: difficulty }, { includeLevel: true });
+    assert.equal(result.question.difficulty, difficulty);
+    assert.deepEqual(result.level, state.level, "difficulty does not replace earned level");
+  }
+  assert.equal(state.fetches.length, 5);
+  assert.equal(state.calls.length, 10, "one progress and one level read per start");
+  const now = Date.now();
+  const progress = new Map([[starters[4].id, { attempts: 1, correct: 1, lastResult: "correct", lastCorrectAt: now }]]);
+  assert.equal(selectNextTrainerQuestion(starters, progress, { division: "Mu", targetDifficulty: 5 }, now).difficulty, 4);
+  assert.equal(selectNextTrainerQuestion(starters.slice(0, 3), new Map(), { division: "Mu", targetDifficulty: 5 }).difficulty, 3);
+});
+
 test("Trainer batches 1105 rows into three scoped reads, omits timing arrays, and reads level only at start", async () => {
   const { state, items, read } = await selectionFixture();
   state.progress = items.map(q => ({ user_id: "first", question_id: q.id, attempts: 4, correct: 3, last_result: "incorrect", last_correct_at: null }));

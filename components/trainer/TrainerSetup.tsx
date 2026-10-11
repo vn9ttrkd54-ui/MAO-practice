@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, ChevronDown } from "lucide-react";
 import logo from "@/app/apple-icon.png";
 import type { Division } from "@/types/question";
 import TrainerDivisionAnimation from "./TrainerDivisionAnimation";
@@ -7,15 +7,17 @@ import styles from "./trainer-setup.module.css";
 
 type TrainerSetupProps = {
   division: Division;
+  startingDifficulty: number | null;
   error: string | null;
   loading: boolean;
   onDivisionChange: (division: Division) => void;
+  onStartingDifficultyChange: (difficulty: number | null) => void;
   onStart: () => void;
 };
 
 const divisions = [{ name: "Mu", symbol: "Μ" }, { name: "Alpha", symbol: "Α" }, { name: "Theta", symbol: "Θ" }] as const;
 
-export default function TrainerSetup({ division, error, loading, onDivisionChange, onStart }: TrainerSetupProps) {
+export default function TrainerSetup({ division, startingDifficulty, error, loading, onDivisionChange, onStartingDifficultyChange, onStart }: TrainerSetupProps) {
   return (
     <main className={`${styles.page} ${styles[division.toLowerCase()]}`}>
       <div className={styles.inner}>
@@ -38,6 +40,21 @@ export default function TrainerSetup({ division, error, loading, onDivisionChang
               </label>
             ))}
           </fieldset>
+          <div className={styles.difficulty}>
+            <label htmlFor="trainer-starting-difficulty">Starting difficulty</label>
+            <div className={styles.selectWrap}>
+              <select
+                id="trainer-starting-difficulty"
+                value={startingDifficulty ?? "auto"}
+                disabled={loading}
+                onChange={event => onStartingDifficultyChange(event.target.value === "auto" ? null : Number(event.target.value))}
+              >
+                <option value="auto">Auto</option>
+                {[1, 2, 3, 4, 5].map(difficulty => <option key={difficulty} value={difficulty}>{difficulty} / 5</option>)}
+              </select>
+              <ChevronDown size={18} aria-hidden="true" />
+            </div>
+          </div>
           {error && <p role="alert" className={styles.error}>{error}</p>}
           <button type="submit" disabled={loading} aria-busy={loading} className={styles.start}>
             {loading ? "Loading Trainer..." : "Start Trainer"}<ArrowRight size={19} aria-hidden="true" />

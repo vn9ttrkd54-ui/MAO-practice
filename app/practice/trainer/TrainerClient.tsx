@@ -93,6 +93,8 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   const [division, setDivision] =
     useState<Division>("Mu");
 
+  const [startingDifficulty, setStartingDifficulty] = useState<number | null>(null);
+
   const [
     currentQuestion,
     setCurrentQuestion,
@@ -341,7 +343,7 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
 
     try {
       const { question: firstQuestion, level: currentLevel, userId } = await getNextTrainerSelection(
-        items, { division, previousQuestionId: null }, { signal: controller.signal, includeLevel: true },
+        items, { division, previousQuestionId: null, targetDifficulty: startingDifficulty }, { signal: controller.signal, includeLevel: true },
       );
       if (selectionRequest.current !== controller || controller.signal.aborted) return;
 
@@ -606,10 +608,15 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
     return (
       <TrainerSetup
         division={division}
+        startingDifficulty={startingDifficulty}
         error={startError ?? storageWarning}
         loading={isSaving}
         onDivisionChange={(newDivision) => {
           setDivision(newDivision);
+          setStartError(null);
+        }}
+        onStartingDifficultyChange={(difficulty) => {
+          setStartingDifficulty(difficulty);
           setStartError(null);
         }}
         onStart={() => {
