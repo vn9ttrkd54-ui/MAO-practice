@@ -180,8 +180,23 @@ try {
   assert.equal(readyCalls.length,beforeReady,'no periodic Ready requests');
   assert.ok(connections.filter(c=>c.action==='heartbeat').length-beforeHeartbeats<=3,'existing five-second heartbeat retained');
   assert.equal(reads.length,beforeReads,'no new periodic roster polling');
+  change({room:{scoringVersion:3}});await signal();
+  const rules=page.getByRole('region',{name:'How scoring works'});
+  await rules.getByText('Correct answers earn 750 points plus up to 750 speed bonus, based on the time remaining. The faster you answer, the bigger the bonus.',{exact:true}).waitFor();
+  await rules.getByText('Wrong answers always lose 300 points, regardless of when you answer.',{exact:true}).waitFor();
+  await rules.getByText('Blank answers, timeouts and giving up earn 0 points.',{exact:true}).waitFor();
+  assert.equal(await page.getByText(scoringCopy,{exact:true}).count(),0,'version 3 cannot display version-2 penalties');
+  for(const visibility of ['private','public']) {
+    change({room:{visibility}});await signal();
+    for(const width of [1280,390,320]) {
+      await page.setViewportSize({width,height:1000});
+      assert.equal(await rules.isVisible(),true);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'fixed-penalty scoring fits desktop and mobile');
+      await page.screenshot({path:join(dir,`fixed-${visibility}-${width}.png`),fullPage:true});
+    }
+  }
   assert.deepEqual(errors,[]);
-  console.log('PASS: Ready connection gating, confirmed state, retry, host/non-host access, difficulty invalidation, stale responses, ten/five-second timers, reconnect, private controls and mobile/desktop layout.');
+  console.log(`PASS: Ready gating/retry, settings/stale responses, timers/reconnect, private controls, unchanged traffic, and fixed-penalty scoring on desktop/mobile. Screenshots: ${dir}`);
   await page.close();
 } finally {
   await browser?.close();await new Promise(resolve=>server.close(resolve));

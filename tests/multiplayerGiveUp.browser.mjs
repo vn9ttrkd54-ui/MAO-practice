@@ -39,7 +39,7 @@ try {
     intermissionEndsAt:null,players:[{playerId:"p",displayName:"Tester",isGuest:true,score:0,hasSubmittedCurrentQuestion:false}],
     spectators:[],upcomingQuestion:null});
   const errors=[];
-  async function setup({version=2,duration=90,width=1280,failures=0,staleSubmissionSnapshot=false,result}={}) {
+  async function setup({version=3,duration=90,width=1280,failures=0,staleSubmissionSnapshot=false,result}={}) {
     const page=await browser.newPage({viewport:{width,height:1000}});
     page.on("pageerror",e=>errors.push(e.message));
     const initial={...base(),scoringVersion:version,questionDurationSeconds:duration,
@@ -62,11 +62,13 @@ try {
   const giveUp=page=>page.getByRole("button",{name:"Give up · 0 points",exact:true});
   const removedCopy="Correct: 1,000 + up to 500 speed bonus · Wrong: −300 · Blank / Give up: 0";
   const answered=page=>page.getByRole("list",{name:"Round standings"}).getByText("Answered",{exact:true});
+  for(const version of [2,3]) {
   for(const width of [1280,390]) {
-    const f=await setup({width,failures:1,staleSubmissionSnapshot:true}), {page}=f;
+    const f=await setup({version,width,failures:1,staleSubmissionSnapshot:true}), {page}=f;
     await expect(giveUp(page)).toBeEnabled();
     assert.equal(await page.getByRole("button",{name:/skip/i}).count(),0);
     await expect(page.getByText(removedCopy,{exact:true})).toHaveCount(0);
+    await expect(page.getByText(/Legacy scoring:/)).toHaveCount(0);
     if(process.env.SCORING_SCREENSHOT_DIR)await page.screenshot({path:join(process.env.SCORING_SCREENSHOT_DIR,`question-${width}.png`),fullPage:true});
     await page.getByRole("button",{name:"B 3",exact:true}).click();
     await giveUp(page).click();
@@ -85,6 +87,7 @@ try {
     if(process.env.SCORING_SCREENSHOT_DIR)await page.screenshot({path:join(process.env.SCORING_SCREENSHOT_DIR,`answered-${width}.png`),fullPage:true});
     assert.equal(await giveUp(page).count(),0);
     await page.close();
+  }
   }
   for(const selectedAnswer of [null,"B"]) {
     const f=await setup({failures:20}),{page}=f;
@@ -127,8 +130,19 @@ try {
   for(const text of ["-300 total points","-300 pts","Blank / Give up · 0","Incorrect · -300","Correct · +1250"])
     await expect(final.page.getByText(text,{exact:true})).toBeVisible();
   await final.page.close();
+  const fixed=await setup({result:{
+    roomId:"test",viewerMode:"player",placement:2,score:2525,ranked:false,ratingChange:null,
+    finalLeaderboard:[{...base().players[0],score:2525,placement:2}],
+    rounds:[[null,false,0],["B",false,-300],["A",true,1417],["A",true,1408]].map(([selectedAnswer,correct,pointsEarned],i)=>({
+      questionId:42+i,questionNumber:i+1,question:"What is 1 + 1?",choices:["2","3","4","5","6"],selectedAnswer,
+      correctAnswer:"A",correct,answerTimeMs:[1000,10_000,10_000,11_000][i],pointsEarned,solution:"Two.",
+    })),
+  }});
+  for(const text of ["2525 total points","2525 pts","Blank / Give up · 0","Incorrect · -300","Correct · +1417","Correct · +1408"])
+    await expect(fixed.page.getByText(text,{exact:true})).toBeVisible();
+  await fixed.page.close();
   assert.deepEqual(errors,[]);
-  console.log("PASS: one-click Give up, removed scoring copy, accurate Answered status, stale snapshots, immutable network retries, refresh recovery, timeout blanks, legacy rooms, negative results and desktop/mobile layout.");
+  console.log("PASS: version-2/3 Give up, removed scoring copy, accurate Answered status, stale snapshots, immutable retries, refresh recovery, timeout blanks, legacy rooms, fixed penalties/speed results and desktop/mobile layout.");
 } finally {
   await browser?.close();
   await new Promise(resolve=>server.close(resolve));

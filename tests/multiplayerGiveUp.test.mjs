@@ -19,14 +19,14 @@ function load(path, dependencies) {
 const security=load("lib/security/request.ts",{"server-only":{}});
 const room={id:"room",status:"in-progress",scoring_version:2,created_at:new Date().toISOString()};
 const player={id:"verified-player",user_id:"verified-user",score:0};
-function fixture({member=true,guest=false,error=null}={}) {
+function fixture({member=true,guest=false,error=null,version=2}={}) {
   const calls=[],reads=[];
   const admin={
     from(table) {
       const filters=[];
       const query={
         select(){return query;},eq(...args){filters.push(args);return query;},is(...args){filters.push(args);return query;},
-        async maybeSingle(){reads.push({table,filters});return {data:table==="multiplayer_rooms"?room:
+        async maybeSingle(){reads.push({table,filters});return {data:table==="multiplayer_rooms"?{...room,scoring_version:version}:
           table==="multiplayer_players"?(member?{...player,user_id:guest?null:player.user_id}:null):{username:"Tester"}};},
       };
       return query;
@@ -53,8 +53,9 @@ function fixture({member=true,guest=false,error=null}={}) {
   return {invoke,calls,reads};
 }
 test("Give up uses verified account or guest identity and server-computed correctness in one atomic RPC",async()=>{
+  for(const version of [2,3]) {
   for(const guest of [false,true]) {
-    const f=fixture({guest});
+    const f=fixture({guest,version});
     const response=await f.invoke({questionId:42,selectedAnswer:null,playerId:"victim",correct:true,points:1500,answerTimeMs:0});
     assert.equal(response.status,200);assert.deepEqual(await response.json(),{accepted:true});
     assert.deepEqual(f.calls,[{name:"accept_multiplayer_answer",args:{
@@ -63,11 +64,16 @@ test("Give up uses verified account or guest identity and server-computed correc
     const filters=f.reads.find(r=>r.table==="multiplayer_players").filters;
     assert.ok(filters.some(([column])=>column===(guest?"reconnect_token_hash":"user_id")));
   }
+  }
 });
 test("ordinary answers still ignore forged correctness, score and timing",async()=>{
+  for(const version of [2,3]) {
   for(const [choice,correct] of [["A",true],["B",false]]) {
-    const f=fixture();assert.equal((await f.invoke({questionId:42,selectedAnswer:choice,correct:!correct})).status,200);
+    const f=fixture({version});assert.equal((await f.invoke({questionId:42,selectedAnswer:choice,correct:!correct,points:1720,answerTimeMs:0})).status,200);
     assert.equal(f.calls[0].args.p_correct,correct);
+    assert.equal(f.calls.length,1);
+    assert.deepEqual(Object.keys(f.calls[0].args).sort(),["p_correct","p_player_id","p_question_id","p_room_id","p_selected_answer"]);
+  }
   }
 });
 test("missing answer is not Give up; malformed, oversized and cross-origin submissions never reach the database",async()=>{

@@ -332,13 +332,13 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       <header className={`${styles.header} flex items-center justify-between gap-4`}><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className={`${styles.panel} rounded-3xl border bg-white p-6 shadow-sm sm:p-8`}>
         {submissionNotice}
-        {round.scoringVersion !== 2 ? <p className="mb-4 text-sm text-slate-600">Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0.</p> : null}
+        {(round.scoringVersion ?? 1) === 1 ? <p className="mb-4 text-sm text-slate-600">Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0.</p> : null}
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
         <QuestionImage illustration={round.question.illustration} />
         <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "border-slate-200 bg-slate-50/60 hover:border-blue-300 hover:bg-blue-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>
         {error ? <p role="alert" className="mt-4 text-sm text-red-600">{error}</p> : null}
         <button onClick={submitAnswer} disabled={!selected || !outboxLoaded || submitted || isSubmitting || secondsLeft === null || secondsLeft === 0} className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600">{isSubmitting ? "Submitting…" : submitted ? "Answer submitted" : "Submit Answer"}</button>
-        {round.scoringVersion === 2 ? <button type="button" onClick={() => {
+        {(round.scoringVersion ?? 1) >= 2 ? <button type="button" onClick={() => {
           setError(null); setShowLeaderboard(true);
           void submitSavedAnswer({ questionId: round.question.questionId, questionNumber: round.questionNumber, selectedAnswer: null });
         }}

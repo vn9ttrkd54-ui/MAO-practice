@@ -1,5 +1,7 @@
 import type { AnswerChoice, Division, QuestionIllustration } from "@/types/question";
 
+export type MultiplayerScoringVersion = 1 | 2 | 3;
+
 export type MultiplayerRoomVisibility = "public" | "private";
 export type MultiplayerRoomMode = "ranked" | "unranked";
 export type MultiplayerRoomStatus =
@@ -62,7 +64,7 @@ export interface MultiplayerSpectator extends MultiplayerPlayerIdentity {
 }
 
 export interface MultiplayerRoom {
-  scoringVersion?: 1 | 2;
+  scoringVersion?: MultiplayerScoringVersion;
   id: string;
   code: string | null;
   visibility: MultiplayerRoomVisibility;
@@ -107,7 +109,7 @@ export interface MultiplayerQuestion {
 
 export interface MultiplayerRoundState {
   roundClosed?: boolean;
-  scoringVersion?: 1 | 2;
+  scoringVersion?: MultiplayerScoringVersion;
   preparing?: boolean;
   stateVersion: number;
   roomId: string;

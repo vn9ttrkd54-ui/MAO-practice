@@ -28,6 +28,7 @@ import type {
   MultiplayerRoomSettings,
   MultiplayerRoundState,
   MultiplayerRoundFeedback,
+  MultiplayerScoringVersion,
   MultiplayerSpectator,
   MultiplayerSpectatorState,
 } from "@/types/multiplayer";
@@ -50,7 +51,7 @@ function lobbyPresenceCutoff() {
 }
 
 interface RoomRow {
-  scoring_version?: 1 | 2;
+  scoring_version?: MultiplayerScoringVersion;
   id: string;
   code: string | null;
   visibility: "public" | "private";
