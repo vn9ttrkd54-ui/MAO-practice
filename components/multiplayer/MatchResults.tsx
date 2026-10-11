@@ -2,6 +2,7 @@ import FeedbackForm from "@/components/feedback/FeedbackForm";
 import { questions } from "@/data/questions";
 import styles from "./matchSurface.module.css";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
@@ -29,6 +30,12 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
         ) : (
           <div className="mx-auto mt-4 inline-flex rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700">Unranked match</div>
         ))}
+        <div className="mt-6">
+          <Link href="/multiplayer" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+            <ArrowLeft size={20} aria-hidden="true" />
+            Return to Lobby
+          </Link>
+        </div>
       </header>
 
       <section className="mt-8">
@@ -88,8 +95,9 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
         </div>
       </section>
 
-      <Link href="/multiplayer" className="mt-8 flex w-full items-center justify-center rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700">
-        Return to Multiplayer
+      <Link href="/multiplayer" className="mt-8 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+        <ArrowLeft size={20} aria-hidden="true" />
+        Return to Lobby
       </Link>
     </main>
   );
