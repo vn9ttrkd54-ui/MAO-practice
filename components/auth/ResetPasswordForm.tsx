@@ -47,16 +47,16 @@ export default function ResetPasswordForm() {
 
   return (
     <form onSubmit={submit} className="mt-7 space-y-4">
-      {error ? <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
+      {error ? <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
       <div>
-        <label htmlFor="new-password" className="text-sm font-semibold">New password</label>
-        <input id="new-password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3" />
+        <label htmlFor="new-password" className="block text-sm font-semibold text-gray-900">New password</label>
+        <input id="new-password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100" />
       </div>
       <div>
-        <label htmlFor="confirm-password" className="text-sm font-semibold">Confirm new password</label>
-        <input id="confirm-password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required value={confirmation} onChange={(event) => setConfirmation(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3" />
+        <label htmlFor="confirm-password" className="block text-sm font-semibold text-gray-900">Confirm new password</label>
+        <input id="confirm-password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required value={confirmation} onChange={(event) => setConfirmation(event.target.value)} className="mt-2 w-full rounded-xl border px-4 py-3 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100" />
       </div>
-      <button disabled={saving} className="w-full rounded-xl bg-black px-5 py-3 font-semibold text-white disabled:opacity-50">{saving ? "Updating…" : "Set new password"}</button>
+      <button type="submit" aria-busy={saving} disabled={saving} className="w-full rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">{saving ? "Updating…" : "Set new password"}</button>
     </form>
   );
 }
