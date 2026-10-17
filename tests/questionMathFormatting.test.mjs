@@ -8,7 +8,7 @@ import { thetaQuestions } from "../data/questions/theta.ts";
 
 // Keep this in sync with the math delimiters accepted by MathText.
 const mathDelimiter = /\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)/g;
-const diagramToken = /\[\[solution-diagram:mu-(?:194|196|201|217|227)\]\]/g;
+const diagramToken = /\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325)\]\]/g;
 
 test("every catalog question, choice, and solution renders its LaTeX", () => {
   const divisions = [muQuestions, alphaQuestions, thetaQuestions];

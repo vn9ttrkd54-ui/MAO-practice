@@ -27,6 +27,7 @@ import BookmarkButton from "@/components/practice/BookmarkButton";
 import QuestionReportButton from "@/components/feedback/QuestionReportButton";
 import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
+import QuestionSourceCredit from "@/components/questions/QuestionSourceCredit";
 import LlamaTutor from "@/components/practice/LlamaTutor";
 import styles from "@/components/practice/question-detail.module.css";
 
@@ -307,6 +308,7 @@ function QuestionSession({ question, navigation }: { question: Question; navigat
             <h2 className={styles.questionHeading}>
               Question
             </h2>
+            <QuestionSourceCredit source={question.source} />
 
             <div className={styles.problem}>
               <MathText>{question.question}</MathText>

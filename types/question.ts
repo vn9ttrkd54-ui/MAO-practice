@@ -17,6 +17,12 @@ export interface QuestionIllustration {
   height: number;
 }
 
+export interface QuestionSource {
+  competition: string;
+  event: string;
+  questionNumber: number;
+}
+
 export interface Question {
   id: number;
   number: number;
@@ -29,4 +35,5 @@ export interface Question {
   answer: AnswerChoice;
   solution: string;
   illustration?: QuestionIllustration;
+  source?: QuestionSource;
 }

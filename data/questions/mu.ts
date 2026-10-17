@@ -1,5 +1,10 @@
 import type { Question } from "@/types/question";
 
+const kingFebruary2026 = {
+  competition: "2026 February King Invitational",
+  event: "Calculus Individual",
+};
+
 // 2025 MAO National Convention — Mu Individual Test.
 // Original questions 21 and 29 were thrown out. The accepted set is renumbered 1–28.
 // Question 17 was disputed to choice D.
@@ -3336,6 +3341,7 @@ At \(\theta=\pi\) and \(t=2\sqrt3\), this gives
   // Source questions 1-30 map to bank questions 296-325 (IDs 10296-10325).
   {
     id: 10296,
+    source: { ...kingFebruary2026, questionNumber: 1 },
     number: 296,
     division: "Mu",
     topic: "Definite Integrals",
@@ -3350,6 +3356,7 @@ At \(\theta=\pi\) and \(t=2\sqrt3\), this gives
   },
   {
     id: 10297,
+    source: { ...kingFebruary2026, questionNumber: 2 },
     number: 297,
     division: "Mu",
     topic: "Optimization",
@@ -3358,12 +3365,15 @@ At \(\theta=\pi\) and \(t=2\sqrt3\), this gives
     question: String.raw`Find the maximum value of \(f(x)=-x^4+4x^2+1\), where the domain is all real numbers.`,
     choices: ["1", String.raw`\(\frac{11}{4}\)`, "4", "5", "NOTA"],
     answer: "D",
-    solution: String.raw`First notice that \(f(x)\to-\infty\) when \(x\to\pm\infty\), so the maximum must be at a point where \(f'(x)=0\). Since
-\[f'(x)=-4x^3+8x=-4x(x^2-2),\]
-the critical points are \(x=0\) and \(x=\pm\sqrt2\). We have \(f(0)=1\) and \(f(\pm\sqrt2)=5\), so the maximum is 5.`,
+    solution: String.raw`First, notice that \(f(x)\to-\infty\) when \(x\to\pm\infty\), so we don't have to worry about it approaching \(+\infty\) anywhere. The maximum must be at a point where \(f'(x)=0\): this means
+\[-4x^3+8x=-4x(x^2-2)=0,\]
+so either \(x=0\) or \(x=\pm\sqrt2\). We can plug in and check which is greater:
+\[f(0)=1,\qquad f(\pm\sqrt2)=-4+8+1=5\]
+for both \(+\sqrt2\) and \(-\sqrt2\). Of these, the maximum is \(\boxed5\).`,
   },
   {
     id: 10298,
+    source: { ...kingFebruary2026, questionNumber: 3 },
     number: 298,
     division: "Mu",
     topic: "Fundamental Theorem of Calculus",
@@ -3373,27 +3383,26 @@ the critical points are \(x=0\) and \(x=\pm\sqrt2\). We have \(f(0)=1\) and \(f(
 \[\int_{\pi/4}^x\cos(t)\,dt=0.\]`,
     choices: [String.raw`\(\pi\)`, String.raw`\(\frac{3\pi}{2}\)`, String.raw`\(2\pi\)`, String.raw`\(3\pi\)`, "NOTA"],
     answer: "A",
-    solution: String.raw`\[\int_{\pi/4}^x\cos(t)\,dt
-=\sin(x)-\sin\left(\frac\pi4\right).\]
-Setting this equal to 0 gives \(x=\pi/4\) or \(x=3\pi/4\) in the given interval. Their sum is \(\pi\).`,
+    solution: String.raw`\[\int_{\pi/4}^x\cos(t)\,dt=\left[\sin(t)\right]_{\pi/4}^x=\sin(x)-\sin\left(\frac\pi4\right).\]
+If we set this to 0 then we get \(\sin(x)=\sin(\pi/4)\). This happens at \(x=\pi/4,3\pi/4\) in \(0<x<2\pi\). The sum of these is \(\pi/4+3\pi/4=\boxed\pi\).`,
   },
   {
     id: 10299,
+    source: { ...kingFebruary2026, questionNumber: 4 },
     number: 299,
     division: "Mu",
     topic: "Volumes of Revolution",
     difficulty: 1,
     methods: ["Disk Method"],
-    question: String.raw`Gabriel's Little Horn is formed by revolving the graph \(y=1/x\) for \(1\le x\le4\) around the \(x\)-axis. What is the volume of Gabriel's Little Horn?`,
+    question: String.raw`Gabriel's Little Horn is formed by revolving the graph \(y=\frac1x\) for \(1\le x\le4\) around the \(x\)-axis. What is the volume of Gabriel's little Horn?`,
     choices: [String.raw`\(\frac\pi4\)`, String.raw`\(\frac\pi2\)`, String.raw`\(\frac{3\pi}{4}\)`, String.raw`\(\pi\)`, "NOTA"],
     answer: "C",
-    solution: String.raw`By the washer method,
-\[V=\pi\int_1^4\left(\frac1x\right)^2dx
-=\pi\left[-\frac1x\right]_1^4
-=\frac{3\pi}{4}.\]`,
+    solution: String.raw`The volume of a solid of revolution defined by \(y=f(x)\), rotated around the \(x\)-axis, is \(\pi\int(f(x))^2\,dx\), by the washer method (here the inner radius is 0). So, the volume is
+\[\pi\int_1^4\frac1{x^2}\,dx=\pi\left[-\frac1x\right]_1^4=\pi\left[1-\frac14\right]=\boxed{\frac{3\pi}4}.\]`,
   },
   {
     id: 10300,
+    source: { ...kingFebruary2026, questionNumber: 5 },
     number: 300,
     division: "Mu",
     topic: "Function Analysis",
@@ -3402,224 +3411,246 @@ Setting this equal to 0 gives \(x=\pi/4\) or \(x=3\pi/4\) in the given interval.
     question: String.raw`The graph of \(y=\sin(x)-x\) has many points where the slope of the tangent line is 0. Which choice correctly describes the nature of these points?`,
     choices: ["Some are local maxima, some are local minima", "Some are local maxima, some are inflection points", "All are local maxima", "All are inflection points", "NOTA"],
     answer: "D",
-    solution: String.raw`Since \(y'=\cos x-1\), all such points occur at \(x=2\pi k\) for integers \(k\). At each one,
-\[y''=-\sin x=0,\qquad y'''=-\cos x=-1\ne0.\]
-Thus the concavity changes at every stationary point, so all are inflection points.`,
+    solution: String.raw`Call such points good points; since \(y'=\cos(x)-1\), all good points have \(\cos(x)=1\), so \(x=2\pi k\) for integers \(k\).
+Now, \(y''=-\sin(x)\): you can either check the \(x\)-values or use \(\sin^2(x)+\cos^2(x)=1\) to see that \(y''=0\) at all good points. This means all good points are inflection points as long as \(y'''=-\cos(x)\) is nonzero, and since \(\cos(x)=1\) at good points, it definitely will be. More explicitly, near \(x=2\pi k\), \(-\sin(x)\) changes from positive to negative, so the concavity changes there. Also \(y'=\cos x-1\le0\) on both sides, so none is a local maximum or minimum. The good points are all inflection points.`,
   },
   {
     id: 10301,
+    source: { ...kingFebruary2026, questionNumber: 6 },
     number: 301,
     division: "Mu",
     topic: "Derivatives",
     difficulty: 1,
     methods: ["Mean Value Theorem"],
-    question: String.raw`Let \(f(t)=\ln(t)\). What is the value of \(t\) that satisfies the Mean Value Theorem for derivatives for \(f(t)\) on the interval \([1,e]\)?`,
+    question: String.raw`Let \(f(t)=\ln(t)\). What is the value of \(t\) that satisfies the mean value theorem of derivatives for \(f(t)\) on the interval \([1,e]\)?`,
     choices: [String.raw`\(e-1\)`, String.raw`\(\frac e2\)`, String.raw`\(\frac e2+1\)`, String.raw`\(\frac{e+1}{2}\)`, "NOTA"],
     answer: "A",
-    solution: String.raw`The Mean Value Theorem gives
+    solution: String.raw`The mean value theorem of derivatives says there must exist some \(t\) in the open interval \((1,e)\) such that
 \[f'(t)=\frac{f(e)-f(1)}{e-1}.\]
-Since \(f'(t)=1/t\),
-\[\frac1t=\frac1{e-1},\]
-so \(t=e-1\).`,
+The theorem applies because \(\ln t\) is continuous on \([1,e]\) and differentiable on \((1,e)\). Using \(f'(t)=1/t\) and solving:
+\[\frac1t=\frac{\ln(e)-\ln(1)}{e-1}=\frac1{e-1}\quad\Longrightarrow\quad t=\boxed{e-1}.\]
+This lies in \((1,e)\), as required.`,
   },
   {
     id: 10302,
+    source: { ...kingFebruary2026, questionNumber: 7 },
     number: 302,
     division: "Mu",
     topic: "Geometry",
     difficulty: 3,
     methods: [],
-    question: String.raw`A line is drawn on the curved surface of a cylinder. The line is straight and perpendicular to both of the cylinder's circular faces. If this line is fixed in place and the cylinder is revolved around it, what shape would be formed by the revolution?`,
+    question: String.raw`A line is drawn on the curved surface of a cylinder. The line is straight, and perpendicular to both of the cylinder's circular faces. If this line is fixed in place and the cylinder is revolved around it, what shape would be formed by the revolution?`,
     choices: ["Sphere", "Cylinder", "Torus", "Two spheres", "NOTA"],
     answer: "B",
-    solution: String.raw`The fixed line is a generator of the cylinder and is parallel to its central axis. In a cross-section perpendicular to these lines, the original cylinder is a disk and the fixed line is a point on its circumference. Rotating that disk about the fixed point sweeps out a disk with twice the original radius. Extending this cross-section along the cylinder's height forms another cylinder.`,
+    solution: String.raw`The diagram shows the scenario; the volume traced out by rotating the red cylinder about the blue line is everything enclosed by the green region. This is shaped like another cylinder, with double the radius of the original cylinder.
+[[solution-diagram:mu-302]]
+To see why the entire interior is swept out, take a cross-section perpendicular to the fixed line. The original cylinder gives a disk of radius \(r\), and the line meets its circumference. Rotating that disk about this boundary point sweeps every distance from 0 to \(2r\), making a disk of radius \(2r\). The cylinder's height does not change, so the resulting solid is a cylinder.`,
   },
   {
     id: 10303,
+    source: { ...kingFebruary2026, questionNumber: 8 },
     number: 303,
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 2,
     methods: ["U-Substitution"],
-    question: String.raw`Evaluate \(\displaystyle\int_1^e\frac{e^x}{e^x+1}\,dx\).`,
+    question: String.raw`Evaluate \(\displaystyle\int_1^e\frac{e^x}{e^x+1}\,dx\):`,
     choices: [String.raw`\(\ln\left(\frac{e^e+e}{e^e-e}\right)\)`, String.raw`\(\ln\left(\frac{e^e+1}{e+1}\right)\)`, String.raw`\(\ln\left(\frac{e^e-e}{e^e+e}\right)\)`, String.raw`\(\ln\left(\frac{e^e-1}{e-1}\right)\)`, "NOTA"],
     answer: "B",
-    solution: String.raw`Use \(u=e^x+1\), \(du=e^x\,dx\). The bounds become \(e+1\) and \(e^e+1\), so
-\[\int_1^e\frac{e^x}{e^x+1}\,dx
-=\int_{e+1}^{e^e+1}\frac1u\,du
-=\ln\left(\frac{e^e+1}{e+1}\right).\]`,
+    solution: String.raw`Use the substitution \(u=e^x+1\), \(du=e^x\,dx\). Note the bounds must change: \(1\mapsto e^1+1=e+1\), and \(e\mapsto e^e+1\).
+\[\int_1^e\frac1{e^x+1}e^x\,dx=\int_{e+1}^{e^e+1}\frac1u\,du\]
+\[=\left[\ln(u)\right]_{e+1}^{e^e+1}=\ln(e^e+1)-\ln(e+1)=\boxed{\ln\left(\frac{e^e+1}{e+1}\right)}.\]`,
   },
   {
     id: 10304,
+    source: { ...kingFebruary2026, questionNumber: 9 },
     number: 304,
     division: "Mu",
     topic: "Implicit Differentiation",
     difficulty: 3,
     methods: ["Implicit Differentiation"],
-    question: String.raw`At the point \((\pi,2\pi)\) on the curve \(y\sin(x)=x\sin(y)\), what is \(dy/dx\)?`,
+    question: String.raw`At the point \((\pi,2\pi)\) on the curve \(y\sin(x)=x\sin(y)\), what is \(\frac{dy}{dx}\)?`,
     choices: ["−2", String.raw`\(-\frac12\)`, String.raw`\(\frac12\)`, "2", "NOTA"],
     answer: "A",
-    solution: String.raw`Differentiate both sides:
-\[y'\sin x+y\cos x=\sin y+xy'\cos y.\]
-At \((\pi,2\pi)\), this becomes
-\[0-2\pi=0+\pi y',\]
-so \(y'=-2\).`,
+    solution: String.raw`First, check that the point \((\pi,2\pi)\) is on the curve; plugging in gives \(2\pi\sin(\pi)=\pi\sin(2\pi)\); both sides are 0, so it is on the curve. Now, take \(d/dx\) of both sides and evaluate at the point:
+\[\frac d{dx}(y\sin x)=\frac d{dx}(x\sin y)\]
+\[y'\sin x+y\cos x=\sin y+xy'\cos y\]
+\[y'\sin\pi+2\pi\cos\pi=\sin(2\pi)+\pi y'\cos(2\pi)\]
+\[0\cdot y'+2\pi(-1)=0+\pi\cdot y'\cdot1\]
+\[-2\pi=\pi y'\quad\Longrightarrow\quad y'=\boxed{-2}.\]`,
   },
   {
     id: 10305,
+    source: { ...kingFebruary2026, questionNumber: 10 },
     number: 305,
     division: "Mu",
     topic: "Parametric",
     difficulty: 2,
     methods: ["Chain Rule"],
-    question: String.raw`A parametric curve is defined for \(t\ge0\) by
-\[x(t)=t\cos t,\qquad y(t)=\sin t.\]
-What is \(dy/dx\) on the curve at \(t=\pi\)?`,
+    question: String.raw`A parametric curve is defined by \((x(t),y(t))\) for \(t\ge0\), where:
+\[x(t)=t\cos(t),\qquad y(t)=\sin(t).\]
+What is \(\frac{dy}{dx}\) on the curve at \(t=\pi\)?`,
     choices: ["−1", "0", "1", String.raw`\(\infty\)`, "NOTA"],
     answer: "C",
-    solution: String.raw`\[\frac{dy}{dx}=\frac{y'(t)}{x'(t)}
-=\frac{\cos t}{\cos t-t\sin t}.\]
-At \(t=\pi\), this equals \((-1)/(-1)=1\).`,
+    solution: String.raw`Note that \(dy/dx=y'(t)/x'(t)\). Finding these and then plugging in \(t=\pi\):
+\[\frac{dy}{dx}=\frac{(\sin t)'}{(t\cos t)'}=\frac{\cos t}{\cos t-t\sin t}=\frac{-1}{-1-0}=\boxed1.\]
+Here the product rule gives \(x'(t)=\cos t-t\sin t\), which is nonzero at \(t=\pi\), so the quotient is defined.`,
   },
   {
     id: 10306,
+    source: { ...kingFebruary2026, questionNumber: 11 },
     number: 306,
     division: "Mu",
     topic: "Parametric",
     difficulty: 4,
     methods: ["Chain Rule"],
-    question: String.raw`A parametric curve is defined for \(t\ge0\) by
-\[x(t)=t\cos t,\qquad y(t)=\sin t.\]
+    question: String.raw`A parametric curve is defined by \((x(t),y(t))\) for \(t\ge0\), where:
+\[x(t)=t\cos(t),\qquad y(t)=\sin(t).\]
 Vignesh picks a point \((X,Y)\) on the curve and finds that the curve has a vertical tangent line at that point. Which of the following must be true?`,
     choices: [String.raw`\(X=\frac{1-Y^2}{Y}\)`, String.raw`\(X=\frac{Y^2-1}{Y^2}\)`, String.raw`\(X=\sqrt{\frac{1-Y^2}{Y}}\)`, String.raw`\(X=\frac{\sqrt{Y^2-1}}Y\)`, "NOTA"],
     answer: "A",
-    solution: String.raw`A vertical tangent requires \(x'(t)=0\), so
-\[\cos t-t\sin t=0\quad\Longrightarrow\quad t=\cot t.\]
-At the point, \(X=t\cos t\) and \(Y=\sin t\). Therefore,
-\[\frac XY=t\cot t=\cot^2t=\csc^2t-1=\frac1{Y^2}-1,\]
-which gives
-\[X=\frac{1-Y^2}{Y}.\]`,
+    solution: String.raw`There are two conditions that any point \((X,Y)\) must obey in order for the curve to have a vertical tangent at \((X,Y)\). First, the point has to be on the curve; second, \(dy/dx\) diverges to \(\pm\infty\) at that point, which implies \(x'(t)=0\) at that point. Using the second condition:
+\[\cos(t)-t\sin(t)=0\quad\Longrightarrow\quad\cot(t)=t.\]
+At such a point \(\sin t\ne0\): otherwise the equation would also force \(\cos t=0\), which is impossible. Likewise \(y'(t)=\cos t\ne0\), since \(\cos t=0\) would force \(t=0\), where \(\cos0=1\).
+Using the first condition, \((X,Y)=(t\cos t,\sin t)\) for some \(t\). We want to use this along with our condition that \(t=\cot t\) to get an equation with only \(X\) and \(Y\), no \(t\). The easiest way to do this is to look at \(X/Y\):
+\[\frac XY=\frac{t\cos t}{\sin t}=t\cot t=\cot^2t=\csc^2t-1=\frac1{\sin^2t}-1=\frac1{Y^2}-1.\]
+Multiplying by \(Y\ne0\) gives \(\boxed{X=\frac{1-Y^2}{Y}}\).`,
   },
   {
     id: 10307,
+    source: { ...kingFebruary2026, questionNumber: 12 },
     number: 307,
     division: "Mu",
     topic: "Sequences",
     difficulty: 2,
     methods: ["Recursion"],
-    question: String.raw`Let \(x_0=1\), and \(x_{n+1}=\cos(x_n)\) for integers \(n\ge0\). This sequence converges, so \(\displaystyle\lim_{n\to\infty}x_n=D\), where \(D\) is Dottie's number. Which of the following is equivalent to \(\sin(D)\)?`,
+    question: String.raw`Let \(x_0=1\), and \(x_{n+1}=\cos(x_n)\) for integers \(n\ge0\). This sequence converges, so \(\displaystyle\lim_{n\to\infty}\{x_n\}=D\), where \(D\) is Dottie's number. Which of the following is equivalent to \(\sin(D)\)?`,
     choices: [String.raw`\(\sqrt{1-D^2}\)`, String.raw`\(-\sqrt{1-D^2}\)`, String.raw`\(D^2-D\)`, String.raw`\(D-D^2\)`, "NOTA"],
     answer: "A",
-    solution: String.raw`Taking limits in the recurrence gives \(D=\cos D\). Since \(0<D<\pi/2\), \(\sin D\) is positive. Thus,
-\[\sin D=\sqrt{1-\cos^2D}=\sqrt{1-D^2}.\]`,
+    solution: String.raw`Since the sequence converges as \(n\to\infty\), it implies that, as \(n\to\infty\), \(x_n\) won't change from one term to the next. This means that the converging value \(D\) satisfies the equation \(D=\cos(D)\). Using \(\sin^2(D)+\cos^2(D)=1\), we get
+\[\sin(D)=\pm\sqrt{1-\cos^2(D)}=\pm\sqrt{1-D^2}.\]
+To know whether \(\sin(D)\) is positive or negative, we need to find its approximate location. The easiest way to do this is to plot the graphs \(y=x\) and \(y=\cos x\); the intersection point has \(x=\cos x\), so the \(x\)-position of that point is \(D\).
+No numerical approximation is needed: \(x_0=1\), and \(0\le x_n\le1\) implies \(\cos1\le x_{n+1}\le1\). Consequently \(\cos1\le D\le1<\pi/2\), so \(0<D<\pi/2\). Since sine is positive throughout this interval, we must use the positive sign:
+\[\sin(D)=\boxed{\sqrt{1-D^2}}.\]`,
   },
   {
     id: 10308,
+    source: { ...kingFebruary2026, questionNumber: 13 },
     number: 308,
     division: "Mu",
     topic: "Systems of Equations",
     difficulty: 3,
     methods: [],
-    question: String.raw`Let \(F(x)=Ae^x+Be^{-x}+C\sin x+D\cos x\) for constants \(A,B,C,D\). Given that \(F(0)=0\), \(F'(0)=1\), \(F''(0)=2\), and \(F'''(0)=3\), what is \(ABCD\)?`,
+    question: String.raw`Let \(F(x)=Ae^x+Be^{-x}+C\sin(x)+D\cos(x)\) for constants \(A,B,C,D\).
+Given that \(F(0)=0\), \(F'(0)=1\), \(F''(0)=2\), \(F'''(0)=3\), what is \(ABCD\)?`,
     choices: [String.raw`\(-\frac94\)`, String.raw`\(-\frac9{16}\)`, String.raw`\(-\frac34\)`, String.raw`\(-\frac3{16}\)`, "NOTA"],
     answer: "C",
-    solution: String.raw`The four conditions give
-\[A+B+D=0,\]
-\[A-B+C=1,\]
-\[A+B-D=2,\]
-\[A-B-C=3.\]
-Subtracting the first and third equations gives \(D=-1\), while subtracting the second and fourth gives \(C=-1\). Solving the remaining equations gives \(A=3/2\) and \(B=-1/2\). Therefore,
-\[ABCD=\left(\frac32\right)\left(-\frac12\right)(-1)(-1)=-\frac34.\]`,
+    solution: String.raw`We set up a system of equations using the given information; it looks like this (each line corresponds to one of the given equations):
+\[\begin{aligned}A+B+D&=0&&(a)\\A-B+C&=1&&(b)\\A+B-D&=2&&(c)\\A-B-C&=3&&(d)\end{aligned}\]
+Evaluating \((a)-(c)\) shows \(D=-1\). Evaluating \((b)-(d)\) shows \(C=-1\). Using \(C=D=-1\), equations \((a)\) and \((b)\) become \(A+B=1\) and \(A-B=2\); adding gives \(A=3/2\). Finally, \(B\) can be solved with any equation, which gives \(B=-1/2\). So,
+\[ABCD=\left(\frac32\right)\left(-\frac12\right)(-1)(-1)=\boxed{-\frac34}.\]`,
   },
   {
     id: 10309,
+    source: { ...kingFebruary2026, questionNumber: 14 },
     number: 309,
     division: "Mu",
     topic: "Limits",
     difficulty: 3,
     methods: [],
     question: String.raw`Evaluate
-\[\lim_{x\to\infty}\frac{\lfloor\sin(\pi x)\rfloor+\sin(\pi x)}{(-1)^{\lfloor x\rfloor}}.\]`,
+\[\lim_{x\to\infty}\frac{\lfloor\sin(\pi x)\rfloor+\lceil\sin(\pi x)\rceil}{(-1)^{\lfloor x\rfloor}}.\]`,
     choices: ["−1", "0", "1", String.raw`\(\infty\)`, "NOTA"],
     answer: "E",
-    solution: String.raw`Along the sequence \(x=n\) of integers, the expression equals 0. Along \(x=2n+1/2\), the numerator is \(\lfloor1\rfloor+1=2\) and the denominator is 1, so the expression equals 2. Since these two sequences approach different values, the limit does not exist.`,
+    solution: String.raw`There are several ways to show that this expression doesn't converge. Here is one:
+If \(x\) is an integer, then \(\sin(\pi x)=0\), so the whole expression is 0.
+Along \(x=2n+1/4\), \(\sin(\pi x)=\sqrt2/2\), so its floor is 0 and its ceiling is 1; the denominator is \((-1)^{2n}=1\). Thus the expression is 1 along this sequence.
+Both sequences tend to \(+\infty\), but give different limits, 0 and 1. Therefore the limit does not exist (DNE), and the answer is NOTA.
+The floor and ceiling cannot simply be replaced by -1 and 0 at every noninteger \(x\): when \(\sin(\pi x)=1\) or -1, both have that same integer value. The two sequences above avoid this exception.`,
   },
   {
     id: 10310,
+    source: { ...kingFebruary2026, questionNumber: 15 },
     number: 310,
     division: "Mu",
     topic: "Implicit Differentiation",
     difficulty: 5,
     methods: ["Continued Fractions", "Implicit Differentiation"],
-    question: String.raw`Let \(y=y(x)\) be the value of the infinite continued expression in which every \(x\) is followed by adding \(1+\cdots\), and every 1 is followed by adding \(x+\cdots\). Equivalently, \(y\) satisfies
-\[y=x+\frac{1+\frac1{y-x}}{x+(y-x)}.\]
-Evaluate \(dy/dx\) at \(x=1\), taking the value \(y>1\) represented by the continued expression.`,
+    question: String.raw`Evaluate
+\[\frac d{dx}\left(x+\cfrac{1+\cfrac{x+\frac{1+\cdots}{x+\cdots}}{1+\frac{x+\cdots}{1+\cdots}}}{x+\cfrac{1+\frac{x+\cdots}{1+\cdots}}{x+\frac{1+\cdots}{x+\cdots}}}\right)\]
+at \(x=1\). (Every \(x\) is added to \(\frac{1+\cdots}{x+\cdots}\), and every \(1\) is added to \(\frac{x+\cdots}{1+\cdots}\).)`,
     choices: [String.raw`\(\frac14\)`, String.raw`\(\frac34\)`, "2", String.raw`\(\frac{11}{4}\)`, "NOTA"],
     answer: "B",
-    solution: String.raw`The defining relation simplifies as follows:
-\[y=x+\frac{1+\frac1{y-x}}{y}.\]
-Multiplying through and rearranging gives
-\[y^3-xy^2=xy^2-x^2y+y-x+1.\]
-At \(x=1\), this becomes \(y^3=2y^2\), and the continued expression has \(y=2\). Differentiating the implicit equation and substituting \((x,y)=(1,2)\) gives
-\[0=-3y^2y'+2xy^2+4xyy'-2xy-x^2y'+y'-1,\]
-so \(y'=3/4\).`,
+    solution: String.raw`If the expression in parentheses is \(y\), we can write an implicit equation for \(y\). Notice that for every \(x\), the expression added to it is \((1+\text{thing 1})/(x+\text{thing 2})\), where thing 1 and thing 2 are more nested expressions. But looking carefully, we can see that \(\text{thing 2}=1/\text{thing 1}\) and \(\text{thing 2}=y-x\). Mathematically, this means:
+\[y=x+\frac{1+\frac1{y-x}}{x+(y-x)}=x+\frac{1+\frac1{y-x}}y\]
+\[y^2=xy+1+\frac1{y-x}\]
+\[y^3-xy^2=xy^2-x^2y+y-x+1\]
+\[0=-y^3+2xy^2-x^2y+y-x+1.\]
+Now, at \(x=1\), we get \(y^3=2y^2\), which implies either \(y=0\) or \(y=2\); given our expression is 1 plus something positive, clearly the first is impossible, so we take \(y=2\). Taking the derivative of our implicit equation:
+\[0=-3y^2y'+2y^2+4xyy'-2xy-x^2y'+y'-1.\]
+Substituting \((x,y)=(1,2)\) gives
+\[0=y'(-12+8-1+1)+(8-4-1)=-4y'+3,\]
+so \(y'=\boxed{3/4}\). The coefficient of \(y'\) is nonzero, so implicit differentiation determines the derivative locally.`,
   },
   {
     id: 10311,
+    source: { ...kingFebruary2026, questionNumber: 16 },
     number: 311,
     division: "Mu",
     topic: "Limits",
     difficulty: 3,
     methods: ["U-Substitution"],
-    question: String.raw`Evaluate
-\[\lim_{n\to\infty}\left(n\int_0^1x(1-x^2)^n\,dx\right).\]`,
+    question: String.raw`What is \(\displaystyle\lim_{n\to\infty}\left(n\cdot\int_0^1x(1-x^2)^n\,dx\right)\)?`,
     choices: ["0", String.raw`\(\frac14\)`, String.raw`\(\frac12\)`, String.raw`\(\frac{\sqrt2}{2}\)`, "NOTA"],
     answer: "C",
-    solution: String.raw`Use \(u=1-x^2\), \(du=-2x\,dx\):
-\[\int_0^1x(1-x^2)^n\,dx
-=\frac1{2(n+1)}.\]
-Therefore,
-\[\lim_{n\to\infty}\frac{n}{2(n+1)}=\frac12.\]`,
+    solution: String.raw`We can evaluate this integral using \(u=1-x^2\), \(du=-2x\,dx\) (trig sub works too):
+\[\int_0^1x(1-x^2)^n\,dx=-\frac12\int_1^0u^n\,du=-\frac12\left[\frac{u^{n+1}}{n+1}\right]_1^0=\frac1{2(n+1)}.\]
+So, the limit is
+\[\lim_{n\to\infty}\frac{n}{2(n+1)}=\lim_{n\to\infty}\frac{n}{2n+2}=\boxed{\frac12}.\]`,
   },
   {
     id: 10312,
+    source: { ...kingFebruary2026, questionNumber: 17 },
     number: 312,
     division: "Mu",
     topic: "Inverse Functions",
     difficulty: 4,
     methods: ["U-Substitution"],
-    question: String.raw`Let \(f(x)=x^3+x\), and let \(f^{-1}(x)\) be its inverse. Ignoring the integration constant, the integral
-\[\int\frac{f^{-1}(x)}x\,dx\]
-can be written as \(Af^{-1}(x)+B\arctan(f^{-1}(x))\) for integers \(A,B\). Find \(A+B\).`,
+    question: String.raw`Let \(f(x)=x^3+x\), and \(f^{-1}(x)\) be the inverse of \(f(x)\). The integral \(\displaystyle\int\frac{f^{-1}(x)}x\,dx\), ignoring the integration constant, can be written as \(Af^{-1}(x)+B\arctan(f^{-1}(x))\) for integers \(A,B\). Find \(A+B\).`,
     choices: ["−2", "−1", "0", "1", "NOTA"],
     answer: "D",
-    solution: String.raw`Let \(\xi=f^{-1}(x)\), so \(x=\xi^3+\xi\) and \(dx=(3\xi^2+1)\,d\xi\). Then
-\[\int\frac{f^{-1}(x)}x\,dx
-=\int\frac{\xi}{\xi^3+\xi}(3\xi^2+1)\,d\xi
-=\int\left(3-\frac2{\xi^2+1}\right)d\xi.\]
-Thus,
-\[\int\frac{f^{-1}(x)}x\,dx=3f^{-1}(x)-2\arctan(f^{-1}(x)),\]
-so \(A+B=3-2=1\).`,
+    solution: String.raw`Finding \(f^{-1}(x)\) analytically is technically possible with the cubic formula, but way too difficult. Instead, let's make the substitution \(x=\xi^3+\xi\), \(dx=(3\xi^2+1)\,d\xi\), then make use of the fact that \(f^{-1}(x)=f^{-1}(\xi^3+\xi)=\xi\):
+\[\int\frac{f^{-1}(x)}x\,dx=\int\frac{f^{-1}(\xi^3+\xi)}{\xi^3+\xi}(3\xi^2+1)\,d\xi\]
+\[=\int\frac{\xi}{\xi^3+\xi}(3\xi^2+1)\,d\xi=\int\frac{3\xi^2+1}{\xi^2+1}\,d\xi\]
+\[=\int\left(3-\frac2{\xi^2+1}\right)d\xi=3\xi-2\arctan\xi.\]
+The cancellation is valid on each interval where the original integrand is defined, namely \(x\ne0\). Also \(f'(x)=3x^2+1>0\), so \(f\) is one-to-one and the inverse exists.
+Finally, again by definition, \(\xi=f^{-1}(x)\), so this is equivalent to \(3f^{-1}(x)-2\arctan(f^{-1}(x))\), so \(A+B=3-2=\boxed1\).`,
   },
   {
     id: 10313,
+    source: { ...kingFebruary2026, questionNumber: 18 },
     number: 313,
     division: "Mu",
     topic: "Definite Integrals",
     difficulty: 5,
     methods: ["Infinite Geometric Series"],
     question: String.raw`Evaluate
-\[\int_0^1\min\left(|x-1|,\left|x-\frac12\right|,\left|x-\frac14\right|,\left|x-\frac18\right|,\ldots\right)dx.\]`,
+\[\int_0^1\min\left(|x-1|,\left|x-\frac12\right|,\left|x-\frac14\right|,\left|x-\frac18\right|,\ldots\right)dx.\]
+At \(x=0\), use the continuous limiting value 0 for the integrand.`,
     choices: [String.raw`\(\frac1{32}\)`, String.raw`\(\frac1{20}\)`, String.raw`\(\frac1{16}\)`, String.raw`\(\frac1{12}\)`, "NOTA"],
     answer: "D",
-    solution: String.raw`The integrand is the distance from \(x\) to the nearest nonnegative power of \(1/2\). Between consecutive powers \(2^{-n}\) and \(2^{-(n-1)}\), its graph is an isosceles triangle with base \(2^{-n}\) and height \(2^{-(n+1)}\). Its area is therefore
-\[\frac12\cdot\frac1{2^n}\cdot\frac1{2^{n+1}}=\frac1{2^{2n+2}}.\]
-Summing over \(n\ge1\),
-\[\sum_{n=1}^\infty\frac1{2^{2n+2}}
-=\frac{1/16}{1-1/4}=\frac1{12}.\]`,
+    solution: String.raw`Note that the integrand is 0 at \(x=1,1/2,1/4,\ldots\). Between these powers of two, the integrand is equal to the distance of \(x\) to the nearest power of two. Plotting it out, the integrand looks something like the image below:
+[[solution-diagram:mu-313]]
+Each colored triangular region lies between consecutive powers of \(1/2\). Its two sides come from the absolute-value terms for the two endpoints, switching at the midpoint. There are 0s where \(x\) is equal to a power of 2, since one of the \(|x-2^{-n}|\) terms will be 0 at those points. The peaks are when \(x\) is exactly halfway between powers of 2; for instance, for \(x=3/4\), the distance from \(x\) to both \(x=1/2\) and \(x=1\) is \(1/4\), hence the integrand's value is \(1/4\). Notice that the value of the integrand at each peak must equal half of the distance between the powers of two.
+So, as \(x\) goes from \(2^{-n}\) to \(2^{-(n-1)}\), the integrand forms a triangle with width \(2^{-(n-1)}-2^{-n}=2^{-n}\), and height equal to half of that. So, the area of the \(n\)th triangle is
+\[\frac12hw=\frac12\left(\frac12\cdot\frac1{2^n}\right)\left(\frac1{2^n}\right)=\frac1{2^{2n+2}}.\]
+This means the total area is
+\[\sum_{n=1}^\infty\frac1{2^{2n+2}}=\frac{1/16}{1-1/4}=\frac1{16}\cdot\frac43=\boxed{\frac1{12}}.\]
+At 0 the displayed infinite list has infimum 0 but no attained minimum; defining the integrand there by its limiting value makes the endpoint well-defined and does not change the integral.`,
   },
   {
     id: 10314,
+    source: { ...kingFebruary2026, questionNumber: 19 },
     number: 314,
     division: "Mu",
     topic: "Improper Integrals",
@@ -3629,54 +3660,60 @@ Summing over \(n\ge1\),
 \[\int_0^\infty\frac{1-\cos(4t)}{t^2}\,dt.\]`,
     choices: [String.raw`\(\frac\pi4\)`, String.raw`\(\frac\pi2\)`, String.raw`\(\pi\)`, String.raw`\(2\pi\)`, "NOTA"],
     answer: "D",
-    solution: String.raw`Integrate by parts with \(u=1-\cos(4t)\) and \(dv=t^{-2}dt\):
-\[\int_0^\infty\frac{1-\cos(4t)}{t^2}\,dt
-=-\left[\frac{1-\cos(4t)}t\right]_0^\infty
-+\int_0^\infty\frac{4\sin(4t)}t\,dt.\]
-The boundary term is 0. With \(u=4t\), the remaining integral is
-\[4\int_0^\infty\frac{\sin u}{u}\,du=2\pi.\]`,
+    solution: String.raw`First, use integration by parts with \(u=1-\cos(4t)\), \(dv=t^{-2}\,dt\), so \(du=4\sin(4t)\,dt\) and \(v=-1/t\):
+\[\int_0^\infty\frac{1-\cos(4t)}{t^2}\,dt=-\left[\frac{1-\cos(4t)}t\right]_0^\infty+\int_0^\infty\frac{4\sin(4t)}t\,dt.\]
+We can convert the second term into the given integral by substituting \(u=4t\):
+\[\int_0^\infty\frac{4\sin(4t)}t\,dt=4\int_0^\infty\frac{\sin u}{u/4}\frac{du}4=4\int_0^\infty\frac{\sin u}u\,du=2\pi.\]
+What about the first term? We need to evaluate it as \(t\to+\infty\) and as \(t\to0^+\). In the former case, the denominator means the expression approaches 0, because \(|1-\cos(4t)|\le2\). In the latter, we can evaluate it using L'Hopital's:
+\[\lim_{t\to0^+}\frac{1-\cos(4t)}t=\lim_{t\to0^+}4\sin(4t)=0.\]
+So, we get \(-[0-0]+2\pi=\boxed{2\pi}\). The integrations by parts can first be performed on \([\varepsilon,R]\), then passed to the limits just established.`,
   },
   {
     id: 10315,
+    source: { ...kingFebruary2026, questionNumber: 20 },
     number: 315,
     division: "Mu",
     topic: "Limits",
     difficulty: 3,
-    methods: ["L'Hopital's Rule"],
-    question: String.raw`Evaluate
-\[\lim_{x\to1^+}\left((\ln x)^2\int_x^\infty\frac1{t(\ln t)^3}\,dt\right).\]`,
+    methods: ["L'Hopital's Rule", "U-Substitution"],
+    question: String.raw`What is \(\displaystyle\lim_{x\to1^+}\left((\ln x)^2\cdot\int_x^\infty\frac1{t(\ln t)^3}\,dt\right)\)?`,
     choices: [String.raw`\(\frac13\)`, String.raw`\(\frac12\)`, "2", "3", "NOTA"],
     answer: "B",
-    solution: String.raw`Write the expression as a quotient and apply L'Hopital's Rule:
-\[\lim_{x\to1^+}\frac{\int_x^\infty[t(\ln t)^3]^{-1}\,dt}{(\ln x)^{-2}}
-=\lim_{x\to1^+}\frac{-1/(x(\ln x)^3)}{-2/(x(\ln x)^3)}
-=\frac12.\]`,
+    solution: String.raw`We can evaluate this using L'Hopital's by writing it as a fraction whose numerator and denominator both approach \(+\infty\):
+\[\lim_{x\to1^+}\frac{\int_x^\infty\frac1{t(\ln t)^3}\,dt}{1/(\ln x)^2}
+=\lim_{x\to1^+}\frac{-1/[x(\ln x)^3]}{-2/[x(\ln x)^3]}=\boxed{\frac12}.\]
+For a direct check, put \(u=\ln t\), \(du=dt/t\). For every \(x>1\),
+\[\int_x^\infty\frac{dt}{t(\ln t)^3}=\int_{\ln x}^\infty u^{-3}\,du=\left[-\frac1{2u^2}\right]_{\ln x}^\infty=\frac1{2(\ln x)^2}.\]
+Thus the product is exactly \(1/2\) for every \(x>1\).
+The factor \(t\) in the denominator is essential: without it, the improper integral diverges at infinity, so the printed limit would not have the keyed finite value.`,
   },
   {
     id: 10316,
+    source: { ...kingFebruary2026, questionNumber: 21 },
     number: 316,
     division: "Mu",
     topic: "Improper Integrals",
     difficulty: 5,
     methods: [],
-    question: String.raw`Given
-\[f(x)=\int_0^\infty\frac{\sin t}{t+x}\,dt,\qquad
-g(x)=\int_0^\infty\frac{\cos t}{t+x}\,dt,\]
-and
-\[h(x)=f(x)\sin x-g(x)\cos x,\]
-what is \(h'(\pi)\)? Note that \(f(\pi)\) and \(g(\pi)\) are well-defined.`,
+    question: String.raw`Given that:
+\[f(x)=\int_0^\infty\frac{\sin(t)}{t+x}\,dt\]
+\[g(x)=\int_0^\infty\frac{\cos(t)}{t+x}\,dt\]
+\[h(x)=f(x)\sin(x)-g(x)\cos(x)\]
+What is \(h'(\pi)\)? (Note: \(f(\pi)\) and \(g(\pi)\) are well-defined.)`,
     choices: [String.raw`\(-\frac1{2\pi}\)`, String.raw`\(-\frac1\pi\)`, String.raw`\(\frac1{2\pi}\)`, String.raw`\(\frac1\pi\)`, "NOTA"],
     answer: "B",
-    solution: String.raw`Put the sine and cosine factors into the integrals:
-\[h(x)=\int_0^\infty\frac{\sin x\sin t-\cos x\cos t}{t+x}\,dt
-=\int_0^\infty\frac{-\cos(x+t)}{t+x}\,dt.\]
-Using \(u=t+x\),
-\[h(x)=-\int_x^\infty\frac{\cos u}{u}\,du.\]
-By the Fundamental Theorem of Calculus,
-\[h'(x)=\frac{\cos x}{x},\qquad h'(\pi)=-\frac1\pi.\]`,
+    solution: String.raw`We could simply try finding expressions for \(f'(x)\) and \(g'(x)\), but this is difficult when there is an \(x\) term in the integral itself. However, rewriting \(h(x)\) by putting the \(\sin x\) and \(\cos x\) factors into the integrals allows us to simplify it considerably:
+\[h(x)=f(x)\sin x-g(x)\cos x\]
+\[=\sin x\int_0^\infty\frac{\sin t}{t+x}\,dt-\cos x\int_0^\infty\frac{\cos t}{t+x}\,dt\]
+\[=\int_0^\infty\frac{\sin x\sin t-\cos x\cos t}{t+x}\,dt=\int_0^\infty\frac{-\cos(x+t)}{x+t}\,dt\]
+\[=-\int_x^\infty\frac{\cos u}u\,du.\]
+The change of bounds in the final line can be justified by using the substitution \(u=t+x\), noting that \(x\) is a constant with respect to the integral, so \(du=dt\). This means that \(h'(x)=\cos(x)/x\) by the Fundamental Theorem of Calculus, so
+\[h'(\pi)=\frac{\cos\pi}\pi=\boxed{-\frac1\pi}.\]
+This use of the theorem does not require differentiating under an improper integral: for a fixed \(a>0\), write \(h(x)=h(a)+\int_a^x\cos(u)/u\,du\), whose derivative follows from the ordinary theorem on a finite interval.`,
   },
   {
     id: 10317,
+    source: { ...kingFebruary2026, questionNumber: 22 },
     number: 317,
     division: "Mu",
     topic: "Definite Integrals",
@@ -3688,18 +3725,22 @@ what is
 \[\int_0^4\frac{\ln x}{\sqrt{4x-x^2}}\,dx?\]`,
     choices: [String.raw`\(\frac{\pi\ln2}{16}\)`, String.raw`\(\frac{\pi\ln2}{8}\)`, String.raw`\(\frac{\pi\ln2}{4}\)`, String.raw`\(\frac{\pi\ln2}{2}\)`, "NOTA"],
     answer: "E",
-    solution: String.raw`Let \(x=u+2\), then use \(u=2\sin\theta\). This gives
-\[\int_0^4\frac{\ln x}{\sqrt{4x-x^2}}\,dx
-=\int_{-\pi/2}^{\pi/2}\ln(2+2\sin\theta)\,d\theta.\]
-Split the logarithm:
-\[\pi\ln2+\int_{-\pi/2}^{\pi/2}\ln(1+\sin\theta)\,d\theta.\]
-If the second integral is \(I\), substituting \(\theta\mapsto-\theta\) and adding gives
-\[2I=\int_{-\pi/2}^{\pi/2}\ln(1-\sin^2\theta)\,d\theta
-=2\int_{-\pi/2}^{\pi/2}\ln|\cos\theta|\,d\theta=-2\pi\ln2.\]
-Thus \(I=-\pi\ln2\), and the original integral is 0, which is NOTA.`,
+    solution: String.raw`Let \(x=u+2\), \(dx=du\) so the denominator simplifies. Then, use the trig sub \(u=2\sin\theta\), \(du=2\cos\theta\,d\theta\):
+\[\int_0^4\frac{\ln x}{\sqrt{4x-x^2}}\,dx=\int_{-2}^2\frac{\ln(u+2)}{\sqrt{4-u^2}}\,du\]
+\[=\int_{-\pi/2}^{\pi/2}\frac{\ln(2\sin\theta+2)}{2\cos\theta}\,2\cos\theta\,d\theta=\int_{-\pi/2}^{\pi/2}\ln(2\sin\theta+2)\,d\theta\]
+\[=\int_{-\pi/2}^{\pi/2}\ln2\,d\theta+\int_{-\pi/2}^{\pi/2}\ln(1+\sin\theta)\,d\theta.\]
+The first is the integral of a constant, so it's just \(\pi\ln2\). For the second integral, substitute \(\theta'=-\theta\):
+\[\int_{-\pi/2}^{\pi/2}\ln(1+\sin\theta)\,d\theta=\int_{\pi/2}^{-\pi/2}\ln(1-\sin\theta')(-d\theta')=\int_{-\pi/2}^{\pi/2}\ln(1-\sin\theta')\,d\theta'.\]
+Since this integral has the same bounds as the other one, we can add them together, as long as we rename \(\theta'\) to \(\theta\). We'll let this integral equal \(I\) to keep track of it:
+\[I=\int_{-\pi/2}^{\pi/2}\ln(1+\sin\theta)\,d\theta=\int_{-\pi/2}^{\pi/2}\ln(1-\sin\theta)\,d\theta\]
+\[2I=\int_{-\pi/2}^{\pi/2}\left[\ln(1+\sin\theta)+\ln(1-\sin\theta)\right]d\theta\]
+\[=\int_{-\pi/2}^{\pi/2}\ln(1-\sin^2\theta)\,d\theta=\int_{-\pi/2}^{\pi/2}\ln(\cos^2\theta)\,d\theta=2\int_{-\pi/2}^{\pi/2}\ln|\cos\theta|\,d\theta.\]
+Hence, \(I=-\pi\ln2\) based on the given in the problem, so the total integral is \(\pi\ln2-\pi\ln2=\boxed0\), which is NOTA.
+The endpoint singularities are integrable: near \(x=0\) the magnitude behaves like \(|\ln x|/\sqrt{x}\), and near \(x=4\) like a constant times \(1/\sqrt{4-x}\). Thus the substitutions and endpoint limits are legitimate.`,
   },
   {
     id: 10318,
+    source: { ...kingFebruary2026, questionNumber: 23 },
     number: 318,
     division: "Mu",
     topic: "Differential Equations",
@@ -3708,21 +3749,27 @@ Thus \(I=-\pi\ln2\), and the original integral is 0, which is NOTA.`,
     question: String.raw`The Airy function, \(f(x)=\operatorname{Ai}(x)\), is a solution to the differential equation \(f''(x)-xf(x)=0\). Given that \(\operatorname{Ai}(1)=\psi\) and \(\operatorname{Ai}'(1)=\phi\), the value of \(\operatorname{Ai}'''(1)+\operatorname{Ai}^{(4)}(1)\) can be written as \(A\psi+B\phi\) for integers \(A,B\). What is \(A+B\)?`,
     choices: ["2", "3", "5", "7", "NOTA"],
     answer: "C",
-    solution: String.raw`From \(f''=xf\), differentiate successively:
-\[f'''=f+xf',\]
-\[f^{(4)}=2f'+xf''=2f'+x^2f.\]
-At \(x=1\),
-\[f'''(1)=\psi+\phi,\qquad f^{(4)}(1)=\psi+2\phi.\]
-Their sum is \(2\psi+3\phi\), so \(A+B=5\).`,
+    solution: String.raw`Take the first and second derivatives of the given differential equation:
+\[f''(x)=xf(x)\]
+\[f'''(x)=f(x)+xf'(x)\]
+\[f^{(4)}(x)=2f'(x)+xf''(x)=2f'(x)+x^2f(x).\]
+Using \(f(x)=\operatorname{Ai}(x)\), we get
+\[\operatorname{Ai}'''(1)=\operatorname{Ai}(1)+\operatorname{Ai}'(1)=\psi+\phi,\]
+and
+\[\operatorname{Ai}^{(4)}(1)=2\operatorname{Ai}'(1)+\operatorname{Ai}(1)=2\phi+\psi.\]
+Therefore \(\operatorname{Ai}'''(1)+\operatorname{Ai}^{(4)}(1)=2\psi+3\phi\). Comparing coefficients gives \(A=2\), \(B=3\), and the answer is \(\boxed5\).`,
   },
   {
     id: 10319,
+    source: { ...kingFebruary2026, questionNumber: 24 },
     number: 319,
     division: "Mu",
     topic: "Function Analysis",
     difficulty: 2,
     methods: [],
-    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both functions are defined for all \(x\in V\) and there is at least one \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
+    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both of the following are true:
+\(f(x)\) and \(g(x)\) are defined for all \(x\in V\).
+There is at least one value \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
 
 One, and only one, of these functions \(f(x)\) is sadder than \(g(x)=\arctan x\) on the interval \(0<x<1\). Which is it?`,
     choices: [String.raw`\(\frac{x}{1-x}\)`, String.raw`\(2x\)`, String.raw`\(2x^2\)`, String.raw`\(\frac{2x}{1+x^2}\)`, "NOTA"],
@@ -3733,65 +3780,77 @@ Also, \(2x^2<\arctan x\) for sufficiently small positive \(x\). Finally, let
 \[q(x)=\frac{2x}{1+x^2}-\arctan x.\]
 Then \(q(0)=0\), \(q(1)=1-\pi/4>0\), and
 \[q'(x)=\frac{1-3x^2}{(1+x^2)^2},\]
-so \(q\) first increases and then decreases while remaining positive on \((0,1)\). Therefore,
-\[2x^2<\arctan x.\]
-Thus \(2x^2\) is the unique function that is sadder than \(\arctan x\).`,
+so \(q\) first increases and then decreases while remaining positive on \((0,1)\).
+To justify the assertion about choice C, \(\arctan x/x\to1\) as \(x\to0^+\), whereas \(2x^2/x=2x\to0\). Thus \(2x^2<\arctan x\) at some sufficiently small positive \(x\), which is all that "sadder" requires; it need not hold throughout \((0,1)\). Hence \(2x^2\) is the unique choice that is sadder than \(\arctan x\).`,
   },
   {
     id: 10320,
+    source: { ...kingFebruary2026, questionNumber: 25 },
     number: 320,
     division: "Mu",
     topic: "Inequalities",
     difficulty: 5,
     methods: [],
-    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both functions are defined for all \(x\in V\) and there is at least one \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
+    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both of the following are true:
+\(f(x)\) and \(g(x)\) are defined for all \(x\in V\).
+There is at least one value \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
 
-Assume \(f(x)\) and \(g(x)\) are both continuous and differentiable on \(0\le x\le1\), with \(f(0)=g(0)=0\), \(f(1)=g(1)=1\), and \(f(x)\) sadder than \(g(x)\). Which statements must be true?
+Assume \(f(x)\) and \(g(x)\) are both continuous and differentiable on \(0\le x\le1\), with \(f(0)=g(0)=0\), \(f(1)=g(1)=1\), and \(f(x)\) sadder than \(g(x)\). Which of the following statements must be true?
 
-I. There exists some real number \(r>1\) such that \([g(x)]^r\) is sadder than \(f(x)\).
+I. There exists some real number \(r>1\) such that \(|g(x)|^r\) is sadder than \(f(x)\).
 
 II. There exists some real number \(n>1\) such that \(x^ng(x)\) is sadder than \(f(x)\).`,
     choices: ["Neither I nor II", "Both I and II", "Only I", "Only II", "NOTA"],
     answer: "D",
-    solution: String.raw`Statement I is false. For example, let
-\[f(x)=2x^2-x,\qquad g(x)=5x-4x^2.\]
-These functions satisfy all the endpoint conditions and \(f(x)<g(x)\) on \((0,1)\). Where \(f(x)\le0\), we have \([g(x)]^r\ge0\ge f(x)\). Where \(f(x)>0\), we have \(g(x)\ge1\), so \([g(x)]^r\ge g(x)>f(x)\) for every \(r>1\). Thus I need not hold.
+    solution: String.raw`Only II is true.
 
-Statement II must be true. Since \(f(1)=1\) and \(f\) is continuous, there is an interval \(1-\varepsilon<x<1\) on which \(0<f(x)<2\). Choose any \(x_0\) in this interval. As \(n\to\infty\), \(x_0^ng(x_0)\to0\). Therefore, for sufficiently large \(n\),
+I. This is false. A counterexample is shown in the plot. The key is that \(g(x)\) can stay greater than or equal to 1 wherever \(f(x)>0\); then raising \(g(x)\) to a power greater than 1 cannot bring it below \(f(x)\).
+[[solution-diagram:mu-320]]
+For a separate concrete algebraic counterexample, let
+\[f(x)=2x^2-x,\qquad g(x)=5x-4x^2.\]
+These functions satisfy all the endpoint conditions and \(f(x)<g(x)\) on \((0,1)\), because \(g(x)-f(x)=6x(1-x)>0\). They also have \(g(x)\ge0\). Where \(f(x)\le0\), we have \(|g(x)|^r\ge0\ge f(x)\). Where \(f(x)>0\), necessarily \(x>1/2\), and \(g(x)-1=(1-x)(4x-1)\ge0\), so \(|g(x)|^r\ge g(x)>f(x)\) for every \(r>1\). At the endpoints both sides are equal. Thus I need not hold.
+
+II. This is true. The key is that \(0<x<1\) in the relevant interval, so multiplying by \(x^n\) for a large enough \(n\), we can make \(g(x)\) as small in magnitude as we want. This does not by itself work if \(f(x)\le0\). Fortunately, since \(f\) is continuous and \(f(1)=1\), the definition of continuity gives an interval \(1-\varepsilon<x<1\) on which \(0<f(x)<2\). Choose any fixed \(x_0\) in this interval. As \(n\to\infty\), \(x_0^ng(x_0)\to0\). Therefore, for sufficiently large \(n>1\),
 \[x_0^ng(x_0)<f(x_0),\]
-so \(x^ng(x)\) is sadder than \(f(x)\). Thus only II is guaranteed.`,
+so \(x^ng(x)\) is sadder than \(f(x)\). Also, \(x^ng(x)\) is defined throughout \([0,1]\) for \(n>1\), including its value 0 at \(x=0\). Only II is guaranteed. If \(g(x_0)<0\), it is already below the positive \(f(x_0)\), and any \(n>1\) works at that point.`,
   },
   {
     id: 10321,
+    source: { ...kingFebruary2026, questionNumber: 26 },
     number: 321,
     division: "Mu",
     topic: "Optimization",
     difficulty: 3,
     methods: ["First Derivative Test"],
-    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both functions are defined for all \(x\in V\) and there is at least one \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
+    question: String.raw`A function \(f(x)\) is sadder than another function \(g(x)\) on an interval \(V\) if both of the following are true:
+\(f(x)\) and \(g(x)\) are defined for all \(x\in V\).
+There is at least one value \(x_0\in V\) such that \(f(x_0)<g(x_0)\).
 
 Consider \(f(x)=-\ln x\) and \(g(x)=k-x^2\) for a constant \(k\). What is the maximum value of \(k\) such that \(f(x)\) is not sadder than \(g(x)\) on \(0<x<\infty\)?`,
     choices: [String.raw`\(\frac12+\frac{\ln2}{2}\)`, String.raw`\(\frac12+\ln2\)`, String.raw`\(1+\frac{\ln2}{2}\)`, String.raw`\(2+2\ln2\)`, "NOTA"],
     answer: "A",
     solution: String.raw`Let
 \[\Delta(x)=f(x)-g(x)=x^2-\ln x-k.\]
-The function \(f\) is not sadder than \(g\) exactly when \(\Delta(x)\ge0\) for every \(x>0\). Its minimum occurs where
+The function \(f\) is not sadder than \(g\) exactly when \(\Delta(x)\ge0\) for every \(x>0\). As \(x\to0^+\) or \(x\to+\infty\), we have \(\Delta(x)\to\infty\), so we should look somewhere between. Its minimum occurs where
 \[\Delta'(x)=2x-\frac1x=0,\qquad x=\frac{\sqrt2}{2}.\]
 At this point,
 \[\Delta\left(\frac{\sqrt2}{2}\right)=\frac12+\frac12\ln2-k.\]
-Thus the maximum possible \(k\) is
+The critical point is the unique global minimum because \(\Delta''(x)=2+1/x^2>0\) for every \(x>0\). At \(k=1/2+(\ln2)/2\), the minimum is exactly 0, not negative, so \(f\) is still not sadder. Increasing \(k\) makes this minimum negative. Thus the maximum possible \(k\) is
 \[\frac12+\frac{\ln2}{2}.\]`,
   },
   {
     id: 10322,
+    source: { ...kingFebruary2026, questionNumber: 27 },
     number: 322,
     division: "Mu",
     topic: "Functions",
     difficulty: 3,
     methods: ["Chain Rule"],
-    question: String.raw`Let \(f(x)\) be a continuous and differentiable function defined for \(x>0\). Given that \(f'(4)=5\) and
+    question: String.raw`Let \(f(x)\) be a continuous and differentiable function, defined for \(x>0\).
+Given that \(f'(4)=5\), and that
 \[f(x)=f\left(\frac x2\right)+f(2x),\]
-what is \(f'(1/2)\)? Note that continuous and differentiable functions satisfying these conditions do exist.`,
+what is \(f'(1/2)\)?
+(Note: there do actually exist continuous and differentiable functions that satisfy these conditions.)`,
     choices: ["−80", "−40", "5", "10", "NOTA"],
     answer: "B",
     solution: String.raw`Differentiate the functional equation:
@@ -3801,50 +3860,65 @@ At \(x=1\) and \(x=2\), respectively,
 \[f'(2)=\frac12f'(1)+2f'(4).\]
 Substituting the second equation into the first gives
 \[f'(1)=\frac12f'\left(\frac12\right)+f'(1)+4f'(4).\]
-Since \(f'(4)=5\), we obtain \(f'(1/2)=-40\).`,
+Canceling \(f'(1)\) from both sides gives \(\tfrac12f'(1/2)=-4f'(4)=-20\). Multiplying by 2 gives \(f'(1/2)=-8f'(4)=\boxed{-40}\).
+It is not necessary to find a function \(f(x)\) that satisfies the given conditions, but it is pretty fun and challenging. A useful starting point is to put \(x=2^t\) and \(F(t)=f(2^t)\), turning the equation into \(F(t)=F(t-1)+F(t+1)\). For example, \(F(t)=C\sin(\pi t/3)\) satisfies this relation, and \(C\) can be scaled to give \(f'(4)=5\).`,
   },
   {
     id: 10323,
+    source: { ...kingFebruary2026, questionNumber: 28 },
     number: 323,
     division: "Mu",
     topic: "Polynomials",
     difficulty: 4,
     methods: ["Product Rule"],
-    question: String.raw`For \(n\ge1\), the Hermite polynomials are defined by
+    question: String.raw`The Hermite polynomials \(H_n(x)\) for \(n\ge1\) are defined as follows:
 \[H_n(x)=(-1)^ne^{x^2}\left(\frac d{dx}\right)^n\left(e^{-x^2}\right).\]
+The first two Hermite polynomials are:
+\[H_1(x)=(-1)^1e^{x^2}\frac d{dx}(e^{-x^2})=-e^{x^2}(-2xe^{-x^2})=2x\]
+\[H_2(x)=(-1)^2e^{x^2}\frac{d^2}{dx^2}(e^{-x^2})=e^{x^2}((-2+4x^2)e^{-x^2})=-2+4x^2.\]
 Given that \(H_8(a)=h\) and \(H_8'(a)=0\), what is \(H_9(a)\)?`,
     choices: [String.raw`\(18h\)`, String.raw`\(2ah\)`, String.raw`\((9+8a)h\)`, String.raw`\((9+2a)h\)`, "NOTA"],
     answer: "B",
-    solution: String.raw`Differentiate the defining relation to obtain
-\[H_n'(x)=2xH_n(x)-H_{n+1}(x).\]
-For \(n=8\) and \(x=a\),
-\[0=H_8'(a)=2aH_8(a)-H_9(a).\]
-Since \(H_8(a)=h\), it follows that
-\[H_9(a)=2ah.\]`,
+    solution: String.raw`Take the derivative of the given equation to find \(H_n'(x)\). Note that \(H_n(x)\) is the product of two expressions, the second of which involves an \(n\)th derivative that becomes an \((n+1)\)th derivative:
+\[H_n(x)=(-1)^ne^{x^2}\left(\frac d{dx}\right)^n(e^{-x^2})\]
+\[H_n'(x)=(-1)^n2xe^{x^2}\left(\frac d{dx}\right)^n(e^{-x^2})+(-1)^ne^{x^2}\left(\frac d{dx}\right)^{n+1}(e^{-x^2})\]
+\[=2xH_n(x)-H_{n+1}(x).\]
+The minus sign follows because \((-1)^n=-(-1)^{n+1}\). If we let \(n=8\) and substitute \(x=a\), we get
+\[H_8'(a)=0=2aH_8(a)-H_9(a),\]
+so \(H_9(a)=2aH_8(a)=\boxed{2ah}\).`,
   },
   {
     id: 10324,
+    source: { ...kingFebruary2026, questionNumber: 29 },
     number: 324,
     division: "Mu",
     topic: "Polynomials",
     difficulty: 5,
     methods: ["Product Rule"],
-    question: String.raw`For \(n\ge1\), the Hermite polynomials are defined by
+    question: String.raw`The Hermite polynomials \(H_n(x)\) for \(n\ge1\) are defined as follows:
 \[H_n(x)=(-1)^ne^{x^2}\left(\frac d{dx}\right)^n\left(e^{-x^2}\right).\]
+The first two Hermite polynomials are:
+\[H_1(x)=(-1)^1e^{x^2}\frac d{dx}(e^{-x^2})=-e^{x^2}(-2xe^{-x^2})=2x\]
+\[H_2(x)=(-1)^2e^{x^2}\frac{d^2}{dx^2}(e^{-x^2})=e^{x^2}((-2+4x^2)e^{-x^2})=-2+4x^2.\]
 Given that \(H_8(a)=h\) and \(H_8'(a)=0\), what is \(H_9'(a)\)?`,
     choices: [String.raw`\(18h\)`, String.raw`\(2ah\)`, String.raw`\((9+8a)h\)`, String.raw`\((9+2a)h\)`, "NOTA"],
     answer: "A",
-    solution: String.raw`The Hermite identities
-\[H_n'(x)=2nH_{n-1}(x),\qquad H_{n+1}(x)=2xH_n(x)-2nH_{n-1}(x)\]
-combine to give
-\[H_{n+1}(x)=2xH_n(x)-H_n'(x).\]
-Differentiate this last identity:
-\[H_{n+1}'(x)=2H_n(x)+2xH_n'(x)-H_n''(x).\]
-At a zero of \(H_8'\), the Hermite differential equation \(H_8''-2xH_8'+16H_8=0\) gives \(H_8''(a)=-16h\). Therefore,
-\[H_9'(a)=2h-(-16h)=18h.\]`,
+    solution: String.raw`The equation \(H_n'(x)=2xH_n(x)-H_{n+1}(x)\), obtained by the product rule from the definition, is helpful, but we need another relation to other terms. The easiest way to do this is to take the \((n+1)\)th derivative in \(H_{n+1}\), break it into an \(n\)th derivative and a first derivative, and then take advantage of the Leibniz product rule. Write \(D=d/dx\):
+\[H_{n+1}(x)=(-1)^{n+1}e^{x^2}D^{n+1}(e^{-x^2})=(-1)^{n+1}e^{x^2}D^n(-2xe^{-x^2})\]
+\[=(-1)^ne^{x^2}D^n(2xe^{-x^2}).\]
+By the Leibniz product rule,
+\[D^n(2xe^{-x^2})=\sum_{k=0}^n\binom nk D^k(2x)D^{n-k}(e^{-x^2}).\]
+Only \(k=0\) and \(k=1\) are nonzero, because higher derivatives of \(2x\) vanish. Thus
+\[D^n(2xe^{-x^2})=2xD^n(e^{-x^2})+2nD^{n-1}(e^{-x^2}),\]
+and substituting back gives
+\[H_{n+1}(x)=2xH_n(x)-2nH_{n-1}(x).\]
+Now substitute this expression for \(H_{n+1}\) into \(H_n'=2xH_n-H_{n+1}\) to get
+\[H_n'(x)=2nH_{n-1}(x).\]
+With \(n=9\), this means \(H_9'(a)=2(9)H_8(a)=\boxed{18h}\). This identity holds without using the extra condition \(H_8'(a)=0\).`,
   },
   {
     id: 10325,
+    source: { ...kingFebruary2026, questionNumber: 30 },
     number: 325,
     division: "Mu",
     topic: "Geometry",
@@ -3853,7 +3927,10 @@ At a zero of \(H_8'\), the Hermite differential equation \(H_8''-2xH_8'+16H_8=0\
     question: String.raw`A mirror is shaped like the curve \(y=\sqrt[3]x\) for positive \(x\). A ray of light is emitted from the origin following the line \(y=mx\), in the direction of increasing \(x\). It hits and reflects off the mirror. What is the positive value of \(m\) such that, after reflection, the ray travels parallel to the \(x\)-axis?`,
     choices: [String.raw`\(\sqrt[3]3\)`, String.raw`\(\sqrt3\)`, String.raw`\(\sqrt[3]9\)`, "3", "NOTA"],
     answer: "B",
-    solution: String.raw`Let \(P=(x_P,\sqrt[3]{x_P})\) be the point of reflection. Because \(P\) also lies on \(y=mx\),
+    solution: String.raw`For a straight mirror, the angle that the light ray is incident on the mirror is the same as the angle it reflects at. For the curved mirror shaped like \(y=f(x)=\sqrt[3]x\), assume it reflects off a straight mirror shaped like the tangent line to \(\sqrt[3]x\) at the point of contact \(P\).
+[[solution-diagram:mu-325]]
+In the diagram, the blue lines are the light ray, the black curve is the curved mirror, and the dashed black line is the tangent line. The angle of incidence equaling the angle of reflection means \(\theta_1=\theta_2\). The angle between them is \(\pi-2\theta_1\). Notice that, if the ray is horizontal after reflecting, then \(\beta=\pi-(\pi-2\theta_1)=2\theta_1\).
+Let \(P=(x_P,\sqrt[3]{x_P})\) be the point of reflection. Because \(P\) also lies on \(y=mx\),
 \[mx_P=\sqrt[3]{x_P},\qquad x_P=m^{-3/2}.\]
 The tangent slope at \(P\) is
 \[f'(x_P)=\frac13x_P^{-2/3}=\frac m3.\]
@@ -3861,7 +3938,7 @@ Let \(\beta=\arctan m\) be the incident ray's angle with the horizontal, and let
 \[\arctan m=2\arctan\left(\frac m3\right).\]
 Using the tangent double-angle identity,
 \[m=\frac{2m/3}{1-m^2/9}.\]
-For positive \(m\), this yields \(m^2=3\), so
+Since \(m>0\), divide by \(m\) to get \(1-m^2/9=2/3\), hence \(m^2=3\). The positive solution is
 \[m=\sqrt3.\]`,
   },
 ];

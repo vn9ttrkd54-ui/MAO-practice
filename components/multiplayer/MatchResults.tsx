@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 
 import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
+import QuestionSourceCredit from "@/components/questions/QuestionSourceCredit";
 import RoundLeaderboard from "./RoundLeaderboard";
 import { formatAnswerTime } from "@/lib/multiplayerRoundFeedback";
 import type { MultiplayerMatchResult } from "@/types/multiplayer";
@@ -58,6 +59,7 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
 
               {!isSpectator ? <p className="mt-2 text-sm text-slate-600">Answer time: {formatAnswerTime(round.answerTimeMs)}</p> : null}
               <div className="mt-3 font-medium leading-7">
+                <QuestionSourceCredit source={round.source} />
                 <MathText>{round.question}</MathText>
               </div>
               <QuestionImage illustration={round.illustration} />

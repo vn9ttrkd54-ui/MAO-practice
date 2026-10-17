@@ -10,6 +10,7 @@ import { thetaQuestions } from "../data/questions/theta.ts";
 
 const require = createRequire(import.meta.url);
 const questions = [...muQuestions, ...alphaQuestions, ...thetaQuestions];
+const creditedMatchQuestions = questions.filter(question => question.source).slice(0, 30);
 function load(file, dependencies) {
   const exports = {};
   vm.runInNewContext(ts.transpileModule(readFileSync(new URL(`../${file}`, import.meta.url), "utf8"), {
@@ -60,7 +61,7 @@ test("multiplayer indexes the catalog once, still authorizes each read, and neve
       return { error: null, data: {
         status: "ready", result: { placement: 1, final_score: 1000, previous_rp: null, new_rp: 0 },
         placements: [], submissions: [], scoreboard: { status: "completed", players: [] },
-        questions: questions.slice(0, 30).map((q, i) => ({ question_id: q.id, question_number: i + 1 })),
+        questions: creditedMatchQuestions.map((q, i) => ({ question_id: q.id, question_number: i + 1 })),
       } };
     } }) },
   });
@@ -71,15 +72,17 @@ test("multiplayer indexes the catalog once, still authorizes each read, and neve
     assert.equal(round.question.questionId, question.id);
     assert.equal(round.question.question, question.question);
     assert.equal(round.question.choices, question.choices);
+    assert.equal(round.question.source, question.source);
     assert.equal("answer" in round.question, false); assert.equal("solution" in round.question, false);
   }
   questionId = -1;
   await assert.rejects(service.getMultiplayerRoundState("room"), /Question unavailable/);
   const result = await service.getMultiplayerMatchResult("room");
-  assert.equal(result.rounds.length, 30);
+  assert.equal(result.rounds.length, creditedMatchQuestions.length);
   for (const [i, round] of result.rounds.entries()) {
-    assert.equal(round.questionId, questions[i].id); assert.equal(round.correctAnswer, questions[i].answer);
-    assert.equal(round.solution, questions[i].solution);
+    assert.equal(round.questionId, creditedMatchQuestions[i].id); assert.equal(round.correctAnswer, creditedMatchQuestions[i].answer);
+    assert.equal(round.solution, creditedMatchQuestions[i].solution);
+    assert.equal(round.source, creditedMatchQuestions[i].source);
   }
   assert.equal(indexes, 1, "reads and result assembly reuse the server catalog");
   assert.equal(authReads, questions.length + 2); assert.equal(stateReads, authReads);

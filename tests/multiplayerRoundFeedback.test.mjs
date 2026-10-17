@@ -21,7 +21,7 @@ test("feedback formats negative, zero and speed-bonus points plus actual answer 
 
 const require=createRequire(import.meta.url);
 const source=readFileSync(new URL("../lib/services/multiplayerService.ts",import.meta.url),"utf8");
-function loadService({user=true,member=true,publicRoom=false,closed=false,rpcError=false,status="in-progress",illustrated=false}={}) {
+function loadService({user=true,member=true,publicRoom=false,closed=false,rpcError=false,status="in-progress",illustrated=false,credited=false}={}) {
   const calls=[];
   const room={id:"room",visibility:publicRoom?"public":"private",status,question_count:2,seconds_per_question:90,mode:"unranked",
     division:"Mu",capacity:30,created_at:new Date().toISOString(),current_question_number:1,state_version:4};
@@ -35,6 +35,10 @@ function loadService({user=true,member=true,publicRoom=false,closed=false,rpcErr
   if(illustrated) {
     snapshot.question.question_id=10238;
     snapshot.upcoming={...snapshot.question,question_number:2,question_id:10239};
+  }
+  if(credited) {
+    snapshot.question.question_id=10302;
+    snapshot.upcoming={...snapshot.question,question_number:2,question_id:10325};
   }
   const admin={
     from(table){
@@ -62,7 +66,7 @@ function loadService({user=true,member=true,publicRoom=false,closed=false,rpcErr
       if(name==="server-only")return {};
       if(name==="@/lib/auth/publicNames")return {isPublicNameAllowed:()=>true};
       if(name==="next/headers")return {cookies:async()=>({get:()=>member?{value:"guest-token"}:undefined})};
-      if(name==="@/data/questions")return {questions:illustrated?muQuestions:[{id:101,division:"Mu",topic:"Algebra",question:"Test?",choices:["1","2"],answer:"A",solution:"Secret"}]};
+      if(name==="@/data/questions")return {questions:illustrated||credited?muQuestions:[{id:101,division:"Mu",topic:"Algebra",question:"Test?",choices:["1","2"],answer:"A",solution:"Secret"}]};
       if(name==="@/lib/security/request")return {RequestBodyError:class extends Error{}};
       if(name==="@/lib/supabase/admin")return {createAdminClient:()=>admin};
       if(name==="@/lib/supabase/server")return {createClient:async()=>({auth:{getUser:async()=>({data:{user:user?{id:"user"}:null}})}})};
@@ -101,6 +105,21 @@ test("spectators receive the same real diagram as the players",async()=>{
   const state=await f.service.spectatePublicMatch("room");
   assert.equal(state.question.illustration,muQuestions.find(q=>q.id===10238).illustration);
   assert.equal(state.question.solution,undefined);
+});
+for(const user of [true,false])test(`${user?"account":"guest"} current and preloaded questions retain source credits without leaking solutions`,async()=>{
+  const f=loadService({user,credited:true});
+  const state=await f.service.getMultiplayerRoundState("room");
+  for(const [question,id] of [[state.question,10302],[state.upcomingQuestion.question,10325]]) {
+    assert.equal(question.source,muQuestions.find(q=>q.id===id).source);
+    assert.equal("answer" in question,false);assert.equal("solution" in question,false);
+  }
+  assert.equal(f.calls.length,1,"source attribution adds no extra database read");
+});
+test("spectators receive the same safe source credit",async()=>{
+  const f=loadService({member:false,publicRoom:true,credited:true});
+  const state=await f.service.spectatePublicMatch("room");
+  assert.equal(state.question.source,muQuestions.find(q=>q.id===10302).source);
+  assert.equal("answer" in state.question,false);assert.equal("solution" in state.question,false);
 });
 test("spectator receives atomic question, safe totals and closed-round feedback",async()=>{
   const f=loadService({member:false,publicRoom:true,closed:true});const state=await f.service.spectatePublicMatch("room");

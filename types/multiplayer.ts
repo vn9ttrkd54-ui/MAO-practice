@@ -1,4 +1,4 @@
-import type { AnswerChoice, Division, QuestionIllustration } from "@/types/question";
+import type { AnswerChoice, Division, QuestionIllustration, QuestionSource } from "@/types/question";
 
 export type MultiplayerScoringVersion = 1 | 2 | 3;
 
@@ -97,6 +97,7 @@ export interface MultiplayerPublicRoom extends MultiplayerRoom {
 }
 
 export interface MultiplayerQuestion {
+  source?: QuestionSource;
   illustration?: QuestionIllustration;
   questionId: number;
   number: number;
@@ -162,6 +163,7 @@ export interface MultiplayerAnswerSubmission {
 }
 
 export interface MultiplayerRoundResult {
+  source?: QuestionSource;
   illustration?: QuestionIllustration;
   questionId: number;
   questionNumber: number;

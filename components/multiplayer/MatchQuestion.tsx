@@ -8,6 +8,7 @@ import RoundLeaderboard from "./RoundLeaderboard";
 import styles from "./matchSurface.module.css";
 import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
+import QuestionSourceCredit from "@/components/questions/QuestionSourceCredit";
 import { RankPill } from "@/components/multiplayer/RankTheme";
 import { subscribeToMultiplayerRoom } from "@/lib/multiplayerRealtime";
 import { sendMultiplayerAnswer, SubmissionRejectedError } from "@/lib/multiplayerSubmission";
@@ -333,6 +334,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
       <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className={`${styles.panel} rounded-3xl border bg-white p-6 shadow-sm sm:p-8`}>
         {submissionNotice}
         {(round.scoringVersion ?? 1) === 1 ? <p className="mb-4 text-sm text-slate-600">Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0.</p> : null}
+        <QuestionSourceCredit source={round.question.source} />
         <div className="text-lg font-semibold leading-8"><MathText>{round.question.question}</MathText></div>
         <QuestionImage illustration={round.question.illustration} />
         <div className="mt-6 grid gap-3">{round.question.choices.map((choice, index) => { const label = labels[index]; const active = selected === label; return <button key={label} disabled={submitted || secondsLeft === null || secondsLeft === 0} onClick={() => setSelected(label)} className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left ${active ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600" : "border-slate-200 bg-slate-50/60 hover:border-blue-300 hover:bg-blue-50"} disabled:cursor-not-allowed disabled:opacity-60`}><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 font-bold">{label}</span><MathText>{choice}</MathText></button>; })}</div>

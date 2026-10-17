@@ -7,6 +7,7 @@ import MultipleChoice from "@/components/practice/MultipleChoice";
 import SolutionPanel from "@/components/practice/SolutionPanel";
 import MathText from "@/components/math/MathText";
 import QuestionImage from "@/components/questions/QuestionImage";
+import QuestionSourceCredit from "@/components/questions/QuestionSourceCredit";
 import styles from "./trainer-session.module.css";
 
 type TrainerQuestionProps = {
@@ -37,6 +38,7 @@ export default function TrainerQuestion({
       <h2>
         Question
       </h2>
+      <QuestionSourceCredit source={question.source} />
 
       <div className={styles.problem}>
         <MathText>{question.question}</MathText>

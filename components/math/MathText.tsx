@@ -2,9 +2,29 @@ import katex from "katex";
 import Image from "next/image";
 
 type MathTextProps = { children: string; className?: string };
-const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227)\]\])/g;
+const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325)\]\])/g;
 // Explicit local allowlist: never interpret arbitrary URLs or HTML from text.
 const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: number; height: number }> = {
+  "[[solution-diagram:mu-302]]": {
+    src: "/questions/mu-302-solution.png",
+    alt: "Original solution diagram: a red cylinder rotates about the blue generator line, sweeping the larger green cylinder.",
+    width: 280, height: 200,
+  },
+  "[[solution-diagram:mu-313]]": {
+    src: "/questions/mu-313-solution.png",
+    alt: "Original solution graph: successively smaller triangular areas between consecutive powers of one-half.",
+    width: 432, height: 130,
+  },
+  "[[solution-diagram:mu-320]]": {
+    src: "/questions/mu-320-solution.png",
+    alt: "Original schematic counterexample: the green graph g rises above one before the blue graph f becomes positive.",
+    width: 156, height: 150,
+  },
+  "[[solution-diagram:mu-325]]": {
+    src: "/questions/mu-325-solution.png",
+    alt: "Original reflection diagram showing incident and horizontal reflected rays, the tangent at P, and angles beta, theta one and theta two.",
+    width: 227, height: 207,
+  },
   "[[solution-diagram:mu-194]]": {
     src: "/questions/mu-194-solution.svg",
     alt: "Graph of arccos(cos x): triangular waves of height pi, with zeros at multiples of 2 pi.",
