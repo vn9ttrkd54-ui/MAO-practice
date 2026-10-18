@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="410" viewBox="0 0 460 410" role="img" aria-labelledby="title description">
+  <title id="title">March Regional 2024 graph of y=f prime(x)</title>
+  <desc id="description">A smooth derivative curve crosses the origin, rises to a first peak near x=0.6, touches the x-axis at x=2, rises to a second peak near x=3.35, and crosses downward through x=4. The positive area on [0,2] is 8 and the positive area on [2,4] is 6. The slope of this derivative curve at x=4 is negative. Given f(2)=-4.</desc>
+  <rect width="460" height="410" fill="white"/>
+  <defs><clipPath id="plot"><rect x="20" y="24" width="400" height="356"/></clipPath></defs>
+  <path d="M20 300H420 M60 24V390" fill="none" stroke="#444" stroke-width="1.7"/>
+  <g stroke="#444" stroke-width="1.2">
+    <path d="M55 60H65 M55 90H65 M55 120H65 M55 150H65 M55 180H65 M55 210H65 M55 240H65 M55 270H65 M55 330H65 M55 360H65 M140 296V304 M220 296V304 M300 296V304 M380 296V304"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="14" fill="#222">
+    <g text-anchor="end"><text x="51" y="65">8</text><text x="51" y="95">7</text><text x="51" y="125">6</text><text x="51" y="155">5</text><text x="51" y="185">4</text><text x="51" y="215">3</text><text x="51" y="245">2</text><text x="51" y="275">1</text><text x="51" y="335">-1</text><text x="51" y="365">-2</text></g>
+    <g text-anchor="middle"><text x="53" y="318">0</text><text x="140" y="318">1</text><text x="220" y="318">2</text><text x="300" y="318">3</text><text x="380" y="318">4</text></g>
+    <text x="392" y="288" font-style="italic">x</text><text x="77" y="28" font-style="italic">y = f'(x)</text>
+  </g>
+  <path id="derivative-curve" clip-path="url(#plot)" d="M50 390 C54 355 58 318 60 300 C74 174 85 58 108 75 C145 90 169 300 220 300 C259 300 292 122 326 137 C357 149 375 268 380 300 C385 332 391 370 394 390" fill="none" stroke="#191919" stroke-width="3.3"/>
+  <g font-family="Georgia, serif" font-size="37" font-style="italic" text-anchor="middle" fill="#222"><text x="116" y="242">8</text><text x="321" y="242">6</text></g>
+</svg>

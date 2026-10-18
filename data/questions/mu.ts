@@ -1,5 +1,28 @@
 import type { Question } from "@/types/question";
 
+const marchRegional2024 = {
+  competition: "2024 March Regional",
+  event: "Calculus Individual",
+};
+
+const marchRegional2024Function = {
+  src: "/questions/mu-march-regional-2024-function.svg",
+  alt: "Graph of f on [-6,7]: cusp at (-2,-2), corner at (0,2), vertical tangent at (2,0), filled (4,-2), open (4,1), line to (5,0), then line to filled (7,2). The left endpoint at x=-6 is filled above y=3.",
+  width: 660, height: 370,
+};
+
+const marchRegional2024Derivative = {
+  src: "/questions/mu-march-regional-2024-derivative.svg",
+  alt: "Graph of y=f prime(x), with positive areas 8 on [0,2] and 6 on [2,4]. The curve touches the x-axis at x=2 and crosses downward at x=4. Given f(2)=-4.",
+  width: 460, height: 410,
+};
+
+const marchRegional2024Table = {
+  src: "/questions/mu-march-regional-2024-table.svg",
+  alt: "For strictly decreasing differentiable f, columns x=0,2,4,6,8; f(x)=20,16,8,2,0; f prime(x)=-4,-6,-4,-2,-1.",
+  width: 620, height: 132,
+};
+
 const kingFebruaryStatewide2024 = {
   competition: "2024 February King Statewide",
   event: "Calculus Individual",
@@ -9544,5 +9567,380 @@ For \(n=8\), the usual construction fails, but discarding singleton piles resolv
 Now apply the same construction as before: each turn discard a stone from the large pile and split off \(8\). After \(184\) further turns, the remaining pile is \(1664-9(184)=8\). Thus all \(186\) piles have size \(8\); the total of \(191\) discarded stones also checks \(1679-191=186\cdot8\).
 
 The source claims that the number of stones plus the number of piles is invariant. This is true for a turn that does not empty a pile, but false when a singleton is discarded: that turn decreases the stone count by one while the disappearance and subsequent split leave the pile count unchanged. Its original C relies on forbidding this legal move. The errata changes C to E, which the constructions above prove under the clarified rule.`,
+  },
+  {
+    id: 10622, number: 499, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 1 },
+    topic: "Continuity", difficulty: 1, methods: [],
+    question: String.raw`Which function is not continuous on \([2,4]\)?`,
+    choices: [String.raw`\(f(x)=\ln(x+1)\)`, String.raw`\(f(x)=3\sec x\)`, String.raw`\(f(x)=\frac{x}{x+3}\)`, String.raw`\(f(x)=2\csc x\)`, "NOTA"], answer: "D",
+    solution: String.raw`\(f(x)=2\csc x=2/\sin x\) has an infinite discontinuity at \(x=\pi\), which is on the interval \([2,4]\). Thus D is not continuous there.
+
+The other functions are continuous on this whole interval: \(x+1>0\) for the logarithm; the zeros of \(\cos x\) nearest this interval are \(\pi/2<2\) and \(3\pi/2>4\), so the secant denominator never vanishes; and \(x+3\ne0\) throughout \([2,4]\). This checks that D is the unique choice.`,
+  },
+  {
+    id: 10623, number: 500, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 2 },
+    topic: "Derivatives", difficulty: 1, methods: ["Chain Rule"],
+    question: String.raw`Let \(f(x)=\ln(e^x+1)\). Which of the following is equal to \(f'(x)\)?`,
+    choices: ["1", String.raw`\(\frac1{e^x+1}\)`, "0", String.raw`\(\frac{e^x}{e^x+1}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Using the Chain Rule,
+\[f'(x)=\frac1{e^x+1}\cdot e^x=\frac{e^x}{e^x+1}.\]
+The outer logarithm contributes the reciprocal of its input, while the inside \(e^x+1\) has derivative \(e^x\). Since the inside is positive for every real \(x\), the calculation is valid everywhere. The answer is D.`,
+  },
+  {
+    id: 10624, number: 501, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 3 },
+    topic: "Limits", difficulty: 2, methods: ["Limit Definition of Derivatives"],
+    question: String.raw`What is \(\displaystyle\lim_{x\to4}\frac{\frac1{x-2}-\frac12}{x-4}\)?`,
+    choices: [String.raw`\(-\frac1{16}\)`, String.raw`\(-\frac14\)`, String.raw`\(-\frac12\)`, String.raw`\(\frac14\)`, "NOTA"], answer: "B",
+    solution: String.raw`Combine the fractions in the numerator. For \(x\ne4\),
+\[\frac{\frac1{x-2}-\frac12}{x-4}
+=\frac{2-(x-2)}{2(x-2)(x-4)}=-\frac1{2(x-2)}.\]
+The limit is therefore \(-1/[2(4-2)]=-1/4\), choice B.
+
+Alternatively, this is the derivative of \(g(x)=1/(x-2)\) at \(x=4\): its numerator is \(g(x)-g(4)\). Since \(g'(x)=-1/(x-2)^2\), \(g'(4)=-1/4\). The source's alternative explanation incorrectly says the derivative is evaluated at \(2\), where \(g\) is not even defined; the correct input is \(4\).`,
+  },
+  {
+    id: 10625, number: 502, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 4 },
+    topic: "Differential Equations", difficulty: 1, methods: [],
+    question: String.raw`A boat's position is measured by \(y\) at time \(t\) in seconds. During the first \(8\) seconds of the motion, the boat's acceleration varies inversely to the square root of the time since the start. Which of the following differential equations describes this relationship, where \(k\) is a positive constant? The relationship is asserted for \(0<t\le8\), not at \(t=0\).`,
+    choices: [String.raw`\(\frac{dy}{dt}=\frac{k}{\sqrt t}\)`, String.raw`\(\frac{dy}{dt}=k\sqrt t\)`, String.raw`\(\frac{d^2y}{dt^2}=k\sqrt t\)`, String.raw`\(\frac{d^2y}{dt^2}=\frac{k}{\sqrt t}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Since \(y\) is the position, its velocity is \(dy/dt\), and its acceleration is \(d^2y/dt^2\). For some constant \(k\), the given information means
+\[\frac{d^2y}{dt^2}=\frac{k}{\sqrt t},\]
+since the acceleration varies inversely with the square root of time. Thus the answer is D. "Inversely" places \(\sqrt t\) in the denominator, and "acceleration" requires a second derivative, not a first derivative. The explicit positive-time restriction avoids asserting this singular formula at the starting instant.`,
+  },
+  {
+    id: 10626, number: 503, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 5 },
+    topic: "Area Between Curves", difficulty: 2, methods: [],
+    question: String.raw`What is the area of the region in the first quadrant bounded by the graphs \(x=y^2\) and \(x=4y-3\)?`,
+    choices: [String.raw`\(\frac13\)`, String.raw`\(\frac23\)`, String.raw`\(\frac43\)`, String.raw`\(\frac83\)`, "NOTA"], answer: "C",
+    solution: String.raw`Solve \(y^2=4y-3\) to find \(y=3\) or \(y=1\). For this interval, \(x=4y-3\) is to the right of \(x=y^2\), therefore the enclosed area is
+\[\int_1^3(4y-3-y^2)\,dy.\]
+Indeed, the horizontal width is \(4y-3-y^2=(y-1)(3-y)\ge0\) on \([1,3]\), and both boundary curves have positive \(x\)-coordinates there. An antiderivative is \(F(y)=2y^2-3y-y^3/3\). By the Fundamental Theorem of Calculus, the enclosed area is
+\[F(3)-F(1)=0-\left(-\frac43\right)=\frac43.\]
+The answer is C.`,
+  },
+  {
+    id: 10627, number: 504, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 6 },
+    topic: "Fundamental Theorem of Calculus", difficulty: 2, methods: [],
+    question: String.raw`What is the product of all real values of \(x\) for which \(\displaystyle\int_x^2t^{99}\,dt=0\)?`,
+    choices: [String.raw`\(-8\)`, String.raw`\(-2\)`, "0", "2", "NOTA"], answer: "E",
+    solution: String.raw`By the Fundamental Theorem of Calculus,
+\[\int_x^2t^{99}\,dt=\frac{2^{100}}{100}-\frac{x^{100}}{100}=0.\]
+Therefore, \(x^{100}=2^{100}\), so the real solutions are \(x=\pm2\). There are no others because \(|x|^{100}=2^{100}\) forces \(|x|=2\). Their product is \((-2)(2)=-4\), which is not A-D; hence E. The negative solution is valid because the odd integrand's signed areas cancel on \([-2,2]\).`,
+  },
+  {
+    id: 10628, number: 505, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 7 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`With respect to time, when the surface area of a sphere increases at four times the rate as its radius, what is the circumference of the sphere? Here the radius is increasing, and circumference means the circumference of a great circle.`,
+    choices: [String.raw`\(\frac12\)`, "1", "2", "4", "NOTA"], answer: "B",
+    solution: String.raw`Let surface area \(S=4\pi r^2\) for radius \(r\). Then \(dS/dt=8\pi r\,dr/dt\), where \(t\) is time. Since \(dS/dt=4\,dr/dt\),
+\[4\frac{dr}{dt}=8\pi r\frac{dr}{dt}.\]
+The radius is increasing, so \(dr/dt>0\) and cancellation is valid. This gives \(r=1/(2\pi)\) at this moment. The corresponding great-circle circumference is
+\[2\pi\left(\frac1{2\pi}\right)=1.\]
+The answer is B. The added clarification rules out the uninformative stationary case where both rates vanish and specifies which circumference of a sphere is meant.`,
+  },
+  {
+    id: 10629, number: 506, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 8 },
+    topic: "Derivatives", difficulty: 2, methods: ["Quotient Rule"],
+    question: String.raw`How many points on the graph of \(f(x)=x/(x-2)\) have an instantaneous slope equal to \(-2\)?`,
+    choices: ["0", "1", "2", "3", "NOTA"], answer: "C",
+    solution: String.raw`For \(f(x)=x/(x-2)\),
+\[f'(x)=\frac{(x-2)-x}{(x-2)^2}=-\frac2{(x-2)^2}\]
+by the Quotient Rule. Setting this equal to \(-2\) requires \((x-2)^2=1\), so \(x=2\pm1=3\) or \(1\). Both values belong to the domain, since neither is \(2\), and they give two distinct points on \(f\) with this slope. Thus the answer is C.`,
+  },
+  {
+    id: 10630, number: 507, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 9 },
+    topic: "Limits", difficulty: 1, methods: [], illustration: marchRegional2024Function,
+    question: String.raw`Use the graph showing function \(f\) defined on the interval \([-6,7]\). What is \(\displaystyle\lim_{x\to4^-}f(x)-\lim_{x\to0^+}f(x)\)?`,
+    choices: [String.raw`\(-4\)`, "0", "2", "Does not exist", "NOTA"], answer: "A",
+    solution: String.raw`\(\lim_{x\to4^-}f(x)=-2\), as this is the limit of \(f\) from the left of \(x=4\). The branch approaching from smaller \(x\)-values ends at the filled point \((4,-2)\); the open point at \((4,1)\) belongs to the other branch and does not determine this left-hand limit.
+
+Also, \(\lim_{x\to0^+}f(x)=2\), since \(f\) is continuous at \(x=0\). The difference of these limits is \(-2-2=-4\), giving A. These are two separately specified one-sided limits, not the two-sided limit at \(4\), which does not exist.`,
+  },
+  {
+    id: 10631, number: 508, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 10 },
+    topic: "Differentiability", difficulty: 2, methods: [], illustration: marchRegional2024Function,
+    question: String.raw`Use the graph showing function \(f\) defined on the interval \([-6,7]\). On the open interval \((-6,7)\), at how many \(x\)-values is \(f\) non-differentiable?`,
+    choices: ["1", "3", "4", "5", "NOTA"], answer: "D",
+    solution: String.raw`\(f\) is non-differentiable at \(x=-2\), \(x=0\), \(x=2\), \(x=4\), and \(x=5\), for a total of five \(x\)-values.
+
+At \(-2\) the graph has a cusp. At \(0\) the rising left branch meets the horizontal-tangent right branch with different one-sided slopes, making a corner even though the graph is continuous there. At \(2\) there is a vertical tangent, so no finite derivative exists. At \(4\) there is a jump discontinuity, which rules out differentiability. At \(5\) the line segments have slopes \(-1\) and \(1\), another corner. The endpoints \(-6\) and \(7\) are not counted because the requested interval is open. Hence D.`,
+  },
+  {
+    id: 10632, number: 509, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 11 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["U-Substitution"], illustration: marchRegional2024Function,
+    question: String.raw`Use the graph showing function \(f\) defined on the interval \([-6,7]\). What is \(\displaystyle\int_1^{-2}f(x+6)\,dx\)?`,
+    choices: [String.raw`\(-5\)`, String.raw`\(-2.5\)`, String.raw`\(-1.5\)`, "1.5", "NOTA"], answer: "B",
+    solution: String.raw`For \(\int_1^{-2}f(x+6)\,dx\), let \(u=x+6\). When \(x=1\), \(u=7\), and when \(x=-2\), \(u=4\). Also, \(du/dx=1\), so \(dx=du\). Substituting yields
+\[\int_7^4f(u)\,du=-\int_4^7f(u)\,du.\]
+On \([4,5]\) the graph encloses a triangle of base \(1\) and height \(1\); on \([5,7]\), a triangle of base \(2\) and height \(2\). Both are above the axis. Therefore,
+\[-\int_4^7f(u)\,du=-\left(\frac12(1)^2+\frac12(2)^2\right)=-2.5,\]
+choice B. The isolated value \(f(4)=-2\) does not affect the integral; the right-hand line controls the area just after \(4\).`,
+  },
+  {
+    id: 10633, number: 510, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 12 },
+    topic: "Linear Approximation", difficulty: 2, methods: ["Linear Approximation"],
+    question: String.raw`A function \(f\) is twice-differentiable where \(f(4)=1\), \(f'(4)=2\), and \(f''(x)>0\) for all \(x\). Which best describes the local linear approximation of \(f(4.5)\) centered at \(x=4\)?`,
+    choices: [String.raw`\(f(4.5)\approx2\) and is an underestimate.`, String.raw`\(f(4.5)\approx\frac12\) and is an underestimate.`, String.raw`\(f(4.5)\approx2\) and is an overestimate.`, String.raw`\(f(4.5)\approx\frac12\) and is an overestimate.`, "NOTA"], answer: "A",
+    solution: String.raw`The local linear approximation of \(f\) at \(x=4\) is
+\[y=f(4)+f'(4)(x-4)=1+2(x-4).\]
+When \(x=4.5\), \(y=1+2(0.5)=2\), so \(f(4.5)\approx2\). Since \(f\) is always concave up due to \(f''(x)>0\), the approximation is an underestimate: the tangent line lies below the curve. More explicitly, \(f'\) is strictly increasing, so the secant slope between \(4\) and \(4.5\) exceeds \(f'(4)=2\), implying \(f(4.5)>1+2(0.5)=2\). Thus A.`,
+  },
+  {
+    id: 10634, number: 511, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 13 },
+    topic: "Function Analysis", difficulty: 2, methods: [],
+    question: String.raw`If \(f(x)=2+3x^2-x^3\), over what open interval is \(f\) both increasing and concave up?`,
+    choices: [String.raw`\((0,2)\)`, String.raw`\((0,1)\)`, String.raw`\((1,2)\)`, String.raw`\((1,\infty)\)`, "NOTA"], answer: "B",
+    solution: String.raw`\(f'(x)=6x-3x^2=3x(2-x)\) and \(f''(x)=6-6x=6(1-x)\). To be increasing, \(f'(x)>0\), which occurs for \(0<x<2\). To be concave up, \(f''(x)>0\), which occurs for \(x<1\). Both properties occur on the intersection, \(0<x<1\). Hence B. The first derivative determines increasing/decreasing behavior, while the second determines concavity; both inequalities must hold at once.`,
+  },
+  {
+    id: 10635, number: 512, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 14 },
+    topic: "Fundamental Theorem of Calculus", difficulty: 2, methods: [], illustration: marchRegional2024Derivative,
+    question: String.raw`Use the graph showing \(y=f'(x)\). The values listed are areas of \(8\) and \(6\) under the curve and above the \(x\)-axis on \([0,2]\) and \([2,4]\), respectively. Also, \(f(2)=-4\). What is the value of \(f(0)\)?`,
+    choices: [String.raw`\(-12\)`, String.raw`\(-8\)`, String.raw`\(-4\)`, "4", "NOTA"], answer: "A",
+    solution: String.raw`By the Fundamental Theorem of Calculus,
+\[f(2)-f(0)=\int_0^2f'(x)\,dx=8\]
+using the area under the curve. Therefore,
+\[f(0)=f(2)-8=-4-8=-12,\]
+choice A. The graph is of \(f'\), not \(f\), so the labeled area gives a change in \(f\). Its sign is positive because this region is above the axis. The given value at \(2\) anchors that change to an actual function value.`,
+  },
+  {
+    id: 10636, number: 513, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 15 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["Integration by Parts"], illustration: marchRegional2024Derivative,
+    question: String.raw`Use the graph showing \(y=f'(x)\). The values listed are areas of \(8\) and \(6\) under the curve and above the \(x\)-axis on \([0,2]\) and \([2,4]\), respectively. Also, \(f(2)=-4\). What is the value of \(\displaystyle\int_2^4xf''(x)\,dx\)?`,
+    choices: [String.raw`\(-10\)`, String.raw`\(-6\)`, String.raw`\(-4\)`, "2", "NOTA"], answer: "B",
+    solution: String.raw`For \(\int xf''(x)\,dx\), use integration by parts with \(u=x\) and \(dv=f''(x)\,dx\). Thus \(du=dx\) and \(v=f'(x)\). Substituting,
+\[\int_2^4xf''(x)\,dx=[xf'(x)]_2^4-\int_2^4f'(x)\,dx.\]
+From the graph, \(f'(2)=f'(4)=0\), so the boundary term vanishes. The remaining integral equals the labeled positive area \(6\). Thus the answer is \(0-6=-6\), choice B.
+
+Equivalently, an antiderivative is \(xf'(x)-f(x)\). The area gives \(f(4)=f(2)+6=-4+6=2\), and evaluating at \(4\) then \(2\) yields \((0-2)-(0-(-4))=-6\). This corrects the source's intermediate typo \(x'f(x)\) to \(xf'(x)\).`,
+  },
+  {
+    id: 10637, number: 514, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 16 },
+    topic: "Function Analysis", difficulty: 2, methods: [], illustration: marchRegional2024Derivative,
+    question: String.raw`Use the graph showing \(y=f'(x)\). The values listed are areas of \(8\) and \(6\) under the curve and above the \(x\)-axis on \([0,2]\) and \([2,4]\), respectively. Also, \(f(2)=-4\). Which of the following correctly lists the order of the values of \(f(4)\), \(f'(4)\), and \(f''(4)\) from least to greatest?`,
+    choices: [String.raw`\(f(4)<f'(4)<f''(4)\)`, String.raw`\(f'(4)<f''(4)<f(4)\)`, String.raw`\(f''(4)<f'(4)<f(4)\)`, String.raw`\(f'(4)<f(4)<f''(4)\)`, "NOTA"], answer: "C",
+    solution: String.raw`The area on \([2,4]\) gives \(f(4)=f(2)+6=-4+6=2\). The graph itself has height zero at \(4\), so \(f'(4)=0\). Based on the graph, \(f''(4)<0\), since \(f'\) is decreasing with negative slope at \(x=4\). Thus
+\[f''(4)<f'(4)<f(4),\]
+choice C. Keep the three graph readings separate: signed area gives a change in \(f\), height gives \(f'\), and the slope of the displayed curve gives \(f''\).`,
+  },
+  {
+    id: 10638, number: 515, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 17 },
+    topic: "Implicit Differentiation", difficulty: 2, methods: [],
+    question: String.raw`What is the slope of the tangent line to \(y-y^3=xy^2\) at the point \((0,-1)\)?`,
+    choices: [String.raw`\(-2\)`, String.raw`\(-1\)`, String.raw`\(\frac12\)`, "2", "NOTA"], answer: "E",
+    solution: String.raw`Differentiate implicitly to get
+\[y'-3y^2y'=y^2+2xyy'.\]
+When \(x=0\) and \(y=-1\), this equation becomes \(y'-3y'=1\), so \(y'=-1/2\), which is the slope of the tangent line. It is not printed among A-D, so E.
+
+The supplied point lies on the curve because \(-1-(-1)^3=0\). The coefficient of \(y'\) is \(1-3y^2-2xy=-2\) there, so solving for a finite local derivative is valid.`,
+  },
+  {
+    id: 10639, number: 516, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 18 },
+    topic: "Improper Integrals", difficulty: 3, methods: ["Integration by Parts"],
+    question: String.raw`Which of the following improper integrals converge?
+\[\begin{aligned}
+\text{I. }&\int_0^\infty e^{-x}\,dx,\\
+\text{II. }&\int_0^\infty x^2e^{-x}\,dx,\\
+\text{III. }&\int_2^\infty\frac{x}{\sqrt{x^2-1}}\,dx.
+\end{aligned}\]`,
+    choices: ["I and III only", "II and III only", "I only", "I, II, and III", "NOTA"], answer: "E",
+    solution: String.raw`Analyze each integral separately. Only I and II converge.
+
+I. \(\int_0^\infty e^{-x}\,dx=\lim_{a\to\infty}[-e^{-x}]_0^a=1\), so this integral converges.
+
+II. Use integration by parts twice to get
+\[\int x^2e^{-x}\,dx=-x^2e^{-x}-2xe^{-x}-2e^{-x}+C.\]
+The original improper integral is then
+\[\lim_{b\to\infty}\bigl(-(b^2+2b+2)e^{-b}+2\bigr)=2.\]
+Each polynomial times \(e^{-b}\) tends to zero, since exponential growth dominates polynomial growth. This integral also converges.
+
+III. Substitute \(u=x^2-1\), \(du=2x\,dx\). An antiderivative is \(\sqrt{x^2-1}\), so the improper integral is
+\[\lim_{c\to\infty}\bigl(\sqrt{c^2-1}-\sqrt3\bigr)=\infty.\]
+Thus III diverges. The correct combination, I and II only, is missing from A-D, giving E.`,
+  },
+  {
+    id: 10640, number: 517, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 19 },
+    topic: "Riemann Sums", difficulty: 2, methods: [],
+    question: String.raw`Which correctly describes the Riemann Sum \(\displaystyle\lim_{n\to\infty}\sum_{k=1}^n\left(3+\frac{4k}{n}\right)\left(\frac4n\right)\)?`,
+    choices: [String.raw`The sum is equivalent to \(\int_3^7x\,dx=4\).`, String.raw`The sum is equivalent to \(\int_3^7x\,dx=20\).`, String.raw`The sum is equivalent to \(\int_0^4x\,dx=8\).`, String.raw`The sum is equivalent to \(\int_0^4(3+x)\,dx=32\).`, "NOTA"], answer: "B",
+    solution: String.raw`The Riemann sum represents the right sum approximation with \(\Delta x=4/n\), so the interval has width \(4\). The factor \(3+4k/n\) is the right endpoint starting at \(3\); the sampled function is \(f(x)=x\). Therefore,
+\[\lim_{n\to\infty}\sum_{k=1}^n\left(3+\frac{4k}{n}\right)\frac4n=\int_3^7x\,dx=\frac{7^2}2-\frac{3^2}2=20.\]
+The answer is B. A shifted description \(\int_0^4(3+x)\,dx\) is also valid, but it equals \(20\), not the \(32\) printed in D. The full statement in a choice must be correct.`,
+  },
+  {
+    id: 10641, number: 518, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 20 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["U-Substitution"],
+    question: String.raw`What is the value of \(\displaystyle\int_0^{\pi/2}\frac{\cos x}{\sqrt{1+\sin x}}\,dx\)?`,
+    choices: [String.raw`\(2\sqrt2+2\)`, String.raw`\(2-\sqrt2\)`, String.raw`\(\frac{\sqrt2}2-\frac12\)`, String.raw`\(2\sqrt2-2\)`, "NOTA"], answer: "D",
+    solution: String.raw`Let \(u=1+\sin x\), so \(du/dx=\cos x\). When \(x=0\), \(u=1\), and when \(x=\pi/2\), \(u=2\). The integral becomes
+\[\int_1^2\frac1{\sqrt u}\,du=[2\sqrt u]_1^2=2\sqrt2-2.\]
+The answer is D. The denominator stays positive on the original interval, so the substitution involves no singularity. Although the substituted expression contains a trigonometric function, this is ordinary U-Substitution; no radical-based Trigonometric Substitution is required.`,
+  },
+  {
+    id: 10642, number: 519, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 21 },
+    topic: "Riemann Sums", difficulty: 1, methods: [], illustration: marchRegional2024Table,
+    question: String.raw`Use the table for strictly decreasing, differentiable function \(f\). Which best describes the Left Riemann approximation to \(\displaystyle\int_0^8f(x)\,dx\) using \(4\) subintervals of equal width?`,
+    choices: ["The approximation is 92 and it is an overestimate.", "The approximation is 92 and it is an underestimate.", "The approximation is 56 and it is an overestimate.", "The approximation is 56 and it is an underestimate.", "NOTA"], answer: "A",
+    solution: String.raw`With four intervals of equal width, each subinterval's width is \((8-0)/4=2\). Find the corresponding heights of the rectangles when \(x=0,2,4,6\). From the table these are \(f(0)=20\), \(f(2)=16\), \(f(4)=8\), and \(f(6)=2\). The total area is then
+\[2(20+16+8+2)=92.\]
+Since \(f\) is strictly decreasing, a left approximation is an overestimate: each left-endpoint height exceeds the function values in the interior of that subinterval. Thus A. The source's explanatory list mistakenly gives \(14\) and \(4\) for the second and fourth heights; its final arithmetic and the actual table correctly use \(16\) and \(2\).`,
+  },
+  {
+    id: 10643, number: 520, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 22 },
+    topic: "Derivatives", difficulty: 2, methods: ["Product Rule"], illustration: marchRegional2024Table,
+    question: String.raw`Use the table for strictly decreasing, differentiable function \(f\). If \(p(x)=xf(x)\), what is the slope of the normal line to \(p\) at \(x=2\)?`,
+    choices: [String.raw`\(-4\)`, String.raw`\(-\frac14\)`, String.raw`\(\frac14\)`, "4", "NOTA"], answer: "B",
+    solution: String.raw`For \(p(x)=xf(x)\), \(p'(x)=f(x)+xf'(x)\) by the Product Rule. When \(x=2\),
+\[p'(2)=f(2)+2f'(2)=16+2(-6)=4.\]
+This is the tangent slope. The normal line is perpendicular to the tangent, so its slope is the opposite reciprocal, \(-1/4\), giving B. The tangent slope is nonzero, so this reciprocal is defined.`,
+  },
+  {
+    id: 10644, number: 521, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 23 },
+    topic: "Derivatives", difficulty: 2, methods: ["Mean Value Theorem"], illustration: marchRegional2024Table,
+    question: String.raw`Use the table for strictly decreasing, differentiable function \(f\). On which of the following open intervals does applying the Mean Value Theorem to \(f\) on the corresponding closed interval, using its tabulated endpoint values, directly guarantee a \(c\) such that \(f'(c)=-3\)?`,
+    choices: [String.raw`\((2,6)\)`, String.raw`\((2,8)\)`, String.raw`\((0,4)\)`, String.raw`\((6,8)\)`, "NOTA"], answer: "C",
+    solution: String.raw`Check the average rate of change of \(f\) on each provided interval. In order A-D, the secant slopes are
+\[\frac{2-16}{6-2}=-\frac72,\qquad
+\frac{0-16}{8-2}=-\frac83,\qquad
+\frac{8-20}{4-0}=-3,\qquad
+\frac{0-2}{8-6}=-1.\]
+Since \(f\) is differentiable, it is continuous, so the Mean Value Theorem applies on each corresponding closed interval. On \((0,4)\), the theorem directly guarantees a value \(c\) with \(f'(c)=-3\). Thus C is the unique answer to the clarified prompt.
+
+The original asks only where such a \(c\) must exist, which also makes A and B true: derivatives have the intermediate value property even without continuous derivatives. Here \(f'(2)=-6\) and \(f'(6)=-2\) straddle \(-3\), so there is such a point in \((2,6)\), and hence in \((2,8)\). It is not valid to reject those intervals merely because their secant slopes differ from \(-3\). Specifying the direct endpoint-value MVT conclusion repairs the ambiguity while preserving the intended C and all choices.`,
+  },
+  {
+    id: 10645, number: 522, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 24 },
+    topic: "Applications of Integration", difficulty: 2, methods: ["Cross Sections"],
+    question: String.raw`The base of a solid is the region bounded by the \(x\)-axis and the graph \(y=\sqrt{4-x^2}\). Each cross-section perpendicular to the \(x\)-axis is a square. What is the volume of this solid?`,
+    choices: [String.raw`\(\frac{16}3\)`, String.raw`\(\frac{32}3\)`, String.raw`\(\frac{32\pi}3\)`, String.raw`\(\frac{64}3\)`, "NOTA"], answer: "B",
+    solution: String.raw`The square at a fixed \(x\) has side length equal to the vertical span of the base, \(\sqrt{4-x^2}\). Its area is therefore \((\sqrt{4-x^2})^2=4-x^2\). The base extends from \(-2\) to \(2\), so the volume is
+\[\int_{-2}^2(4-x^2)\,dx=2\int_0^2(4-x^2)\,dx
+=2\left[4x-\frac{x^3}3\right]_0^2=\frac{32}3.\]
+Thus B. There is no factor of \(\pi\): the perpendicular cross-sections are squares, not circular disks.`,
+  },
+  {
+    id: 10646, number: 523, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 25 },
+    topic: "Limits", difficulty: 2, methods: ["Squeeze Theorem"],
+    question: String.raw`Consider the following limits:
+\[\begin{aligned}
+\text{I. }&\lim_{x\to0}x^2\cos\left(\frac1{x^2}\right),\\
+\text{II. }&\lim_{x\to\infty}\frac{2x^2(1-x)^3(1+x)}{x(1+x)^2(1-x)^4},\\
+\text{III. }&\lim_{x\to\infty}\frac{e^x+3}{e^x+1}.
+\end{aligned}\]
+Which of the limits above evaluate to \(0\)?`,
+    choices: ["I only", "II only", "I and III only", "I and II only", "NOTA"], answer: "D",
+    solution: String.raw`Evaluate each limit separately.
+
+I. For \(x\ne0\), \(-1\le\cos(1/x^2)\le1\), so \(-x^2\le x^2\cos(1/x^2)\le x^2\). Taking limits gives \(0\) by the Squeeze Theorem.
+
+II. For sufficiently large \(x\), cancel the common nonzero factors:
+\[\frac{2x^2(1-x)^3(1+x)}{x(1+x)^2(1-x)^4}
+=\frac{2x}{(1+x)(1-x)}=\frac{2x}{1-x^2}\longrightarrow0.\]
+Equivalently, the printed numerator has degree \(6\) and denominator degree \(7\), not equal degrees as the source claims. Its value \(-2\) is incorrect.
+
+III. Divide numerator and denominator by \(e^x\):
+\[\frac{e^x+3}{e^x+1}=\frac{1+3e^{-x}}{1+e^{-x}}\longrightarrow1.\]
+The source evaluates \(x\to-\infty\), giving \(3\), but the test specifies \(x\to+\infty\). Neither value is zero, so this second error does not alter which items vanish. I and II are zero; the corrected answer is D, not the source's A.`,
+  },
+  {
+    id: 10647, number: 524, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 26 },
+    topic: "Differentiability", difficulty: 2, methods: [],
+    question: String.raw`Use the differentiable function
+\[f(x)=\begin{cases}(x+1)^2,&x\le0,\\\sin(bx)+a,&x>0,\end{cases}\]
+where \(a\) and \(b\) are real constants. What is the value of \(a+b\)?`,
+    choices: [String.raw`\(-1\)`, "1", "3", "5", "NOTA"], answer: "C",
+    solution: String.raw`Since \(f\) is differentiable, \(f\) must be continuous at \(x=0\), so
+\[(0+1)^2=\sin0+a,\]
+showing \(a=1\). Also, the derivative at \(x=0\) must exist. The left derivative is \(2(0+1)=2\), and the right derivative is \(b\cos0=b\). Hence \(b=2\). Thus \(a+b=3\), choice C.
+
+These conditions are also sufficient: with \(a=1\), the right difference quotient at \(0\) is \(\sin(bh)/h\to b\); with \(b=2\), it agrees with the left derivative. Both pieces are differentiable away from \(0\).`,
+  },
+  {
+    id: 10648, number: 525, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 27 },
+    topic: "Definite Integrals", difficulty: 2, methods: [],
+    question: String.raw`Use the differentiable function
+\[f(x)=\begin{cases}(x+1)^2,&x\le0,\\\sin(bx)+a,&x>0,\end{cases}\]
+where \(a\) and \(b\) are real constants. What is the value of \(\displaystyle\int_{-1}^{\pi}f(x)\,dx\)?`,
+    choices: [String.raw`\(\frac{1+3\pi}3\)`, String.raw`\(\frac{1-3\pi}3\)`, String.raw`\(\frac{1+\pi}3\)`, String.raw`\(\frac{1+2\pi}2\)`, "NOTA"], answer: "A",
+    solution: String.raw`Differentiability at the joining point first forces continuity, \(1=a\), and then equality of the left and right derivatives, \(2=b\). Thus
+\[\int_{-1}^{\pi}f(x)\,dx=\int_{-1}^0(x+1)^2\,dx+\int_0^{\pi}(\sin(2x)+1)\,dx.\]
+The first integral evaluates to
+\[\left[\frac{(x+1)^3}3\right]_{-1}^0=\frac13.\]
+The second is
+\[\left[-\frac12\cos(2x)+x\right]_0^{\pi}=\left(-\frac12+\pi\right)-\left(-\frac12\right)=\pi.\]
+The sum is \(1/3+\pi=(1+3\pi)/3\), giving A. Repeating the shared differentiability conditions makes this question self-contained instead of relying on an answer to the previous item.`,
+  },
+  {
+    id: 10649, number: 526, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 28 },
+    topic: "Derivatives", difficulty: 2, methods: ["Logarithmic Differentiation"],
+    question: String.raw`Let
+\[y=\frac{\sqrt{1+2x}\,\sqrt[4]{1+4x}\,\sqrt[6]{1+6x}\cdots\sqrt[1000]{1+1000x}}{\sqrt[3]{1+3x}\,\sqrt[5]{1+5x}\,\sqrt[7]{1+7x}\cdots\sqrt[999]{1+999x}}.\]
+What is the value of \(dy/dx\) at \(x=0\)?`,
+    choices: [String.raw`\(\frac1{1000!}\)`, "0", "1", String.raw`\(\frac{1000}{999}\)`, "NOTA"], answer: "C",
+    solution: String.raw`First note that when \(x=0\), \(y=1\). All radicands are positive on a neighborhood of \(0\), for example \(x>-1/1000\), so logarithmic differentiation is valid. Use log properties to write
+\[\ln y=\sum_{j=1}^{500}\frac{\ln(1+2jx)}{2j}
+-\sum_{j=1}^{499}\frac{\ln(1+(2j+1)x)}{2j+1}.\]
+Differentiating both sides with respect to \(x\) yields
+\[\frac{y'}y=\sum_{j=1}^{500}\frac1{1+2jx}
+-\sum_{j=1}^{499}\frac1{1+(2j+1)x}.\]
+Letting \(x=0\) yields \(y'(0)/1=500(1)-499(1)=1\), so \(y'(0)=1\), choice C. The root index cancels the linear coefficient inside each logarithm, and the even-index factors outnumber the odd-index factors by one.`,
+  },
+  {
+    id: 10650, number: 527, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 29 },
+    topic: "Power Series", difficulty: 3, methods: ["Ratio Test"],
+    question: String.raw`What is the interval of convergence of the series \(\displaystyle\sum_{n=1}^{\infty}\frac{(x-2)^{2n}}{4^{n+1}n^2}\)?`,
+    choices: [String.raw`\([-2,2]\)`, String.raw`\((-2,2]\)`, String.raw`\([0,4]\)`, String.raw`\((0,4)\)`, "NOTA"], answer: "C",
+    solution: String.raw`Use the Ratio Test. For \(x\ne2\), the absolute ratio of consecutive terms simplifies to
+\[\frac{(x-2)^2}{4}\frac{n^2}{(n+1)^2}\longrightarrow\frac{|x-2|^2}{4}.\]
+Convergence is guaranteed when this limit is less than \(1\), or \(|x-2|<2\), giving \(0<x<4\). At the center \(x=2\), all terms are zero, so convergence there is immediate. Outside the closed interval the terms do not tend to zero.
+
+Test the two endpoints separately. At either \(x=0\) or \(x=4\), the even power gives
+\[\sum_{n=1}^{\infty}\frac{2^{2n}}{4^{n+1}n^2}=\frac14\sum_{n=1}^{\infty}\frac1{n^2},\]
+a convergent p-series. Therefore both endpoints are included, and the interval of convergence is \([0,4]\), choice C. The radius is the number \(2\), not the interval \([0,4]\); this corrects the source's repeated use of "radius" for "interval."`,
+  },
+  {
+    id: 10651, number: 528, division: "Mu",
+    source: { ...marchRegional2024, questionNumber: 30 },
+    topic: "Power Series", difficulty: 2, methods: [],
+    question: String.raw`The \(60\)th degree Taylor polynomial for a function \(f\) with derivatives of all orders about \(x=2\) is given by
+\[p(x)=(x-2)^4-\frac{(x-2)^8}{2!}+\frac{(x-2)^{12}}{3!}-\frac{(x-2)^{16}}{4!}+\cdots+\frac{(-1)^{n+1}(x-2)^{4n}}{n!}+\cdots+\frac{(x-2)^{60}}{15!},\]
+where the terms follow \(n=1,\ldots,15\). What is the value of \(f^{(24)}(2)\)?`,
+    choices: [String.raw`\(\frac{24!}{6!}\)`, String.raw`\(-\frac{24!}{6!}\)`, String.raw`\(-\frac{24!}{12!}\)`, String.raw`\(-18!\)`, "NOTA"], answer: "B",
+    solution: String.raw`The coefficient of \((x-2)^m\) in a Taylor polynomial centered at \(2\) is \(f^{(m)}(2)/m!\). For \(m=24\), the displayed pattern uses \(4n=24\), so \(n=6\). Its term is
+\[\frac{(-1)^7(x-2)^{24}}{6!}=-\frac{(x-2)^{24}}{6!}.\]
+Matching coefficients gives
+\[\frac{f^{(24)}(2)}{24!}=-\frac1{6!}\quad\Longrightarrow\quad f^{(24)}(2)=-\frac{24!}{6!},\]
+choice B. The \(6!\) comes from the displayed pattern's index, while \(24!\) comes from the Taylor coefficient formula.
+
+The source's final \(60\)th-degree term has a minus sign inconsistent with its own alternating pattern: \(n=15\) gives \((-1)^{16}=+1\). That final sign is corrected in the prompt, with no effect on the \(24\)th-degree coefficient or answer.`,
   },
 ];
