@@ -1,5 +1,10 @@
 import type { Question } from "@/types/question";
 
+const februaryRegional2024 = {
+  competition: "2024 February Regional",
+  event: "Calculus Individual",
+};
+
 const januaryRegional2024 = {
   competition: "2024 January Regional",
   event: "Calculus Individual",
@@ -8681,5 +8686,507 @@ Since we are essentially "filling the gap" of the summation, take the integral o
 since both endpoints are roots of \(g\). Thus the given integral plus the requested integral equals \(0\). The desired answer is therefore \(-1012\).
 
 The source uses \(\ln g(x)=\sum\ln(x-a_n)\), which is not a valid real-log identity throughout an interval containing roots and negative factors. The direct product rule above proves the identity everywhere after cancellation and avoids that problem. No ordering or distinctness of the \(a_n\) is required.`,
+  },
+  {
+    id: 10565, number: 442, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 1 },
+    topic: "Linear Approximation", difficulty: 1, methods: ["Linear Approximation"],
+    question: String.raw`Use differentials to approximate the value of \(\sqrt[3]{8.24}\).`,
+    choices: ["2.06", "2.04", "2.02", "2.019", "NOTA"], answer: "C",
+    solution: String.raw`Let \(f(x)=x^{1/3}\), so \(f'(x)=\frac13x^{-2/3}\). Use the nearby perfect cube \(x=8\), with \(dx=8.24-8=0.24\). The differential is
+\[df=f'(8)\,dx=\frac13(8)^{-2/3}(0.24)=\frac1{12}(0.24)=0.02.\]
+Therefore,
+\[f(8.24)\approx f(8)+df=2+0.02=2.02.\]
+Hence the answer is C. The source labels the differential \(df\) as \(f'(x)\) and the final approximation as \(f(8)\); the correct notation is used here. The derivative is a rate, while \(df\) is the approximated change in the function value.`,
+  },
+  {
+    id: 10566, number: 443, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 2 },
+    topic: "Parametric", difficulty: 2, methods: ["Chain Rule"],
+    question: String.raw`Compute \(\left.\frac{dy}{dx}\right|_{x=6}\), where \(x=t^2+4\), \(y=t-8\), and \(t\ge0\).`,
+    choices: [String.raw`\(\frac1{28}\)`, String.raw`\(\frac{\sqrt2}{2}\)`, String.raw`\(\frac{\sqrt{10}}{20}\)`, String.raw`\(\frac{\sqrt2}{8}\)`, "NOTA"], answer: "E",
+    solution: String.raw`Differentiate both coordinates with respect to \(t\):
+\[\frac{dx}{dt}=2t,\qquad \frac{dy}{dt}=1,\qquad
+\frac{dy}{dx}=\frac{dy/dt}{dx/dt}=\frac1{2t}.\]
+At \(x=6\), \(6=t^2+4\), so \(t=\sqrt2\), using \(t\ge0\). Thus
+\[\left.\frac{dy}{dx}\right|_{x=6}=\frac1{2\sqrt2}=\frac{\sqrt2}{4}.\]
+This value is not among A-D, so the answer is E. In particular, D is half the required derivative.`,
+  },
+  {
+    id: 10567, number: 444, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 3 },
+    topic: "Differential Equations", difficulty: 3, methods: ["Separation of Variables", "Completing the Square"],
+    question: String.raw`Find the value of \(x\) when \(y=-4\) along the solution of
+\[x\frac{dy}{dx}=y^2+4y+8,\]
+with initial condition \(y(1)=0\).`,
+    choices: [String.raw`\(e^{-\pi/4}\)`, String.raw`\(1\)`, String.raw`\(e^{-\pi/2}\)`, String.raw`\(e^{\pi/8}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Complete the square and separate variables:
+\[x\frac{dy}{dx}=(y+2)^2+4,\qquad
+\frac{dy}{(y+2)^2+4}=\frac{dx}{x}.\]
+Integrating gives
+\[\frac12\arctan\left(\frac{y+2}{2}\right)=\ln|x|+C,\]
+or, after multiplying by \(2\) and renaming the constant,
+\[\arctan\left(\frac{y+2}{2}\right)=2\ln|x|+c.\]
+The initial condition yields \(\arctan1=2\ln1+c\), so \(c=\pi/4\). The solution branch through \(x=1\) has \(x>0\). At \(y=-4\),
+\[-\frac\pi4=2\ln x+\frac\pi4,\qquad
+\ln x=-\frac\pi4,\qquad x=e^{-\pi/4}.\]
+Hence the answer is A.
+
+The value is on the initial-value solution's actual branch: explicitly,
+\[y(x)=2\tan\left(2\ln x+\frac\pi4\right)-2,\qquad
+e^{-3\pi/8}<x<e^{\pi/8}.\]
+The value \(e^{-\pi/4}\) lies in this interval. On it \(dy/dx>0\), so the solution has a well-defined inverse. The source asks for "\(x(-4)\)" without defining that inverse notation; the question now explicitly asks for \(x\) at \(y=-4\), preserving the intended calculation.`,
+  },
+  {
+    id: 10568, number: 445, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 4 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`Evaluate:
+\[\lim_{x\to4}\frac{x^3-27}{x^2+5x-24}.\]`,
+    choices: [String.raw`\(-\frac{37}{28}\)`, String.raw`\(\frac{37}{12}\)`, String.raw`\(\frac94\)`, String.raw`\(\frac{27}{28}\)`, "NOTA"], answer: "B",
+    solution: String.raw`The denominator at \(x=4\) is \(16+20-24=12\ne0\). The rational function is therefore continuous at \(4\), and direct substitution gives
+\[\lim_{x\to4}\frac{x^3-27}{x^2+5x-24}
+=\frac{4^3-27}{4^2+5(4)-24}=\frac{37}{12}.\]
+Hence the answer is B. The limit is not an indeterminate form, so no factoring or L'Hopital's rule is needed.`,
+  },
+  {
+    id: 10569, number: 446, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 5 },
+    topic: "Probability", difficulty: 2, methods: [],
+    question: String.raw`The probability density function (pdf) of a continuous random variable \(X\) is an integrable function such that
+\[\int_a^b f(x)\,dx=P[a<X\le b]\]
+for real numbers \(a<b\). A pdf must be nonnegative and have total area \(1\).
+
+Suppose we consider the function \(f(x)=8x^3-3x^2+2\) defined on the real interval \([0,c]\), and \(f(x)=0\) outside that interval, as a valid probability density function. Find the value of \(c\) given that \(f(x)\) is a valid probability density function.`,
+    choices: [String.raw`\(\frac18\)`, String.raw`\(\frac4{10}\)`, String.raw`\(\frac12\)`, String.raw`\(1\)`, "NOTA"], answer: "C",
+    solution: String.raw`A probability density must integrate to \(1\) over its support. Thus \(c>0\) and
+\[\int_0^c(8x^3-3x^2+2)\,dx
+=\left[2x^4-x^3+2x\right]_0^c=2c^4-c^3+2c=1.\]
+Factoring,
+\[2c^4-c^3+2c-1=(2c-1)(c^3+1)=0.\]
+Since \(c>0\), \(c^3+1>0\), so \(c=1/2\).
+
+We must also check the nonnegativity condition, not only normalization. On \([0,1/2]\), the derivative of the density polynomial is \(24x^2-6x=6x(4x-1)\). Its minimum occurs at \(x=1/4\), where the density equals \(31/16>0\). Thus the proposed density is valid, and the answer is C. Defining it to be \(0\) outside its support makes the full real-line density explicit.`,
+  },
+  {
+    id: 10570, number: 447, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 6 },
+    topic: "Probability", difficulty: 2, methods: [],
+    question: String.raw`The probability density function (pdf) of a continuous random variable \(X\) is an integrable function such that
+\[\int_a^b f(x)\,dx=P[a<X\le b]\]
+for real numbers \(a<b\). A pdf must be nonnegative and have total area \(1\).
+
+Suppose we consider the function \(f(x)=8x^3-3x^2+2\) defined on the real interval \([0,c]\), and \(f(x)=0\) outside that interval, as a valid probability density function. Compute \(P\left(0<X\le\frac14\right)\), given that \(f(x)\) is a valid probability density function.`,
+    choices: [String.raw`\(\frac{67}{128}\)`, String.raw`\(\frac{31}{64}\)`, String.raw`\(\frac{57}{128}\)`, String.raw`\(\frac{63}{128}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Normalization gives
+\[2c^4-c^3+2c=1,\qquad (2c-1)(c^3+1)=0.\]
+Since \(c>0\), \(c=1/2\), so the entire interval \([0,1/4]\) lies within the support. Therefore
+\[P\left(0<X\le\frac14\right)=\int_0^{1/4}(8x^3-3x^2+2)\,dx
+=\left[2x^4-x^3+2x\right]_0^{1/4}.\]
+Substituting the upper endpoint,
+\[2\left(\frac14\right)^4-\left(\frac14\right)^3+2\left(\frac14\right)
+=\frac1{128}-\frac1{64}+\frac12=\frac{63}{128}.\]
+Hence the answer is D. Because \(X\) is continuous, including or excluding either endpoint does not change this probability.`,
+  },
+  {
+    id: 10571, number: 448, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 7 },
+    topic: "Analytic Geometry", difficulty: 1, methods: ["Tangency"],
+    question: String.raw`Find the equation of the normal line to the curve \(f(x)=3x^3-10x^2\) at the point \((2,-16)\).`,
+    choices: [String.raw`\(y=-4x-8\)`, String.raw`\(y=\frac x4-\frac{33}{2}\)`, String.raw`\(y=4x-24\)`, String.raw`\(y=\frac x4-\frac{31}{2}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Differentiate:
+\[f'(x)=9x^2-20x,\qquad f'(2)=9(2^2)-20(2)=-4.\]
+The normal line has the negative reciprocal slope \(1/4\). It passes through \((2,-16)\), so
+\[y+16=\frac14(x-2),\qquad y=\frac x4-\frac{33}{2}.\]
+Hence the answer is B. The point does lie on the curve, since \(3(2^3)-10(2^2)=-16\).`,
+  },
+  {
+    id: 10572, number: 449, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 8 },
+    topic: "Fundamental Theorem of Calculus", difficulty: 2, methods: ["Chain Rule"],
+    question: String.raw`If \(f(x)=\int_0^{x^2}\frac4{\sqrt{25-t^2}}\,dt\), compute \(f'(2)\).`,
+    choices: [String.raw`\(\frac{16}{9}\)`, String.raw`\(\frac{8\sqrt{21}}{21}\)`, String.raw`\(\frac83\)`, String.raw`\(\frac{16}{3}\)`, "NOTA"], answer: "D",
+    solution: String.raw`By the Fundamental Theorem of Calculus and the chain rule,
+\[f'(x)=\frac4{\sqrt{25-(x^2)^2}}\frac{d(x^2)}{dx}
+=\frac{8x}{\sqrt{25-x^4}}.\]
+At \(x=2\),
+\[f'(2)=\frac{16}{\sqrt{25-16}}=\frac{16}{3}.\]
+Hence the answer is D. The integrand is continuous on the integration interval from \(0\) to \(4\), and remains so for \(x\) near \(2\); the theorem applies. The extra factor \(2x\) is required because the upper limit is \(x^2\), not \(x\).`,
+  },
+  {
+    id: 10573, number: 450, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 9 },
+    topic: "Optimization", difficulty: 2, methods: ["Critical Points"],
+    question: String.raw`Find the maximum value of the function \(f(x)=2x^3+x^2-48x-72\) on the interval \([-4,4]\).`,
+    choices: [String.raw`\(27\)`, String.raw`\(0\)`, String.raw`\(-9\)`, String.raw`\(-153\)`, "NOTA"], answer: "A",
+    solution: String.raw`Differentiate and factor:
+\[f'(x)=6x^2+2x-48=2(3x^2+x-24)=2(x+3)(3x-8).\]
+The interior critical points are \(x=-3\) and \(x=8/3\). Since \(f\) is continuous on the closed interval, an absolute maximum occurs at a critical point or an endpoint. Evaluate all four candidates:
+\[f(-4)=8,\qquad f(-3)=27,\qquad f(8/3)=-\frac{4184}{27},\qquad f(4)=-120.\]
+The largest value is \(27\), so the answer is A.
+
+The source correctly locates the local maximum at \(-3\), but then writes \(f(-3)=-9\), an arithmetic error. The correct value is \(27\). Checking the endpoints is also necessary to establish an absolute maximum, not merely a local one.`,
+  },
+  {
+    id: 10574, number: 451, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 10 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["Geometric Series"],
+    question: String.raw`Evaluate:
+\[\int_{1/4}^{1/2}\left(\sum_{n=1}^{\infty}4x^n\right)\,dx.\]`,
+    choices: [String.raw`\(1+\ln(16)\)`, String.raw`\(-3+\ln\left(\frac1{16}\right)\)`, String.raw`\(-1+\ln\left(\frac1{16}\right)\)`, String.raw`\(-1-\ln\left(\frac14\right)\)`, "NOTA"], answer: "E",
+    solution: String.raw`For \(-1<x<1\), \(\sum_{n=1}^{\infty}x^n\) is a geometric series and
+\[\sum_{n=1}^{\infty}4x^n=\frac{4x}{1-x}=-4+\frac4{1-x}.\]
+This identity holds throughout the entire interval of integration. Hence
+\[\int_{1/4}^{1/2}\left(\sum_{n=1}^{\infty}4x^n\right)\,dx
+=\left[-4x-4\ln(1-x)\right]_{1/4}^{1/2}.\]
+The result is
+\[(-2-4\ln(1/2))-(-1-4\ln(3/4))
+=-1+4\ln\left(\frac32\right)
+=-1+\ln\left(\frac{81}{16}\right).\]
+None of A-D equals this value, so the corrected answer is E.
+
+The source uses \(-4\ln x\) instead of \(-4\ln(1-x)\). Differentiating shows the error: the antiderivative of \(4/(1-x)\) is \(-4\ln(1-x)\). Its printed negative result is also impossible because every term in the integrand is positive on the given interval.`,
+  },
+  {
+    id: 10575, number: 452, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 11 },
+    topic: "Rate of Change", difficulty: 3, methods: ["Related Rates"],
+    question: String.raw`A thin uniform sheet of ice begins forming at a rate of \(15\pi\text{ mm}^3/\text{s}\) on the full surface of a small spherical ball, at time \(t=0\). The spherical ball has an initial diameter of 18 mm. Find the rate at which the radial distance is changing at \(t=12\text{ s}\), from the center of the ball to the outer surface of the ice sheet.`,
+    choices: [String.raw`\(\frac{5\sqrt[3]4}{192}\)`, String.raw`\(\frac{5\sqrt[3]2}{48}\)`, String.raw`\(\frac{5\sqrt[3]2}{96}\)`, String.raw`\(\frac{5\sqrt[3]{81}}{768}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Let \(r\) be the outer radius of the ball and ice together. The initial radius is \(9\) mm, so the initial total volume is
+\[V(0)=\frac43\pi(9)^3=972\pi\text{ mm}^3.\]
+The underlying ball does not change volume, so adding ice at \(15\pi\text{ mm}^3/\text{s}\) also increases this total enclosed volume at that rate. After twelve seconds,
+\[V(12)=972\pi+12(15\pi)=1152\pi.\]
+Thus \(1152\pi=(4/3)\pi r^3\), giving \(r^3=864\) and \(r=6\sqrt[3]4\).
+
+Differentiate the sphere volume:
+\[\frac{dV}{dt}=4\pi r^2\frac{dr}{dt},\qquad
+\frac{dr}{dt}=\frac{15\pi}{4\pi r^2}.\]
+At \(t=12\),
+\[\frac{dr}{dt}=\frac{15}{4(6\sqrt[3]4)^2}
+=\frac5{48\sqrt[3]{16}}=\frac{5\sqrt[3]4}{192}\text{ mm/s}.\]
+Hence the answer is A. The requested radial distance is the outer radius, not just the thickness; their rates are nevertheless equal because the original ball's radius is constant.`,
+  },
+  {
+    id: 10576, number: 453, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 12 },
+    topic: "Definite Integrals", difficulty: 2, methods: [],
+    question: String.raw`Solve for the value of \(b\), given
+\[f(x)=\int_0^x(bt^4-2t^3-6t^2-6)\,dt\]
+and \(f(2)=60\).`,
+    choices: ["3", "3.75", "15", "12", "NOTA"], answer: "C",
+    solution: String.raw`Integrating the polynomial gives
+\[f(x)=\frac b5x^5-\frac12x^4-2x^3-6x.\]
+There is no additional constant because this is the definite integral from \(0\) to \(x\), and the antiderivative displayed vanishes at \(0\). Substitute \(x=2\):
+\[60=\frac b5(2)^5-\frac12(2)^4-2(2)^3-6(2)
+=\frac{32b}{5}-8-16-12.\]
+Therefore \(96=32b/5\), so \(b=96(5/32)=15\). Hence the answer is C. The dummy variable in the defining integral is written as \(t\) to distinguish it from the upper limit \(x\).`,
+  },
+  {
+    id: 10577, number: 454, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 13 },
+    topic: "Derivatives", difficulty: 2, methods: ["Mean Value Theorem"],
+    question: String.raw`Which of the following must be true for a function \(f(x)\) that meets the hypotheses of Rolle's Theorem on the restricted domain \([a,b]\), where \(a<b\)?
+
+I. \(f(x)\) is differentiable on the closed interval \([a,b]\).
+
+II. Rolle's Theorem is a specific case of the Mean Value Theorem for Integrals.
+
+III. There exists a point \(c\in(a,b)\) for which the tangent line at \((c,f(c))\) is parallel with the secant line passing through the endpoints on the closed interval \([a,b]\).`,
+    choices: ["I and III", "III only", "I, II, and III", "I only", "NOTA"], answer: "B",
+    solution: String.raw`I is false. Rolle's Theorem requires continuity on \([a,b]\) and differentiability on \((a,b)\), but does not require endpoint differentiability. For example, \(f(x)=\sqrt{x(1-x)}\) on \([0,1]\) meets its hypotheses and has equal endpoint values, but has no finite one-sided derivative at either endpoint.
+
+II is false. Rolle's Theorem is a specific case of the Mean Value Theorem for Derivatives, not the integral version. When \(f(a)=f(b)\), the secant slope is
+\[\frac{f(b)-f(a)}{b-a}=0.\]
+The derivative mean value theorem guarantees an interior \(c\) with \(f'(c)=0\).
+
+III is true. At that guaranteed point the tangent and endpoint secant are both horizontal, hence parallel. Only III must be true, so the answer is B.
+
+The source says "for a given point" in III, which could incorrectly suggest any prescribed \(c\). The statement now uses the theorem's correct existential quantifier, and the stem explicitly refers to the hypotheses.`,
+  },
+  {
+    id: 10578, number: 455, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 14 },
+    topic: "Sequences and Series", difficulty: 2, methods: ["Squeeze Theorem"],
+    question: String.raw`Consider the sequence \(\{a_n\}_{n=1}^{\infty}\), where for each fixed real value of \(x\),
+\[a_n=\frac{n^2e^nx}{10^n}.\]
+Determine the value of \(\lim_{n\to\infty}(a_n)^n\).`,
+    choices: [String.raw`\(0\)`, String.raw`\(0.10e\)`, String.raw`\(\infty\)`, String.raw`\(10e\)`, "NOTA"], answer: "A",
+    solution: String.raw`Write \(a_n=xn^2(e/10)^n\), where \(x\) is fixed. If \(x=0\), every term and every requested power is \(0\).
+
+For \(x\ne0\), observe how the values change term by term:
+\[\frac{a_{n+1}}{a_n}=\frac{(n+1)^2e}{10n^2}
+=\frac e{10}+\frac e{5n}+\frac e{10n^2}\longrightarrow\frac e{10}<1.\]
+The same ratio holds for absolute values, so \(|a_n|\to0\). Equivalently,
+\[\ln|a_n|=\ln|x|+2\ln n+n(1-\ln10)\longrightarrow-\infty.\]
+For all sufficiently large \(n\), \(|a_n|\le1/2\). Consequently,
+\[0\le |(a_n)^n|\le2^{-n}\longrightarrow0.\]
+The squeeze proves \((a_n)^n\to0\) for every fixed real \(x\), including negative \(x\), where signs may alternate. Hence the answer is A.
+
+The source informally substitutes \(0\) into a varying power and cancels \(x\) in the ratio without treating \(x=0\). The bound above completes both justifications. In the formula \(e^nx\) means \(e^n\) multiplied by \(x\), as in the source's ratio calculation.`,
+  },
+  {
+    id: 10579, number: 456, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 15 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["Absolute Value"],
+    question: String.raw`Evaluate:
+\[\int_0^4|x^2+4x-12|\,dx.\]`,
+    choices: ["64", "32", "8", "4", "NOTA"], answer: "B",
+    solution: String.raw`Factor \(x^2+4x-12=(x-2)(x+6)\). On \([0,2]\) this expression is nonpositive, and on \([2,4]\) it is nonnegative. Thus
+\[\int_0^4|x^2+4x-12|\,dx
+=-\int_0^2(x^2+4x-12)\,dx+\int_2^4(x^2+4x-12)\,dx.\]
+Using \(F(x)=x^3/3+2x^2-12x\),
+\[F(0)=0,\qquad F(2)=-\frac{40}{3},\qquad F(4)=\frac{16}{3}.\]
+The integral is
+\[-\left(-\frac{40}{3}-0\right)+\left(\frac{16}{3}+\frac{40}{3}\right)
+=\frac{40}{3}+\frac{56}{3}=32.\]
+Hence the answer is B. The source's first few displayed integrals mistakenly show a lower bound of \(-2\); the supplied test's bound is \(0\), which is also the bound used in its final arithmetic.`,
+  },
+  {
+    id: 10580, number: 457, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 16 },
+    topic: "Derivatives", difficulty: 2, methods: ["Mean Value Theorem"],
+    question: String.raw`Find the value of \(c\), on the interval \([1,4]\), that guarantees the Mean Value Theorem for Derivatives for the function \(f(x)=x^3-x^2+6\).`,
+    choices: [String.raw`\(\frac43\)`, String.raw`\(\frac23\)`, String.raw`\(\frac83\)`, String.raw`\(2\)`, "NOTA"], answer: "C",
+    solution: String.raw`The polynomial is continuous on \([1,4]\) and differentiable on \((1,4)\). Its secant slope is
+\[\frac{f(4)-f(1)}{4-1}=\frac{54-6}{3}=16.\]
+The Mean Value Theorem guarantees an interior point \(c\) with \(f'(c)=16\). Since \(f'(x)=3x^2-2x\), solve
+\[3c^2-2c=16,\qquad (3c-8)(c+2)=0.\]
+The two algebraic candidates are \(-2\) and \(8/3\), but only \(8/3\) belongs to \((1,4)\). Hence the answer is C.`,
+  },
+  {
+    id: 10581, number: 458, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 17 },
+    topic: "Applications of Integration", difficulty: 3, methods: ["Arc Length", "Simpson's Rule"],
+    question: String.raw`Use Simpson's rule to approximate the length of the curve \(y=\ln(\sin x)\) on the interval \(\left[\frac\pi6,\frac{5\pi}6\right]\) with four equal subintervals.`,
+    choices: [String.raw`\(\frac{12+16\sqrt3}{27}\pi\)`, String.raw`\(\frac{12+4\sqrt3}{9}\pi\)`, String.raw`\(\frac{72+8\sqrt3}{27}\pi\)`, String.raw`\(\frac{36+16\sqrt3}{27}\pi\)`, "NOTA"], answer: "E",
+    solution: String.raw`Differentiate the curve: \(y'=\cot x\). Its arc length is
+\[L=\int_{\pi/6}^{5\pi/6}\sqrt{1+\cot^2x}\,dx
+=\int_{\pi/6}^{5\pi/6}\csc x\,dx,\]
+because \(\sin x>0\) throughout this interval.
+
+For four equal subintervals, the step size is
+\[h=\frac{5\pi/6-\pi/6}{4}=\frac\pi6,\qquad \frac h3=\frac\pi{18}.\]
+Let \(F(x)=\csc x\). The five nodes are \(\pi/6,\pi/3,\pi/2,2\pi/3,5\pi/6\), with function values \(2,2/\sqrt3,1,2/\sqrt3,2\). Composite Simpson's rule gives
+\[S=\frac\pi{18}\left[2+4\left(\frac2{\sqrt3}\right)+2(1)+4\left(\frac2{\sqrt3}\right)+2\right]
+=\frac\pi{18}\left(6+\frac{16}{\sqrt3}\right)
+=\frac{18+16\sqrt3}{54}\pi.\]
+This is not any of A-D, so the corrected answer is E.
+
+The source uses the entire interval width \(2\pi/3\) as its step size, forgetting to divide by four, and later loses another factor in the radical term. Both errors are corrected above. As a reasonableness check, the exact arc length is \(2\ln(2+\sqrt3)\approx2.634\), and the Simpson approximation is about \(2.659\), not the much larger printed D value.`,
+  },
+  {
+    id: 10582, number: 459, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 18 },
+    topic: "Limits", difficulty: 1, methods: ["L'Hopital's Rule"],
+    question: String.raw`Evaluate:
+\[\lim_{x\to0}\frac{\log_4(1+x^2)}{\sin x}.\]`,
+    choices: ["0", "DNE", "1", String.raw`\(-2\)`, "NOTA"], answer: "A",
+    solution: String.raw`Use change of base:
+\[\log_4(1+x^2)=\frac{\ln(1+x^2)}{\ln4}.\]
+The quotient has the \(0/0\) form. By L'Hopital's rule,
+\[\lim_{x\to0}\frac{\log_4(1+x^2)}{\sin x}
+=\frac1{\ln4}\lim_{x\to0}\frac{2x/(1+x^2)}{\cos x}=0.\]
+Hence the answer is A. The source replaces the base-four logarithm with a natural logarithm without its factor \(1/\ln4\); that omission does not affect this zero limit, but the factor is restored here.`,
+  },
+  {
+    id: 10583, number: 460, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 19 },
+    topic: "Derivatives", difficulty: 2, methods: [],
+    question: String.raw`Compute:
+\[\sum_{n=1}^{330}\frac{d^n}{dx^n}\bigl(\cos x-\sin x\bigr).\]`,
+    choices: [String.raw`\(\sin x-\cos x\)`, String.raw`\(-\sin x-\cos x\)`, String.raw`\(-2\cos x\)`, String.raw`\(2\sin x-2\cos x\)`, "NOTA"], answer: "C",
+    solution: String.raw`The first four derivatives are
+\[\begin{aligned}
+D(\cos x-\sin x)&=-\sin x-\cos x,\\
+D^2(\cos x-\sin x)&=-\cos x+\sin x,\\
+D^3(\cos x-\sin x)&=\sin x+\cos x,\\
+D^4(\cos x-\sin x)&=\cos x-\sin x.
+\end{aligned}\]
+The derivatives repeat in groups of four, and the sum of the terms in each repeated group is \(0\). Since \(330=4(82)+2\), the first \(328\) derivatives cancel in \(82\) complete groups. The remaining orders \(329\) and \(330\) match the first and second derivatives:
+\[(-\sin x-\cos x)+(-\cos x+\sin x)=-2\cos x.\]
+Hence the answer is C. The original function itself is not an extra term, since the sum begins at derivative order \(1\).`,
+  },
+  {
+    id: 10584, number: 461, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 20 },
+    topic: "Function Analysis", difficulty: 2, methods: ["First Derivative Test", "Second Derivative Test"],
+    question: String.raw`Given \(f(x)=4x^3+24x^2-48x+72\), which of the following represents the interval(s) for \(x\) where \(f(x)\) is both increasing and concave upwards?`,
+    choices: [String.raw`\((-\infty,2)\)`, String.raw`\((-2+\sqrt8,\infty)\)`, String.raw`\((-2+\sqrt8,2)\)`, String.raw`\((2+\sqrt8,\infty)\)`, "NOTA"], answer: "B",
+    solution: String.raw`Differentiate:
+\[f'(x)=12x^2+48x-48=12(x^2+4x-4).\]
+The critical values satisfy \((x+2)^2=8\), so \(x=-2\pm\sqrt8\). The derivative is positive outside these two roots and negative between them. Hence \(f\) is increasing on
+\[(-\infty,-2-\sqrt8)\cup(-2+\sqrt8,\infty).\]
+Also,
+\[f''(x)=24x+48=24(x+2),\]
+which is positive on \((-2,\infty)\). Intersect the increasing intervals with the concave-up interval. Only
+\[(-2+\sqrt8,\infty)\]
+remains, so the answer is B.`,
+  },
+  {
+    id: 10585, number: 462, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 21 },
+    topic: "Implicit Differentiation", difficulty: 2, methods: ["Implicit Differentiation"],
+    question: String.raw`Compute \(\frac{dy}{dx}\) given \(x^2y+x^3=\ln(xy)\), at points where \(xy>0\) and \(x^2y\ne1\).`,
+    choices: [
+      String.raw`\[\frac{x^2y-x}{x-2x^2y^2-3x^3y}\]`,
+      String.raw`\(\frac1{x^3y-x}\)`,
+      String.raw`\(\frac{2y+3x-1}{x-1}\)`,
+      String.raw`\[\frac{1-2xy^2-3x^2y}{x^2y-1}\]`, "NOTA",
+    ], answer: "E",
+    solution: String.raw`Differentiate implicitly, remembering that \(y\) depends on \(x\):
+\[2xy+x^2y'+3x^2=\frac{xy'+y}{xy}=\frac{y'}y+\frac1x.\]
+Collecting \(y'\) terms gives
+\[\left(x^2-\frac1y\right)y'=\frac1x-2xy-3x^2.\]
+Multiplying by \(y\),
+\[\frac{dy}{dx}=\frac{y/x-2xy^2-3x^2y}{x^2y-1}.\]
+This differs from printed choice D in its first numerator term: the correct term is \(y/x\), not \(1\). None of A-D is the general derivative, so the corrected answer is E.
+
+The source's differential calculation initially has the correct \(y\,dx\) term on the right, but changes it to \(x\,dx\) when rearranging. Before dividing by \(x\), the correct numerator is \(y-2x^2y^2-3x^3y\), not \(x-2x^2y^2-3x^3y\). The added domain conditions make the real logarithm and the finite implicit derivative explicit.`,
+  },
+  {
+    id: 10586, number: 463, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 22 },
+    topic: "Limits", difficulty: 1, methods: ["Exponential Limits"],
+    question: String.raw`Evaluate:
+\[\lim_{x\to\infty}\left(1+\frac1{10x}\right)^{5x}.\]`,
+    choices: [String.raw`\(e^2\)`, String.raw`\(\sqrt e\)`, String.raw`\(e^5\)`, String.raw`\(e^{10}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Set \(u=10x\), so \(u\to\infty\) and \(5x=u/2\). Then
+\[\left(1+\frac1{10x}\right)^{5x}
+=\left[\left(1+\frac1u\right)^u\right]^{1/2}\longrightarrow e^{1/2}=\sqrt e.\]
+Hence the answer is B. The exponent multiplier and reciprocal coefficient combine as \(5/10=1/2\), not \(5\) or \(10\).`,
+  },
+  {
+    id: 10587, number: 464, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 23 },
+    topic: "Indefinite Integrals", difficulty: 1, methods: ["U-Substitution"],
+    question: String.raw`Compute:
+\[\int\frac2{64+16x^2}\,dx.\]`,
+    choices: [String.raw`\(\frac1{64}\arctan\left(\frac x2\right)+C\)`, String.raw`\(\frac1{16}\arctan\left(\frac x4\right)+C\)`, String.raw`\(\frac18\arctan\left(\frac x4\right)+C\)`, String.raw`\(\frac1{16}\arctan\left(\frac x2\right)+C\)`, "NOTA"], answer: "D",
+    solution: String.raw`Factor the denominator and use \(u=x/2\), so \(dx=2\,du\):
+\[\int\frac2{64+16x^2}\,dx
+=\frac1{32}\int\frac{dx}{1+(x/2)^2}
+=\frac1{16}\int\frac{du}{1+u^2}.\]
+The antiderivative is
+\[\frac1{16}\arctan u+C=\frac1{16}\arctan\left(\frac x2\right)+C.\]
+Hence the answer is D. Differentiating gives \((1/32)/(1+x^2/4)=2/(64+16x^2)\), confirming the factor. This is an ordinary \(u\)-substitution into an inverse-tangent antiderivative, not a trigonometric substitution.`,
+  },
+  {
+    id: 10588, number: 465, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 24 },
+    topic: "Definite Integrals", difficulty: 2, methods: [],
+    question: String.raw`Evaluate:
+\[\int_2^5 2x\lceil x\rceil\,dx.\]
+Here \(\lceil x\rceil\) is the least integer greater than or equal to \(x\).`,
+    choices: ["88", "78", "99", "57", "NOTA"], answer: "A",
+    solution: String.raw`On each open interval between consecutive integers, the ceiling function is constant. It equals \(3\) on \((2,3)\), \(4\) on \((3,4)\), and \(5\) on \((4,5)\). Thus
+\[\int_2^5 2x\lceil x\rceil\,dx
+=\int_2^3 6x\,dx+\int_3^4 8x\,dx+\int_4^5 10x\,dx.\]
+Evaluating,
+\[\left[3x^2\right]_2^3+\left[4x^2\right]_3^4+\left[5x^2\right]_4^5
+=(27-12)+(64-36)+(125-80)=15+28+45=88.\]
+Hence the answer is A. The ceiling takes different values at some integer endpoints, but changing a function at finitely many points does not change these integrals. The added definition distinguishes the ceiling from the floor function.`,
+  },
+  {
+    id: 10589, number: 466, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 25 },
+    topic: "Volumes of Revolution", difficulty: 3, methods: ["Cross Sections"],
+    question: String.raw`Find the volume of solid formed by revolving the region bounded by the curves \(g(x)=2x^2-x\) and \(h(x)=7x\) about the \(x\)-axis on the interval \([1,2]\).`,
+    choices: [String.raw`\(\frac{94\pi}{5}\)`, String.raw`\(\frac{812\pi}{15}\)`, String.raw`\(\frac{994\pi}{5}\)`, String.raw`\(\frac{932\pi}{15}\)`, "NOTA"], answer: "E",
+    solution: String.raw`Both curves are positive on \([1,2]\), and
+\[h(x)-g(x)=7x-(2x^2-x)=2x(4-x)>0.\]
+The outer radius of each annular cross section is \(R=7x\), and the inner radius is \(r=2x^2-x\). Its area is \(\pi(R^2-r^2)\), not \(\pi(R-r)^2\). Therefore,
+\[V=\pi\int_1^2\left[(7x)^2-(2x^2-x)^2\right]dx
+=\pi\int_1^2(48x^2+4x^3-4x^4)\,dx.\]
+Integrating,
+\[V=\pi\left[16x^3+x^4-\frac45x^5\right]_1^2
+=\pi\left(\frac{592}{5}-\frac{81}{5}\right)=\frac{511\pi}{5}.\]
+This is not among A-D, so the corrected answer is E.
+
+The source squares the difference between the two radii. That would make a disk of radius \(R-r\), whereas the rotated region is a washer with a hole. Its printed B value correctly evaluates that different, incorrect integral; it is not the volume of this solid. The interval endpoints \(x=1\) and \(x=2\) supply the remaining boundaries of the region.`,
+  },
+  {
+    id: 10590, number: 467, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 26 },
+    topic: "Implicit Differentiation", difficulty: 2, methods: ["Implicit Differentiation"],
+    question: String.raw`Find the value of \(\frac{dy}{dx}\) for
+\[\sin y\cos x+\sec x\csc y=\frac52\]
+at the point \(\left(\frac\pi4,\frac\pi4\right)\).`,
+    choices: [String.raw`\(\frac35\)`, String.raw`\(\frac94\)`, String.raw`\(-1\)`, String.raw`\(1\)`, "NOTA"], answer: "D",
+    solution: String.raw`First verify the point: \(\sin(\pi/4)\cos(\pi/4)=1/2\), while \(\sec(\pi/4)\csc(\pi/4)=2\), so their sum is \(5/2\).
+
+Differentiate implicitly:
+\[\cos y\cos x\,y'-\sin y\sin x
++\sec x\tan x\csc y-\sec x\csc y\cot y\,y'=0.\]
+At \((\pi/4,\pi/4)\), this becomes
+\[\frac12y'-\frac12+2-2y'=0,\qquad
+-\frac32y'=-\frac32,\qquad y'=1.\]
+Hence the answer is D, and the coefficient of \(y'\) is nonzero, so this is a well-defined local derivative.
+
+The source's right-hand side is \(1\), but the supplied point is not on that level curve. More strongly, the original equation has no real solutions: with \(z=\sin y\cos x\ne0\), it becomes \(z+1/z=1\), or \(z^2-z+1=0\), whose discriminant is \(-3\). Replacing the constant by \(5/2\) is an explicit editorial repair that preserves the stated point, all derivative calculations, and the intended source answer; it is not the original equation.`,
+  },
+  {
+    id: 10591, number: 468, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 27 },
+    topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`The acceleration function of a moving particle is defined by the equation \(a(t)=6t^2-12t\), where the acceleration is measured in \(\text{m/s}^2\) and \(t\ge0\). The particle begins at the zero position and at any time \(t\) is described by the velocity function \(v(t)\). If \(v(4)=14\text{ m/s}\), find the position of the particle at \(t=4\text{ s}\).`,
+    choices: [String.raw`\(-72\)`, String.raw`\(-40\)`, String.raw`\(-8\)`, "72", "NOTA"], answer: "A",
+    solution: String.raw`Integrate acceleration:
+\[v(t)=\int a(t)\,dt=2t^3-6t^2+C_1.\]
+Use the specified velocity \(v(4)=14\):
+\[14=2(4)^3-6(4)^2+C_1=32+C_1,\qquad C_1=-18.\]
+Integrate again:
+\[s(t)=\frac12t^4-2t^3-18t+C_2.\]
+There is no constant term since the particle begins from the zero position: \(s(0)=0\), so \(C_2=0\). Thus
+\[s(4)=\frac12(4)^4-2(4)^3-18(4)=128-128-72=-72\text{ m}.\]
+Hence the answer is A.
+
+The original prompt also says the particle begins "from rest," which contradicts \(v(4)=14\): rest would force \(C_1=0\), giving \(v(4)=32\), not \(14\). The phrase "from rest" is removed as an explicit repair, preserving the velocity condition and the source's working. The repaired particle starts with velocity \(-18\text{ m/s}\). The source also labels its final substitution \(s(3)\), although it substitutes \(4\); the correct label is \(s(4)\).`,
+  },
+  {
+    id: 10592, number: 469, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 28 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["U-Substitution"],
+    question: String.raw`Evaluate:
+\[\int_0^1\frac{x}{(1+x)^4}\,dx.\]`,
+    choices: [String.raw`\(\frac16\)`, String.raw`\(\frac14\)`, String.raw`\(\frac1{12}\)`, String.raw`\(\frac23\)`, "NOTA"], answer: "C",
+    solution: String.raw`Let \(u=1+x\), so \(du=dx\) and \(x=u-1\). The bounds \(x=0,1\) become \(u=1,2\). Therefore,
+\[\int_0^1\frac{x}{(1+x)^4}\,dx
+=\int_1^2\frac{u-1}{u^4}\,du
+=\int_1^2(u^{-3}-u^{-4})\,du.\]
+Integrating,
+\[\left[-\frac12u^{-2}+\frac13u^{-3}\right]_1^2
+=\left(-\frac18+\frac1{24}\right)-\left(-\frac12+\frac13\right)
+=-\frac1{12}+\frac16=\frac1{12}.\]
+Hence the answer is C.`,
+  },
+  {
+    id: 10593, number: 470, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 29 },
+    topic: "Riemann Sums", difficulty: 1, methods: [],
+    question: String.raw`Use the right-handed rule to approximate the area of the region bounded by the curve \(y=4x^2+x-8\) and the line \(y=10\) on the interval \([3,6]\) with three equal subintervals.`,
+    choices: ["158", "329", "199.5", "269", "NOTA"], answer: "D",
+    solution: String.raw`The width is \(\Delta x=(6-3)/3=1\), and the right endpoints are \(4,5,6\). The curve lies above \(y=10\) throughout \([3,6]\), so the vertical height of the region is
+\[F(x)=(4x^2+x-8)-10=4x^2+x-18.\]
+At the three right endpoints,
+\[F(4)=50,\qquad F(5)=87,\qquad F(6)=132.\]
+Thus the right-hand approximation is
+\[(50+87+132)(1)=269.\]
+Hence the answer is D. We use the difference between the two bounding functions, not the height above the \(x\)-axis. The source's indexing starts its endpoint labels one step later; explicitly naming \(4,5,6\) avoids that notational mismatch.`,
+  },
+  {
+    id: 10594, number: 471, division: "Mu",
+    source: { ...februaryRegional2024, questionNumber: 30 },
+    topic: "Limits", difficulty: 1, methods: ["Absolute Value"],
+    question: String.raw`Evaluate:
+\[\lim_{x\to0}\frac{|x|}{\tan x}.\]`,
+    choices: ["1", "0", String.raw`\(-1\)`, "DNE", "NOTA"], answer: "D",
+    solution: String.raw`For \(x>0\), \(|x|=x\), so
+\[\lim_{x\to0^+}\frac{|x|}{\tan x}=\lim_{x\to0^+}\frac{x}{\tan x}=1.\]
+For \(x<0\), \(|x|=-x\), so
+\[\lim_{x\to0^-}\frac{|x|}{\tan x}=\lim_{x\to0^-}\frac{-x}{\tan x}=-1.\]
+These use the standard limit \(\tan x/x\to1\). Since the one-sided limits differ, the two-sided limit does not exist, so the corrected answer is D.
+
+The source computes the two one-sided limits correctly but then labels the answer C, which is only the left-hand limit. The question asks for the two-sided limit.`,
   },
 ];
