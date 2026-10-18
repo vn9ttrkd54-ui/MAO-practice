@@ -1,5 +1,10 @@
 import type { Question } from "@/types/question";
 
+const februaryRegional2025 = {
+  competition: "2025 February Regional",
+  event: "Calculus Individual",
+};
+
 const kingFebruaryStatewide2025 = {
   competition: "2025 February King Statewide",
   event: "Calculus Individual",
@@ -6603,5 +6608,483 @@ choice B.
 The source's intermediate expression for \(k\) has its signs reversed; its subsequent substitution and final answer use the correct value shown above. A direct difference check avoids \(k\) altogether:
 \[G(6)-G(1)=\int_1^6f(t)\,dt=\frac\pi2-2,\]
 so \(G(1)=(\pi-3)-(\pi/2-2)=\pi/2-1\), confirming the result. Areas below the axis must be counted negatively in these accumulation integrals.`,
+  },
+  // February Regional 2025: all 30 source questions; no supplied throw-out notes.
+  {
+    id: 10445, number: 323, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 1 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`Compute the following limit: \(\displaystyle\lim_{x\to1}(x^4+2x^2+1)\).`,
+    choices: ["2", "3", "4", "5", "NOTA"], answer: "C",
+    solution: String.raw`We can plug in \(x=1\) directly to get \(1^4+2\cdot1^2+1=1+2+1=4\).
+
+Direct substitution is valid because a polynomial is continuous at every real number. Thus the limit equals the polynomial's value at \(1\), which is \(4\).`,
+  },
+  {
+    id: 10446, number: 324, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 2 },
+    topic: "Continuity", difficulty: 1, methods: ["Removable Discontinuity"],
+    question: String.raw`Given that \(g(x)=\frac1x\), which of the following is not a continuous function on the entire real line?`,
+    choices: [String.raw`\(g(2^x)\)`, String.raw`\(g(2+\sin(x))\)`, String.raw`\(g(x^2+1)\)`, String.raw`\(g(g(x))\)`, "NOTA"], answer: "D",
+    solution: String.raw`The only way that any of the options can fail to be continuous on the entire real line is if an input to \(g(x)\) is ever \(0\). Note that \(2^x\) is positive, \(2+\sin(x)\) is positive (as sine is between \(-1\) and \(1\)), and \(x^2+1\) is positive, so the first three options are all continuous. However, for option D, when \(x=0\), the function is not defined because \(g(0)\) is undefined.
+
+More explicitly, the first three functions are
+\[2^{-x},\qquad\frac1{2+\sin x},\qquad\frac1{x^2+1},\]
+and all their denominators are nonzero for every real \(x\). For D,
+\[g(g(x))=\frac1{1/x}=x,\qquad x\ne0.\]
+The simplification does not restore the excluded input \(0\). This composition has a removable hole, not a vertical asymptote. It is continuous on its natural domain \(\mathbb R\setminus\{0\}\), but it is not a function continuous on the entire real line as required by the clarified question. Defining a new value at \(0\) would give a continuous extension, not the original composition. Hence D is the unique intended answer.`,
+  },
+  {
+    id: 10447, number: 325, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 3 },
+    topic: "Derivatives", difficulty: 1, methods: [],
+    question: String.raw`The derivative of \(ax^2+bx\) (with respect to \(x\)) is \(4x+8\). Compute \(a+b\).`,
+    choices: ["6", "8", "10", "12", "NOTA"], answer: "C",
+    solution: String.raw`The derivative of \(ax^2+bx\) is \(2ax+b\) using Power Rule, so equating the coefficients tells us that \(2a=4\) and \(b=8\), meaning that \((a,b)=(2,8)\), and their sum is \(10\).
+
+The identity \(2ax+b=4x+8\) holds for every \(x\), so both the coefficient of \(x\) and the constant term must match separately. Thus \(a+b=2+8=10\).`,
+  },
+  {
+    id: 10448, number: 326, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 4 },
+    topic: "Derivatives", difficulty: 1, methods: ["Parity"],
+    question: String.raw`Which of the following is the derivative of \(f(x)=\sin(x)+\cos(x)\)?`,
+    choices: [String.raw`\(f(x)\)`, String.raw`\(-f(x)\)`, String.raw`\(f(-x)\)`, String.raw`\(-f(-x)\)`, "NOTA"], answer: "C",
+    solution: String.raw`Using standard trig derivatives, we have \(f'(x)=\cos(x)-\sin(x)\). Notice that \(\sin(x)\) is odd and \(\cos(x)\) is even, so
+\[f(-x)=\sin(-x)+\cos(-x)=-\sin(x)+\cos(x)=f'(x),\]
+so \(f(-x)\) is our desired derivative.
+
+The minus sign affects the sine term but not the cosine term. Therefore the correct expression is choice C, not the negative of that expression.`,
+  },
+  {
+    id: 10449, number: 327, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 5 },
+    topic: "Indefinite Integrals", difficulty: 1, methods: [],
+    question: String.raw`Which of the following is an antiderivative of \(f(x)=\sin(x)+\cos(x)\)?`,
+    choices: [String.raw`\(f(x)\)`, String.raw`\(-f(x)\)`, String.raw`\(f(-x)\)`, String.raw`\(-f(-x)\)`, "NOTA"], answer: "D",
+    solution: String.raw`Using standard trig antiderivative, we have
+\[\int(\sin(x)+\cos(x))\,dx=-\cos(x)+\sin(x)+C.\]
+Noticing that this is the negative of the answer to the previous question, this gives us \(-f(-x)\) as a valid antiderivative.
+
+Independently of that previous question,
+\[-f(-x)=-[\sin(-x)+\cos(-x)]=\sin x-\cos x.\]
+Differentiating gives \(\cos x+\sin x=f(x)\), verifying D. The question asks for an antiderivative, so choosing the constant of integration to be \(0\) is valid.`,
+  },
+  {
+    id: 10450, number: 328, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 6 },
+    topic: "Derivatives", difficulty: 1, methods: ["Chain Rule"],
+    question: String.raw`Which of the following is the derivative of \(f(f(x))\) if \(f(x)=x^2+1\)?`,
+    choices: [String.raw`\(2xf(x)\)`, String.raw`\(4xf(x)\)`, String.raw`\(xf(x)\)`, String.raw`\(4f(x)\)`, "NOTA"], answer: "B",
+    solution: String.raw`Using the Chain Rule and Power Rule, we have \(f'(x)=2x\) and
+\[\frac d{dx}f(f(x))=f'(f(x))f'(x)=2f(x)\cdot2x=4xf(x).\]
+The outer derivative is evaluated at \(f(x)\), not at \(x\). As a direct check, \(f(f(x))=(x^2+1)^2+1\), whose derivative is \(2(x^2+1)(2x)=4xf(x)\).`,
+  },
+  {
+    id: 10451, number: 329, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 7 },
+    topic: "Limits", difficulty: 1, methods: ["L'Hopital's Rule"],
+    question: String.raw`Compute the following limit:
+\[\lim_{x\to0}\frac{2^x-1}{\sin(x)+\tan(x)}.\]`,
+    choices: [String.raw`\(\ln\sqrt2\)`, String.raw`\(\ln2\)`, String.raw`\(\ln4\)`, String.raw`\(\ln8\)`, "NOTA"], answer: "A",
+    solution: String.raw`Substituting \(x=0\) in both the numerator and denominator gives \(0\), meaning we can use L'Hopital's Rule:
+\[\lim_{x\to0}\frac{2^x-1}{\sin(x)+\tan(x)}
+=\lim_{x\to0}\frac{2^x\ln2}{\cos(x)+\sec^2(x)}
+=\frac{2^0\ln2}{\cos(0)+\sec^2(0)}
+=\frac{\ln2}{2}=\ln\sqrt2.\]
+Both functions are differentiable near \(0\), and the derivative of the denominator tends to \(2\), so it is nonzero sufficiently near \(0\). Thus the rule's hypotheses hold and direct substitution in the derivative quotient is valid.`,
+  },
+  {
+    id: 10452, number: 330, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 8 },
+    topic: "Derivatives", difficulty: 2, methods: [],
+    question: String.raw`The normal line to \(y=x^2\) at \((1,1)\) intersects \(y=x^2\) again at the point \((a,a^2)\). Compute \(a\).`,
+    choices: ["−1", "−1.5", "−2", "−2.5", "NOTA"], answer: "B",
+    solution: String.raw`The slope of the tangent line of \(y=x^2\) through \((1,1)\) is \(y'(1)=2(1)=2\), meaning that the slope of the normal line is \(-1/2\). Therefore, the equation of the normal line is \(y-1=-\frac12(x-1)\), which can be rewritten as \(x+2y=3\). Substituting \(y=x^2\) gives
+\[x+2x^2=3\quad\Longrightarrow\quad(2x+3)(x-1)=0
+\quad\Longrightarrow\quad x=-1.5,1.\]
+The desired value of \(a\) is \(-1.5\).
+
+Here the normal is taken at the given point \((1,1)\); it is perpendicular to the tangent there. The source's "passing through" is clarified to "at" because other normals at different points can also pass through \((1,1)\). The root \(x=1\) is the original intersection, so the word "again" selects the other root, \(-3/2\).`,
+  },
+  {
+    id: 10453, number: 331, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 9 },
+    topic: "Function Analysis", difficulty: 2, methods: ["Second Derivative Test"],
+    question: String.raw`The \(y\)-coordinate of the point of inflection of \(y=x^3+x^2-x\) can be expressed as \(a/b\), where \(a\) and \(b\) are relatively prime positive integers. Compute \(a+b\).`,
+    choices: ["37", "38", "39", "40", "NOTA"], answer: "B",
+    solution: String.raw`The second derivative of \(y\) is \(y''=6x+2\), meaning that the \(x\)-coordinate of this inflection point is \(x=-1/3\). Substituting this in for \(y\) gives
+\[y=-\frac1{27}+\frac19+\frac13=\frac{11}{27},\]
+and the sum of the numerator and denominator is \(38\).
+
+To check that this is genuinely an inflection point, \(6x+2\) is negative to the left of \(-1/3\) and positive to the right. Thus the graph changes from concave down to concave up. Since \(11\) and \(27\) are relatively prime, \(a=11\), \(b=27\), and \(a+b=38\).`,
+  },
+  {
+    id: 10454, number: 332, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 10 },
+    topic: "Optimization", difficulty: 2, methods: ["Quotient Rule", "First Derivative Test"],
+    question: String.raw`If \(y=\frac{1+2x}{3+4x^2}\), then as \(x\) ranges over all reals, the minimum and maximum of \(y\) are \(A\) and \(B\), respectively. Compute the sum of the reciprocals of \(A\) and \(B\).`,
+    choices: ["−4", "−5", "−6", "−7", "NOTA"], answer: "A",
+    solution: String.raw`Taking the derivative to find critical points gives
+\[y'=\frac{(3+4x^2)(2)-(1+2x)(8x)}{(3+4x^2)^2}
+=\frac{-8x^2-8x+6}{(3+4x^2)^2}
+=\frac{-2(2x-1)(2x+3)}{(3+4x^2)^2}.\]
+The critical points occur at \(x=\frac12\) and \(x=-\frac32\), and the corresponding \(y\) values are \(y(\frac12)=\frac12\) and \(y(-\frac32)=-\frac16\). Since the limits as \(x\to-\infty\) and \(x\to+\infty\) are both \(0\), we can assert that \(A=-\frac16\) and \(B=\frac12\). Our answer is thus \(-6+2=-4\).
+
+For the global check, the denominator is always positive, while the numerator of \(y'\) has signs negative, positive, negative on the three intervals cut by \(-3/2\) and \(1/2\). Therefore the function decreases to \(-1/6\), increases to \(1/2\), and decreases back toward \(0\), with no other critical points or finite-domain endpoints. This establishes the absolute minimum and maximum, not just local extrema.`,
+  },
+  {
+    id: 10455, number: 333, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 11 },
+    topic: "Derivatives", difficulty: 2, methods: ["Chain Rule"],
+    question: String.raw`Given that \(f(x)=\sqrt[3]{x^3+x^2+x+1}\), compute \(f'(4)\cdot f(4)^2\).`,
+    choices: ["16", "17", "18", "19", "NOTA"], answer: "D",
+    solution: String.raw`Using Chain Rule and Power Rule gives
+\[f'(x)\cdot f(x)^2
+=\frac13(x^3+x^2+x+1)^{-2/3}(3x^2+2x+1)\cdot f(x)^2
+=\frac13f(x)^{-2}(3x^2+2x+1)\cdot f(x)^2
+=\frac{3x^2+2x+1}{3}.\]
+Substituting \(x=4\) gives \(\frac{3\cdot4^2+2\cdot4+1}{3}=\frac{57}{3}=19\).
+
+There is no need to evaluate the cube root explicitly. Near \(4\), \(f(x)\ne0\), so the cancellation is valid. Equivalently, differentiating \(f(x)^3=x^3+x^2+x+1\) gives \(3f(x)^2f'(x)=3x^2+2x+1\) immediately.`,
+  },
+  {
+    id: 10456, number: 334, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 12 },
+    topic: "Indefinite Integrals", difficulty: 2, methods: ["Product Rule"],
+    question: String.raw`Given that an antiderivative of \(x(x+1)\) (with respect to \(x\)) is \((x+1)^2(ax+b)\), for constants \(a\) and \(b\), compute the reciprocal of \(a+b\).`,
+    choices: ["6", "8", "9", "12", "NOTA"], answer: "A",
+    solution: String.raw`Going the other way around, taking the derivative of \((x+1)^2(ax+b)\) using Product Rule gives
+\[2(x+1)(ax+b)+a(x+1)^2
+=(x+1)[(2ax+2b)+(ax+a)]
+=(x+1)[3ax+(a+2b)].\]
+This means that \(3ax+(a+2b)=x\), so equating coefficients gives \(3a=1\) and \(a+2b=0\). Solving this gives \((a,b)=(\frac13,-\frac16)\), meaning that \(a+b=\frac16\), and the reciprocal of this is \(6\).
+
+The derivative equality is a polynomial identity: factoring out \(x+1\) identifies the remaining linear factor, even though \(x+1=0\) at one particular input. As a check, the resulting antiderivative expands to \(x^3/3+x^2/2-1/6\), whose derivative is exactly \(x^2+x\).`,
+  },
+  {
+    id: 10457, number: 335, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 13 },
+    topic: "Implicit Differentiation", difficulty: 2, methods: ["Implicit Differentiation"],
+    question: String.raw`The two vertical tangent lines to \(x^2+2xy+3y^2+4x=0\) are \(x=0\) and \(x=m\). Find \(m\).`,
+    choices: ["−4", "−5", "−6", "−7", "NOTA"], answer: "C",
+    solution: String.raw`Using implicit differentiation, we get
+\[2x+2y+2x\frac{dy}{dx}+6y\frac{dy}{dx}+4=0
+\quad\Longrightarrow\quad\frac{dy}{dx}=-\frac{2x+2y+4}{2x+6y}.\]
+In order to have a vertical line tangent, the denominator of this expression is \(0\), meaning that \(2x+6y=0\), or \(x=-3y\). Substituting this back into the original equation gives
+\[(-3y)^2+2(-3y)y+3y^2+4(-3y)=0
+\quad\Longrightarrow\quad6y^2-12y=0
+\quad\Longrightarrow\quad y=0,2.\]
+Using \(x=-3y\) gives that the possible \(x\) values are \(x=0\) and \(x=-6\).
+
+At the corresponding points \((0,0)\) and \((-6,2)\), the numerator \(2x+2y+4\) is respectively \(4\) and \(-4\), not \(0\). Thus the vanishing denominator gives genuine vertical tangents rather than an indeterminate singular-point calculation. The other tangent is \(x=m=-6\).`,
+  },
+  {
+    id: 10458, number: 336, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 14 },
+    topic: "Conic Sections", difficulty: 2, methods: ["Symmetry"],
+    question: String.raw`Compute the \(x\)-coordinate of the center of the ellipse \(x^2+2xy+3y^2+4x=0\) (Hint: use the previous question).`,
+    choices: ["−2", "−3", "−4", "−5", "NOTA"], answer: "B",
+    solution: String.raw`Note that an ellipse is a centrally symmetric figure, and so two parallel tangents will be equidistant from the center. Using the previous question, since \(x=0\) and \(x=-6\) are two parallel tangents, the center has an \(x\)-coordinate of \(-3\).
+
+For a self-contained verification, translating the center to \((h,k)\) must eliminate the linear terms in the quadratic equation. Their coefficients are
+\[2h+2k+4=0,\qquad 2h+6k=0.\]
+The second equation gives \(h=-3k\); substituting into the first gives \(k=1\), \(h=-3\). Thus the center is \((-3,1)\), agreeing with the midpoint of the two vertical tangent lines, \((0+(-6))/2=-3\).`,
+  },
+  {
+    id: 10459, number: 337, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 15 },
+    topic: "Derivatives", difficulty: 1, methods: ["Trigonometric Identities"],
+    question: String.raw`Which of the following is the derivative of \(f(x)=3\sin(x)+4\cos(x)\)?`,
+    choices: [String.raw`\(f(x+\frac\pi2)\)`, String.raw`\(f(x+\pi)\)`, String.raw`\(-f(x+\frac\pi2)\)`, String.raw`\(-f(x+\pi)\)`, "NOTA"], answer: "A",
+    solution: String.raw`Using standard trig derivatives, we have \(f'(x)=3\cos(x)-4\sin(x)\). We can start evaluating the answer choices, or realize that in order to go from \((\cos(x),\sin(x))\) to \((-\sin(x),\cos(x))\) is equivalent to a counterclockwise rotation of \(\frac\pi2\) radians, meaning that this derivative is equal to \(f(x+\frac\pi2)\).
+
+Directly applying the angle-addition identities makes the match explicit:
+\[f(x+\tfrac\pi2)=3\sin(x+\tfrac\pi2)+4\cos(x+\tfrac\pi2)
+=3\cos x-4\sin x=f'(x).\]
+Therefore choice A has both the required shift and the required signs.`,
+  },
+  {
+    id: 10460, number: 338, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 16 },
+    topic: "Implicit Differentiation", difficulty: 2, methods: ["Implicit Differentiation"],
+    question: String.raw`Compute the slope of the line tangent to the curve \(x\sin(\pi y)+y\sin(\pi x)=0\) at \((3,4)\).`,
+    choices: [String.raw`\(\frac43\)`, String.raw`\(\frac34\)`, String.raw`\(-\frac43\)`, String.raw`\(-\frac34\)`, "NOTA"], answer: "A",
+    solution: String.raw`We can first verify that this point does indeed lie on the given curve. Using implicit differentiation, we get:
+\[\sin(\pi y)+x\pi\cos(\pi y)\frac{dy}{dx}
++\sin(\pi x)\frac{dy}{dx}+y\pi\cos(\pi x)=0,\]
+\[\frac{dy}{dx}
+=-\frac{\sin(\pi y)+y\pi\cos(\pi x)}{\sin(\pi x)+x\pi\cos(\pi y)}
+=-\frac{0-4\pi}{0+3\pi}=\frac43.\]
+Indeed, \(3\sin(4\pi)+4\sin(3\pi)=0\), so \((3,4)\) is on the curve. The denominator at that point is \(3\pi\ne0\), ensuring that this finite derivative is the tangent slope. Both products require the Product Rule, and differentiating \(\sin(\pi y)\) also introduces the Chain Rule factor \(\pi y'\).`,
+  },
+  {
+    id: 10461, number: 339, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 17 },
+    topic: "Optimization", difficulty: 3, methods: ["Distance Formula", "First Derivative Test"],
+    question: String.raw`The distance from \((18,0)\) to the parabola \(y=x^2\) can be expressed as \(a\sqrt b\), for positive integers \(a\) and \(b\), where \(b\) is not divisible by the square of any prime. Compute \(a+b\).`,
+    choices: ["18", "19", "20", "21", "NOTA"], answer: "D",
+    solution: String.raw`Let \((a,a^2)\) be an arbitrary point on the parabola. The distance from this point to \((18,0)\) is \(\sqrt{(a-18)^2+a^4}\), which is what we have to minimize. This is equivalent to minimizing \(a^4+(a-18)^2\). Taking the derivative, we must have \(4a^3+2(a-18)=0\) at the minimum. This gives
+\[2a^3+a-18=0\quad\Longrightarrow\quad(a-2)(2a^2+4a+9)=0.\]
+The quadratic has no real solutions, meaning the minimum occurs at \(a=2\). The minimum distance is thus
+\[\sqrt{(2-18)^2+2^4}=\sqrt{16^2+16}=\sqrt{16\cdot17}=4\sqrt{17}.\]
+Our answer is \(4+17=21\).
+
+The temporary coordinate variable \(a\) above is separate from the final coefficient in \(a\sqrt b\). To justify a global minimum, the squared distance has second derivative \(12a^2+2>0\) for every real \(a\), so it is strictly convex; it also tends to infinity at both ends. Thus the sole stationary point is the unique global minimizer. Since \(17\) is square-free, the final requested integers are \(a=4\) and \(b=17\).`,
+  },
+  {
+    id: 10462, number: 340, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 18 },
+    topic: "Derivatives", difficulty: 2, methods: ["Discriminant Test"],
+    question: String.raw`Let \(m\) denote the slope of one of the tangent lines to \(1+x+y^2=0\) that passes through the origin. Compute \(m^2\).`,
+    choices: ["0.16", "0.25", "0.5", "1", "NOTA"], answer: "B",
+    solution: String.raw`A line with slope \(m\) passing through the origin is given by the equation \(y=mx\). Substituting this into the given curve gives \(1+x+m^2x^2=0\). In order for the line to be tangent to the curve, this quadratic must have a double root, meaning the discriminant is \(0\). Therefore, we have:
+\[\Delta=1^2-4(1)(m^2)=0\quad\Longrightarrow\quad m^2=\frac14=0.25.\]
+The case \(m=0\) makes the substituted equation linear rather than quadratic and is not a tangent: at \((-1,0)\) the curve's tangent is vertical. For \(m=\pm1/2\), the repeated root is \(x=-2\), giving the tangency points \((-2,-1)\) and \((-2,1)\). The implicit derivative \(y'=-1/(2y)\) agrees with the corresponding line slopes there.`,
+  },
+  {
+    id: 10463, number: 341, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 19 },
+    topic: "Function Analysis", difficulty: 3, methods: ["Second Derivative Test"],
+    question: String.raw`What is the \(x\)-coordinate of the unique inflection point of \(f(x)=(x-2)\sqrt{4-x^2}\)?`,
+    choices: [String.raw`\(\sqrt3-1\)`, String.raw`\(\sqrt2-1\)`, "1", "2", "NOTA"], answer: "A",
+    solution: String.raw`Taking the first derivative gives us
+\[f'(x)=\sqrt{4-x^2}-\frac{2x(x-2)}{2\sqrt{4-x^2}}
+=\frac{(4-x^2)-x(x-2)}{\sqrt{4-x^2}}
+=\frac{-2x^2+2x+4}{\sqrt{4-x^2}}.\]
+In order for \(f''(x)=0\), we can look at its numerator that arises from the Quotient Rule to get
+\[0=(-4x+2)\sqrt{4-x^2}
+-(-2x^2+2x+4)\frac{-2x}{2\sqrt{4-x^2}}.\]
+Multiplying both sides by \(\sqrt{4-x^2}\) gives
+\[0=(-4x+2)(4-x^2)-(-x)(-2x^2+2x+4),\]
+\[0=(4x^3-2x^2-16x+8)-(2x^3-2x^2-4x),\]
+\[0=2x^3-12x+8=2(x-2)(x^2+2x-2).\]
+Note that \(x=2\) is not an inflection point because the derivative is not defined for \(x>2\). The roots of the quadratic are \(x=-1\pm\sqrt3\), and the only one of these that lies in the domain, \([-2,2]\), is \(-1+\sqrt3\).
+
+It remains to check a change of concavity, rather than only solving \(f''=0\). On the interior \((-2,2)\),
+\[f''(x)=\frac{2(x-2)(x^2+2x-2)}{(4-x^2)^{3/2}}.\]
+The denominator is positive and \(x-2<0\). The quadratic is negative before \(\sqrt3-1\) and positive after it within this interval, so \(f''\) changes from positive to negative there. The other quadratic root is less than \(-2\), and the endpoints do not have graph on both sides. Hence this is the unique inflection point.`,
+  },
+  {
+    id: 10464, number: 342, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 20 },
+    topic: "Optimization", difficulty: 2, methods: ["First Derivative Test"],
+    question: String.raw`What is the maximum slope of a line tangent to \(y=e^{-x^2}\)?`,
+    choices: [String.raw`\(\frac1e\)`, String.raw`\(\frac2e\)`, String.raw`\(\sqrt{\frac1e}\)`, String.raw`\(\sqrt{\frac2e}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Taking the first derivative to find the slope gives
+\[y'=-2xe^{-x^2}.\]
+Now, finding the maximum of this is equivalent to finding when \(y''=0\). This means
+\[0=y''=-2e^{-x^2}+(-2x)(-2xe^{-x^2})=(4x^2-2)e^{-x^2}.\]
+Since \(e^{-x^2}>0\) for all \(x\), we must have \(4x^2-2=0\), or \(x=\pm1/\sqrt2\). \(x=1/\sqrt2\) gives a negative value for \(y'\), so we choose \(x=-1/\sqrt2\) instead, giving
+\[y'(-\tfrac1{\sqrt2})=-2(-\tfrac1{\sqrt2})e^{-1/2}
+=\sqrt2\cdot\frac1{\sqrt e}=\sqrt{\frac2e}.\]
+For completeness, the slope function \(s(x)=-2xe^{-x^2}\) has derivative positive for \(x<-1/\sqrt2\), negative for \(-1/\sqrt2<x<1/\sqrt2\), and positive for \(x>1/\sqrt2\). Also \(s(x)\to0\) as \(x\to\pm\infty\). Thus the positive local maximum at \(-1/\sqrt2\) is the absolute maximum over the real line.`,
+  },
+  {
+    id: 10465, number: 343, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 21 },
+    topic: "Definite Integrals", difficulty: 4, methods: ["Integration by Parts"],
+    question: String.raw`One of the most important fundamental constants in calculus is \(e\). But how can we approximate it? With integrals! Note that integrating a small-magnitude, nonnegative-valued function over a small interval will lead to a small nonnegative result. With this in mind, which integer is closest to \(48\sqrt e\)? (Hint: consider the integral \(\int_0^1x^3e^{-x/2}\,dx\).)`,
+    choices: ["79", "80", "81", "82", "NOTA"], answer: "A",
+    solution: String.raw`We use Integration by Parts, using the tabular/DI method in particular. In the differentiation column, we start with \(x^3\), and differentiate to get \(x^3,3x^2,6x,6,0\). In the integration column, we start with \(e^{-x/2}\), and integrate to get
+\[e^{-x/2},-2e^{-x/2},4e^{-x/2},-8e^{-x/2},16e^{-x/2}.\]
+Multiplying across the diagonals and adding (and not forgetting to alternate signs) gives that
+\[I=\int_0^1x^3e^{-x/2}\,dx
+=\left[(-2x^3-12x^2-48x-96)e^{-x/2}\right]_0^1
+=96-\frac{158}{\sqrt e}.\]
+The source then uses \(96-158/\sqrt e\approx0\), suggesting \(48\sqrt e\approx158/2=79\). To prove which integer is closest, we need an actual error bound.
+
+For \(0<x<1\), \(0<e^{-x/2}<1\), so
+\[0<I<\int_0^1x^3\,dx=\frac14.\]
+Rearranging the exact identity gives
+\[48\sqrt e=\frac{7584}{96-I}.\]
+Consequently,
+\[79=\frac{7584}{96}
+<48\sqrt e
+<\frac{7584}{96-\frac14}
+=\frac{30336}{383}<\frac{159}{2}=79.5.\]
+The last comparison follows from \(60672<60897\) after cross-multiplication by the positive denominators. Therefore \(48\sqrt e\) lies between \(79\) and \(79.5\), so its nearest integer is \(79\), choice A. The bound, not merely the informal approximation by zero, establishes the rounding.`,
+  },
+  {
+    id: 10466, number: 344, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 22 },
+    topic: "Definite Integrals", difficulty: 4, methods: ["Integration by Parts"],
+    question: String.raw`Using the information from original Question 21, which integer is closest to \(81\sqrt[3]e\)? (Hint: consider the integral \(\int_0^1x^3e^{-x/3}\,dx\).)`,
+    choices: ["113", "114", "115", "116", "NOTA"], answer: "A",
+    solution: String.raw`We again use Integration by Parts. In the differentiation column, we start with \(x^3\), and differentiate to get \(x^3,3x^2,6x,6,0\). In the integration column we start with \(e^{-x/3}\), and integrate to get
+\[e^{-x/3},-3e^{-x/3},9e^{-x/3},-27e^{-x/3},81e^{-x/3}.\]
+Multiplying across the diagonals and alternatingly adding and subtracting gives
+\[J=\int_0^1x^3e^{-x/3}\,dx
+=\left[(-3x^3-27x^2-162x-486)e^{-x/3}\right]_0^1
+=486-\frac{678}{\sqrt[3]e}.\]
+The source's approximation \(486-678/\sqrt[3]e\approx0\) suggests \(81\sqrt[3]e\approx678/6=113\). Here is the bound that rigorously establishes the nearest integer, without requiring the previous question.
+
+Since \(0<e^{-x/3}<1\) for \(0<x<1\),
+\[0<J<\int_0^1x^3\,dx=\frac14.\]
+The exact integral identity implies
+\[81\sqrt[3]e=\frac{54918}{486-J}.\]
+Hence
+\[113=\frac{54918}{486}
+<81\sqrt[3]e
+<\frac{54918}{486-\frac14}
+=\frac{219672}{1943}<\frac{227}{2}=113.5.\]
+For the final inequality, \(439344<441061\). Therefore the number is strictly between \(113\) and \(113.5\), and its closest integer is \(113\), choice A. The shared idea from original Question 21 is bounding a positive integral, not substituting an approximate value of \(e\).`,
+  },
+  {
+    id: 10467, number: 345, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 23 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["U-Substitution"],
+    question: String.raw`Suppose you wanted to compute the integral \(\int_1^2(\ln(x)+1)\,dx\). One could painlessly use integration by parts, but that's no fun. With the substitution \(u=x^x\), the integral becomes \(\int_a^bu^c\,du\), for integers \(a,b,c\). Compute \(a^2+b^2+c^2\).`,
+    choices: ["6", "9", "18", "21", "NOTA"], answer: "C",
+    solution: String.raw`We start by computing \(du\) by taking the natural logarithm:
+\[u=x^x\quad\Longrightarrow\quad\ln(u)=\ln(x^x)=x\ln(x)
+\quad\Longrightarrow\quad\frac{du}{u}=(\ln(x)+1)\,dx.\]
+Substituting this into the integral and changing the bounds from \(1\) and \(2\) to \(1^1=1\) and \(2^2=4\) gives that \((a,b,c)=(1,4,-1)\). Therefore, \(a^2+b^2+c^2=1+16+1=18\).
+
+To display the transformed integral explicitly,
+\[\int_1^2(\ln x+1)\,dx=\int_1^4\frac1u\,du=\int_1^4u^{-1}\,du.\]
+On \([1,2]\), both \(x\) and \(u=x^x\) are positive, so the logarithmic manipulation is valid. Also \(du/dx=x^x(\ln x+1)>0\), so the new bounds have the same orientation. Thus the exponent is \(-1\), not \(1\), and it contributes \((-1)^2=1\) to the requested sum.`,
+  },
+  {
+    id: 10468, number: 346, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 24 },
+    topic: "Polynomials", difficulty: 3, methods: [],
+    question: String.raw`Let \(P(x)\) be a degree \(3\) polynomial such that \(P(1)=P'(2)=P''(3)=0\). Which of the following is a root of \(P(x)\)?`,
+    choices: ["4", "5", "6", "7", "NOTA"], answer: "A",
+    solution: String.raw`Let \(P(x)=ax^3+bx^2+cx+d\). This means that \(P'(x)=3ax^2+2bx+c\) and \(P''(x)=6ax+2b\). We now rewrite all the variables in terms of \(a\). Note that:
+\[0=P''(3)=6a(3)+2b=18a+2b\quad\Longrightarrow\quad b=-9a,\]
+\[0=P'(2)=3a(4)+2b(2)+c=12a+4(-9a)+c
+\quad\Longrightarrow\quad c=24a,\]
+\[0=P(1)=a+b+c+d=a-9a+24a+d
+\quad\Longrightarrow\quad d=-16a.\]
+Therefore, we must have
+\[P(x)=ax^3-9ax^2+24ax-16a
+=a(x^3-9x^2+24x-16)
+=a(x-1)(x^2-8x+16)=a(x-1)(x-4)^2.\]
+The only root of \(P(x)\) in the answer choices is \(x=4\).
+
+Because the polynomial has degree \(3\), \(a\ne0\); it cannot be the zero polynomial. Its roots are \(1\) and \(4\), with \(4\) a double root. Only \(4\) is offered, so A is uniquely correct.`,
+  },
+  {
+    id: 10469, number: 347, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 25 },
+    topic: "Rate of Change", difficulty: 4, methods: ["Related Rates", "Point-to-Line Distance Formula"],
+    question: String.raw`In the coordinate plane, points \(A=(0,1)\) and \(B=(1,0)\), as well as the unit circle, are drawn. A point \(P\) starts at \(A\) and travels along the unit circle counterclockwise at an angular speed of \(8\pi\) radians per second until it reaches \(B\). Let \(K(t)\) denote the area of triangle \(PAB\) at time \(t\). What is the maximum value of \(\frac{dK}{dt}\)?`,
+    choices: [String.raw`\(\pi\sqrt2\)`, String.raw`\(2\pi\sqrt2\)`, String.raw`\(4\pi\sqrt2\)`, String.raw`\(8\pi\sqrt2\)`, "NOTA"], answer: "C",
+    solution: String.raw`Since \(P\) lies on the unit circle, we can parameterize it with \(P=(\cos(\theta),\sin(\theta))\). Since \(P\) starts from \((0,1)\) and ends on \((1,0)\), moving counterclockwise, the angle \(\theta\) starts from \(\pi/2\) and ends at \(2\pi\). The printed solution's terminal angle \(3\pi/2\) is a typo: it describes \((0,-1)\), not \(B\).
+
+To compute \(K(\theta)\), we can view \(AB\) as the base of the triangle. Note that \(AB=\sqrt2\), and the distance from \(P\) to line \(AB\) is given by the distance from \(P\) to the line \(x+y-1=0\). Using the Point-to-Line distance formula, we get
+\[\frac{|Ax+By+C|}{\sqrt{A^2+B^2}}
+=\frac{|\cos(\theta)+\sin(\theta)-1|}{\sqrt2}
+=\frac{1-\cos(\theta)-\sin(\theta)}{\sqrt2}.\]
+(The absolute value sign negates the interior quantity because \(P\) lies below line \(AB\).) Using \(K=\frac12bh\), we get that
+\[K(\theta)=\frac12\cdot\sqrt2\cdot
+\frac{1-\cos(\theta)-\sin(\theta)}{\sqrt2}
+=\frac{1-\cos(\theta)-\sin(\theta)}2,\]
+\[\frac{dK}{d\theta}=\frac{\sin(\theta)-\cos(\theta)}2.\]
+Additionally, \(\frac{dK}{dt}=\frac{dK}{d\theta}\cdot\frac{d\theta}{dt}=8\pi\frac{dK}{d\theta}\), so the problem essentially boils down into maximizing \(\sin(\theta)-\cos(\theta)\). The amplitude of the function \(A\sin(x)+B\cos(x)\) is \(\sqrt{A^2+B^2}\), meaning that \(\sin(\theta)-\cos(\theta)\le\sqrt2\), and equality is attainable at \(\theta=3\pi/4\). Therefore, the maximum of \(\frac{dK}{dt}\) is equal to \(8\pi\cdot\frac{\sqrt2}{2}=4\pi\sqrt2\).
+
+The maximizing angle is inside the actual traversal interval \([\pi/2,2\pi]\), occurring at \(t=(3\pi/4-\pi/2)/(8\pi)=1/32\) second. Thus this is an attained positive rate of change of area, not merely a bound on its absolute value. The full trip takes \(3/16\) second; fixing the terminal angle does not alter the maximum.`,
+  },
+  {
+    id: 10470, number: 348, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 26 },
+    topic: "Derivatives", difficulty: 3, methods: ["Tangency", "Trigonometric Identities"],
+    question: String.raw`The two distinct lines \(y=x+a\) and \(y=x+b\) are tangent to \(y=\sin(x)+\cos(x)\), and \(6<a,b<8\). Compute the sum of \(a\) and \(b\).`,
+    choices: [String.raw`\(4\pi\)`, String.raw`\(\frac{9\pi}2\)`, String.raw`\(\frac{14\pi}3\)`, String.raw`\(5\pi\)`, "NOTA"], answer: "B",
+    solution: String.raw`Note that if a line of slope \(1\) is tangent to the given curve, we must have
+\[1=y'=\cos(x)-\sin(x)\quad\Longrightarrow\quad
+1=(\cos(x)-\sin(x))^2,\]
+\[1=\sin^2(x)+\cos^2(x)-2\sin(x)\cos(x)
+=1-2\sin(x)\cos(x)\quad\Longrightarrow\quad\sin(x)\cos(x)=0.\]
+Substituting the possibilities into the original unsquared equation leaves \((\cos(x),\sin(x))=(1,0),(0,-1)\).
+
+These two points correspond with \(x=0\) and \(x=3\pi/2\), which correspond with \(y=1\) and \(y=-1\), respectively. Additionally, any multiple of \(2\pi\) can be added or subtracted to \(x\), meaning that multiples of \(2\pi\) must be added to the values of \(y-x=1\) and \(y-x=-1-3\pi/2\) in order to lie in the interval \((6,8)\). These values are \(1+2\pi\) and \(-1-3\pi/2+4\pi=5\pi/2-1\). These are our desired values of \(a\) and \(b\), so our answer is
+\[a+b=(1+2\pi)+(\tfrac{5\pi}2-1)=\frac{9\pi}2.\]
+Explicitly, the full intercept families are \(1-2k\pi\) and \(-1-3\pi/2-2k\pi\) for integers \(k\). Only \(k=-1\) in the first family and \(k=-2\) in the second put the intercept in \((6,8)\), giving approximately \(7.283\) and \(6.854\). Checking the unsquared equation is essential because squaring alone would also admit tangent slopes \(-1\).`,
+  },
+  {
+    id: 10471, number: 349, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 27 },
+    topic: "Optimization", difficulty: 3, methods: ["First Derivative Test"],
+    question: String.raw`In rectangle \(ABCD\), with \(AB=8\) and \(BC=16\), point \(P\) travels from \(A\) to \(B\) at a constant speed of \(1\) unit/sec, point \(Q\) travels from \(B\) to \(C\) at a constant speed of \(2\) units/sec, and point \(R\) travels from \(C\) to \(D\) at a constant speed of \(1\) unit/sec. All of the points start moving at the same time. From \(t=0\) seconds to \(t=8\) seconds, what is the minimum area of triangle \(PQR\)?`,
+    choices: ["16", "24", "32", "36", "NOTA"], answer: "C",
+    solution: String.raw`We place the rectangle in the coordinate plane, with \(B=(0,0)\), \(C=(16,0)\), \(D=(16,8)\), and \(A=(0,8)\). Based on the speeds of the points, at time \(t\), we have \(P=(0,8-t)\), \(Q=(2t,0)\), and \(R=(16,t)\). Notice that \([PQR]=[PBCR]-[PBQ]-[QCR]\). Additionally, \(PBCR\) is a trapezoid, with bases of length \(8-t\) and \(t\), with height \(16\), meaning the area is \(0.5(8-t+t)\cdot16=64\). Both \(PBQ\) and \(QCR\) are right triangles, and computing their areas with standard methods gives
+\[[PQR]=64-\frac12(8-t)(2t)-\frac12(16-2t)t
+=64-(8-t)t-(8-t)t=64-2t(8-t).\]
+Minimizing this quantity is maximizing \(t(8-t)\), which occurs at \(t=4\), giving our minimum area as \(64-2\cdot4^2=64-32=32\).
+
+Equivalently, the area is
+\[A(t)=2t^2-16t+64=2(t-4)^2+32,\qquad0\le t\le8.\]
+The squared term is nonnegative and vanishes at the permitted time \(t=4\); both endpoints give \(64\). Hence the absolute minimum on the full time interval is \(32\) square units. The notation \([XYZ]\) denotes the area of triangle \(XYZ\).`,
+  },
+  {
+    id: 10472, number: 350, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 28 },
+    topic: "Optimization", difficulty: 2, methods: ["Trigonometric Identities", "AM-GM"],
+    question: String.raw`Compute the absolute minimum of \(f(x)=\sin^2(x)+\cos^2(x)+\tan^2(x)+\csc^2(x)+\sec^2(x)+\cot^2(x)\).`,
+    choices: ["4", "5", "6", "7", "NOTA"], answer: "D",
+    solution: String.raw`To start, note that \(\sin^2(x)+\cos^2(x)=1\), \(\sec^2(x)=\tan^2(x)+1\), and \(\csc^2(x)=\cot^2(x)+1\). Applying these to our given expressions gives
+\[f(x)=3+2\tan^2(x)+2\cot^2(x).\]
+Minimizing \(f(x)\) boils down to minimizing \(\tan^2(x)+\cot^2(x)\), which is equivalent to minimizing \(a+\frac1a\) for positive real numbers \(a\) (where \(a=\tan^2(x)\)). By taking the derivative or using AM-GM, the minimum occurs at \(a=\tan^2(x)=1\), meaning that the minimum of \(f(x)\) is \(3+2(1+\frac11)=3+2(2)=7\).
+
+The original domain excludes zeros of both sine and cosine, so \(a>0\) and \(\cot^2x=1/a\) throughout that domain. AM-GM gives \(a+1/a\ge2\), with equality at \(a=1\). This is attained at \(x=\pi/4\), where every original term is defined. Thus \(7\) is an actual absolute minimum, not just an unattained lower bound.`,
+  },
+  {
+    id: 10473, number: 351, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 29 },
+    topic: "Differential Equations", difficulty: 3, methods: ["Product Rule", "Separation of Variables"],
+    question: String.raw`Let \(f(x)\) and \(g(x)\) be differentiable functions, with domain and codomain as the positive reals. Suppose that for all \(x>0\), we have:
+\[\frac d{dx}\bigl(f(x)g(x)\bigr)=f'(x)g'(x).\]
+Additionally, \(f(x)=e^{1/x}\). Compute \(g(\sqrt3)/g(1)\).`,
+    choices: [String.raw`\(e^{\pi/12}\)`, String.raw`\(e^{\pi/8}\)`, String.raw`\(e^{\pi/4}\)`, String.raw`\(e^{\pi/2}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Simplifying the given equations yields the following:
+\[f'(x)g'(x)=\frac d{dx}(f(x)g(x))=f'(x)g(x)+f(x)g'(x).\]
+Before dividing, note that \(f'(x)=-e^{1/x}/x^2\ne0\). Also \(g'(x)\) cannot vanish: if it did at some point, the equation would give \(0=f'(x)g(x)\), contradicting \(f'(x)\ne0\) and \(g(x)>0\).
+
+Dividing by \(f'(x)g'(x)\) is therefore valid and gives
+\[1=\frac{g(x)}{g'(x)}+\frac{f(x)}{f'(x)}.\]
+Since \(f(x)=e^{1/x}\), we have \(f'(x)=e^{1/x}(-1/x^2)\), meaning that \(f(x)/f'(x)=-x^2\). Substituting this into the above equation results in
+\[1=\frac{g(x)}{g'(x)}-x^2
+\quad\Longrightarrow\quad\frac{g'(x)}{g(x)}=\frac1{1+x^2}.\]
+Now integrating both sides results in \(\ln g(x)+C=\arctan(x)\). This means that \(g(x)=Ce^{\arctan(x)}\), where the multiplicative constant is positive. We finally have that:
+\[\frac{g(\sqrt3)}{g(1)}
+=\frac{Ce^{\arctan(\sqrt3)}}{Ce^{\arctan(1)}}
+=\frac{e^{\pi/3}}{e^{\pi/4}}=e^{\pi/12}.\]
+The constant cancels, so the ratio is determined even though no initial value for \(g\) is given. Alternatively, integrating the logarithmic derivative directly from \(1\) to \(\sqrt3\) gives \(\ln(g(\sqrt3)/g(1))=\pi/12\).`,
+  },
+  {
+    id: 10474, number: 352, division: "Mu",
+    source: { ...februaryRegional2025, questionNumber: 30 },
+    topic: "Definite Integrals", difficulty: 3, methods: ["U-Substitution", "Absolute Value"],
+    question: String.raw`Let \(R\) denote the unique positive real which satisfies the following:
+\[\int_0^{\sqrt R}|x\sin(x^2)|\,dx=\frac{21}{4}.\]
+Which integer is closest to \(R\)?`,
+    choices: ["15", "16", "17", "18", "NOTA"], answer: "C",
+    solution: String.raw`Note that
+\[\int_0^{\sqrt R}|x\sin(x^2)|\,dx
+=\int_0^{\sqrt R}x|\sin(x^2)|\,dx.\]
+Using the u-substitution \(u=x^2\), so \(\frac12\,du=x\,dx\), we get
+\[\int_0^{\sqrt R}x|\sin(x^2)|\,dx
+=\frac12\int_0^R|\sin u|\,du.\]
+Therefore, the original equation reduces to \(\int_0^R|\sin u|\,du=21/2\). For nonnegative integers \(k\), we have
+\[\int_{k\pi}^{(k+1)\pi}|\sin u|\,du
+=\left|\int_{k\pi}^{(k+1)\pi}\sin u\,du\right|
+=|\cos(k\pi)-\cos((k+1)\pi)|=2.\]
+This means that
+\[\int_0^{k\pi}|\sin u|\,du
+=\sum_{i=0}^{k-1}\int_{i\pi}^{(i+1)\pi}|\sin u|\,du
+=\sum_{i=0}^{k-1}2=2k.\]
+Since \(21/2\) is between \(10\) and \(12\), we know \(R\) must be between \(5\pi\) and \(6\pi\). In particular,
+\[\int_{5\pi}^R|\sin u|\,du=\frac{21}{2}-10=\frac12.\]
+In the interval \((5\pi,6\pi)\), we have \(\sin u<0\), meaning we can simplify the equation significantly:
+\[\frac12=\int_{5\pi}^R-\sin u\,du
+=\cos R-\cos(5\pi)=\cos R+1.\]
+This means that \(\cos R=-1/2\), and the only value of \(R\) in the interval \((5\pi,6\pi)\) that satisfies this is \(5\pi+\pi/3=16\pi/3\). Using \(\pi\approx3.14\), we get
+\[R\approx\frac{16(3.14)}3=16+\frac{16(0.14)}3
+=16+\frac{2.24}{3}.\]
+The closest integer to this is \(17\).
+
+The equality between the integral of the absolute value and the absolute value of the integral above is used only on a single interval \([k\pi,(k+1)\pi]\), where sine has constant sign; it would not be valid across arbitrary sign changes. Also \(x\ge0\) in the original integral, justifying moving \(x\) outside the absolute value. Finally, the cumulative integral of \(|\sin u|\) is continuous, unbounded, and strictly increasing: every interval of positive length contains points where \(|\sin u|>0\). This establishes the claimed existence and uniqueness of \(R\), including across the isolated zeros of sine.`,
   },
 ];

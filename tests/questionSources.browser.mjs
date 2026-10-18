@@ -8,6 +8,7 @@ import { createServer } from "node:http";
 import { chromium, expect } from "@playwright/test";
 const require = createRequire(import.meta.url);
 const root = resolve(import.meta.dirname, "..");
+const februaryOnly=process.argv.includes("--february-2025-only");
 const dir = await mkdtemp(join(tmpdir(), "question-sources-"));
 const fixture = name => resolve(import.meta.dirname, "browserFixtures", name);
 const compiler = require("next/dist/compiled/webpack/webpack").webpack({
@@ -87,6 +88,7 @@ try {
     });
     await page.goto(`${origin}/?guest&view=${view}&id=${id}${revealed ? "&revealed" : ""}`);
     const credit = page.getByLabel("Question source", { exact: true });
+    const february2025 = id >= 10445 && id <= 10474;
     const king2025 = id >= 10416 && id <= 10444;
     const january2025 = id >= 10386 && id <= 10415;
     const chiles = id >= 10356 && id <= 10385;
@@ -97,8 +99,8 @@ try {
     const statewide = id >= 10207 && id <= 10235;
     const january = id >= 10236 && id <= 10265;
     const regional = id >= 10266 && id <= 10295;
-    const competition = king2025 ? "2025 February King Statewide" : january2025 ? "2025 January Regional" : chiles ? "2025 Chiles Statewide" : march ? "2026 March Regional" : states2024 ? "2024 FAMAT State Convention" : states2025 ? "2025 FAMAT State Convention" : states ? "2026 FAMAT State Convention" : statewide ? "2026 January Statewide" : january ? "2026 January Regional" : `2026 February ${regional ? "Regional" : "King Invitational"}`;
-    const originalNumber = king2025 ? id-10415 : january2025 ? id-10385 : chiles ? id-10355 : march ? id-10325 : states2024 ? id-10176 : states2025 ? id-(id<=10163?10147:10146) : states ? id - (id<=10143 ? 10118 : 10117) : statewide ? id - (id < 10234 ? 10206 : 10205) : id - (january ? 10235 : regional ? 10265 : 10295);
+    const competition = february2025 ? "2025 February Regional" : king2025 ? "2025 February King Statewide" : january2025 ? "2025 January Regional" : chiles ? "2025 Chiles Statewide" : march ? "2026 March Regional" : states2024 ? "2024 FAMAT State Convention" : states2025 ? "2025 FAMAT State Convention" : states ? "2026 FAMAT State Convention" : statewide ? "2026 January Statewide" : january ? "2026 January Regional" : `2026 February ${regional ? "Regional" : "King Invitational"}`;
+    const originalNumber = february2025 ? id-10444 : king2025 ? id-10415 : january2025 ? id-10385 : chiles ? id-10355 : march ? id-10325 : states2024 ? id-10176 : states2025 ? id-(id<=10163?10147:10146) : states ? id - (id<=10143 ? 10118 : 10117) : statewide ? id - (id < 10234 ? 10206 : 10205) : id - (january ? 10235 : regional ? 10265 : 10295);
     await expect(credit).toHaveText(`Source: ${competition} · Calculus Individual · Question ${originalNumber}`);
     assert.equal(await page.locator(".katex-error").count(), 0, "no broken math");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
@@ -111,6 +113,7 @@ try {
     assert.equal(overflow, false, `no page overflow: ${view}, ${id}, ${width}; screenshots: ${dir}`);
     return page;
   }
+  if(!februaryOnly){
   for(const width of [1280,320]){
     const page=await open("bank",10119,width);
     await expect(page.getByRole("heading",{name:"Question 1",exact:true})).toBeVisible();
@@ -316,8 +319,26 @@ try {
     await page.screenshot({path:join(dir,`king2025-solution-${id}.png`),fullPage:true});
     await page.close();
   }
+  }
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      const page=await open(view,10465,width);
+      if(view==="bank")await expect(page.getByRole("heading",{name:"Question 343",exact:true})).toBeVisible();
+      await page.screenshot({path:join(dir,`february2025-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
+  for(let id=10445;id<=10474;id++){
+    for(const view of ["trainer","results"]){
+    for(const width of [1280,320]){
+      const page=await open(view,id,width,true);
+      await page.screenshot({path:join(dir,`february2025-solution-${id}-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+    }
+  }
   assert.deepEqual(errors, []);
-  console.log(`PASS: original-number credits in Question Bank, Trainer, play, spectators and results; original diagrams, reveal gating and real KaTeX at desktop/mobile widths. Screenshots: ${dir}`);
+  console.log(`PASS (${februaryOnly?"February Regional 2025 and SVG assets":"all source sets"}): original-number credits in Question Bank, Trainer, play, spectators and results; diagrams, reveal gating and real KaTeX at desktop/mobile widths. Screenshots: ${dir}`);
 } finally {
   await browser?.close(); await new Promise(resolve => server.close(resolve));
 }

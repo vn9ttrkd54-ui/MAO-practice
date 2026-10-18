@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import {readFileSync, statSync} from "node:fs";
+import {readFileSync, readdirSync, statSync} from "node:fs";
 import test from "node:test";
 import {muQuestions} from "../data/questions/mu.ts";
 import {alphaQuestions} from "../data/questions/alpha.ts";
@@ -40,15 +40,19 @@ test("every public question and solution illustration is a standalone local vect
   }
 });
 
-test("each new Mu vector is smaller than its retained, unreferenced source PNG", () => {
+test("question assets contain no unused raster copies", () => {
+  const files=readdirSync(new URL("../public/questions/",import.meta.url),{recursive:true});
+  assert.deepEqual(files.filter(name=>/\.(png|jpe?g|webp|gif)$/i.test(name)),[]);
+});
+
+test("Mu vectors retain the file-size savings without needing the deleted PNGs", () => {
   const muImages=uniqueImages.filter(({src})=>/mu-.*(?:original|solution)\.svg$/.test(src));
   assert.equal(muImages.length,18);
-  let before=0,after=0;
+  // Combined size of the 18 original PNGs before their removal.
+  const before=554622;
+  let after=0;
   for(const {src} of muImages){
-    const vector=statSync(new URL("../public"+src,import.meta.url)).size;
-    const raster=statSync(new URL("../public"+src.replace(/\.svg$/,".png"),import.meta.url)).size;
-    assert.ok(vector<raster,src);
-    before+=raster;after+=vector;
+    after+=statSync(new URL("../public"+src,import.meta.url)).size;
   }
   assert.ok(after<before/4,"at least 75 percent smaller in aggregate");
 });

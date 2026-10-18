@@ -26,6 +26,7 @@ paths=(
   data/question-references/muNationals.ts
   docs/chiles-statewide-2025-audit.md
   docs/february-regional-2026-audit.md
+  docs/february-regional-2025-audit.md
   docs/january-regional-2025-audit.md
   docs/january-regional-2026-audit.md
   docs/january-statewide-2026-audit.md
@@ -60,6 +61,7 @@ paths=(
   tests/mu2024State.test.mjs
   tests/muChilesStatewide2025.test.mjs
   tests/muFebruaryRegional2026.test.mjs
+  tests/muFebruaryRegional2025.test.mjs
   tests/muFebruaryStatewide2026.test.mjs
   tests/muJanuaryRegional2025.test.mjs
   tests/muJanuaryRegional2026.test.mjs
@@ -87,6 +89,15 @@ node --experimental-strip-types --test tests/*.test.mjs
 npm run build -- --webpack
 git diff --check -- "${paths[@]}"
 git add -- "${paths[@]}"
+# Include deleted raster counterparts of the explicitly reviewed SVG assets.
+for path in "${paths[@]}"; do
+  if [[ "$path" == public/questions/*.svg ]]; then
+    png="${path%.svg}.png"
+    if [[ ! -e "$png" ]] && git ls-files --error-unmatch -- "$png" >/dev/null 2>&1; then
+      git add -u -- "$png"
+    fi
+  fi
+done
 git diff --cached --check
 if git diff --cached --quiet; then
   printf '%s\n' "No question-bank changes remain to commit." >&2
