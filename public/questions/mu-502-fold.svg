@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="400" viewBox="0 0 560 400" role="img" aria-labelledby="title desc">
+  <title id="title">Paper corner folded to the bottom edge</title>
+  <desc id="desc">An eight-inch by twelve-inch sheet. A dashed crease of length L joins the top and right edges. The upper right corner is folded to a point on the bottom edge, joined to both crease endpoints.</desc>
+  <rect width="560" height="400" fill="white"/>
+  <path d="M40 30H520V350H40Z" fill="#b6b6b6" stroke="#111" stroke-width="2.5"/>
+  <path d="M120 30L360 350L520 230" fill="none" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M120 30L520 230" fill="none" stroke="#111" stroke-width="2.5" stroke-dasharray="14 9"/>
+  <g font-family="Times New Roman,serif" fill="#111" font-size="27">
+    <text x="340" y="125" transform="rotate(26.565 340 125)" font-style="italic">L</text>
+    <text x="250" y="386">12 inches</text><text x="28" y="225" transform="rotate(-90 28 225)">8 inches</text>
+  </g>
+</svg>

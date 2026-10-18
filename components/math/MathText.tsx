@@ -2,9 +2,14 @@ import katex from "katex";
 import Image from "next/image";
 
 type MathTextProps = { children: string; className?: string };
-const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325|345)\]\])/g;
+const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325|345|502)\]\])/g;
 // Explicit local allowlist: never interpret arbitrary URLs or HTML from text.
 const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: number; height: number }> = {
+  "[[solution-diagram:mu-502]]": {
+    src: "/questions/mu-502-solution.svg",
+    alt: "Labeled paper fold: crease L between the top and right edges; reflected legs x and z, right-edge segments x and 8 minus x, bottom gap y.",
+    width: 620, height: 440,
+  },
   "[[solution-diagram:mu-345]]": {
     src: "/questions/mu-345-original-solution.svg",
     alt: "General illustration of signed integrals of a function and its inverse partitioning a rectangle; the example curve is increasing, unlike the decreasing function in the question.",

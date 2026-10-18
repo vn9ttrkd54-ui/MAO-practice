@@ -1,5 +1,10 @@
 import type { Question } from "@/types/question";
 
+const marchRegional2025 = {
+  competition: "2025 March Regional",
+  event: "Calculus Individual",
+};
+
 const februaryRegional2025 = {
   competition: "2025 February Regional",
   event: "Calculus Individual",
@@ -7086,5 +7091,532 @@ This means that \(\cos R=-1/2\), and the only value of \(R\) in the interval \((
 The closest integer to this is \(17\).
 
 The equality between the integral of the absolute value and the absolute value of the integral above is used only on a single interval \([k\pi,(k+1)\pi]\), where sine has constant sign; it would not be valid across arbitrary sign changes. Also \(x\ge0\) in the original integral, justifying moving \(x\) outside the absolute value. Finally, the cumulative integral of \(|\sin u|\) is continuous, unbounded, and strictly increasing: every interval of positive length contains points where \(|\sin u|>0\). This establishes the claimed existence and uniqueness of \(R\), including across the isolated zeros of sine.`,
+  },
+  // March Regional 2025: original 2 is omitted because the supplied notes include a throw-out.
+  {
+    id: 10475, number: 353, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 1 },
+    topic: "Derivatives", difficulty: 1, methods: [],
+    question: String.raw`Let \(f(x)=4x^5\). Determine \(f''(-1)\).`,
+    choices: ["20", "−60", "60", "−80", "NOTA"], answer: "D",
+    solution: String.raw`Use the Power Rule to write \(f'(x)=20x^4\) and use it again to write \(f''(x)=80x^3\). Then \(f''(-1)=80(-1)^3=-80\).
+
+Each differentiation lowers the exponent by one and multiplies by the old exponent: \(4\cdot5\cdot4=80\). The remaining power is odd, so substituting \(-1\) gives a negative result. Thus the second derivative, not the first derivative, is \(-80\), choice D.`,
+  },
+  {
+    id: 10477, number: 354, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 3 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`Evaluate the limit:
+\[\lim_{x\to2}\frac{x^3-x^2-x-2}{x^3+x^2-4x-4}.\]`,
+    choices: [String.raw`\(\frac5{12}\)`, String.raw`\(\frac12\)`, String.raw`\(\frac7{12}\)`, String.raw`\(\frac23\)`, "NOTA"], answer: "C",
+    solution: String.raw`The given limit is indeterminate since direct substitution yields \(0/0\). One approach is to factor:
+\[\lim_{x\to2}\frac{x^3-x^2-x-2}{x^3+x^2-4x-4}
+=\lim_{x\to2}\frac{(x-2)(x^2+x+1)}{(x-2)(x^2+3x+2)}
+=\lim_{x\to2}\frac{x^2+x+1}{x^2+3x+2}=\frac7{12}.\]
+For the cancellation, \(x\ne2\) in a punctured neighborhood of the limit point. The remaining denominator at \(2\) is \(4+6+2=12\ne0\), so substitution is now valid. The original quotient need not be defined at \(2\) for its limit to exist.`,
+  },
+  {
+    id: 10478, number: 355, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 4 },
+    topic: "Rate of Change", difficulty: 1, methods: [],
+    question: String.raw`Determine the average rate of change of the function \(f(x)=1+2\sin(x)\) on the interval \([0,\frac\pi2]\).`,
+    choices: [String.raw`\(\frac2\pi\)`, String.raw`\(\frac4\pi\)`, String.raw`\(\frac6\pi\)`, String.raw`\(\frac8\pi\)`, "NOTA"], answer: "B",
+    solution: String.raw`The average rate of change is given by
+\[\frac{f(\frac\pi2)-f(0)}{\frac\pi2-0}
+=\frac{(1+2\sin(\frac\pi2))-(1+2\sin(0))}{\frac\pi2}
+=\frac{3-1}{\frac\pi2}=\frac4\pi.\]
+This is the slope of the secant through the interval endpoints: change in output divided by change in input. It is not the average value of the function, and it does not ask for an instantaneous derivative. The endpoint values are \(3\) and \(1\), so the output change is \(2\).`,
+  },
+  {
+    id: 10479, number: 356, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 5 },
+    topic: "Derivatives", difficulty: 1, methods: ["Quotient Rule"],
+    question: String.raw`Let \(f(x)=\frac{3x^2-2}{4x+1}\). What is \(f'(-1)\)?`,
+    choices: [String.raw`\(-\frac{14}3\)`, String.raw`\(\frac{14}9\)`, String.raw`\(\frac32\)`, String.raw`\(\frac{22}9\)`, "NOTA"], answer: "B",
+    solution: String.raw`Use the Quotient Rule:
+\[f'(x)=\frac{6x(4x+1)-4(3x^2-2)}{(4x+1)^2}
+=\frac{12x^2+6x+8}{(4x+1)^2}.\]
+Then \(f'(-1)=\frac{12-6+8}{(-3)^2}=\frac{14}9\).
+
+The denominator is squared, so its value is \(9\), not \(-3\). The subtraction of \(4(3x^2-2)\) contributes \(+8\) to the numerator. Since \(4(-1)+1=-3\ne0\), the function and derivative are defined at the requested input.`,
+  },
+  {
+    id: 10480, number: 357, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 6 },
+    topic: "Implicit Differentiation", difficulty: 2, methods: ["Implicit Differentiation"],
+    question: String.raw`Let \(y=f(x)\) be a twice-differentiable function such that \(f(-1)=5\) and \(\frac{dy}{dx}=\frac15(xy^2+4y)^2\). What is the value of \(f''(-1)\)?`,
+    choices: ["−190", "−70", "−2", "10", "NOTA"], answer: "D",
+    solution: String.raw`Differentiate the given relation:
+\[\frac{d^2y}{dx^2}=\frac25(xy^2+4y)
+\left(y^2+2xy\frac{dy}{dx}+4\frac{dy}{dx}\right).\]
+By the initial condition, \(y(-1)=5\) and at \(x=-1\),
+\[\frac{dy}{dx}=\frac15(-1\cdot5^2+4\cdot5)^2=5.\]
+Thus, at \(x=-1\),
+\[\frac{d^2y}{dx^2}
+=\frac25(-1\cdot5^2+4\cdot5)
+(5^2+2\cdot(-1)\cdot5\cdot5+4\cdot5).\]
+This simplifies to \(10\): the two parenthetical factors are both \(-5\), giving \((2/5)(-5)(-5)=10\).
+
+The derivative of \(xy^2\) uses both the Product Rule and the fact that \(y\) depends on \(x\), giving \(y^2+2xyy'\). First compute \(y'\) from the original equation, then substitute it into the differentiated equation; treating \(y\) as a constant would lose the last two terms.`,
+  },
+  {
+    id: 10481, number: 358, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 7 },
+    topic: "Definite Integrals", difficulty: 1, methods: ["Integral Properties"],
+    question: String.raw`For continuous functions \(f\) and \(g\), it is given that \(\int_{-1}^1f(x)\,dx=7\) and \(\int_{-1}^1g(x)\,dx=-9\). What is the value of \(\int_{-1}^1(2f(x)-g(x))\,dx\)?`,
+    choices: ["5", "16", "25", "32", "NOTA"], answer: "E",
+    solution: String.raw`Write
+\[\int_{-1}^1(2f(x)-g(x))\,dx
+=2\int_{-1}^1f(x)\,dx-\int_{-1}^1g(x)\,dx
+=2(7)-(-9)=23\]
+using integral properties.
+
+Linearity allows the constant \(2\) to come outside the integral and the subtraction to split into two integrals over the same interval. Subtracting the given negative value adds \(9\). Since \(23\) is not among choices A through D, the answer is E, NOTA.`,
+  },
+  {
+    id: 10482, number: 359, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 8 },
+    topic: "Differential Equations", difficulty: 1, methods: [],
+    question: String.raw`A ship travels in a straight path and its position is given by \(f(t)\), where \(t\) is measured in seconds since the ship started moving. During the first \(10\) seconds, the ship's acceleration is directly proportional to the cube root of the time since the start. Which of the following differential equations describes this relationship for the first \(10\) seconds of the movement of the ship, where \(k>0\)?`,
+    choices: [String.raw`\(\frac{df}{dt}=k\sqrt[3]t\)`, String.raw`\(\frac{df}{dt}=k\sqrt[3]f\)`, String.raw`\(\frac{d^2f}{dt^2}=k\sqrt[3]t\)`, String.raw`\(\frac{d^2f}{dt^2}=k\sqrt[3]f\)`, "NOTA"], answer: "C",
+    solution: String.raw`The velocity is the first derivative of position, \(\frac{df}{dt}\), and the acceleration is the second derivative of position, \(\frac{d^2f}{dt^2}\). Based on the given information,
+\[\frac{d^2f}{dt^2}=k\sqrt[3]t.\]
+"Directly proportional" means a constant multiple, and the quantity being cube-rooted is elapsed time \(t\), not position \(f(t)\). Thus only C has both the correct derivative order and the correct independent variable. The relationship is required only during \(0\le t\le10\); no initial position or velocity is needed to identify the differential equation.`,
+  },
+  {
+    id: 10483, number: 360, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 9 },
+    topic: "Riemann Sums", difficulty: 1, methods: ["Riemann Sums"],
+    illustration: {
+      src: "/questions/mu-483-table.svg",
+      alt: "Selected values: x equals 2, 4, 6, 7, 11; f(x) equals 0.7, 1.1, 1.9, 2.5, 5.3, respectively.",
+      width: 600, height: 112,
+    },
+    question: String.raw`Consider the following table below for selected values of increasing function \(f(x)\):
+
+Let \(L\) be the left Riemann sum approximation of the integral \(\int_2^{11}f(x)\,dx\) using the four sub-intervals indicated by the table. Which statement below is true?`,
+    choices: [
+      String.raw`\(L=13.95\) and \(L\) is an underestimate of the integral.`,
+      String.raw`\(L=15.5\) and \(L\) is an underestimate of the integral.`,
+      String.raw`\(L=13.95\) and \(L\) is an overestimate of the integral.`,
+      String.raw`\(L=15.5\) and \(L\) is an overestimate of the integral.`,
+      "NOTA",
+    ], answer: "B",
+    solution: String.raw`The left Riemann sum approximation is
+\[\int_2^{11}f(x)\,dx\approx
+0.7(4-2)+1.1(6-4)+1.9(7-6)+2.5(11-7)=15.5.\]
+Since \(f\) is increasing, a left approximation is an underestimate.
+
+The four interval widths are \(2,2,1,4\), not a common width. Use the left-endpoint heights \(0.7,1.1,1.9,2.5\); the final value \(5.3\) is not a left-endpoint height for this partition. The contributions are \(1.4+2.2+1.9+10=15.5\). On each interval, the increasing function is at least as high as its value at the left endpoint, so the left rectangles lie below the graph. This establishes both parts of choice B.`,
+  },
+  {
+    id: 10484, number: 361, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 10 },
+    topic: "Riemann Sums", difficulty: 1, methods: ["Riemann Sums"],
+    question: String.raw`The summation
+\[\lim_{n\to\infty}\sum_{k=1}^n\left(\sin^2\left(1+\frac{4k}{n}\right)+3\right)\cdot\frac4n\]
+represents which definite integral below?`,
+    choices: [String.raw`\(\int_0^4(\sin^2x+3)\,dx\)`, String.raw`\(\int_1^5(\sin^2x+3)\,dx\)`, String.raw`\(4\int_0^1(\sin^2(1+x)+3)\,dx\)`, String.raw`\(\int_0^1(\sin^2(1+4x)+3)\,dx\)`, "NOTA"], answer: "B",
+    solution: String.raw`A Riemann sum can be written as
+\[\lim_{n\to\infty}\sum_{i=1}^nf\left(a+\frac{(b-a)i}{n}\right)\cdot\frac{b-a}{n}.\]
+Comparing this to the given sum, \(a=1\) and \(b-a=4\) so \(b=5\). Also, \(f(x)=\sin^2x+3\) so the definite integral is
+\[\int_1^5(\sin^2x+3)\,dx.\]
+Here \(\Delta x=4/n\) and \(x_k=1+4k/n\) are right endpoints of the partition of \([1,5]\). The additive \(1\) shifts the start of the interval; it is not part of the integration width. A substitution to \([0,1]\) would require a factor \(4\) together with the argument \(1+4x\), so D is missing that factor.`,
+  },
+  {
+    id: 10485, number: 362, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 11 },
+    topic: "Limits", difficulty: 1, methods: ["L'Hopital's Rule"],
+    question: String.raw`Determine the value of the limit:
+\[\lim_{x\to0}\frac{\sqrt[20]{1+24x}-1}{x}.\]`,
+    choices: [String.raw`\(\frac65\)`, String.raw`\(\frac56\)`, String.raw`\(\frac{23}{20}\)`, String.raw`\(\frac{20}{23}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The limit is indeterminate since direct substitution yields \(0/0\). By L'Hopital's Rule,
+\[\lim_{x\to0}\frac{(1+24x)^{1/20}-1}{x}
+=\lim_{x\to0}\frac{\frac1{20}(1+24x)^{-19/20}\cdot24}{1}
+=\frac{24}{20}\cdot1=\frac65.\]
+The inside quantity \(1+24x\) is positive in a neighborhood of \(0\), so this real-valued root and its derivative are defined there. Equivalently, the limit is the derivative at \(0\) of \((1+24x)^{1/20}\). The factor \(24\) comes from the Chain Rule and must not be omitted.`,
+  },
+  {
+    id: 10486, number: 363, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 12 },
+    topic: "Inverse Functions", difficulty: 1, methods: [],
+    question: String.raw`What is the value of \(\frac{d^2x}{dy^2}\) for \(y=\ln(x)\) evaluated at \(x=2024\)?`,
+    choices: ["2024", "−2024", String.raw`\(\frac1{2024}\)`, String.raw`\(-\frac1{2024}\)`, "NOTA"], answer: "A",
+    solution: String.raw`\(y=\ln(x)\) implies \(x=e^y\). Thus, \(\frac{dx}{dy}=e^y\) and \(\frac{d^2x}{dy^2}=e^y\) as well. When \(x=2024\), \(y=\ln(2024)\). Thus,
+\[\frac{d^2x}{dy^2}=e^{\ln(2024)}=2024.\]
+The derivative requested is of \(x\) with respect to \(y\), twice. It is not the second derivative of \(\ln x\) with respect to \(x\). Rewriting the inverse relation first keeps the dependent and independent variables in the correct order.`,
+  },
+  {
+    id: 10487, number: 364, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 13 },
+    topic: "Function Analysis", difficulty: 3, methods: ["First Derivative Test", "Second Derivative Test"],
+    question: String.raw`Let \(f(x)=(x-b)^2(x-c)\) for constants \(b\) and \(c\) where \(b<c\). Let \(r\) and \(s\) be the \(x\)-coordinates of the relative extrema of \(f\) and let \(t\) be the \(x\)-coordinate of the point of inflection of \(f\). What is \(r+s+t\)?`,
+    choices: [String.raw`\(2b+c\)`, String.raw`\(c-2b\)`, String.raw`\(b+c\)`, String.raw`\(2b+2c\)`, "NOTA"], answer: "A",
+    solution: String.raw`Expand
+\[f(x)=(x-b)^2(x-c)
+=x^3-2bx^2+b^2x-cx^2+2bcx-b^2c.\]
+Simplify to \(f(x)=x^3+(-2b-c)x^2+(b^2+2bc)x-b^2c\). Then
+\[f'(x)=3x^2+2(-2b-c)x+b^2+2bc.\]
+Set \(f'(x)=0\) and solve using the Quadratic Formula, noting \(b<c\):
+\[x=\frac{4b+2c\pm2(c-b)}6.\]
+This simplifies to \(x=b\) and \(x=(b+2c)/3\). When \(x<b\) or when \(x>(b+2c)/3\), \(f'(x)>0\), and when \(b<x<(b+2c)/3\), \(f'(x)<0\), showing that there are relative extrema at both \(x\)-values.
+
+Next,
+\[f''(x)=6x+2(-2b-c)=0\quad\hbox{when}\quad x=\frac{2b+c}{3}.\]
+When \(x<(2b+c)/3\), \(f''(x)<0\), and when \(x>(2b+c)/3\), \(f''(x)>0\), showing that there is a point of inflection there. Thus,
+\[r+s+t=b+\frac{b+2c}{3}+\frac{2b+c}{3}=2b+c.\]
+A shorter way to obtain the same two stationary points is to factor \(f'(x)=(x-b)(3x-b-2c)\). The condition \(b<c\) makes them distinct, ensuring that both derivative sign changes really occur. Choice B is the already-corrected distractor \(c-2b\), not the duplicate \(c+2b\) mentioned in the source dispute note.`,
+  },
+  {
+    id: 10488, number: 365, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 14 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`Sand is poured on a flat surface into a conical pile. The height of the cone is always equal to the diameter of the base. Sand is poured at a rate of \(R\) cubic meters per second. In terms of \(R\), how fast is the height of the pile increasing when the circumference of the base measures \(8\) meters?`,
+    choices: [String.raw`\(\frac\pi8R\)`, String.raw`\(\frac14R\)`, String.raw`\(\frac\pi{16}R\)`, String.raw`\(\frac1{16}R\)`, "NOTA"], answer: "C",
+    solution: String.raw`The volume \(V=\frac13\pi r^2h\), where \(r\) is the radius of the base and \(h=2r\) is the height. Substitute \(r=h/2\) to get
+\[V=\frac13\pi\left(\frac h2\right)^2h=\frac1{12}\pi h^3.\]
+Then \(\frac{dV}{dt}=R=\frac14\pi h^2\frac{dh}{dt}\). At the instant \(8=2\pi r\), \(r=4/\pi\) and \(h=8/\pi\). Substitute to find
+\[R=\frac14\pi\left(\frac8\pi\right)^2\frac{dh}{dt}
+=\frac{16}{\pi}\frac{dh}{dt},\qquad
+\frac{dh}{dt}=\frac\pi{16}R.\]
+The height-radius relation holds throughout the motion, so it can be substituted before differentiation. The circumference condition holds only at the requested instant and is used afterward. This avoids incorrectly treating the radius or height as constant while the pile grows.`,
+  },
+  {
+    id: 10489, number: 366, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 15 },
+    topic: "Optimization", difficulty: 3, methods: ["First Derivative Test"],
+    question: String.raw`Let \(T\) be the tangent line at the point \((a,b)\) (where \(a\ge0\)) to the curve \(y=e^{-x}\), which intersects the axes at points \(Q\) and \(R\). Let \(O\) be the origin. What is the maximum area of \(\triangle OQR\)?`,
+    choices: [String.raw`\(\frac1{2e}\)`, String.raw`\(\frac1e\)`, String.raw`\(\frac2e\)`, String.raw`\(\frac4e\)`, "NOTA"], answer: "C",
+    solution: String.raw`The point \((a,e^{-a})\) is on the curve. Note \(y'=-e^{-x}\), so \(y'(a)=-e^{-a}\), which is the slope of \(T\). The equation of \(T\) is
+\[y=-e^{-a}(x-a)+e^{-a}.\]
+When \(x=0\), \(y=ae^{-a}+e^{-a}=(a+1)/e^a\). When \(y=0\), the equation gives \(x=a+1\). The area of the triangle is
+\[A(a)=\frac{(a+1)^2}{2e^a}.\]
+The derivative is
+\[A'(a)=\frac{2(a+1)-(a+1)^2}{2e^a}
+=\frac{(1-a)(1+a)}{2e^a}.\]
+Its roots are \(a=\pm1\), but only \(a=1\) is in the required domain \(a\ge0\). Since \(A'\) changes from positive to negative at \(a=1\), the maximum is
+\[A(1)=\frac{(1+1)^2}{2e}=\frac2e.\]
+Both intercepts are positive for \(a\ge0\), so their product divided by \(2\) is the ordinary triangle area. The endpoint gives \(A(0)=1/2\), and \(A(a)\to0\) as \(a\to\infty\). Together with the derivative signs, this proves an absolute maximum on the full half-line, not just a local one.`,
+  },
+  {
+    id: 10490, number: 367, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 16 },
+    topic: "Differential Equations", difficulty: 2, methods: ["Separation of Variables"],
+    question: String.raw`For the differential equation \(\frac{dy}{dx}=xy^2\) with \(y(2)=-\frac25\), find the value of \(y(3)\).`,
+    choices: [String.raw`\(\frac15\)`, String.raw`\(-\frac15\)`, String.raw`\(-\frac12\)`, String.raw`\(\frac12\)`, "NOTA"], answer: "B",
+    solution: String.raw`Separate as \(y^{-2}\,dy=x\,dx\) and integrate to find
+\[-\frac1y=\frac12x^2+C.\]
+Use the initial condition to write \(\frac52=\frac12(2)^2+C\), so \(C=\frac12\). Thus,
+\[-\frac1y=\frac12(x^2+1).\]
+When \(x=3\), \(-1/y=\frac12(3^2+1)=5\), so \(y=-1/5\).
+
+The solution is \(y(x)=-2/(x^2+1)\), which is defined and nonzero for every real \(x\), so separation by \(y^2\) is valid along this solution. Differentiating it gives \(4x/(x^2+1)^2=xy^2\), and at \(x=2\) it gives the stated \(-2/5\), checking both the equation and the initial condition.`,
+  },
+  {
+    id: 10491, number: 368, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 17 },
+    topic: "Area Between Curves", difficulty: 3, methods: [],
+    question: String.raw`There is a line through the origin that divides the region bounded by the graph of \(y=4x-x^2\) and the \(x\)-axis into two regions of equal area. What is the slope of this line?`,
+    choices: [String.raw`\(4-2\sqrt[3]4\)`, String.raw`\(4-\sqrt[3]4\)`, String.raw`\(2-\sqrt[3]4\)`, String.raw`\(8-4\sqrt[3]4\)`, "NOTA"], answer: "A",
+    solution: String.raw`\(y=4x-x^2=0\) when \(x=0,4\). The total area of the region is
+\[\int_0^4(4x-x^2)\,dx=\left[2x^2-\frac13x^3\right]_0^4
+=32-\frac{64}{3}=\frac{32}{3},\]
+so half the area is \(16/3\).
+
+Let the slope of the line through the origin be \(k\). Solve \(kx=4x-x^2\) to find \(x=0\) and \(x=4-k\). The region above the line and below the parabola has area
+\[\int_0^{4-k}(4x-x^2-kx)\,dx
+=\left[-\frac13x^3+\frac{4-k}{2}x^2\right]_0^{4-k}
+=\frac{(4-k)^3}{6}.\]
+Set this equal to \(16/3\):
+\[\frac{(4-k)^3}{6}=\frac{16}{3},\qquad
+(4-k)^3=32,\qquad k=4-\sqrt[3]{32}=4-2\sqrt[3]4.\]
+This value lies between \(0\) and \(4\), so the second intersection lies inside the original region. In that range the area \((4-k)^3/6\) strictly decreases as \(k\) increases, ensuring that the bisection slope is unique. The other part of the region then has the same area because the total is \(32/3\).`,
+  },
+  {
+    id: 10492, number: 369, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 18 },
+    topic: "Rate of Change", difficulty: 2, methods: ["U-Substitution"],
+    question: String.raw`The velocity of a particle is given by \(v(t)=6t\sin(t^2)\) for \(t\ge0\). If the position of the particle is \(4\) at \(t=0\), find the position of the particle at \(t=3\sqrt\pi\).`,
+    choices: ["−10", "10", "4", "−4", "NOTA"], answer: "B",
+    solution: String.raw`The position is
+\[x(t)=\int v(t)\,dt=\int6t\sin(t^2)\,dt.\]
+Use substitution with \(u=t^2\), where \(du/dt=2t\). Then
+\[x(t)=3\int\sin u\,du=-3\cos u+C=-3\cos(t^2)+C.\]
+Use the initial condition: \(4=-3\cos0+C\), so \(C=7\). Thus,
+\[x(t)=-3\cos(t^2)+7,\qquad
+x(3\sqrt\pi)=-3\cos(9\pi)+7=10.\]
+Since \(9\pi\) is an odd multiple of \(\pi\), its cosine is \(-1\). The change in position is \(6\), and adding the initial position \(4\) gives \(10\). This is position, not total distance traveled; there is no absolute value on the velocity integral.`,
+  },
+  {
+    id: 10493, number: 370, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 19 },
+    topic: "Derivatives", difficulty: 2, methods: ["Chain Rule", "Mathematical Induction"],
+    question: String.raw`Let \(f(x)=\frac1{1+2x}\). Which of the following represents \(f^{(n)}(x)\) for \(n\ge1\)?`,
+    choices: [String.raw`\(\frac{(-1)^n\cdot2^n\cdot n!}{(1+2x)^{n+1}}\)`, String.raw`\(\frac{(-1)^n\cdot2^{n-1}\cdot n!}{(1+2x)^{n+1}}\)`, String.raw`\(\frac{(-1)^n\cdot2\cdot n!}{(1+2x)^n}\)`, String.raw`\(\frac{(-1)^{n-1}\cdot2^n\cdot n!}{(1+2x)^{n+1}}\)`, "NOTA"], answer: "A",
+    solution: String.raw`\(f(x)=(1+2x)^{-1}\). Calculate the first few derivatives using the Chain Rule:
+\[f'(x)=-1!2(1+2x)^{-2},\]
+\[f''(x)=2!2^2(1+2x)^{-3},\]
+\[f'''(x)=-3!2^3(1+2x)^{-4},\]
+\[f''''(x)=4!2^4(1+2x)^{-5}.\]
+With this pattern continuing, it is reasonable to conjecture that
+\[f^{(n)}(x)=(-1)^nn!2^n(1+2x)^{-(n+1)}
+=\frac{(-1)^n n!2^n}{(1+2x)^{n+1}}.\]
+This can formally be proven by induction. When \(n=0\), the formula is \(1/(1+2x)\), as required. Assume it is true for \(n=k\). Differentiating gives
+\[f^{(k+1)}(x)
+=(-1)^kk!2^k[-(k+1)](1+2x)^{-(k+2)}\cdot2
+=\frac{(-1)^{k+1}(k+1)!2^{k+1}}{(1+2x)^{k+2}}.\]
+Thus the statement holds for every nonnegative integer \(n\), in particular every \(n\ge1\). The domain excludes \(x=-1/2\). The source's first-derivative display accidentally repeats exponent \(-3\); the correct exponent there is \(-2\), as used above and in the general formula.`,
+  },
+  {
+    id: 10494, number: 371, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 20 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`For the function \(f(x)=\frac4\pi\tan^{-1}(x^3)+4\), let \(L=\lim_{x\to\infty}f(x)\) and \(M=\lim_{x\to-\infty}f(x)\). What is \(L+M\)?`,
+    choices: ["4", "6", "8", "−4", "NOTA"], answer: "C",
+    solution: String.raw`Recall that \(\lim_{u\to\infty}\tan^{-1}u=\pi/2\) and \(\lim_{u\to-\infty}\tan^{-1}u=-\pi/2\). Thus,
+\[L=\frac4\pi\left(\frac\pi2\right)+4=6,\qquad
+M=\frac4\pi\left(-\frac\pi2\right)+4=2.\]
+Then \(L+M=6+2=8\).
+
+The argument is \(x^3\), which tends to positive infinity with \(x\) and negative infinity as \(x\to-\infty\). Here \(\tan^{-1}\) denotes arctangent, not the reciprocal of tangent. The two limiting arctangent contributions cancel in the sum, leaving the two copies of the vertical shift \(4\).`,
+  },
+  {
+    id: 10495, number: 372, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 21 },
+    topic: "Inverse Functions", difficulty: 2, methods: ["Derivative of Inverse Functions"],
+    question: String.raw`Define \(g(x)=f^{-1}(x)\) for \(f(x)=\sin x+2x\). Let \(T\) be the tangent line to \(g(x)\) at \(x=3\pi-1\). What is the \(x\)-coordinate of the \(x\)-intercept of \(T\)?`,
+    choices: ["−1", "1", String.raw`\(-\frac1\pi\)`, String.raw`\(\frac1\pi\)`, "NOTA"], answer: "A",
+    solution: String.raw`By inspection, \(f(x)=\sin x+2x=3\pi-1\) when \(x=3\pi/2\), so \((3\pi/2,3\pi-1)\) is a point on \(f\). Note \(f'(x)=\cos x+2\), so \(f'(3\pi/2)=2\). Thus \(g'(3\pi-1)=1/2\), since slopes at corresponding points of inverse functions are reciprocals.
+
+The equation of \(T\) is
+\[y=\frac12\bigl(x-(3\pi-1)\bigr)+\frac{3\pi}{2}.\]
+When \(y=0\), \(-3\pi=x-3\pi+1\), showing \(x=-1\).
+
+The inverse curve's point is obtained by swapping coordinates, so its height at \(x=3\pi-1\) is \(3\pi/2\), not \(3\pi-1\). Also \(f'(x)=2+\cos x\ge1\), and \(f(x)\to\pm\infty\) at the two ends, so the stated inverse is globally well-defined. Simplifying the tangent equation to \(y=(x+1)/2\) directly confirms the intercept.`,
+  },
+  {
+    id: 10496, number: 373, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 22 },
+    topic: "Derivatives", difficulty: 3, methods: ["Product Rule", "Chain Rule"],
+    question: String.raw`For twice-differentiable functions \(f,g,\) and \(h\), the following values are given:
+\[f(0)=1,\quad f'(0)=2,\quad f''(0)=-6,\]
+\[g(0)=3,\quad g'(0)=5,\quad g''(0)=8,\]
+\[h(0)=1,\quad h'(0)=-1,\quad h''(0)=4.\]
+Let \(k(x)=f(2x)\cdot g(2x)\cdot h(2x)\). Find the value of \(k''(0)\).`,
+    choices: ["−8", "16", "8", "−16", "NOTA"], answer: "E",
+    solution: String.raw`By the Product Rule,
+\[\begin{aligned}
+k'(x)=2\bigl(&f'(2x)g(2x)h(2x)\\
+&+f(2x)g'(2x)h(2x)\\
+&+f(2x)g(2x)h'(2x)\bigr).
+\end{aligned}\]
+By the Product Rule again,
+\[\begin{aligned}
+k''(x)=4\bigl(&f''(2x)g(2x)h(2x)\\
+&+f(2x)g''(2x)h(2x)\\
+&+f(2x)g(2x)h''(2x)\bigr)\\
++8\bigl(&f'(2x)g'(2x)h(2x)\\
+&+f'(2x)g(2x)h'(2x)\\
+&+f(2x)g'(2x)h'(2x)\bigr).
+\end{aligned}\]
+Substitute the given values:
+\[\begin{aligned}
+k''(0)&=4(-6\cdot3\cdot1+8\cdot1\cdot1+4\cdot1\cdot3)\\
+&\quad+8(2\cdot5\cdot1+2\cdot(-1)\cdot3+1\cdot5\cdot(-1))\\
+&=4(2)+8(-1)=0.
+\end{aligned}\]
+This evaluates to \(0\), so the correct answer is E.
+
+Each differentiation of an input \(2x\) contributes a factor \(2\). Terms where the same factor is differentiated twice therefore have coefficient \(4\); terms where two different factors are differentiated occur in two orders and have coefficient \(8\). The source's final cross term omits a prime on \(h\); it must be \(fg'h'\), as shown and as used by the source's numerical substitution.`,
+  },
+  {
+    id: 10497, number: 374, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 23 },
+    topic: "Differential Equations", difficulty: 4, methods: ["Separation of Variables"],
+    question: String.raw`A function \(y=f(x)\) satisfies the differential equation
+\[y=y'+y''+y'''+y''''+\cdots\]
+subject to the initial condition \(f(\ln4)=6\). Find \(f(\ln8)\).
+
+Assume \(f\) is infinitely differentiable and the displayed series of derivatives converges locally uniformly.`,
+    choices: [String.raw`\(4\sqrt2\)`, String.raw`\(6\sqrt2\)`, String.raw`\(-2\sqrt2\)`, String.raw`\(-6\sqrt2\)`, "NOTA"], answer: "B",
+    solution: String.raw`With the stated convergence condition, we may write
+\[y=y'+\frac d{dx}(y'+y''+y'''+\cdots)
+=y'+\frac d{dx}(y)=y'+y'=2y'.\]
+Thus \(y=2y'\), or \(dy/y=\frac12\,dx\). Integrate to find \(\ln|y|=x/2+C\), or \(y=Ce^{x/2}\). Use the initial condition:
+\[6=Ce^{\frac12\ln4}=Ce^{\ln2}=2C,\qquad C=3.\]
+Thus \(f(x)=3e^{x/2}\), and
+\[f(\ln8)=3e^{\frac12\ln8}=3\sqrt8=6\sqrt2.\]
+The infinite-sum differentiation needs justification; ordinary pointwise convergence alone does not permit it. If
+\[S_N=\sum_{j=1}^N f^{(j)},\]
+then \(S_N\to f\) locally uniformly by assumption, and
+\[S_N'=S_{N+1}-f'\longrightarrow f-f'\]
+locally uniformly as well. The theorem on uniformly convergent derivative sequences therefore gives \(f'=f-f'\), or \(2f'=f\). This is the precise reason the formal source manipulation is valid under the added hypothesis.
+
+Finally, for the resulting function \(f^{(j)}(x)=3e^{x/2}/2^j\), so
+\[\sum_{j=1}^\infty f^{(j)}(x)
+=3e^{x/2}\sum_{j=1}^\infty2^{-j}=3e^{x/2}=f(x).\]
+This geometric series converges uniformly on each compact interval. Hence the solution actually satisfies the original infinite equation, not just the derived first-order equation.`,
+  },
+  {
+    id: 10498, number: 375, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 24 },
+    topic: "Definite Integrals", difficulty: 3, methods: ["U-Substitution"],
+    question: String.raw`Determine value of the definite integral
+\[\int_0^{\pi/4}\frac{\sin^2x\cos^2x}{(\sin^3x+\cos^3x)^2}\,dx.\]`,
+    choices: ["1", String.raw`\(\frac12\)`, String.raw`\(\frac13\)`, String.raw`\(\frac16\)`, "NOTA"], answer: "D",
+    solution: String.raw`Factor \(\cos^3x\) from the sum in the denominator:
+\[\begin{aligned}
+\int\frac{\sin^2x\cos^2x}{(\sin^3x+\cos^3x)^2}\,dx
+&=\int\frac{\sin^2x\cos^2x}{\cos^6x(\tan^3x+1)^2}\,dx\\
+&=\int\frac{\tan^2x\sec^2x}{(\tan^3x+1)^2}\,dx.
+\end{aligned}\]
+Let \(u=\tan x\), where \(du/dx=\sec^2x\). This gives \(\int u^2/(u^3+1)^2\,du\). Let \(v=u^3+1\), with \(dv/du=3u^2\). This gives
+\[\frac13\int\frac1{v^2}\,dv
+=-\frac1{3v}+C=-\frac1{3(u^3+1)}+C
+=-\frac1{3(\tan^3x+1)}+C.\]
+Now evaluate from \(x=0\) to \(x=\pi/4\):
+\[-\frac1{3(2)}+\frac13=\frac16.\]
+All substitutions are valid on this interval because \(\cos x>0\) and \(\sin^3x+\cos^3x>0\). Tracking the bounds instead gives \(u:0\to1\), then \(v:1\to2\), and the same value \(\frac13[-1/v]_1^2=1/6\). This is ordinary u-substitution using a trigonometric function, rather than an inverse trigonometric substitution for a radical.`,
+  },
+  {
+    id: 10499, number: 376, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 25 },
+    topic: "Limits", difficulty: 4, methods: ["Telescoping"],
+    question: String.raw`Evaluate:
+\[\lim_{n\to\infty}
+\frac{2024!+\frac{2025!}{1!}+\frac{2026!}{2!}+\cdots+\frac{(2024+n)!}{n!}}{n^{2025}}.\]`,
+    choices: [String.raw`\(\frac1{2024}\)`, "2024", String.raw`\(\frac1{2025}\)`, "2025", "NOTA"], answer: "C",
+    solution: String.raw`Write the numerator as \(\sum_{i=0}^n(2024+i)!/i!\). Multiplying and dividing by \(2024!\) gives
+\[2024!\sum_{i=0}^n\frac{(2024+i)!}{i!\,2024!}
+=2024!\sum_{i=0}^n\binom{2024+i}{2024}.\]
+By the hockey-stick identity, the inner sum is \(\binom{2025+n}{2025}\), so the earlier sum is
+\[2024!\binom{2025+n}{2025}
+=\frac1{2025}\frac{(2025+n)!}{n!}
+=\frac{(n+1)(n+2)\cdots(n+2025)}{2025}.\]
+The desired limit is therefore
+\[\frac1{2025}\lim_{n\to\infty}
+\prod_{j=1}^{2025}\left(1+\frac jn\right)=\frac1{2025}.\]
+There are a fixed number, \(2025\), of factors, each tending to \(1\).
+
+To justify the identity without assuming it, let
+\[F(i)=\frac{(i+1)(i+2)\cdots(i+2025)}{2025}.\]
+Factoring out the \(2024\) common factors shows that
+\[F(i)-F(i-1)=(i+1)\cdots(i+2024)=\frac{(2024+i)!}{i!}.\]
+Summing telescopes to \(F(n)-F(-1)=F(n)\), since \(F(-1)=0\). Thus the exact factorial sum, including its \(i=0\) term \(2024!\), has the closed form used above.`,
+  },
+  {
+    id: 10500, number: 377, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 26 },
+    topic: "Volumes of Revolution", difficulty: 3, methods: ["Cross Sections"],
+    question: String.raw`A cylindrical hole of radius \(r=1\) is drilled completely through a solid sphere of radius \(R=2\) such that the cylindrical hole and the sphere have the same center. What is the volume remaining of the sphere after the material made by the cylindrical hole is removed?`,
+    choices: [String.raw`\(2\pi\sqrt3\)`, String.raw`\(3\pi\sqrt3\)`, String.raw`\(4\pi\sqrt3\)`, String.raw`\(6\pi\sqrt3\)`, "NOTA"], answer: "C",
+    solution: String.raw`The cylindrical hole reaches a height of \(\sqrt{2^2-1^2}=\sqrt3\) vertically from the center of the sphere. Consider revolving the region inside the circle \(x^2+y^2=4\) and to the right of \(x=1\) about the \(y\)-axis, from \(y=-\sqrt3\) to \(y=\sqrt3\). At height \(y\), the sphere's radius is \(\sqrt{4-y^2}\).
+
+Using washers, the desired volume is
+\[V=\pi\int_{-\sqrt3}^{\sqrt3}
+\left((\sqrt{4-y^2})^2-1^2\right)\,dy
+=\pi\int_{-\sqrt3}^{\sqrt3}(3-y^2)\,dy.\]
+The integrand is even, so
+\[V=2\pi\left[3y-\frac{y^3}{3}\right]_0^{\sqrt3}
+=2\pi(3\sqrt3-\sqrt3)=4\pi\sqrt3.\]
+The cross section of the remaining solid is an annulus: the outer disk comes from the sphere, and the inner disk of radius \(1\) is removed. Above \(\sqrt3\) or below \(-\sqrt3\), the entire spherical cross section lies inside the drilled cylinder, so no material remains there. The drilled-out material is not merely a cylinder of height \(4\); that would incorrectly count material outside the original sphere.`,
+  },
+  {
+    id: 10501, number: 378, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 27 },
+    topic: "Derivatives", difficulty: 2, methods: ["Trigonometric Identities"],
+    question: String.raw`Let \(k(x)=(\sin x+\csc x)^2+(\cos x+\sec x)^2+(\tan x+\cot x)^2\). Find \(k'(\frac{5\pi}{6})\).`,
+    choices: [String.raw`\(\frac{56\sqrt3}9\)`, String.raw`\(\frac{64\sqrt3}9\)`, String.raw`\(\frac{100\sqrt3}9\)`, String.raw`\(\frac{128\sqrt3}9\)`, "NOTA"], answer: "D",
+    solution: String.raw`Expand to write
+\[k(x)=\sin^2x+\csc^2x+\cos^2x+\sec^2x+\tan^2x+\cot^2x+6.\]
+Use Pythagorean identities to write \(k(x)=9+2\tan^2x+2\cot^2x\). Then
+\[k'(x)=4\tan x\sec^2x-4\cot x\csc^2x.\]
+At the requested angle,
+\[k'(\tfrac{5\pi}{6})
+=4\left(-\frac1{\sqrt3}\right)\left(-\frac2{\sqrt3}\right)^2
+-4(-\sqrt3)(2)^2.\]
+This simplifies to
+\[-\frac{16\sqrt3}{9}+16\sqrt3=\frac{128\sqrt3}{9}.\]
+The constant \(6\) comes from the three cross terms, each equal to \(2\). At \(5\pi/6\), sine is positive and cosine is negative, so tangent, cotangent, and secant have the negative signs used above. The source's substitution line labels the angle \(\pi/6\) while using the values for \(5\pi/6\); the label is corrected here. The original problem's angle and final answer D are unchanged.`,
+  },
+  {
+    id: 10502, number: 379, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 28 },
+    topic: "Optimization", difficulty: 4, methods: ["Implicit Differentiation", "First Derivative Test"],
+    illustration: {
+      src: "/questions/mu-502-fold.svg",
+      alt: "An 8-inch-tall by 12-inch-wide sheet with the upper right corner folded onto the bottom edge. Dashed crease L connects the top and right edges.",
+      width: 560, height: 400,
+    },
+    question: String.raw`A sheet of paper is \(8\) inches tall and \(12\) inches wide. The upper right-hand corner of the piece of paper is folded to the bottom edge to form a crease of positive length \(L\), as shown. In inches, what is the minimum possible value of \(L\), in inches?
+
+Consider the configuration shown, in which the crease joins the top and right edges of the sheet.`,
+    choices: [String.raw`\(5\sqrt5\)`, String.raw`\(6\sqrt3\)`, "10", String.raw`\(4\sqrt6\)`, "NOTA"], answer: "B",
+    solution: String.raw`Label the diagram as shown below.
+[[solution-diagram:mu-502]]
+Let \(x\) be the upper segment of the right edge, ending at the crease. Folding preserves lengths, so the segment from that crease endpoint to the folded corner also has length \(x\). Let \(z\) be the other reflected edge, and let \(y\) be the bottom gap between the folded corner and the bottom right corner. Then
+\[z=\sqrt{L^2-x^2},\qquad
+y=\sqrt{x^2-(8-x)^2}=4\sqrt{x-4}.\]
+By similar triangles,
+\[\frac8{\sqrt{L^2-x^2}}=\frac{4\sqrt{x-4}}x.\]
+Cross-multiply and then square both sides to get
+\[4x^2=(x-4)(L^2-x^2),\qquad
+L^2=x^2+\frac{4x^2}{x-4}=\frac{x^3}{x-4}.\]
+Using implicit differentiation,
+\[2L\frac{dL}{dx}
+=2x+\frac{8x(x-4)-4x^2}{(x-4)^2}
+=\frac{2x^3-12x^2}{(x-4)^2}.\]
+Hence,
+\[\frac{dL}{dx}=\frac{x^2(x-6)}{L(x-4)^2}.\]
+For a fold of the shown type, \(x>4\), \(x\le8\), and \(L>0\). Thus the only admissible stationary point is \(x=6\). The values \(x=0\), \(x=4\), and \(L=0\) listed as "critical values" in the source are not permissible folds in this parameterization.
+
+To check the paper's width, \(z=2x/\sqrt{x-4}\) is the distance along the top from the crease to the original upper right corner. It must satisfy \(z\le12\). Combining this with \(x\le8\) gives the actual feasible interval
+\[18-6\sqrt5\le x\le8.\]
+This interval contains \(6\). Since \(L'\) is negative before \(6\) and positive after \(6\), the absolute minimum is
+\[L=\sqrt{6^2+\frac{4\cdot6^2}{6-4}}
+=\sqrt{36+72}=\sqrt{108}=6\sqrt3.\]
+At this fold, \(z=6\sqrt2<12\) and \(y=4\sqrt2<12\), so it fits the sheet. The top/right-edge configuration is essential: allowing creases connecting different edge pairs changes the optimization problem. The added sentence in the question makes explicit the configuration already depicted in the source.`,
+  },
+  {
+    id: 10503, number: 380, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 29 },
+    topic: "Improper Integrals", difficulty: 3, methods: ["Integration by Parts"],
+    question: String.raw`Define the Gamma function, \(\Gamma(s)\), as follows:
+\[\Gamma(s)=\int_0^\infty t^{s-1}e^{-t}\,dt,\qquad s>0.\]
+Evaluate \(\frac{\Gamma(\frac52)}{\Gamma(\frac12)}\).`,
+    choices: [String.raw`\(\frac38\)`, String.raw`\(\frac34\)`, String.raw`\(\frac54\)`, String.raw`\(\frac58\)`, "NOTA"], answer: "B",
+    solution: String.raw`For \(\Gamma(s)=\int_0^\infty t^{s-1}e^{-t}\,dt\), use integration by parts with \(u=t^{s-1}\) and \(dv=e^{-t}\,dt\). Then \(du=(s-1)t^{s-2}\,dt\) and \(v=-e^{-t}\). For \(s>1\), this yields
+\[\Gamma(s)=\left[-t^{s-1}e^{-t}\right]_0^\infty
++(s-1)\int_0^\infty t^{s-2}e^{-t}\,dt.\]
+At infinity the boundary term vanishes because an exponential grows faster than any fixed power. At \(0\), \(t^{s-1}\to0\) for \(s>1\). Thus
+\[\Gamma(s)=(s-1)\Gamma(s-1).\]
+Using this recursive relationship,
+\[\Gamma(\tfrac52)=\frac32\Gamma(\tfrac32)
+=\frac32\cdot\frac12\Gamma(\tfrac12)
+=\frac34\Gamma(\tfrac12).\]
+Therefore \(\Gamma(\frac52)/\Gamma(\frac12)=3/4\).
+
+The recurrence is applied only at \(s=5/2\) and \(s=3/2\), where the boundary calculation is valid. The defining integral at \(s=1/2\) converges, since its behavior near \(0\) is \(t^{-1/2}\), and it is positive, so division by \(\Gamma(1/2)\) is valid. Its numerical value is not needed. The source's boundary term incorrectly contains the derivative of \(u\); the correct boundary term is \(-t^{s-1}e^{-t}\), as displayed here.`,
+  },
+  {
+    id: 10504, number: 381, division: "Mu",
+    source: { ...marchRegional2025, questionNumber: 30 },
+    topic: "Limits", difficulty: 3, methods: ["Power Series"],
+    question: String.raw`There is one real value of \(k\) for which \(\lim_{x\to0}\frac{1-kx^2-\cos(4x)}{x^4}\) is finite. What is the product of this limit and the value of \(k\) for which it exists?`,
+    choices: [String.raw`\(\frac{16}3\)`, String.raw`\(\frac{64}3\)`, String.raw`\(-\frac{128}3\)`, String.raw`\(-\frac{256}3\)`, "NOTA"], answer: "D",
+    solution: String.raw`The given limit is of the form \(0/0\), so it is indeterminate. This limit can be determined with Taylor Series. Note that the Maclaurin series is
+\[\cos u=1-\frac{u^2}{2!}+\frac{u^4}{4!}-\frac{u^6}{6!}+\cdots.\]
+Let \(u=4x\). Then
+\[\cos(4x)=1-\frac{(4x)^2}{2!}+\frac{(4x)^4}{4!}+O(x^6)
+=1-8x^2+\frac{32}{3}x^4+O(x^6).\]
+Therefore, the numerator is
+\[1-kx^2-\cos(4x)
+=(8-k)x^2-\frac{32}{3}x^4+O(x^6).\]
+After dividing by \(x^4\), the expression becomes
+\[\frac{8-k}{x^2}-\frac{32}{3}+O(x^2).\]
+A finite limit requires \(k=8\); any other value leaves a nonzero multiple of \(1/x^2\). With \(k=8\), the limit is \(-32/3\). The product is therefore
+\[8\left(-\frac{32}{3}\right)=-\frac{256}{3}.\]
+The source says "let \(u=3x\)" before correctly expanding \(\cos(4x)\); that substitution is corrected to \(u=4x\). The \(O(x^6)\) remainder becomes \(O(x^2)\) after division, so it tends to \(0\) and does not affect the finite limit.`,
   },
 ];

@@ -32,6 +32,7 @@ paths=(
   docs/january-statewide-2026-audit.md
   docs/king-statewide-2025-audit.md
   docs/march-regional-2026-audit.md
+  docs/march-regional-2025-audit.md
   docs/mu-national-permission.md
   docs/state-convention-2024-audit.md
   docs/state-convention-2025-audit.md
@@ -54,6 +55,9 @@ paths=(
   public/questions/mu-348-original.svg
   public/questions/mu-360-362-original.svg
   public/questions/mu-442-444-original.svg
+  public/questions/mu-483-table.svg
+  public/questions/mu-502-fold.svg
+  public/questions/mu-502-solution.svg
   tests/browserFixtures/questionSources.tsx
   tests/integralPropertiesLabels.test.mjs
   tests/questionVectors.test.mjs
@@ -68,6 +72,7 @@ paths=(
   tests/muJanuaryState.test.mjs
   tests/muKingStatewide2025.test.mjs
   tests/muMarchRegional2026.test.mjs
+  tests/muMarchRegional2025.test.mjs
   tests/muNationalPublication.test.mjs
   tests/muStateConvention2024.test.mjs
   tests/muStateConvention2025.test.mjs

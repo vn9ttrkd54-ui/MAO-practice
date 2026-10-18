@@ -9,6 +9,7 @@ import { chromium, expect } from "@playwright/test";
 const require = createRequire(import.meta.url);
 const root = resolve(import.meta.dirname, "..");
 const februaryOnly=process.argv.includes("--february-2025-only");
+const marchOnly=process.argv.includes("--march-2025-only");
 const dir = await mkdtemp(join(tmpdir(), "question-sources-"));
 const fixture = name => resolve(import.meta.dirname, "browserFixtures", name);
 const compiler = require("next/dist/compiled/webpack/webpack").webpack({
@@ -36,7 +37,7 @@ const css = (await Promise.all(cssFiles.map(f => readFile(join(cssRoot, f), "utf
 const server = createServer(async (req, res) => {
   const pathname = new URL(req.url, "http://fixture.test").pathname;
   try {
-    if (/^\/questions\/mu-\d+(?:-\d+)?-(?:solution|original|original-solution)\.svg$/.test(pathname)) {
+    if (/^\/questions\/mu-[\w-]+\.svg$/.test(pathname)) {
       res.setHeader("Content-Type", "image/svg+xml"); return res.end(await readFile(join(root, "public", pathname)));
     }
     if (/^\/[a-f0-9]+\.png$/.test(pathname)) {
@@ -52,9 +53,9 @@ let browser;
 const errors = [];
 try {
   browser = await chromium.launch({ headless: true });
-  const vectors=(await readdir(join(root,"public/questions"))).filter(name=>/^mu-.*(?:original|solution)\.svg$/.test(name));
-  assert.equal(vectors.length,23); // 18 current drawings and five legacy solution vectors.
-  const currentVectors=vectors.filter(name=>!/^mu-(194|196|201|217|227)-solution\.svg$/.test(name));
+  const vectorSources=[await readFile(join(root,"data/questions/mu.ts"),"utf8"),await readFile(join(root,"components/math/MathText.tsx"),"utf8")];
+  const currentVectors=[...new Set(vectorSources.flatMap(source=>[...source.matchAll(/src: "\/questions\/(mu-[\w-]+\.svg)"/g)].map(match=>match[1])))];
+  assert.ok(currentVectors.length>=21,"all active Mu question and solution diagrams are included");
   for(const width of [390,1280]){
     for(let start=0;start<currentVectors.length;start+=6){
       const page=await browser.newPage({viewport:{width,height:1000}});
@@ -88,6 +89,7 @@ try {
     });
     await page.goto(`${origin}/?guest&view=${view}&id=${id}${revealed ? "&revealed" : ""}`);
     const credit = page.getByLabel("Question source", { exact: true });
+    const march2025 = id >= 10475 && id <= 10504;
     const february2025 = id >= 10445 && id <= 10474;
     const king2025 = id >= 10416 && id <= 10444;
     const january2025 = id >= 10386 && id <= 10415;
@@ -99,8 +101,8 @@ try {
     const statewide = id >= 10207 && id <= 10235;
     const january = id >= 10236 && id <= 10265;
     const regional = id >= 10266 && id <= 10295;
-    const competition = february2025 ? "2025 February Regional" : king2025 ? "2025 February King Statewide" : january2025 ? "2025 January Regional" : chiles ? "2025 Chiles Statewide" : march ? "2026 March Regional" : states2024 ? "2024 FAMAT State Convention" : states2025 ? "2025 FAMAT State Convention" : states ? "2026 FAMAT State Convention" : statewide ? "2026 January Statewide" : january ? "2026 January Regional" : `2026 February ${regional ? "Regional" : "King Invitational"}`;
-    const originalNumber = february2025 ? id-10444 : king2025 ? id-10415 : january2025 ? id-10385 : chiles ? id-10355 : march ? id-10325 : states2024 ? id-10176 : states2025 ? id-(id<=10163?10147:10146) : states ? id - (id<=10143 ? 10118 : 10117) : statewide ? id - (id < 10234 ? 10206 : 10205) : id - (january ? 10235 : regional ? 10265 : 10295);
+    const competition = march2025 ? "2025 March Regional" : february2025 ? "2025 February Regional" : king2025 ? "2025 February King Statewide" : january2025 ? "2025 January Regional" : chiles ? "2025 Chiles Statewide" : march ? "2026 March Regional" : states2024 ? "2024 FAMAT State Convention" : states2025 ? "2025 FAMAT State Convention" : states ? "2026 FAMAT State Convention" : statewide ? "2026 January Statewide" : january ? "2026 January Regional" : `2026 February ${regional ? "Regional" : "King Invitational"}`;
+    const originalNumber = march2025 ? id-10474 : february2025 ? id-10444 : king2025 ? id-10415 : january2025 ? id-10385 : chiles ? id-10355 : march ? id-10325 : states2024 ? id-10176 : states2025 ? id-(id<=10163?10147:10146) : states ? id - (id<=10143 ? 10118 : 10117) : statewide ? id - (id < 10234 ? 10206 : 10205) : id - (january ? 10235 : regional ? 10265 : 10295);
     await expect(credit).toHaveText(`Source: ${competition} · Calculus Individual · Question ${originalNumber}`);
     assert.equal(await page.locator(".katex-error").count(), 0, "no broken math");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
@@ -113,7 +115,7 @@ try {
     assert.equal(overflow, false, `no page overflow: ${view}, ${id}, ${width}; screenshots: ${dir}`);
     return page;
   }
-  if(!februaryOnly){
+  if(!februaryOnly&&!marchOnly){
   for(const width of [1280,320]){
     const page=await open("bank",10119,width);
     await expect(page.getByRole("heading",{name:"Question 1",exact:true})).toBeVisible();
@@ -320,6 +322,7 @@ try {
     await page.close();
   }
   }
+  if(!marchOnly){
   for(const view of ["bank","trainer","play","spectate","results"]){
     for(const width of [1280,320]){
       const page=await open(view,10465,width);
@@ -337,8 +340,40 @@ try {
     }
     }
   }
+
+  }
+  if(!februaryOnly){
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      for(const [id,src,naturalWidth,number] of [[10483,"mu-483-table.svg",600,360],[10502,"mu-502-fold.svg",560,379]]){
+        const page=await open(view,id,width);
+        const picture=page.locator('img[src="/questions/'+src+'"]');
+        await picture.scrollIntoViewIfNeeded();
+        await expect.poll(()=>picture.evaluate((img,expectedWidth)=>img.complete&&img.naturalWidth===expectedWidth,naturalWidth)).toBe(true);
+        if(view==="bank")await expect(page.getByRole("heading",{name:"Question "+number,exact:true})).toBeVisible();
+        if(view!=="results")assert.equal(await page.locator('img[src="/questions/mu-502-solution.svg"]').count(),0,"fold annotations remain solution-only");
+        await page.screenshot({path:join(dir,`march2025-${id}-${view}-${width}.png`),fullPage:true});
+        await page.close();
+      }
+    }
+  }
+  for(const id of Array.from({length:30},(_,i)=>10475+i).filter(id=>id!==10476)){
+    for(const view of ["trainer","results"]){
+      for(const width of [1280,320]){
+        const page=await open(view,id,width,true);
+        if(id===10502){
+          const picture=page.locator('img[src="/questions/mu-502-solution.svg"]');
+          await picture.scrollIntoViewIfNeeded();
+          await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===620)).toBe(true);
+        }
+        await page.screenshot({path:join(dir,`march2025-solution-${id}-${view}-${width}.png`),fullPage:true});
+        await page.close();
+      }
+    }
+  }
+  }
   assert.deepEqual(errors, []);
-  console.log(`PASS (${februaryOnly?"February Regional 2025 and SVG assets":"all source sets"}): original-number credits in Question Bank, Trainer, play, spectators and results; diagrams, reveal gating and real KaTeX at desktop/mobile widths. Screenshots: ${dir}`);
+  console.log(`PASS (${marchOnly?"March Regional 2025 and SVG assets":februaryOnly?"February Regional 2025 and SVG assets":"all source sets"}): original-number credits in Question Bank, Trainer, play, spectators and results; diagrams, reveal gating and real KaTeX at desktop/mobile widths. Screenshots: ${dir}`);
 } finally {
   await browser?.close(); await new Promise(resolve => server.close(resolve));
 }

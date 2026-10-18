@@ -25,7 +25,7 @@ test("question 223 integral labels keep limits and integrands in one aligned SVG
 });
 
 test("every public question and solution illustration is a standalone local vector", () => {
-  assert.equal(solutionImages.length,10,"all solution-only diagrams are checked");
+  assert.equal(solutionImages.length,11,"all solution-only diagrams are checked");
   assert.ok(uniqueImages.length >= 18);
   for (const {src,width,height} of images) {
     assert.match(src,/^\/questions\/[\w-]+\.svg$/);
@@ -46,7 +46,8 @@ test("question assets contain no unused raster copies", () => {
 });
 
 test("Mu vectors retain the file-size savings without needing the deleted PNGs", () => {
-  const muImages=uniqueImages.filter(({src})=>/mu-.*(?:original|solution)\.svg$/.test(src));
+  const legacyIds=new Set(["146","194","196","201","207-210","217","227","238-240","250","302","313","320","325","336-338","345","348","360-362","442-444"]);
+  const muImages=uniqueImages.filter(({src})=>legacyIds.has(src.match(/\/mu-(\d+(?:-\d+)?)-/)?.[1]));
   assert.equal(muImages.length,18);
   // Combined size of the 18 original PNGs before their removal.
   const before=554622;

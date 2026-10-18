@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="440" viewBox="0 0 620 440" role="img" aria-labelledby="title desc">
+  <title id="title">Labeled fold geometry for minimizing crease length</title>
+  <desc id="desc">Crease length L joins the top and right edges. The upper right-edge segment and its reflected bottom-to-right segment both have length x. The remaining right-edge segment is 8 minus x; the bottom gap to the right corner is y. The reflected top-to-bottom segment has length z. Thus L squared equals x squared plus z squared.</desc>
+  <rect width="620" height="440" fill="white"/>
+  <path d="M40 35H520V355H40Z" fill="#b6b6b6" stroke="#111" stroke-width="2.5"/>
+  <path d="M120 35L360 355L520 235" fill="none" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M120 35L520 235" fill="none" stroke="#111" stroke-width="2.5" stroke-dasharray="14 9"/>
+  <g font-family="Times New Roman,serif" fill="#111" font-size="29" font-style="italic">
+    <text x="338" y="132" transform="rotate(26.565 338 132)">L</text>
+    <text x="210" y="215">z</text><text x="451" y="320">x</text>
+    <text x="542" y="143">x</text><text x="540" y="310">8 − x</text><text x="435" y="390">y</text>
+  </g>
+</svg>

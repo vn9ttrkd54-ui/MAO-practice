@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="112" viewBox="0 0 600 112" role="img" aria-labelledby="title desc">
+  <title id="title">Selected values of increasing function f</title>
+  <desc id="desc">x: 2, 4, 6, 7, 11. f(x): 0.7, 1.1, 1.9, 2.5, 5.3.</desc>
+  <rect width="600" height="112" fill="white"/>
+  <path d="M6 6H594V106H6ZM6 56H594M104 6V106M202 6V106M300 6V106M398 6V106M496 6V106" fill="none" stroke="#222" stroke-width="1.5"/>
+  <g font-family="Times New Roman,serif" font-size="30" text-anchor="middle" fill="#111">
+    <text x="55" y="42" font-style="italic">x</text>
+    <text x="153" y="42">2</text><text x="251" y="42">4</text><text x="349" y="42">6</text><text x="447" y="42">7</text><text x="545" y="42">11</text>
+    <text x="55" y="92" font-style="italic">f(x)</text>
+    <text x="153" y="92">0.7</text><text x="251" y="92">1.1</text><text x="349" y="92">1.9</text><text x="447" y="92">2.5</text><text x="545" y="92">5.3</text>
+  </g>
+</svg>
