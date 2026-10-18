@@ -1,5 +1,10 @@
 import type { Question } from "@/types/question";
 
+const kingFebruaryStatewide2024 = {
+  competition: "2024 February King Statewide",
+  event: "Calculus Individual",
+};
+
 const februaryRegional2024 = {
   competition: "2024 February Regional",
   event: "Calculus Individual",
@@ -9188,5 +9193,356 @@ For \(x<0\), \(|x|=-x\), so
 These use the standard limit \(\tan x/x\to1\). Since the one-sided limits differ, the two-sided limit does not exist, so the corrected answer is D.
 
 The source computes the two one-sided limits correctly but then labels the answer C, which is only the left-hand limit. The question asks for the two-sided limit.`,
+  },
+  {
+    id: 10595, number: 472, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 1 },
+    topic: "Derivatives", difficulty: 1, methods: ["Product Rule"],
+    question: String.raw`If \(f(x)=(x-1)(x-2)(x-3)\), evaluate \(f'(4)\).`,
+    choices: ["9", "10", "11", "12", "NOTA"], answer: "C",
+    solution: String.raw`By generalized product rule,
+\[f'(x)=(x-1)(x-2)+(x-1)(x-3)+(x-2)(x-3).\]
+Each term differentiates one of the three linear factors and leaves the other two unchanged. Letting \(x=4\) yields
+\[f'(4)=(3)(2)+(3)(1)+(2)(1)=6+3+2=11.\]
+Thus the answer is C.`,
+  },
+  {
+    id: 10596, number: 473, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 2 },
+    topic: "Optimization", difficulty: 2, methods: ["First Derivative Test"],
+    question: String.raw`Find the minimum value of \(f(x)=xe^x\).`,
+    choices: [String.raw`\(-e\)`, String.raw`\(-\frac1e\)`, String.raw`\(\frac1e\)`, "0", "NOTA"], answer: "B",
+    solution: String.raw`Taking the derivative,
+\[f'(x)=e^x+xe^x=e^x(1+x).\]
+This is equal to \(0\) only when \(x=-1\), which yields \(f(-1)=-1/e\). Since \(e^x>0\), the derivative is negative for \(x<-1\) and positive for \(x>-1\). Thus the function decreases to this point and increases afterward, proving a global minimum, not just a stationary value. Also, \(f(x)\to0\) as \(x\to-\infty\), while \(f(x)\to\infty\) as \(x\to\infty\). The minimum is \(-1/e\), so the answer is B.`,
+  },
+  {
+    id: 10597, number: 474, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 3 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`The circumference of a circle is increasing at a rate of \(3\pi\) units per second. How many \(\text{units}^2\) per second is the area changing when the radius of the circle is equal to \(2\)?`,
+    choices: [String.raw`\(2\pi\)`, String.raw`\(3\pi\)`, String.raw`\(4\pi\)`, String.raw`\(6\pi\)`, "NOTA"], answer: "D",
+    solution: String.raw`The circumference is equal to \(2\pi r\). Differentiating with respect to time,
+\[2\pi\frac{dr}{dt}=3\pi\quad\Longrightarrow\quad\frac{dr}{dt}=\frac32.\]
+The area is \(A=\pi r^2\), so
+\[\frac{dA}{dt}=2\pi r\frac{dr}{dt}=2\pi(2)\left(\frac32\right)=6\pi.\]
+The area is increasing at \(6\pi\text{ units}^2\) per second, giving D. The source's last equality drops \(\pi\); the answer choice correctly includes it.`,
+  },
+  {
+    id: 10598, number: 475, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 4 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`Evaluate:
+\[\lim_{x\to1}\frac{x^3-3x+2}{x-1}.\]`,
+    choices: ["0", "1", "2", "D.N.E", "NOTA"], answer: "A",
+    solution: String.raw`The numerator factors as \((x-1)^2(x+2)\). For \(x\ne1\),
+\[\frac{x^3-3x+2}{x-1}=(x-1)(x+2).\]
+We may cancel because a limit depends on nearby points, not on the undefined quotient at \(x=1\). The remaining polynomial is continuous, so its limit is \((1-1)(1+2)=0\). Thus the answer is A.`,
+  },
+  {
+    id: 10599, number: 476, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 5 },
+    topic: "Derivatives", difficulty: 2, methods: ["Product Rule", "Chain Rule"],
+    question: String.raw`If \(f(x)=x\sin(\cos(x))\), find \(f'(x)\).`,
+    choices: [String.raw`\(\sin(\cos x)+x\cos(\cos x)\sin x\)`, String.raw`\(\sin(\cos x)-x\cos(\cos x)\sin x\)`, String.raw`\(\sin(\cos x)+x\cos(\cos x)\)`, String.raw`\(\sin(\cos x)-x\cos(\cos x)\)`, "NOTA"], answer: "B",
+    solution: String.raw`By product rule the derivative is equal to
+\[(x)'\sin(\cos x)+x(\sin(\cos x))'.\]
+For the second factor, apply the chain rule: the derivative of sine is cosine evaluated at the inside \(\cos x\), then multiply by \((\cos x)'=-\sin x\). Hence
+\[f'(x)=\sin(\cos x)-x\cos(\cos x)\sin x.\]
+This is choice B.`,
+  },
+  {
+    id: 10600, number: 477, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 6 },
+    topic: "Limits", difficulty: 1, methods: ["Exponential Limits"],
+    question: String.raw`Evaluate \(\displaystyle\lim_{n\to\infty}\left(1+\frac1{3n}\right)^{3n}\).`,
+    choices: [String.raw`\(\sqrt[3]e\)`, String.raw`\(e\)`, String.raw`\(e^3\)`, String.raw`\(e^9\)`, "NOTA"], answer: "B",
+    solution: String.raw`Recall that
+\[\lim_{n\to\infty}\left(1+\frac an\right)^{bn}=e^{ab}.\]
+Here \(a=1/3\) and \(b=3\), so \(ab=1\) and the answer is \(e\), choice B. Equivalently, set \(m=3n\); this is precisely the defining limit \((1+1/m)^m\to e\) along \(m=3n\).
+
+The source labels the solution paragraph A but ends with B; the printed key and the calculation both give B.`,
+  },
+  {
+    id: 10601, number: 478, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 7 },
+    topic: "Derivatives", difficulty: 2, methods: ["Absolute Value"],
+    question: String.raw`If \(f(x)=|3-x|+|5+x|+|7-2x|\), find \(f'(5)\).`,
+    choices: [String.raw`\(-1\)`, "1", "2", "4", "NOTA"], answer: "D",
+    solution: String.raw`For \(x=5\), \(3-x<0\), \(x+5>0\), and \(7-2x<0\). These signs hold throughout a neighborhood of \(5\), since none of the expressions is zero there. Hence, locally,
+\[f(x)=(x-3)+(x+5)+(2x-7)=4x-5.\]
+Therefore \(f'(5)=4\), choice D. Resolving each absolute value before differentiating prevents a missed minus sign.`,
+  },
+  {
+    id: 10602, number: 479, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 8 },
+    topic: "Optimization", difficulty: 2, methods: ["First Derivative Test"],
+    question: String.raw`Let \(x\in(0,1)\). Consider triangle \(ABC\) with side \(AB=x\), \(BC=(1-x)^2\), and \(\angle B=30^\circ\). Find the maximum area of triangle \(ABC\).`,
+    choices: [String.raw`\(\frac1{27}\)`, String.raw`\(\frac19\)`, String.raw`\(\frac23\)`, String.raw`\(\frac13\)`, "NOTA"], answer: "A",
+    solution: String.raw`The area of a triangle with two sides and their included angle is half their product times the sine of that angle. Here
+\[A(x)=\frac12(AB)(BC)\sin B=\frac14x(1-x)^2.\]
+The source's symbols \(\frac12AC\sin(b)\) are corrected to the actual side lengths and included angle. Differentiating,
+\[A'(x)=\frac14\bigl((1-x)^2-2x(1-x)\bigr)=\frac14(1-x)(1-3x).\]
+On \((0,1)\), the only stationary point is \(x=1/3\). The derivative is positive before this point and negative after it, proving a maximum. Its value is
+\[A(1/3)=\frac14\left(\frac13\right)\left(\frac23\right)^2=\frac1{27}.\]
+Thus the answer is A.`,
+  },
+  {
+    id: 10603, number: 480, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 9 },
+    topic: "Analytic Geometry", difficulty: 2, methods: ["Tangency"],
+    question: String.raw`Let \(y=x^3+5x^2-8x+13\). Find the \(x\)-intercept of the tangent line at \(x=1\).`,
+    choices: [String.raw`\(-\frac{11}5\)`, String.raw`\(-2\)`, String.raw`\(-\frac65\)`, String.raw`\(-1\)`, "NOTA"], answer: "C",
+    solution: String.raw`We know the point \((1,11)\) is on the tangent line. Since \(y'=3x^2+10x-8\), the slope of our tangent line must be \(3+10-8=5\), so the equation of our line is
+\[L=5(x-1)+11=5x+6.\]
+At an \(x\)-intercept the vertical coordinate is zero. Setting \(L=0\) gives \(5x+6=0\), or \(x=-6/5\). This is choice C; the intercept is not the point of tangency's \(x\)-coordinate.`,
+  },
+  {
+    id: 10604, number: 481, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 10 },
+    topic: "Definite Integrals", difficulty: 2, methods: ["U-Substitution"],
+    question: String.raw`Evaluate \(\displaystyle\int_0^1x(1-x^2)^{10}\,dx\).`,
+    choices: [String.raw`\(\frac\pi2\)`, String.raw`\(\frac17\)`, String.raw`\(\frac1{22}\)`, String.raw`\(\frac1{27}\)`, "NOTA"], answer: "C",
+    solution: String.raw`While trig substitution will work, simply doing the u-sub \(u=1-x^2\) is enough. Then \(du=-2x\,dx\). The bounds \(x=0,1\) become \(u=1,0\), respectively, so
+\[\int_0^1x(1-x^2)^{10}\,dx=-\frac12\int_1^0u^{10}\,du=\frac12\int_0^1u^{10}\,du.\]
+Therefore,
+\[\frac12\left[\frac{u^{11}}{11}\right]_0^1=\frac1{22}.\]
+The answer is C. The minus sign from \(du\) cancels when reversing the transformed bounds. This method is ordinary U-Substitution, not Trigonometric Substitution.`,
+  },
+  {
+    id: 10605, number: 482, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 11 },
+    topic: "Derivatives", difficulty: 2, methods: ["Mean Value Theorem"],
+    question: String.raw`Find the value of \(c\in(0,27)\) which satisfies the conclusion of the Mean Value Theorem on the interval \([0,27]\) for the function \(f(x)=\sqrt[3]x\).`,
+    choices: [String.raw`\(\frac1{\sqrt{27}}\)`, String.raw`\(\frac1{\sqrt[3]9}\)`, String.raw`\(\frac13\)`, "1", "NOTA"], answer: "E",
+    solution: String.raw`The function is continuous on \([0,27]\) and differentiable on \((0,27)\). Its derivative need not exist at the endpoint \(0\) for the Mean Value Theorem to apply. The theorem states that there exists some \(c\in(0,27)\) such that
+\[f'(c)=\frac{f(27)-f(0)}{27-0}=\frac{3-0}{27}=\frac19.\]
+Since \(f'(c)=1/(3c^{2/3})\), solve
+\[\frac1{3c^{2/3}}=\frac19\quad\Longrightarrow\quad c^{2/3}=3\quad\Longrightarrow\quad c=3\sqrt3.\]
+This lies in \((0,27)\) but is absent from A-D, so the answer is E, agreeing with the errata. The original working mistakenly uses interval \((0,4)\) and average slope \(1\). The prompt's word "hypothesis" is changed to "conclusion": the hypotheses concern the function and interval, whereas \(c\) satisfies the derivative conclusion.`,
+  },
+  {
+    id: 10606, number: 483, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 13 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`The surface area of a sphere is increasing at a rate of \(3\pi\text{ units}^2\) per second. What is the radius of the sphere, in units, when the volume is increasing at a rate of \(12\pi\text{ units}^3\) per second?`,
+    choices: ["8", "9", "10", "11", "NOTA"], answer: "A",
+    solution: String.raw`The surface area is \(S=4\pi r^2\). Differentiating gives
+\[8\pi r\frac{dr}{dt}=3\pi\quad\Longrightarrow\quad r\frac{dr}{dt}=\frac38.\]
+Then, for volume \(V=\frac43\pi r^3\),
+\[\frac{dV}{dt}=4\pi r^2\frac{dr}{dt}=4\pi\left(r\frac{dr}{dt}\right)r=\frac32\pi r.\]
+Equating this to the specified rate \(12\pi\) yields \(r=8\), giving A. Keeping \(\pi\) on both sides fixes the source's missing \(\pi\) factors without changing its intended calculation.`,
+  },
+  {
+    id: 10607, number: 484, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 14 },
+    topic: "Derivatives", difficulty: 2, methods: ["Double-Angle Identity"],
+    question: String.raw`If \(f(x)=\sin^4(x)-\cos^4(x)\), find \(f'(x)\).`,
+    choices: [String.raw`\(-2\sin x\cos x\)`, String.raw`\(2\sin(2x)\)`, String.raw`\(4(\sin^3x-\cos^3x)\)`, String.raw`\(4(\sin^3x+\cos^3x)\)`, "NOTA"], answer: "B",
+    solution: String.raw`Factor the difference of squares and use the Pythagorean identity:
+\[\sin^4x-\cos^4x=(\sin^2x+\cos^2x)(\sin^2x-\cos^2x)=\sin^2x-\cos^2x=-\cos(2x).\]
+The derivative is just \(2\sin(2x)\), since differentiating \(-\cos(2x)\) gives \(\sin(2x)\) times the inside derivative \(2\). Hence the answer is B. This simplification avoids separately differentiating both fourth powers.`,
+  },
+  {
+    id: 10608, number: 485, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 15 },
+    topic: "Limits", difficulty: 2, methods: ["Taylor's Theorem"],
+    question: String.raw`If \(a\), \(b\), and \(c\) are constants such that
+\[\lim_{x\to0}\frac{ax^2+\sin(bx)+\sin(cx)}{5x^2}=10,\]
+find \(a-b-c\).`,
+    choices: ["0", "25", "50", "100", "NOTA"], answer: "C",
+    solution: String.raw`The finite limit forces cancellation of the numerator's linear term. More explicitly, for fixed \(b,c\), Taylor's theorem gives
+\[\sin(bx)+\sin(cx)=(b+c)x+O(x^3).\]
+Thus the quotient is
+\[\frac{b+c}{5x}+\frac a5+O(x).\]
+If \(b+c\ne0\), the \(1/x\) term prevents a finite two-sided limit. Therefore \(b+c=0\). In fact, then \(c=-b\), so the sine terms cancel exactly and the limit is \(a/5\). Since it equals \(10\), \(a=50\), and
+\[a-b-c=a-(b+c)=50.\]
+The answer is C. This supplies the necessity argument behind the source's repeated L'Hopital calculation; one must not assume that a differentiated quotient's limit exists merely because the original limit exists.`,
+  },
+  {
+    id: 10609, number: 486, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 16 },
+    topic: "Limits", difficulty: 2, methods: ["Infinite Geometric Series", "Exponential Limits"],
+    question: String.raw`Evaluate
+\[\lim_{n\to\infty}\left(1+\frac2n+\frac3{n^2}+\frac4{n^3}+\cdots\right)^n.\]
+Here \(n>1\), and the series in parentheses means \(\sum_{k=0}^{\infty}(k+1)/n^k\).`,
+    choices: [String.raw`\(e^2\)`, String.raw`\(e\)`, "1", "0", "NOTA"], answer: "A",
+    solution: String.raw`The terms after \(2/n\) do not contribute to the limiting logarithm, but this needs control of the entire infinite tail. We can sum it exactly. Differentiating the convergent geometric series gives, for \(|r|<1\),
+\[\sum_{k=0}^{\infty}(k+1)r^k=\frac1{(1-r)^2}.\]
+With \(r=1/n\), the expression becomes
+\[\left(1-\frac1n\right)^{-2n}.\]
+Its logarithm is \(-2n\ln(1-1/n)\), which tends to \(2\), since \(\ln(1-t)/t\to-1\) as \(t\to0\). Exponentiating gives \(e^2\), choice A. The appended series definition makes the source's ellipsis unambiguous and justifies its informal claim about the tail.`,
+  },
+  {
+    id: 10610, number: 487, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 17 },
+    topic: "Indefinite Integrals", difficulty: 2, methods: ["Chain Rule"],
+    question: String.raw`For \(x\ge6\), define \(f'(3x^2+6)=6x^2+4\). Find \(f(3x^2+6)\), given that \(C\) is a real constant.`,
+    choices: [String.raw`\(2x^3+4x+C\)`, String.raw`\(9x^4-108x^2+C\)`, String.raw`\(9x^4+12x^2+C\)`, String.raw`\(x^2-8x+C\)`, "NOTA"], answer: "C",
+    solution: String.raw`Let \(F(x)=f(3x^2+6)\). The given expression is \(f'\) evaluated at \(3x^2+6\), not the derivative of the whole composition. By the chain rule,
+\[F'(x)=f'(3x^2+6)(6x)=(6x^2+4)(6x)=36x^3+24x.\]
+Integrating on the given interval yields
+\[f(3x^2+6)=9x^4+12x^2+C,\]
+so the answer is C.
+
+The source instead renames the input and obtains \(f'(u)=2u-8\). This is valid for the inputs actually specified, \(u\ge114\), since \(x\ge6\). Then \(f(u)=u^2-8u+K\) on that interval, and substituting \(u=3x^2+6\) gives the same answer after absorbing \(-12+K\) into \(C\). No claim about \(f\) at smaller inputs is needed.`,
+  },
+  {
+    id: 10611, number: 488, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 18 },
+    topic: "Analytic Geometry", difficulty: 2, methods: ["Quotient Rule"],
+    question: String.raw`Find the equation of the line normal to the graph of \(\displaystyle y=\frac{x^2+3x+2}{x-1}\) at \(x=3\).`,
+    choices: [String.raw`\(x-y+7=0\)`, String.raw`\(2x-y+4=0\)`, String.raw`\(x+2y-20=0\)`, String.raw`\(x-2y+10=0\)`, "NOTA"], answer: "B",
+    solution: String.raw`At \(x=3\), we have \(y=10\), and the derivative is
+\[y'=\frac{(2x+3)(x-1)-(x^2+3x+2)}{(x-1)^2}.\]
+At \(x=3\), its value is \((18-20)/4=-1/2\). The normal is perpendicular to the tangent, so its slope is the negative reciprocal, \(2\). An equation is
+\[y-10=2(x-3),\]
+or \(2x-y+4=0\). The answer is B. The point and tangent slope are both defined because \(3\ne1\).`,
+  },
+  {
+    id: 10612, number: 489, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 19 },
+    topic: "Derivatives", difficulty: 2, methods: ["Logarithmic Differentiation"],
+    question: String.raw`Let \(f(x)=(\ln(x))^{e^x}\). Evaluate \(f'(e)\).`,
+    choices: [String.raw`\(2e^e\)`, String.raw`\(e^{e-1}(e+1)\)`, String.raw`\(e^e\)`, String.raw`\(e^{e-1}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Near \(x=e\), \(\ln x>0\), so logarithmic differentiation is valid:
+\[\ln(f(x))=e^x\ln(\ln x).\]
+Implicitly differentiating yields
+\[\frac{f'(x)}{f(x)}=e^x\ln(\ln x)+e^x\frac1{\ln x}\frac1x.\]
+At \(x=e\), \(\ln e=1\) and \(\ln1=0\), so the right side is \(e^e/e=e^{e-1}\). Since \(f(e)=1^{e^e}=1\), we obtain \(f'(e)=e^{e-1}\), choice D. Both the variable base and variable exponent are accounted for.`,
+  },
+  {
+    id: 10613, number: 490, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 20 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`Find the limit as \(x\) approaches \(2\) of
+\[f(x)=\begin{cases}6x+2,&x<2,\\24,&x=2,\\3x^2+x,&x>2.\end{cases}\]`,
+    choices: ["2", "14", "24", "the limit does not exist", "NOTA"], answer: "B",
+    solution: String.raw`As we approach from the left and right, the values of \(f\) approach \(14\). Specifically,
+\[\lim_{x\to2^-}f(x)=6(2)+2=14,\qquad\lim_{x\to2^+}f(x)=3(2)^2+2=14.\]
+Since both one-sided limits exist and agree, the two-sided limit is \(14\). At \(x=2\) we have a value of \(24\), but the limit need not equal \(f(2)\): changing the value at just the approached point does not change nearby behavior. Thus the answer is B.`,
+  },
+  {
+    id: 10614, number: 491, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 21 },
+    topic: "Derivatives", difficulty: 3, methods: ["Mathematical Induction"],
+    question: String.raw`Find the correct formula for the \((n+1)\)th derivative of \(x^n\ln(x)\), where \(n\) is an integer with \(n\ge3\) and \(x>0\).`,
+    choices: [String.raw`\(n\ln x+\frac{n(n+1)}2\)`, String.raw`\(n!\ln x+\frac{n(n+1)}2\)`, String.raw`\(\frac nx\)`, String.raw`\(\frac{n!}x\)`, "NOTA"], answer: "D",
+    solution: String.raw`After \(n\) differentiations the logarithmic term has coefficient \(n!\), and the other terms are constant. One more derivative therefore gives \(n!/x\). Here is a proof of that pattern.
+
+Write \(H_n=1+1/2+\cdots+1/n\). We claim
+\[\frac{d^n}{dx^n}(x^n\ln x)=n!(\ln x+H_n).\]
+For \(n=1\), the derivative of \(x\ln x\) is \(\ln x+1\). Assuming the formula at \(n\), first differentiate \(x^{n+1}\ln x\) once to get \((n+1)x^n\ln x+x^n\), then differentiate \(n\) more times. This gives
+\[(n+1)n!(\ln x+H_n)+n!=(n+1)!(\ln x+H_{n+1}).\]
+The claim follows by induction. Differentiating it once more gives
+\[\frac{d^{n+1}}{dx^{n+1}}(x^n\ln x)=\frac{n!}x,\]
+choice D.
+
+The integer restriction makes derivative order and factorial meaningful. We specify \(n\ge3\), since for \(n=1\) or \(n=2\) printed choices C and D coincide. The source omits E on this item; NOTA is supplied as the standard fifth choice without changing A-D.`,
+  },
+  {
+    id: 10615, number: 492, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 22 },
+    topic: "Derivatives", difficulty: 1, methods: [],
+    question: String.raw`The tenth derivative, with respect to \(x\), of \(y=f(x)\) is \(-\cos x\). Which could be an expression for \(f\)?`,
+    choices: [String.raw`\(-\cos x\)`, String.raw`\(\cos x\)`, String.raw`\(-\sin x\)`, String.raw`\(\sin x\)`, "NOTA"], answer: "B",
+    solution: String.raw`The derivatives of cosine repeat every four steps:
+\[\cos x\ \longrightarrow\ -\sin x\ \longrightarrow\ -\cos x\ \longrightarrow\ \sin x\ \longrightarrow\ \cos x.\]
+Since \(10\equiv2\pmod4\), the tenth derivative of \(\cos x\) is \(-\cos x\). Hence \(f(x)=\cos x\) could be the original function, and the answer is B.
+
+The phrase "could be" matters: the original function is not uniquely determined. Adding any polynomial of degree at most \(9\) also leaves its tenth derivative unchanged. This does not prevent B from being the unique valid printed choice.`,
+  },
+  {
+    id: 10616, number: 493, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 23 },
+    topic: "Limits", difficulty: 1, methods: ["Limit Definition of Derivatives"],
+    question: String.raw`\[\lim_{h\to0}\frac{8-2^{3+h}}h=\]`,
+    choices: [String.raw`\(-\ln256\)`, String.raw`\(8\ln2\)`, String.raw`\(-2\ln8\)`, String.raw`\(-4\ln24\)`, "NOTA"], answer: "A",
+    solution: String.raw`This is the definition of the derivative, in the "wrong order." Let \(f(x)=2^x\), so \(f(3)=8\). Then
+\[\lim_{h\to0}\frac{f(3)-f(3+h)}h=-f'(3).\]
+Since \(f'(x)=2^x\ln2\), the value is
+\[-8\ln2=-\ln(2^8)=-\ln256.\]
+Thus the answer is A. The source's notation \(f'(2^x)\) is corrected to \(f'(x)\); the derivative is evaluated at the input \(3\), not at \(2^3\).`,
+  },
+  {
+    id: 10617, number: 494, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 24 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`The side of a cube is increasing at a constant rate of \(2\) inches per second. What is the ratio of the rate at which the volume is increasing (in cubic inches per second) to the rate at which the surface area is increasing (in square inches per second) when the surface area of the cube is \(54\) square inches?`,
+    choices: ["8", "4", "1.5", "0.75", "NOTA"], answer: "D",
+    solution: String.raw`Let \(x\) be the length of one edge in inches. Then \(dx/dt=2\), volume is \(V=x^3\), and surface area is \(S=6x^2\). Thus
+\[\frac{dV}{dt}=3x^2\frac{dx}{dt},\qquad\frac{dS}{dt}=12x\frac{dx}{dt}.\]
+The requested ratio is volume rate divided by surface-area rate:
+\[\frac{dV/dt}{dS/dt}=\frac{3x^2}{12x}=\frac x4.\]
+When \(S=54\), \(6x^2=54\) and the positive side length is \(x=3\). The ratio is \(3/4=0.75\), choice D. Directly, the rates are \(54\text{ in}^3/\text{s}\) and \(72\text{ in}^2/\text{s}\), confirming the same numerical ratio.`,
+  },
+  {
+    id: 10618, number: 495, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 26 },
+    topic: "Definite Integrals", difficulty: 3, methods: ["Symmetry"],
+    question: String.raw`Evaluate \(\displaystyle\int_{-\pi/2}^{\pi/2}\frac{\cos x}{1+e^x}\,dx\).`,
+    choices: ["0", "1", String.raw`\(\frac1{2\pi}\)`, String.raw`\(\frac1\pi\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let
+\[I=\int_{-\pi/2}^{\pi/2}\frac{\cos x}{1+e^x}\,dx.\]
+Letting \(u=-x\), reversing the transformed bounds, and using \(\cos(-u)=\cos u\), we find that
+\[I=\int_{-\pi/2}^{\pi/2}\frac{\cos x}{1+e^{-x}}\,dx.\]
+Adding these two yields
+\[2I=\int_{-\pi/2}^{\pi/2}\cos x\left(\frac1{1+e^x}+\frac1{1+e^{-x}}\right)dx.\]
+The parenthesis is \(1\), since its second term equals \(e^x/(1+e^x)\). Hence
+\[2I=\int_{-\pi/2}^{\pi/2}\cos x\,dx=\sin(\pi/2)-\sin(-\pi/2)=2.\]
+Thus \(I=1\), choice B. This is reflection symmetry of a definite integral, not the elementary interval-additivity method labeled Integral Properties.`,
+  },
+  {
+    id: 10619, number: 496, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 27 },
+    topic: "Improper Integrals", difficulty: 3, methods: ["Power Series"],
+    question: String.raw`Evaluate \(\displaystyle\int_0^1\frac{\ln(1-x^{12})}{x}\,dx\).`,
+    choices: [String.raw`\(-\frac{\pi^2}6\)`, String.raw`\(\frac{\pi^2}{36}\)`, String.raw`\(-\frac{\pi^2}{72}\)`, String.raw`\(\frac{\pi^2}{144}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Utilizing the Taylor series \(-\ln(1-x)=\sum_{n=1}^{\infty}x^n/n\), we make the substitution
+\[\ln(1-x^{12})=-\sum_{n=1}^{\infty}\frac{x^{12n}}n\qquad(0\le x<1).\]
+For \(0<x<1\), divide by \(x\). The negative of the integrand is a sum of nonnegative terms, so monotone convergence justifies integrating the series up to the improper endpoint:
+\[\int_0^1\frac{\ln(1-x^{12})}{x}\,dx
+=-\sum_{n=1}^{\infty}\int_0^1\frac{x^{12n-1}}n\,dx
+=-\sum_{n=1}^{\infty}\frac1{12n^2}.\]
+Note that this is just the Basel summation, hence the answer is
+\[-\frac1{12}\cdot\frac{\pi^2}6=-\frac{\pi^2}{72},\]
+choice C. At \(0\), the integrand tends to \(0\) like \(-x^{11}\). At \(1\), the logarithmic singularity is integrable; the finite series sum above also proves convergence. This fills in the source's unproved exchange of summation and integration.`,
+  },
+  {
+    id: 10620, number: 497, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 29 },
+    topic: "Improper Integrals", difficulty: 3, methods: ["Trigonometric Identities", "Absolute Value"],
+    question: String.raw`Evaluate:
+\[\int_0^1\frac{\sqrt{\sin^4(x)+4\cos^2(x)}+\sqrt{\cos^4(x)+4\sin^2(x)}}{\sqrt{1-x^2}}\,dx.\]`,
+    choices: ["0", String.raw`\(\frac\pi2\)`, String.raw`\(\pi\)`, String.raw`\(\frac{3\pi}2\)`, "NOTA"], answer: "D",
+    solution: String.raw`First, note that
+\[\sin^4x+4\cos^2x=\sin^4x-4\sin^2x+4=(\sin^2x-2)^2,\]
+and similarly \(\cos^4x+4\sin^2x=(\cos^2x-2)^2\). Taking square roots requires absolute values. Since \(0\le\sin^2x,\cos^2x\le1\),
+\[\sqrt{(\sin^2x-2)^2}=2-\sin^2x,\qquad
+\sqrt{(\cos^2x-2)^2}=2-\cos^2x.\]
+Their sum is \(4-(\sin^2x+\cos^2x)=3\), not \(1\). Hence, treating the upper endpoint as improper,
+\[\lim_{b\to1^-}3\int_0^b\frac{dx}{\sqrt{1-x^2}}
+=3\lim_{b\to1^-}(\arcsin b-\arcsin0)=\frac{3\pi}2.\]
+The answer is D, agreeing with the errata. The source's simplification to \(1\) misses the signs introduced by the square roots and is the reason its original B is incorrect.`,
+  },
+  {
+    id: 10621, number: 498, division: "Mu",
+    source: { ...kingFebruaryStatewide2024, questionNumber: 30 },
+    topic: "Number Theory", difficulty: 3, methods: [],
+    question: String.raw`Suppose I have \(1679\) stones in a pile. Each turn, I throw away one stone, then split any of my piles into two new piles. Suppose I want to reach a state such that all my piles have exactly \(n\) stones in a finite number of moves. For which of the following values of \(n\) is this impossible?
+
+The discarded stone may come from any pile, including a singleton; a pile with no stones disappears. The subsequent split must create two nonempty piles, and it may split a different pile from the one from which the stone was discarded.`,
+    choices: ["6", "7", "8", "9", "NOTA"], answer: "E",
+    solution: String.raw`The corrected answer is E: every listed size can be achieved. The rule clarification makes explicit that a singleton pile may disappear when its only stone is discarded. This is the distinction missing from the source's invariant argument.
+
+First consider \(n=6,7,9\). Each time, discard a stone from the remaining large pile, then split off exactly \(n\) stones, leaving the completed piles untouched. If the remaining pile has size \(M\), this changes it to \(M-(n+1)\). Initially,
+\[1679=7(240)-1=8(210)-1=10(168)-1.\]
+For each of these three values of \(n\), write \(1679=(n+1)k-1\). After \(k-1\) turns the remaining pile has exactly \(n\) stones. All split-off piles also have \(n\) stones. Every split has two positive parts, so these are legal finite constructions.
+
+For \(n=8\), the usual construction fails, but discarding singleton piles resolves it. On the first turn discard one stone and split the remaining \(1678\) into piles of \(1\) and \(1677\). On each of the next five turns, discard the singleton and split one stone off the large pile to recreate a singleton. The sizes are now \(1\) and \(1672\). On the next turn, discard the singleton and split the large pile into \(8\) and \(1664\). This is legal because
+\[1664=9(185)-1.\]
+Now apply the same construction as before: each turn discard a stone from the large pile and split off \(8\). After \(184\) further turns, the remaining pile is \(1664-9(184)=8\). Thus all \(186\) piles have size \(8\); the total of \(191\) discarded stones also checks \(1679-191=186\cdot8\).
+
+The source claims that the number of stones plus the number of piles is invariant. This is true for a turn that does not empty a pile, but false when a singleton is discarded: that turn decreases the stone count by one while the disappearance and subsequent split leave the pile count unchanged. Its original C relies on forbidding this legal move. The errata changes C to E, which the constructions above prove under the clarified rule.`,
   },
 ];
