@@ -11,6 +11,19 @@ const solutionImages = [...renderer.matchAll(/src: "(\/questions\/[^\"]+)"[\s\S]
 const images = [...[...muQuestions,...alphaQuestions,...thetaQuestions].flatMap(q => q.illustration ? [q.illustration] : []),...solutionImages];
 const uniqueImages = [...new Map(images.map(image => [image.src,image])).values()];
 
+test("question 223 integral labels keep limits and integrands in one aligned SVG group", () => {
+  const svg=readFileSync(new URL("../public/questions/mu-345-original-solution.svg",import.meta.url),"utf8");
+  for(const id of ["forward-integral","inverse-integral"]){
+    const group=svg.match(new RegExp('<g id="'+id+'"[\\s\\S]*?</g>'))?.[0];
+    assert.ok(group,id);
+    assert.match(group,/<path\b[^>]*stroke="#c23b32"/);
+    assert.match(group,/<text class="upper-limit" x="22" y="-20"/);
+    assert.match(group,/<text class="lower-limit" x="10" y="31"/);
+    assert.match(group,/<text class="integrand" x="40" y="8"/);
+    assert.doesNotMatch(group,/>∫</);
+  }
+});
+
 test("every public question and solution illustration is a standalone local vector", () => {
   assert.equal(solutionImages.length,10,"all solution-only diagrams are checked");
   assert.ok(uniqueImages.length >= 18);
