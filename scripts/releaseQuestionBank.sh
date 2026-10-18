@@ -28,6 +28,7 @@ paths=(
   docs/february-regional-2026-audit.md
   docs/february-regional-2025-audit.md
   docs/january-regional-2025-audit.md
+  docs/january-invitational-2024-audit.md
   docs/january-regional-2026-audit.md
   docs/january-statewide-2026-audit.md
   docs/king-statewide-2025-audit.md
@@ -68,6 +69,7 @@ paths=(
   tests/muFebruaryRegional2025.test.mjs
   tests/muFebruaryStatewide2026.test.mjs
   tests/muJanuaryRegional2025.test.mjs
+  tests/muJanuaryInvitational2024.test.mjs
   tests/muJanuaryRegional2026.test.mjs
   tests/muJanuaryState.test.mjs
   tests/muKingStatewide2025.test.mjs

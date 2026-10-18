@@ -1,5 +1,10 @@
 import type { Question } from "@/types/question";
 
+const januaryInvitational2024 = {
+  competition: "2024 FAMAT January Invitational",
+  event: "Calculus Individual",
+};
+
 const marchRegional2025 = {
   competition: "2025 March Regional",
   event: "Calculus Individual",
@@ -7618,5 +7623,566 @@ After dividing by \(x^4\), the expression becomes
 A finite limit requires \(k=8\); any other value leaves a nonzero multiple of \(1/x^2\). With \(k=8\), the limit is \(-32/3\). The product is therefore
 \[8\left(-\frac{32}{3}\right)=-\frac{256}{3}.\]
 The source says "let \(u=3x\)" before correctly expanding \(\cos(4x)\); that substitution is corrected to \(u=4x\). The \(O(x^6)\) remainder becomes \(O(x^2)\) after division, so it tends to \(0\) and does not affect the finite limit.`,
+  },
+  {
+    id: 10505, number: 382, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 1 },
+    topic: "Limits", difficulty: 2, methods: ["Logarithms"],
+    question: String.raw`Suppose
+\[f(x)=\int_{k(x)}^{j(x)}\frac1z\,dz\qquad\text{and}\qquad g(x)=\ln\left(\frac{k(x)}{j(x)}\right).\]
+If \(j(0)=k(0)\) and \(f(x)\) and \(g(x)\) are continuous over the reals, evaluate
+\[\lim_{x\to0}\frac{f(x)}{g(x)}.\]
+Assume \(g(x)\ne0\) for all sufficiently small nonzero \(x\).`,
+    choices: [String.raw`\(-1\)`, String.raw`\(0\)`, String.raw`\(1\)`, "DNE", "NOTA"], answer: "A",
+    solution: String.raw`Since the real logarithm defining \(g\) exists, \(k(x)\) and \(j(x)\) are nonzero and have the same sign. The integration interval therefore does not cross the singularity at \(z=0\). Using the antiderivative \(\ln|z|\),
+\[f(x)=\int_{k(x)}^{j(x)}\frac1z\,dz
+=\ln|j(x)|-\ln|k(x)|
+=\ln\left(\frac{j(x)}{k(x)}\right)
+=-\ln\left(\frac{k(x)}{j(x)}\right)=-g(x).\]
+Thus \(f(x)/g(x)=-1\) wherever the quotient is defined. The added nonzero-denominator assumption guarantees a punctured neighborhood on which it is defined, so its limit is \(-1\), even though both \(f(0)\) and \(g(0)\) equal \(0\).
+
+The source's logarithm calculation is valid directly for positive endpoints; the absolute values above also cover negative endpoints. Without the added assumption, \(j=k=1\) identically would leave the quotient undefined everywhere, so the original hypotheses would not guarantee the requested limit.`,
+  },
+  {
+    id: 10506, number: 383, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 2 },
+    topic: "Limits", difficulty: 2, methods: [],
+    question: String.raw`Suppose you are given the following information:
+\[\lim_{x\to2024}y(x)=1,\qquad \lim_{x\to2024}a(x)=0,\]
+\[\lim_{x\to2024}l(x)=-\infty,\qquad \lim_{x\to2024}e(x)=\infty.\]
+And you are asked to evaluate the following limits:
+\[\begin{aligned}
+\mathrm{I}.&\ \lim_{x\to2024}a(x)l(x)\\
+\mathrm{II}.&\ \lim_{x\to2024}\frac{l(x)}{y(x)}\\
+\mathrm{III}.&\ \lim_{x\to2024}e(x)^{a(x)}\\
+\mathrm{IV}.&\ \lim_{x\to2024}l(x)e(x)\\
+\mathrm{V}.&\ \lim_{x\to2024}y(x)^{e(x)}\\
+\mathrm{VI}.&\ \lim_{x\to2024}\bigl(l(x)+e(x)\bigr)\\
+\mathrm{VII}.&\ \lim_{x\to2024}e(x)^{y(x)}
+\end{aligned}\]
+However, you may notice that you do not have enough information to evaluate all of the limits. Which of the limits are you unable to determine on the basis of the information given? Consider limits to infinity or negative infinity as able to be determined.`,
+    choices: ["I, V, VI", "I, III, V, VI", "I, II, III, VI", "I, III, IV, V, VII", "NOTA"], answer: "B",
+    solution: String.raw`The powers in III, V, and VII are exponents, not quotients. The supplied fixed solution mistakenly displays them as fractions, so its classification needs correction.
+
+II has limit \(-\infty\), because its numerator tends to \(-\infty\) and its denominator tends to the positive number \(1\). IV also tends to \(-\infty\), because \(l(x)\) is eventually negative with arbitrarily large magnitude while \(e(x)\) is eventually positive and unbounded. VII tends to \(+\infty\): eventually \(e(x)>1\) and \(y(x)>1/2\), so
+\[e(x)^{y(x)}\ge\sqrt{e(x)}\longrightarrow+\infty.\]
+The other four forms are indeterminate:
+\[\mathrm{I}:\ 0\cdot(-\infty),\qquad
+\mathrm{III}:\ \infty^0,\qquad
+\mathrm{V}:\ 1^\infty,\qquad
+\mathrm{VI}:\ -\infty+\infty.\]
+To see why they are not determined, put \(t=1/|x-2024|\), so \(t\to\infty\). For I, let \(l=-t\); the choices \(a=1/t\) and \(a=1/t^2\) give limits \(-1\) and \(0\). For III, take \(e=t\); the choices \(a=0\) and \(a=1/\ln t\) give limits \(1\) and \(\exp(1)\). For V, take \(e=t\); \(y=1\) gives \(1\), whereas \(y=1+1/t\) gives \(\exp(1)\). For VI, \(l=-t,e=t\) gives \(0\), whereas \(l=-t,e=2t\) gives \(+\infty\).
+
+Thus precisely I, III, V, and VI cannot be determined, which is choice B. In particular, V must not be omitted from the final list as it is in the supplied explanation.`,
+  },
+  {
+    id: 10507, number: 384, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 3 },
+    topic: "Limits", difficulty: 3, methods: ["Rationalization"],
+    question: String.raw`Suppose
+\[\lim_{x\to\infty}\left[\sum_{n=1}^{10000}(-1)^n\sqrt{x^2+nx}\right]=m.\]
+If \(m\) is non-negative, find the sum of the digits of \(m\). If \(m\) is negative, find the opposite of the sum of the digits of the absolute value of \(m\).`,
+    choices: [String.raw`\(5\)`, String.raw`\(-5\)`, String.raw`\(7\)`, String.raw`\(0\)`, "NOTA"], answer: "C",
+    solution: String.raw`The errata corrects both the alternating factor to \((-1)^n\) and the radical to a square root; those corrections are already present in the supplied fixed test.
+
+Pair consecutive terms before taking any limits:
+\[\sum_{n=1}^{10000}(-1)^n\sqrt{x^2+nx}
+=\sum_{k=1}^{5000}\left(\sqrt{x^2+2kx}-\sqrt{x^2+(2k-1)x}\right).\]
+Rationalize each difference. For \(x>0\),
+\[\sqrt{x^2+2kx}-\sqrt{x^2+(2k-1)x}
+=\frac{x}{\sqrt{x^2+2kx}+\sqrt{x^2+(2k-1)x}}
+=\frac1{\sqrt{1+2k/x}+\sqrt{1+(2k-1)/x}}.\]
+For every fixed \(k\), this tends to \(1/2\). There are only finitely many pairs, so we may now add their finite limits:
+\[m=\sum_{k=1}^{5000}\frac12=2500.\]
+The sum of the digits of \(2500\) is \(2+5+0+0=7\).
+
+The source gets the same value by canceling the leading \(x\) terms. Its initial step of taking the limits of the individual signed radicals is not valid, since those terms diverge and would give an undefined sum of infinities. Pairing first makes the cancellation rigorous.`,
+  },
+  {
+    id: 10508, number: 385, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 4 },
+    topic: "Optimization", difficulty: 1, methods: ["Trigonometric Identities"],
+    question: String.raw`What is the maximum value of
+\[y=3\sin x-2\cos x\]
+on \([-2024,2024]\)?`,
+    choices: [String.raw`\(1\)`, String.raw`\(13\)`, String.raw`\(-\arctan\left(\frac32\right)\)`, String.raw`\(5\)`, "NOTA"], answer: "E",
+    solution: String.raw`Differentiate:
+\[y=3\sin x-2\cos x,\qquad y'=3\cos x+2\sin x.\]
+Set \(y'=0\):
+\[3\cos x+2\sin x=0\quad\Longrightarrow\quad\tan x=-\frac32.\]
+The maximum value of \(3\sin x-2\cos x\) is
+\[\sqrt{3^2+(-2)^2}=\sqrt{13}.\]
+For completeness, choose \(\phi=\arctan(2/3)\), so
+\[3\sin x-2\cos x=\sqrt{13}\sin(x-\phi).\]
+The upper bound \(\sqrt{13}\) is attained at \(x=\pi/2+\phi\), which lies in the stated interval. Thus it is the actual maximum, not just an upper bound. Since \(\sqrt{13}\) is not listed among A-D, the answer is E. The number \(13\) in B is the square of the amplitude, not the amplitude.`,
+  },
+  {
+    id: 10509, number: 386, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 5 },
+    topic: "Derivatives", difficulty: 2, methods: ["Nested Functions"],
+    question: String.raw`Suppose \(f(x)=\frac{1-x}{1+x}\), and for all natural numbers \(n\), the following identity holds:
+\[f_{n+1}(x)=f(f_n(x)).\]
+We define \(f_1(x)=f(x)\). Evaluate
+\[\sum_{n=1}^{2024}f_n'(0).\]`,
+    choices: [String.raw`\(-2012\)`, String.raw`\(2011\)`, String.raw`\(-1010\)`, String.raw`\(-1001\)`, "NOTA"], answer: "E",
+    solution: String.raw`Look for a pattern. Since \(f(x)=(1-x)/(1+x)\), we have
+\[f_2(x)=f(f(x))
+=\frac{1-\frac{1-x}{1+x}}{1+\frac{1-x}{1+x}}=x.\]
+These identities are valid in a neighborhood of \(0\), where every iterate is defined. Thus the iterates alternate:
+\[f_n(x)=\begin{cases}\dfrac{1-x}{1+x},&n\text{ odd},\\x,&n\text{ even}.\end{cases}\]
+The quotient rule gives \(f'(x)=-2/(1+x)^2\). Therefore
+\[f_n'(0)=\begin{cases}-2,&n\text{ odd},\\1,&n\text{ even}.\end{cases}\]
+For \(2024\) terms there are \(1012\) odd and \(1012\) even values of \(n\), so
+\[\sum_{n=1}^{2024}f_n'(0)=1012(-2)+1012(1)=-1012.\]
+This is not listed, so the answer is E. The notation \(f_n\) denotes composition iterates, not powers of \(f\).`,
+  },
+  {
+    id: 10510, number: 387, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 6 },
+    topic: "Sequences and Series", difficulty: 2, methods: ["Infinite Geometric Series"],
+    question: String.raw`Let \(h(x)=\frac{2^x}{\ln(2)}\ln 2\). If \(h^{(n)}(x)\) represents the \(n\)th derivative of \(h(x)\), find
+\[\sum_{n=1}^{\infty}h^{(n)}(\log_2\pi).\]`,
+    choices: [String.raw`\(\frac{\pi\ln2}{1-\ln2}\)`, String.raw`\(\frac{\ln2}{1-\pi}\)`, String.raw`\(\frac{\pi\ln2}{1+\ln2}\)`, String.raw`\(\frac{\pi}{1-\ln2}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The displayed factors \(\ln2\) cancel, so \(h(x)=2^x\). Then
+\[h^{(n)}(x)=2^x(\ln2)^n.\]
+At \(x=\log_2\pi\), \(2^x=\pi\), so
+\[h^{(n)}(\log_2\pi)=\pi(\ln2)^n.\]
+Thus
+\[\sum_{n=1}^{\infty}h^{(n)}(\log_2\pi)
+=\pi\sum_{n=1}^{\infty}(\ln2)^n
+=\frac{\pi\ln2}{1-\ln2}.\]
+The series converges because \(0<\ln2<1\). Its first term is \(\pi\ln2\), since the sum starts at \(n=1\), not \(n=0\). The supplied fixed solution calculates this expression correctly but labels it D; it is choice A in the supplied test. Choice D would include the extra zeroth-derivative term \(\pi\).`,
+  },
+  {
+    id: 10511, number: 388, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 7 },
+    topic: "Continuity", difficulty: 2, methods: ["Intermediate Value Theorem"],
+    question: String.raw`There is a number \(x\) such that
+\[x^{2018}+\frac1{\sin^2x}=2018.\]
+This can be proven through the exclusive application of which of the following theorems?`,
+    choices: ["Mean Value Theorem for Derivatives", "Mean Value Theorem for Integrals", "Squeeze Theorem", "Intermediate Value Theorem", "NOTA"], answer: "D",
+    solution: String.raw`Let
+\[F(x)=x^{2018}+\frac1{\sin^2x}.\]
+The function is continuous on \((0,1]\). Also,
+\[\lim_{x\to0^+}F(x)=\infty,\qquad F(1)=1+\frac1{\sin^21}<2018.\]
+For example, \(\sin1\ge2/\pi>1/2\), so \(F(1)<5\). Because the limit at \(0^+\) is \(+\infty\), there is some \(\varepsilon\in(0,1)\) for which \(F(\varepsilon)>2018\).
+
+Now apply the Intermediate Value Theorem on the closed interval \([\varepsilon,1]\), on which \(F\) is continuous. Since \(2018\) lies strictly between the endpoint values, there is an \(x\in(\varepsilon,1)\) such that \(F(x)=2018\).
+
+We do not apply the theorem on \([0,1]\), since \(F\) is undefined at \(0\). The Mean Value Theorems concern average values or derivative slopes, and the Squeeze Theorem concerns limits; IVT directly establishes the required attained value.`,
+  },
+  {
+    id: 10512, number: 389, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 8 },
+    topic: "Analytic Geometry", difficulty: 2, methods: ["Even Functions", "Tangency"],
+    question: String.raw`If \(f(x)\) is an even function, and \(f'(p)=m\), find the point of intersection of the normal lines to \(f\) at \((p,q)\) and \((-p,q)\). Assume \(p>0\), \(m\ne0\), and that both points lie on the graph of \(f\).`,
+    choices: [String.raw`\(\left(0,q+\frac pm\right)\)`, String.raw`\((0,q-mp)\)`, String.raw`\(\left(0,p+\frac qm\right)\)`, String.raw`\((0,p-mq)\)`, "NOTA"], answer: "A",
+    solution: String.raw`Since \(f\) is even, the tangent slopes at \(p\) and \(-p\) are opposite: \(f'(-p)=-f'(p)=-m\). This follows by differentiating \(f(-x)=f(x)\) at the corresponding points.
+
+The normal line at \((p,q)\) has slope \(-1/m\):
+\[y-q=-\frac1m(x-p).\]
+The normal at \((-p,q)\) has slope \(1/m\):
+\[y-q=\frac1m(x+p).\]
+Equating the right sides gives \(-x+p=x+p\), hence \(x=0\). At \(x=0\),
+\[y=q+\frac pm.\]
+Thus the two normal lines meet at \(\left(0,q+\frac pm\right)\).
+
+The assumptions \(p>0\) and \(m\ne0\) remove degeneracies omitted in the source: if \(p=0\), the two points coincide; if \(m=0\) at distinct points, their normals are parallel vertical lines, so there is no intersection.`,
+  },
+  {
+    id: 10513, number: 390, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 9 },
+    topic: "Optimization", difficulty: 3, methods: ["First Derivative Test"],
+    question: String.raw`Fritz is watching a documentary about his favorite subject, banks. If his TV is 5 feet tall and the bottom of his TV is positioned 3 feet above his eye level, how far away horizontally from the TV should Fritz sit to maximize his viewing angle?`,
+    choices: [String.raw`\(2\sqrt2\)`, String.raw`\(2\sqrt3\)`, String.raw`\(2\sqrt5\)`, String.raw`\(2\sqrt6\)`, "NOTA"], answer: "D",
+    solution: String.raw`Let \(d>0\) be the horizontal distance from the TV and let \(\theta\) be the viewing angle. The top of the TV is \(8\) ft above eye level and the bottom is \(3\) ft above eye level, so
+\[\theta=\arctan\left(\frac8d\right)-\arctan\left(\frac3d\right).\]
+Then
+\[\tan\theta=\frac{8/d-3/d}{1+(8/d)(3/d)}=\frac{5d}{d^2+24}.\]
+Since \(0<\theta<\pi/2\), tangent is strictly increasing, so maximizing this expression maximizes \(\theta\). Differentiate:
+\[\frac{d}{dd}\left(\frac{5d}{d^2+24}\right)
+=\frac{5(d^2+24)-10d^2}{(d^2+24)^2}
+=\frac{5(24-d^2)}{(d^2+24)^2}.\]
+The derivative is positive for \(0<d<\sqrt{24}\) and negative for \(d>\sqrt{24}\). The function therefore has its global maximum at \(d=\sqrt{24}=2\sqrt6\) feet. The viewing angle tends to zero both as \(d\to0^+\) and as \(d\to\infty\), consistent with this maximum.`,
+  },
+  {
+    id: 10514, number: 391, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 10 },
+    topic: "Derivatives", difficulty: 2, methods: ["Limit Definition of Derivatives", "Tangency"],
+    question: String.raw`Let
+\[f(x)=\lim_{u\to2024}\frac{\arctan(x+u-2024)-\arctan(x)}{u-2024}.\]
+What is the slope of the normal line of \(f\) at \(x=1\)?`,
+    choices: [String.raw`\(-2\)`, String.raw`\(-\frac12\)`, String.raw`\(\frac12\)`, String.raw`\(2\)`, "NOTA"], answer: "D",
+    solution: String.raw`Set \(h=u-2024\). As \(u\to2024\), \(h\to0\), so the expression defining \(f\) is the derivative of \(\arctan x\):
+\[f(x)=\lim_{h\to0}\frac{\arctan(x+h)-\arctan x}{h}=\frac1{1+x^2}.\]
+We need the tangent slope of this new function \(f\), not the slope of \(\arctan x\). Differentiate once more:
+\[f'(x)=-\frac{2x}{(1+x^2)^2},\qquad f'(1)=-\frac12.\]
+The normal line slope is the negative reciprocal of the tangent slope, hence \(-1/(-1/2)=2\).`,
+  },
+  {
+    id: 10515, number: 392, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 11 },
+    topic: "Limits", difficulty: 4, methods: ["Quadratic Formula"],
+    question: String.raw`There are 2 attainable finite real values of \(c\) such that, for every real-valued function \(f\) that is nonzero on some punctured neighborhood of \(0\), the condition
+\[\lim_{x\to0}\left(f(x)+\frac1{f(x)}\right)=c\]
+guarantees that \(\lim_{x\to0}f(x)\) exists as a finite real number. What is the greater value of \(c\)?`,
+    choices: [String.raw`\(1\)`, String.raw`\(2\)`, String.raw`\(3\)`, String.raw`\(4\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let \(g(x)=f(x)+1/f(x)\). Then
+\[g(x)f(x)=f(x)^2+1,\qquad f(x)^2-g(x)f(x)+1=0.\]
+Solving for \(f(x)\) gives
+\[f(x)=\frac{g(x)\pm\sqrt{g(x)^2-4}}2.\]
+The choice of sign is allowed to depend on \(x\), since no continuity of \(f\) is assumed. For nonzero real \(u\), \(u+1/u\) belongs to \((-\infty,-2]\cup[2,\infty)\). Consequently an attainable finite limit \(c\) must satisfy \(|c|\ge2\).
+
+If \(c=2\), both quadratic branches tend to \(1\), because \(g(x)\to2\) and \(\sqrt{g(x)^2-4}\to0\). In particular,
+\[\left|f(x)-1\right|\le\frac{|g(x)-2|+\sqrt{g(x)^2-4}}2\longrightarrow0.\]
+If \(c=-2\), the same argument shows \(f(x)\to-1\). Thus \(c=\pm2\) both guarantee a limit.
+
+If \(|c|>2\), the equation \(u+1/u=c\) has two distinct nonzero real roots
+\[r_\pm=\frac{c\pm\sqrt{c^2-4}}2.\]
+Define \(f(x)=r_+\) for \(x>0\) and \(f(x)=r_-\) for \(x<0\). Then \(g(x)=c\) identically near \(0\), but the two one-sided limits of \(f\) differ. Therefore no other attainable \(c\) guarantees a limit.
+
+The greater value is \(2\). The wording specifies "attainable" to exclude impossible premises for \(|c|<2\), and "for every" to make the source's intended guarantee explicit; for a particular constant \(f\), many other values of \(c\) would also accompany an existing limit.`,
+  },
+  {
+    id: 10516, number: 393, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 12 },
+    topic: "Area Between Curves", difficulty: 3, methods: ["Trigonometric Identities"],
+    question: String.raw`Let \(y=\frac1x\), let \(O\) be the origin, let \(P\) be the point \((1,1)\), and let \(Q\) be the point \(\left(a,\frac1a\right)\), where \(a>1\).
+
+Let \(\theta\) be the angle formed by the segments \(PO\) and \(QO\). Let \(A\) be the area bounded by \(PO\), \(QO\), and \(y=\frac1x\). Find
+\[\frac{dA}{d\theta}.\]`,
+    choices: [String.raw`\(\frac{\tan\theta}{1-\tan^2\theta}\)`, String.raw`\(\frac{\sec\theta}{1-\sec^2\theta}\)`, String.raw`\(\tan(2\theta)\)`, String.raw`\(\sec(2\theta)\)`, "NOTA"], answer: "D",
+    solution: String.raw`First find the area in terms of \(a\). The ray \(OP\) lies on \(y=x\), and \(OQ\) lies on \(y=x/a^2\). The upper boundary is \(y=x\) from \(x=0\) to \(x=1\), and \(y=1/x\) from \(x=1\) to \(x=a\). Thus
+\[A=\int_0^1\left(x-\frac{x}{a^2}\right)dx
++\int_1^a\left(\frac1x-\frac{x}{a^2}\right)dx
+=\ln a.\]
+The two triangular correction terms cancel.
+
+Next relate \(a\) and \(\theta\). Since \(P=(1,1)\), the angle of \(OP\) above the positive \(x\)-axis is \(\pi/4\). The slope of \(OQ\) is \((1/a)/a=1/a^2\), so
+\[\theta=\frac\pi4-\arctan\left(\frac1{a^2}\right),\qquad 0<\theta<\frac\pi4.\]
+Therefore
+\[\frac1{a^2}=\tan\left(\frac\pi4-\theta\right)=\frac{1-\tan\theta}{1+\tan\theta},\qquad
+a=\sqrt{\frac{1+\tan\theta}{1-\tan\theta}}.\]
+Hence
+\[A=\frac12\ln\left(\frac{1+\tan\theta}{1-\tan\theta}\right).\]
+Differentiate:
+\[\frac{dA}{d\theta}
+=\frac12\left(\frac{\sec^2\theta}{1+\tan\theta}+\frac{\sec^2\theta}{1-\tan\theta}\right)
+=\frac{\sec^2\theta}{1-\tan^2\theta}
+=\sec(2\theta).\]
+The condition \(a>1\) makes the source's assumed first-quadrant branch explicit and excludes coincident rays. Negative \(a\) would not define the intended bounded region.`,
+  },
+  {
+    id: 10517, number: 394, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 13 },
+    topic: "Analytic Geometry", difficulty: 2, methods: ["Tangency"],
+    question: String.raw`Find \(\tan\theta\) if \(\theta\) is the acute angle formed by the tangent lines at the intersection of the graphs of
+\[y=\frac1x\qquad\text{and}\qquad y=x^2.\]`,
+    choices: [String.raw`\(3\)`, String.raw`\(\frac13\)`, String.raw`\(6\)`, String.raw`\(\frac16\)`, "NOTA"], answer: "A",
+    solution: String.raw`The graphs intersect where \(1/x=x^2\), so \(x^3=1\). The only real intersection is \((1,1)\). The slopes are
+\[\frac{d}{dx}\left(\frac1x\right)=-\frac1{x^2}\quad\Longrightarrow\quad m_1=-1,\]
+and
+\[\frac{d}{dx}(x^2)=2x\quad\Longrightarrow\quad m_2=2.\]
+The tangent of the acute angle between two nonperpendicular lines is
+\[\tan\theta=\left|\frac{m_2-m_1}{1+m_1m_2}\right|
+=\left|\frac{2-(-1)}{1+(-1)(2)}\right|=3.\]
+The absolute value selects the positive tangent of the acute angle rather than the signed tangent of an oriented angle.`,
+  },
+  {
+    id: 10518, number: 395, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 14 },
+    topic: "Limits", difficulty: 2, methods: ["Limit Definition of Derivatives"],
+    question: String.raw`What is
+\[\lim_{x\to\infty}\left(\sqrt[3]{5x^2+8x^3}-2x\right)?\]`,
+    choices: [String.raw`\(6\)`, String.raw`\(\frac53\)`, String.raw`\(\frac56\)`, String.raw`\(\frac5{12}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Rewrite using \(x=1/u\). Since \(x\to+\infty\), \(u\to0^+\), and
+\[\sqrt[3]{5x^2+8x^3}-2x
+=x\left(\sqrt[3]{8+\frac5x}-2\right)
+=\frac{(5u+8)^{1/3}-2}{u}.\]
+This is the difference quotient for \(F(u)=(5u+8)^{1/3}\) at \(u=0\), because \(F(0)=2\). Since
+\[F'(u)=\frac53(5u+8)^{-2/3},\]
+we get
+\[F'(0)=\frac53\cdot8^{-2/3}=\frac53\cdot\frac14=\frac5{12}.\]
+The function is differentiable near \(0\), so its right-hand difference quotient has the same value as its derivative.`,
+  },
+  {
+    id: 10519, number: 396, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 15 },
+    topic: "Derivatives", difficulty: 1, methods: ["Chain Rule"],
+    question: String.raw`Find
+\[\frac{d}{dx}\ln\left(x+\sqrt{x^2+1}\right)\]
+evaluated at \(x=4\).`,
+    choices: [String.raw`\(2\sqrt{15}\)`, String.raw`\(\frac{2\sqrt{15}}{15}\)`, String.raw`\(\frac{4\sqrt{15}}{15}\)`, String.raw`\(\frac{35-9\sqrt{15}}{10}\)`, "NOTA"], answer: "E",
+    solution: String.raw`The argument of the logarithm is positive for every real \(x\), since \(\sqrt{x^2+1}>|x|\). By the chain rule,
+\[\frac{d}{dx}\ln\left(x+\sqrt{x^2+1}\right)
+=\frac{1+x/\sqrt{x^2+1}}{x+\sqrt{x^2+1}}
+=\frac1{\sqrt{x^2+1}}.\]
+The numerator equals \((\sqrt{x^2+1}+x)/\sqrt{x^2+1}\), so the common factor cancels. At \(x=4\), the derivative is \(1/\sqrt{17}\). This is not one of the listed choices, so the answer is E.`,
+  },
+  {
+    id: 10520, number: 397, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 16 },
+    topic: "Rate of Change", difficulty: 3, methods: ["Related Rates"],
+    question: String.raw`A right regular hexagonal prism has its height equal in length to the side length of the hexagonal base. The side lengths and the height start growing at the same rate.
+
+What is the side length of the hexagon at the instant the volume and the surface area of the prism are increasing at the same rate? Compare the numerical rates using one fixed unit of length, with a positive common growth rate at that instant.`,
+    choices: [String.raw`\(\frac{4+8\sqrt3}{9}\)`, String.raw`\(\frac{12+8\sqrt3}{9}\)`, String.raw`\(\frac{6+4\sqrt3}{9}\)`, String.raw`\(\frac{6+8\sqrt3}{9}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let \(s\) be the side length and \(h=s\). A regular hexagon consists of six equilateral triangles of side \(s\), so its area is \(6(\sqrt3s^2/4)=3\sqrt3s^2/2\). The volume is
+\[V=\left(\frac{3\sqrt3}{2}s^2\right)h=\frac{3\sqrt3}{2}s^3,\qquad
+V'=\frac{9\sqrt3}{2}s^2s'.\]
+The surface area includes the six rectangular lateral faces and both hexagonal bases:
+\[S=6sh+3\sqrt3s^2=(6+3\sqrt3)s^2,\qquad
+S'=(12+6\sqrt3)ss'.\]
+Set the numerical rates equal:
+\[\frac{9\sqrt3}{2}s^2s'=(12+6\sqrt3)ss'.\]
+Cancel \(ss'\), which is positive for a nondegenerate growing prism:
+\[\frac{9\sqrt3}{2}s=12+6\sqrt3.\]
+So
+\[s=\frac{24+12\sqrt3}{9\sqrt3}=\frac{12+8\sqrt3}{9}.\]
+The fixed-unit convention is necessary because a volume rate and an area rate have different physical dimensions; the intended equality is between their numerical measures, not a unit-independent physical equality.`,
+  },
+  {
+    id: 10521, number: 398, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 17 },
+    topic: "Optimization", difficulty: 3, methods: ["Discriminant Test"],
+    question: String.raw`Consider a non-decreasing cubic polynomial on the entire real line with a leading coefficient of 1 that changes concavity at the point \((2,4)\).
+
+What is the greatest possible value of the \(y\)-intercept of the cubic?`,
+    choices: [String.raw`\(-6\)`, String.raw`\(-4\)`, String.raw`\(-2\)`, String.raw`\(0\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let \(f(x)=x^3+bx^2+cx+d\). Since the cubic is non-decreasing on the entire real line,
+\[f'(x)=3x^2+2bx+c\ge0\]
+for all real \(x\). Its leading coefficient is positive, so this is equivalent to its discriminant being nonpositive:
+\[(2b)^2-4(3)c\le0\quad\Longrightarrow\quad b^2-3c\le0.\]
+The concavity changes at \(x=2\), so
+\[f''(x)=6x+2b,\qquad f''(2)=12+2b=0\quad\Longrightarrow\quad b=-6.\]
+Then \(36-3c\le0\), hence \(c\ge12\). Also \((2,4)\) lies on the curve:
+\[8-24+2c+d=4\quad\Longrightarrow\quad 2c+d=20.\]
+To maximize \(d\), minimize \(c\), so \(c=12\). Hence \(d=20-24=-4\).
+
+This bound is attained: \(f(x)=(x-2)^3+4\) has \(f'(x)=3(x-2)^2\ge0\), changes concavity at \((2,4)\), and has \(y\)-intercept \(-4\). Thus the bound is a maximum, not merely a supremum.`,
+  },
+  {
+    id: 10522, number: 399, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 18 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates", "Distance Formula"],
+    question: String.raw`Consider a particle that starts at rest at the origin at \(t=0\). The particle starts moving along the path \(y=x^2\) such that
+\[\frac{d^2x}{dt^2}=1.\]
+Define the function \(r(t)\) to be the particle's distance from the origin. Find
+\[\frac{dr}{dt}\]
+when \(t=1\).`,
+    choices: [String.raw`\(\frac{\sqrt5}{5}\)`, String.raw`\(\frac{2\sqrt5}{5}\)`, String.raw`\(\frac{3\sqrt5}{5}\)`, String.raw`\(\frac{4\sqrt5}{5}\)`, "NOTA"], answer: "C",
+    solution: String.raw`The particle starts at rest, so \(x(0)=0\) and \(x'(0)=0\). Given \(x''(t)=1\), integration with these initial conditions gives
+\[x'(t)=t,\qquad x(t)=\frac12t^2.\]
+Since \(y=x^2\),
+\[y(t)=\left(\frac12t^2\right)^2=\frac14t^4,\qquad y'(t)=t^3.\]
+The distance from the origin is \(r(t)=\sqrt{x(t)^2+y(t)^2}\). Differentiating at a time when \(r>0\),
+\[r'(t)=\frac{xx'+yy'}{\sqrt{x^2+y^2}}.\]
+At \(t=1\), \(x=1/2\), \(x'=1\), \(y=1/4\), and \(y'=1\). Thus
+\[r'(1)=\frac{\frac12+\frac14}{\sqrt{\frac14+\frac1{16}}}
+=\frac{3/4}{\sqrt5/4}=\frac3{\sqrt5}=\frac{3\sqrt5}{5}.\]
+This is the rate of change of distance from the origin, not the particle's path speed \(\sqrt{x'^2+y'^2}\).`,
+  },
+  {
+    id: 10523, number: 400, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 19 },
+    topic: "Inverse Functions", difficulty: 2, methods: ["Derivative of Inverse Functions"],
+    question: String.raw`If
+\[f(x)=3x^7+2x^3-x-1\]
+and \(g=f^{-1}\) denotes the local inverse branch with \(g(-5)=-1\), then find \(g'(-5)\).`,
+    choices: [String.raw`\(-1\)`, String.raw`\(-\frac15\)`, String.raw`\(\frac1{26}\)`, String.raw`\(26\)`, "NOTA"], answer: "C",
+    solution: String.raw`First find the corresponding input of \(f\). Since
+\[f(-1)=3(-1)^7+2(-1)^3-(-1)-1=-3-2+1-1=-5,\]
+the specified branch satisfies \(g(-5)=-1\). Now
+\[f'(x)=21x^6+6x^2-1,\qquad f'(-1)=21+6-1=26.\]
+Because \(f'(-1)\ne0\), \(f\) has a differentiable local inverse there. Differentiating \(f(g(y))=y\) gives \(f'(g(y))g'(y)=1\). Therefore
+\[g'(-5)=\frac1{f'(g(-5))}=\frac1{26}.\]
+The local-branch qualification repairs the source's global inverse claim. In fact \(f'(0)=-1\), while \(f'(\pm1)=26>0\), so \(f\) is not one-to-one on the entire real line. A global \(f^{-1}\) cannot be assumed without restricting its domain, even though this local derivative is well-defined.`,
+  },
+  {
+    id: 10524, number: 401, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 20 },
+    topic: "Linear Approximation", difficulty: 1, methods: ["Linear Approximation"],
+    question: String.raw`Approximate the value of \(\sqrt[3]{63}\) with differentials using \(\sqrt[3]{64}=4\) in your calculation.`,
+    choices: [String.raw`\(\frac{63}{16}\)`, String.raw`\(\frac{95}{24}\)`, String.raw`\(\frac{191}{48}\)`, String.raw`\(\frac{383}{96}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Let \(f(x)=\sqrt[3]x\). Use the linear approximation at \(a=64\) to estimate \(f(63)\):
+\[f'(x)=\frac13x^{-2/3},\qquad f'(64)=\frac13\cdot\frac1{16}=\frac1{48}.\]
+The change in input is \(dx=63-64=-1\), so the differential is \(df=f'(64)dx=-1/48\). Then
+\[f(63)\approx f(64)+f'(64)(63-64)=4-\frac1{48}=\frac{191}{48}.\]
+This is the requested differential approximation, not an exact equality with the cube root.`,
+  },
+  {
+    id: 10525, number: 402, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 21 },
+    topic: "Derivatives", difficulty: 2, methods: ["Product Rule"],
+    question: String.raw`Calculate \(f^{(2024)}(x)\) if
+\[f(x)=xe^{-x}.\]`,
+    choices: [String.raw`\(-2024e^{-x}+xe^{-x}\)`, String.raw`\(2024e^{-x}-xe^{-x}\)`, String.raw`\(-2023e^{-x}+xe^{-x}\)`, String.raw`\(2023e^{-x}-xe^{-x}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The errata changes \(xe^x\) to \(xe^{-x}\), as already printed in the fixed test. Differentiate a few times:
+\[f'(x)=(1-x)e^{-x},\qquad f''(x)=(-2+x)e^{-x},\qquad f'''(x)=(3-x)e^{-x}.\]
+The pattern is
+\[f^{(n)}(x)=(-1)^n(x-n)e^{-x}.\]
+To verify it, suppose the formula holds at \(n\). By the product rule its derivative is
+\[(-1)^n\bigl(1-(x-n)\bigr)e^{-x}
+=(-1)^{n+1}(x-(n+1))e^{-x},\]
+which is the same formula with \(n+1\). The formula holds initially at \(n=0\), so induction proves it for every nonnegative integer \(n\).
+
+Thus, for even \(n=2024\),
+\[f^{(2024)}(x)=(x-2024)e^{-x}=xe^{-x}-2024e^{-x},\]
+which is A, in agreement with the errata.`,
+  },
+  {
+    id: 10526, number: 403, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 22 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`Water flows out of the tip of a right conical tank of radius 4 cm and height 16 cm at a rate of \(2\text{ cm}^3/\text{min}\).
+
+How fast, in cm/min, is the water level decreasing when the water level is 4 cm above the tip?`,
+    choices: [String.raw`\(\frac1\pi\)`, String.raw`\(\frac2\pi\)`, String.raw`\(\frac3\pi\)`, String.raw`\(\frac4\pi\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let \(h\) be the water depth above the downward tip, and \(r\) the radius of its horizontal surface. By similar triangles,
+\[\frac rh=\frac4{16}=\frac14,\qquad r=\frac h4.\]
+The water volume is
+\[V=\frac13\pi r^2h=\frac13\pi\left(\frac h4\right)^2h=\frac\pi{48}h^3.\]
+Differentiate with respect to time:
+\[\frac{dV}{dt}=\frac\pi{16}h^2\frac{dh}{dt}.\]
+Since water flows out at \(2\text{ cm}^3/\text{min}\), \(dV/dt=-2\). When \(h=4\),
+\[-2=\frac\pi{16}(16)\frac{dh}{dt}=\pi\frac{dh}{dt},\]
+so \(dh/dt=-2/\pi\text{ cm/min}\). The question asks how fast the level is decreasing, so report the positive magnitude \(2/\pi\text{ cm/min}\), choice B.`,
+  },
+  {
+    id: 10527, number: 404, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 23 },
+    topic: "Differentiability", difficulty: 2, methods: [],
+    question: String.raw`Let
+\[f(t)=\lim_{x\to t}\left\lfloor x+\frac12\right\rfloor.\]
+Find
+\[\sum_{n=1}^{100}\bigl(f(n)+f'(n)+f''(n)\bigr).\]`,
+    choices: [String.raw`\(4950\)`, String.raw`\(5000\)`, String.raw`\(5050\)`, String.raw`\(5100\)`, "NOTA"], answer: "C",
+    solution: String.raw`The floor \(\lfloor u\rfloor\) is the greatest integer not exceeding \(u\). For each integer \(n\), if \(n-1/2<x<n+1/2\), then
+\[\left\lfloor x+\frac12\right\rfloor=n.\]
+Thus the defining limit gives \(f(t)=n\) for every \(t\) in that open interval. In particular, \(f\) is constant on a whole neighborhood of \(n\), not just at the single point \(n\). Therefore
+\[f(n)=n,\qquad f'(n)=0,\qquad f''(n)=0.\]
+The derivatives contribute \(0\) at these points. Consequently
+\[\sum_{n=1}^{100}\bigl(f(n)+f'(n)+f''(n)\bigr)
+=\sum_{n=1}^{100}n=\frac{100\cdot101}{2}=5050.\]
+At half-integers the defining two-sided limit fails to exist, but none of those points is used in the sum, and they do not affect differentiability in a neighborhood of any integer.`,
+  },
+  {
+    id: 10528, number: 405, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 24 },
+    topic: "Limits", difficulty: 1, methods: ["Rationalization"],
+    question: String.raw`Evaluate the following limit:
+\[\lim_{x\to\infty}\left(\sqrt{2x^2+x+7}-\sqrt{2x^2-x}\right).\]`,
+    choices: [String.raw`\(0\)`, String.raw`\(2\)`, String.raw`\(\sqrt2\)`, String.raw`\(\frac{\sqrt2}{2}\)`, "NOTA"], answer: "D",
+    solution: String.raw`Rationalize:
+\[\sqrt{2x^2+x+7}-\sqrt{2x^2-x}
+=\frac{(2x^2+x+7)-(2x^2-x)}{\sqrt{2x^2+x+7}+\sqrt{2x^2-x}}
+=\frac{2x+7}{\sqrt{2x^2+x+7}+\sqrt{2x^2-x}}.\]
+For large positive \(x\), both radicals are real, the denominator is nonzero, and \(\sqrt{x^2}=x\). Divide numerator and denominator by \(x\):
+\[\lim_{x\to\infty}\frac{2+7/x}{\sqrt{2+1/x+7/x^2}+\sqrt{2-1/x}}
+=\frac2{2\sqrt2}=\frac1{\sqrt2}=\frac{\sqrt2}{2}.\]`,
+  },
+  {
+    id: 10529, number: 406, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 25 },
+    topic: "Linear Approximation", difficulty: 2, methods: [],
+    question: String.raw`Use two iterations of Newton's Method, starting with the initial guess \(x_0=-1\), to approximate the root of the function \(f(x)=x^3-x+1\).`,
+    choices: [String.raw`\(-\frac{31}{23}\)`, String.raw`\(-\frac{58}{23}\)`, String.raw`\(-\frac{27}{23}\)`, String.raw`\(\frac{29}{23}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Newton's Method is
+\[x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}.\]
+For \(f(x)=x^3-x+1\), we have \(f'(x)=3x^2-1\). Starting with \(x_0=-1\),
+\[f(-1)=1,\qquad f'(-1)=2,\qquad x_1=-1-\frac12=-\frac32.\]
+Now
+\[f\left(-\frac32\right)=-\frac{27}{8}+\frac32+1=-\frac78,\qquad
+f'\left(-\frac32\right)=\frac{27}{4}-1=\frac{23}{4}.\]
+Therefore
+\[x_2=-\frac32-\frac{-7/8}{23/4}
+=-\frac32+\frac7{46}=-\frac{31}{23}.\]
+Both derivative denominators are nonzero, so the two updates are valid. Two iterations starting from \(x_0\) mean \(x_0\to x_1\to x_2\), not stopping at the first update.`,
+  },
+  {
+    id: 10530, number: 407, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 26 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`At the instant the length of the major axis of an ellipse is increasing at a rate of \(1\text{ unit/sec}\) and the minor axis is decreasing at a rate of \(\frac23\text{ unit/sec}\), the ellipse has equation
+\[\frac{x^2}{25}+\frac{y^2}{9}=1.\]
+At what rate is the distance between the foci changing at this time?`,
+    choices: [String.raw`\(\frac38\)`, String.raw`\(\frac34\)`, String.raw`\(\frac78\)`, String.raw`\(\frac74\)`, "NOTA"], answer: "D",
+    solution: String.raw`The ellipse has semiaxes \(a=5\), \(b=3\). The full major axis has length \(2a\), and the full minor axis has length \(2b\). Thus
+\[(2a)'=1\quad\Longrightarrow\quad a'=\frac12,\qquad
+(2b)'=-\frac23\quad\Longrightarrow\quad b'=-\frac13.\]
+For an ellipse, the distance from its center to either focus is \(c\), where \(c^2=a^2-b^2\). At this instant \(c=\sqrt{25-9}=4\). Differentiate:
+\[2cc'=2aa'-2bb',\qquad cc'=aa'-bb'.\]
+Thus
+\[4c'=5\left(\frac12\right)-3\left(-\frac13\right)=\frac52+1=\frac72,\]
+so \(c'=7/8\). The distance between the foci is \(2c\), so its rate of change is \(2c'=7/4\text{ units/sec}\), an increase.
+
+This follows the errata's corrected answer D. It is important both to use the negative sign in \(b'=-1/3\) and to double \(c'\); \(7/8\) is the rate for the center-to-focus distance, not the full focal separation.`,
+  },
+  {
+    id: 10531, number: 408, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 27 },
+    topic: "Derivatives", difficulty: 1, methods: ["Mean Value Theorem"],
+    question: String.raw`A car's position can be described by a continuous, differentiable function. The path the car takes has a speed limit of 50 mph. If the car passes a police car going 45 mph and 30 minutes later passes another police car 30 miles away going 40 mph, what mathematical reasoning could the police officer use to prove that the car exceeded the speed limit at least once over the interval?`,
+    choices: ["Mean Value Theorem for Integrals", "Mean Value Theorem for Derivatives", "Intermediate Value Theorem", "Squeeze Theorem", "NOTA"], answer: "B",
+    solution: String.raw`Let \(s(t)\) be the car's position measured in miles along the road, with \(t\) in hours and \(t=0\) at the first encounter. The two encounter positions differ by \(30\) miles, and \(30\) minutes is \(1/2\) hour. Thus the average rate of change of position is
+\[\frac{s(1/2)-s(0)}{1/2-0}=\frac{30}{1/2}=60\text{ mph}.\]
+The position function is continuous on \([0,1/2]\) and differentiable on \((0,1/2)\). By the Mean Value Theorem for Derivatives, there is some \(c\in(0,1/2)\) with \(s'(c)=60\text{ mph}\). Since \(60>50\), the car exceeded the speed limit at least once.
+
+The instantaneous speeds stated at the encounters do not determine the speeds in between and are not needed for this argument. If distance along the road rather than signed position is used, the same reasoning applies to the differentiable distance-traveled function.`,
+  },
+  {
+    id: 10532, number: 409, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 28 },
+    topic: "Binomial Expansion", difficulty: 2, methods: ["Binomial Theorem"],
+    question: String.raw`If \(f(x)=\left(\frac2x+x^2\right)^9\), find the coefficient of the \(x^5\) term of \(f'(x)\).`,
+    choices: [String.raw`\(2016\)`, String.raw`\(6048\)`, String.raw`\(9142\)`, String.raw`\(12096\)`, "NOTA"], answer: "D",
+    solution: String.raw`To find the coefficient of the \(x^5\) term in \(f'(x)\), first find the coefficient of the \(x^6\) term in \(f(x)=(2/x+x^2)^9\).
+
+If \(x^2\) is chosen \(k\) times, the binomial term is
+\[\binom9k\left(\frac2x\right)^{9-k}(x^2)^k
+=\binom9k2^{9-k}x^{3k-9}.\]
+To obtain \(x^6\), solve \(3k-9=6\), giving \(k=5\). Thus \(2/x\) is chosen \(4\) times and \(x^2\) is chosen \(5\) times:
+\[\binom94\left(\frac2x\right)^4(x^2)^5=126\cdot16\,x^6=2016x^6.\]
+Differentiating gives \(12096x^5\). No other exponent in the finite Laurent expansion can differentiate to \(x^5\), so the requested coefficient is \(12096\), choice D.`,
+  },
+  {
+    id: 10533, number: 410, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 29 },
+    topic: "Riemann Sums", difficulty: 3, methods: [],
+    question: String.raw`For a given function in the first quadrant, it is found that the right-hand approximation for the area under a curve under-estimates the area, the left-hand sum over-estimates the area, and a trapezoidal sum over-estimates the area. Which of the following must be true?
+
+Assume \(f\) is twice continuously differentiable on the interval being used. The approximations use the same fixed uniform partition, and the derivative inequalities in the choices are asserted throughout that interval.`,
+    choices: [String.raw`\(f(x)>0,\ f'(x)<0,\ f''(x)>0\)`, String.raw`\(f(x)>0,\ f'(x)>0,\ f''(x)<0\)`, String.raw`\(f(x)<0,\ f'(x)<0,\ f''(x)>0\)`, String.raw`\(f(x)>0,\ f'(x)<0,\ f''(x)<0\)`, "NOTA"], answer: "E",
+    solution: String.raw`The errata explicitly corrects this answer to E. The supplied fixed solutions still label it A, but that explanation incorrectly reverses sufficient conditions.
+
+A decreasing function has left sums above its integral and right sums below it; a concave-up function has trapezoidal sums above its integral. These implications do not mean that one set of approximation inequalities forces decreasing behavior or concavity at every point.
+
+Here is a smooth positive counterexample on \([1,2]\). Put \(t=x-1\), and define
+\[f(x)=3-2t+t^2+\frac1{10}\sin(4\pi t).\]
+It is positive, since \(3-2t+t^2=(t-1)^2+2\ge2\), and the sine term has magnitude at most \(1/10\). Use one subinterval of width \(1\). Then
+\[f(1)=3,\qquad f(2)=2,\qquad
+\int_1^2f(x)\,dx=3-1+\frac13=\frac73.\]
+The sine term has integral \(0\) over its two full periods. Thus the approximations are
+\[R=2<\frac73<L=3,\qquad T=\frac{L+R}{2}=\frac52>\frac73.\]
+All the stated approximation inequalities hold. Nevertheless,
+\[f'(x)=-2+2t+\frac{2\pi}{5}\cos(4\pi t),\]
+which is positive at the interior point \(t=1/2\), since \(-1+2\pi/5>0\). So \(f'<0\) does not hold throughout the interval, ruling out A and D. The function is positive, ruling out C, and \(f'(x)<0\) at \(t=1/4\), ruling out B. Also
+\[f''(x)=2-\frac{8\pi^2}{5}\sin(4\pi t)\]
+changes sign, so the quadrature information does not force a global concavity sign either.
+
+None of A-D must be true, so the answer is E. The fixed-partition wording makes clear that the data concern the given approximations, not an additional assertion about every possible partition.`,
+  },
+  {
+    id: 10534, number: 411, division: "Mu",
+    source: { ...januaryInvitational2024, questionNumber: 30 },
+    topic: "Limits", difficulty: 1, methods: ["Absolute Value"],
+    question: String.raw`Evaluate
+\[\lim_{x\to\infty}\frac{|x^2+2|-|x^2+1|}{|x-3|-|x-2|}.\]`,
+    choices: ["DNE", String.raw`\(\infty\)`, String.raw`\(-1\)`, String.raw`\(1\)`, "NOTA"], answer: "C",
+    solution: String.raw`As \(x\to+\infty\), all expressions inside the absolute value signs are positive. Specifically, for every \(x>3\),
+\[\frac{|x^2+2|-|x^2+1|}{|x-3|-|x-2|}
+=\frac{x^2+2-(x^2+1)}{x-3-(x-2)}
+=\frac1{-1}=-1.\]
+The denominator is exactly \(-1\) for all sufficiently large \(x\), so it is nonzero there. The expression is eventually constant, and its limit is therefore \(-1\), choice C.`,
   },
 ];
