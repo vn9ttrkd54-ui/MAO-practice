@@ -15,6 +15,7 @@ const regional2024Only=process.argv.includes("--january-regional-2024-only");
 const february2024Only=process.argv.includes("--february-regional-2024-only");
 const king2024Only=process.argv.includes("--king-statewide-2024-only");
 const march2024Only=process.argv.includes("--march-regional-2024-only");
+const nsu2024Only=process.argv.includes("--nsu-statewide-2024-only");
 const dir = await mkdtemp(join(tmpdir(), "question-sources-"));
 const fixture = name => resolve(import.meta.dirname, "browserFixtures", name);
 const compiler = require("next/dist/compiled/webpack/webpack").webpack({
@@ -113,9 +114,10 @@ try {
     const february2024=id>=10565&&id<=10594;
     const king2024=id>=10595&&id<=10621;
     const march2024=id>=10622&&id<=10651;
+    const nsu2024=id>=10652&&id<=10681;
     const king2024Originals=Array.from({length:30},(_,i)=>i+1).filter(n=>![12,25,28].includes(n));
-    const expectedCompetition=march2024 ? "2024 March Regional" : king2024 ? "2024 February King Statewide" : february2024 ? "2024 February Regional" : regional2024 ? "2024 January Regional" : january2024 ? "2024 FAMAT January Invitational" : competition;
-    const expectedNumber=march2024 ? id-10621 : king2024 ? king2024Originals[id-10595] : february2024 ? id-10564 : regional2024 ? id-10534 : january2024 ? id-10504 : originalNumber;
+    const expectedCompetition=nsu2024 ? "2024 March NSU Statewide" : march2024 ? "2024 March Regional" : king2024 ? "2024 February King Statewide" : february2024 ? "2024 February Regional" : regional2024 ? "2024 January Regional" : january2024 ? "2024 FAMAT January Invitational" : competition;
+    const expectedNumber=nsu2024 ? id-10651 : march2024 ? id-10621 : king2024 ? king2024Originals[id-10595] : february2024 ? id-10564 : regional2024 ? id-10534 : january2024 ? id-10504 : originalNumber;
     await expect(credit).toHaveText(`Source: ${expectedCompetition} · Calculus Individual · Question ${expectedNumber}`);
     if(march2024){
       const asset=id>=10630&&id<=10632?["function",660]:id>=10635&&id<=10637?["derivative",460]:id>=10642&&id<=10644?["table",620]:null;
@@ -124,6 +126,11 @@ try {
         await picture.scrollIntoViewIfNeeded();
         await expect.poll(()=>picture.evaluate((img,width)=>img.complete&&img.naturalWidth===width,asset[1])).toBe(true);
       }
+    }
+    if(id===10656||id===10657){
+      const picture=page.locator('img[src="/questions/mu-nsu-statewide-2024-table.svg"]');
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===620)).toBe(true);
     }
     assert.equal(await page.locator(".katex-error").count(), 0, "no broken math");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
@@ -136,7 +143,7 @@ try {
     assert.equal(overflow, false, `no page overflow: ${view}, ${id}, ${width}; screenshots: ${dir}`);
     return page;
   }
-  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only){
+  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only&&!nsu2024Only){
   for(const width of [1280,320]){
     const page=await open("bank",10119,width);
     await expect(page.getByRole("heading",{name:"Question 1",exact:true})).toBeVisible();
@@ -343,7 +350,7 @@ try {
     await page.close();
   }
   }
-  if(!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only){
+  if(!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only&&!nsu2024Only){
   for(const view of ["bank","trainer","play","spectate","results"]){
     for(const width of [1280,320]){
       const page=await open(view,10465,width);
@@ -363,7 +370,7 @@ try {
   }
 
   }
-  if(!februaryOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only){
+  if(!februaryOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only&&!nsu2024Only){
   for(const view of ["bank","trainer","play","spectate","results"]){
     for(const width of [1280,320]){
       for(const [id,src,naturalWidth,number] of [[10483,"mu-483-table.svg",600,360],[10502,"mu-502-fold.svg",560,379]]){
@@ -393,7 +400,7 @@ try {
     }
   }
   }
-  if(!februaryOnly&&!marchOnly&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only){
+  if(!februaryOnly&&!marchOnly&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only&&!nsu2024Only){
     for(const view of ["bank","trainer","play","spectate","results"]){
       for(const width of [1280,320]){
         const page=await open(view,10505,width);
@@ -412,7 +419,7 @@ try {
       }
     }
   }
-  if(!februaryOnly&&!marchOnly&&!january2024Only&&!february2024Only&&!king2024Only&&!march2024Only){
+  if(!februaryOnly&&!marchOnly&&!january2024Only&&!february2024Only&&!king2024Only&&!march2024Only&&!nsu2024Only){
     for(const id of [10554,10558]){
       for(const view of ["bank","trainer","play","spectate","results"]){
         for(const width of [1280,320]){
@@ -444,7 +451,7 @@ try {
       }
     }
   }
-  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!king2024Only&&!march2024Only){
+  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!king2024Only&&!march2024Only&&!nsu2024Only){
     for(const id of [10581,10585,10587,10590,10591]){
       for(const view of ["bank","trainer","play","spectate","results"]){
         for(const width of [1280,320]){
@@ -465,7 +472,7 @@ try {
       }
     }
   }
-  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!march2024Only){
+  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!march2024Only&&!nsu2024Only){
     for(const id of [10599,10605,10613,10614,10620,10621]){
       for(const view of ["bank","trainer","play","spectate","results"]){
         for(const width of [1280,320]){
@@ -486,7 +493,7 @@ try {
       }
     }
   }
-  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only){
+  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!nsu2024Only){
     for(const id of [10631,10636,10644,10646,10649,10651]){
       for(const view of ["bank","trainer","play","spectate","results"]){
         for(const width of [1280,320]){
@@ -507,8 +514,29 @@ try {
       }
     }
   }
+  if(!februaryOnly&&!marchOnly&&!january2024Only&&!regional2024Only&&!february2024Only&&!king2024Only&&!march2024Only){
+    for(const id of [10656,10664,10667,10668,10676,10679,10681]){
+      for(const view of ["bank","trainer","play","spectate","results"]){
+        for(const width of [1280,320]){
+          const page=await open(view,id,width);
+          if(view==="bank")await expect(page.getByRole("heading",{name:"Question "+(id-10123),exact:true})).toBeVisible();
+          await page.screenshot({path:join(dir,`nsu2024-${id}-${view}-${width}.png`),fullPage:true});
+          await page.close();
+        }
+      }
+    }
+    for(let id=10652;id<=10681;id++){
+      for(const view of ["trainer","results"]){
+        for(const width of [1280,320]){
+          const page=await open(view,id,width,true);
+          await page.screenshot({path:join(dir,`nsu2024-solution-${id}-${view}-${width}.png`),fullPage:true});
+          await page.close();
+        }
+      }
+    }
+  }
   assert.deepEqual(errors, []);
-  console.log(`PASS (${march2024Only?"March Regional 2024 and SVG assets":king2024Only?"King Statewide 2024 and SVG assets":february2024Only?"February Regional 2024 and SVG assets":regional2024Only?"January Regional 2024 and SVG assets":january2024Only?"January Invitational 2024 and SVG assets":marchOnly?"March Regional 2025 and SVG assets":februaryOnly?"February Regional 2025 and SVG assets":"all source sets"}): original-number credits in Question Bank, Trainer, play, spectators and results; diagrams, reveal gating and real KaTeX at desktop/mobile widths. Screenshots: ${dir}`);
+  console.log(`PASS (${nsu2024Only?"NSU March Statewide 2024 and SVG assets":march2024Only?"March Regional 2024 and SVG assets":king2024Only?"King Statewide 2024 and SVG assets":february2024Only?"February Regional 2024 and SVG assets":regional2024Only?"January Regional 2024 and SVG assets":january2024Only?"January Invitational 2024 and SVG assets":marchOnly?"March Regional 2025 and SVG assets":februaryOnly?"February Regional 2025 and SVG assets":"all source sets"}): original-number credits in Question Bank, Trainer, play, spectators and results; diagrams, reveal gating and real KaTeX at desktop/mobile widths. Screenshots: ${dir}`);
 } finally {
   await browser?.close(); await new Promise(resolve => server.close(resolve));
 }

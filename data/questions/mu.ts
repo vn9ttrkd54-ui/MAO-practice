@@ -1,5 +1,16 @@
 import type { Question } from "@/types/question";
 
+const nsuMarchStatewide2024 = {
+  competition: "2024 March NSU Statewide",
+  event: "Calculus Individual",
+};
+
+const nsuMarchStatewide2024Table = {
+  src: "/questions/mu-nsu-statewide-2024-table.svg",
+  alt: "Columns x=1,2,3,4,5; f(x)=0,3,5,1,0; f prime(x)=5,2,-5,-8,-10; g(x)=4,5,1,3,2; g prime(x)=2,10,20,15,20.",
+  width: 620, height: 212,
+};
+
 const marchRegional2024 = {
   competition: "2024 March Regional",
   event: "Calculus Individual",
@@ -9942,5 +9953,375 @@ Matching coefficients gives
 choice B. The \(6!\) comes from the displayed pattern's index, while \(24!\) comes from the Taylor coefficient formula.
 
 The source's final \(60\)th-degree term has a minus sign inconsistent with its own alternating pattern: \(n=15\) gives \((-1)^{16}=+1\). That final sign is corrected in the prompt, with no effect on the \(24\)th-degree coefficient or answer.`,
+  },
+  {
+    id: 10652, number: 529, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 1 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`Evaluate \(\displaystyle\lim_{n\to\infty}\left(1-\frac1n\right)\).`,
+    choices: [String.raw`\(-1\)`, "0", "1", "DNE", "NOTA"], answer: "C",
+    solution: String.raw`As \(n\to\infty\), \(1/n\to0\). By the subtraction rule for limits,
+\[\lim_{n\to\infty}\left(1-\frac1n\right)=1-0=1.\]
+Thus the answer is C. There is no exponent \(n\) on the parentheses, so this is not the exponential limit \((1-1/n)^n\to e^{-1}\).`,
+  },
+  {
+    id: 10653, number: 530, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 2 },
+    topic: "Indefinite Integrals", difficulty: 1, methods: [],
+    question: String.raw`Which of the following is an antiderivative of \(\sin x\)?`,
+    choices: [String.raw`\(\sin x\)`, String.raw`\(-\sin x\)`, String.raw`\(\cos x\)`, String.raw`\(-\cos x\)`, "NOTA"], answer: "D",
+    solution: String.raw`An antiderivative is a function whose derivative equals the given integrand. Since
+\[\frac{d}{dx}(-\cos x)=\sin x,\]
+\(-\cos x\) is an antiderivative, giving D. The full family is \(-\cos x+C\), but the question asks for one member, so the choice with \(C=0\) is sufficient.`,
+  },
+  {
+    id: 10654, number: 531, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 3 },
+    topic: "Derivatives", difficulty: 1, methods: ["Chain Rule"],
+    question: String.raw`Find \(f'(x)\) if \(f(x)=\sqrt{x^2-x+1}\).`,
+    choices: [String.raw`\(\frac{x-1}{\sqrt{x^2-x+1}}\)`, String.raw`\(\frac{2x-1}{2\sqrt{x^2-x+1}}\)`, String.raw`\(\frac{2x}{\sqrt{x^2-x+1}}\)`, String.raw`\(\frac{x-1}{2\sqrt{x^2-x+1}}\)`, "NOTA"], answer: "B",
+    solution: String.raw`Write \(f(x)=(x^2-x+1)^{1/2}\). The Chain Rule gives
+\[f'(x)=\frac12(x^2-x+1)^{-1/2}(2x-1)=\frac{2x-1}{2\sqrt{x^2-x+1}}.\]
+This is B. The expression under the root is \((x-1/2)^2+3/4>0\) for every real \(x\), so the denominator never vanishes and the derivative is valid everywhere.`,
+  },
+  {
+    id: 10655, number: 532, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 4 },
+    topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`The height (in feet) of a stone dropped from a bridge \(64\) feet above a river at \(t=0\) seconds is given by \(s(t)=-16t^2+64\). Find the speed of the stone when it hits the water.`,
+    choices: ["64 ft/s", "-64 ft/s", "0 ft/s", "32 ft/s", "NOTA"], answer: "A",
+    solution: String.raw`The rock hits the water when \(s(t)=0\) and \(t>0\). Thus
+\[-16t^2+64=0\quad\Longrightarrow\quad t=2.\]
+Next, compute the velocity \(v(t)=s'(t)=-32t\) and the speed \(|v(t)|\) at \(t=2\). The velocity is \(v(2)=-64\text{ ft/s}\), so the speed is \(|v(2)|=64\text{ ft/s}\), choice A. The negative velocity indicates downward motion; speed is nonnegative.`,
+  },
+  {
+    id: 10656, number: 533, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 5 },
+    topic: "Derivatives", difficulty: 2, methods: ["Chain Rule"], illustration: nsuMarchStatewide2024Table,
+    question: String.raw`Use the table of function and derivative values. Let \(h(x)=f(g(x))\). Find \(h'(2)\).`,
+    choices: ["2", "25", "-10", "-100", "NOTA"], answer: "D",
+    solution: String.raw`By the Chain Rule,
+\[h'(2)=f'(g(2))g'(2).\]
+The table gives \(g(2)=5\) and \(g'(2)=10\). The outside derivative must therefore be evaluated at \(5\), where \(f'(5)=-10\). Hence
+\[h'(2)=f'(5)\cdot10=-10\cdot10=-100,\]
+choice D. Using \(f'(2)\) would miss the composition's inside value.`,
+  },
+  {
+    id: 10657, number: 534, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 6 },
+    topic: "Derivatives", difficulty: 2, methods: ["Product Rule"], illustration: nsuMarchStatewide2024Table,
+    question: String.raw`Use the table of function and derivative values. Let \(p(x)=f(x)g(x)\). Find \(p'(4)\).`,
+    choices: ["5", "-9", "0", "-15", "NOTA"], answer: "B",
+    solution: String.raw`By the Product Rule,
+\[p'(4)=f'(4)g(4)+f(4)g'(4).\]
+The table gives \(f'(4)=-8\), \(g(4)=3\), \(f(4)=1\), and \(g'(4)=15\). Substituting,
+\[p'(4)=-8\cdot3+1\cdot15=-24+15=-9.\]
+Thus B. Differentiating a product requires both terms; multiplying just the two derivatives would not be the Product Rule.`,
+  },
+  {
+    id: 10658, number: 535, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 7 },
+    topic: "Function Analysis", difficulty: 2, methods: ["First Derivative Test"],
+    question: String.raw`Suppose the derivative of the function \(y=f(x)\) is \(y'=(x-1)^2(x-2)\). At what points, if any, does the function have a local maximum?`,
+    choices: ["the function does not have a local maximum", String.raw`\(x=2\)`, String.raw`\(x=1\) and \(x=2\)`, String.raw`\(x=2\)`, "NOTA"], answer: "A",
+    solution: String.raw`Potential local extrema occur at \(x=1\) and \(x=2\), where \(y'=0\). The squared factor \((x-1)^2\) is positive away from \(1\), so the sign is determined by \(x-2\): the derivative is negative on both sides of \(1\), negative just before \(2\), and positive just after \(2\).
+
+Thus \(f(1)\) is neither a local maximum nor a local minimum, while \(f(2)\) is a local minimum. There is no local maximum, giving A. Equivalently, \(f''(2)>0\). The source's sign-change sentence incorrectly refers to \(x=0\); the stationary point being analyzed is \(1\). The two identical incorrect choices B and D are retained as printed; A remains unique.`,
+  },
+  {
+    id: 10659, number: 536, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 8 },
+    topic: "Definite Integrals", difficulty: 1, methods: ["Absolute Value"],
+    question: String.raw`Evaluate the definite integral \(\displaystyle\int_{-1}^1|x|\,dx\).`,
+    choices: ["0", "1", "2", String.raw`\(\frac12\)`, "NOTA"], answer: "B",
+    solution: String.raw`Resolve the absolute value on the two sides of \(0\):
+\[\int_{-1}^1|x|\,dx=\int_{-1}^0(-x)\,dx+\int_0^1x\,dx.\]
+The first integral is \([-x^2/2]_{-1}^0=1/2\), and the second is \([x^2/2]_0^1=1/2\). Their sum is \(1\), giving B. Geometrically, the two triangles each have base and height \(1\). Their areas add, rather than cancel, because \(|x|\ge0\).`,
+  },
+  {
+    id: 10660, number: 537, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 9 },
+    topic: "Function Analysis", difficulty: 2, methods: [],
+    question: String.raw`Let \(f(x)=x^3/3+x^2/2+x\). Find the maximal interval(s) on which the function is increasing.`,
+    choices: [String.raw`\((0,\infty)\)`, String.raw`\((-\infty,\infty)\)`, String.raw`\((-\infty,0)\)`, "the function is never increasing", "NOTA"], answer: "B",
+    solution: String.raw`\(f'(x)=x^2+x+1\). Completing the square gives
+\[f'(x)=\left(x+\frac12\right)^2+\frac34>0\]
+for all real \(x\). Therefore \(f\) is strictly increasing on \((-\infty,\infty)\), giving B. The word "maximal" makes clear that the complete increasing interval is requested: the smaller intervals in A and C also have increasing behavior but do not give its full extent.`,
+  },
+  {
+    id: 10661, number: 538, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 10 },
+    topic: "Implicit Differentiation", difficulty: 2, methods: [],
+    question: String.raw`Which of the following represents all lines tangent to the curve \(x+y^2-y=1\) at \(x=1\)?`,
+    choices: [String.raw`\(y=x-1\) and \(y=-x+2\)`, String.raw`\(y=x-1\) and \(y=x-2\)`, String.raw`\(y=-x+1\) and \(y=-x+2\)`, String.raw`\(y=-x+2\)`, "NOTA"], answer: "A",
+    solution: String.raw`Implicit differentiation gives \(1+2yy'-y'=0\), so \(y'=-1/(2y-1)\). At \(x=1\), the curve equation becomes \(y^2-y=0\), giving two points: \((1,0)\) and \((1,1)\).
+
+At \((1,0)\), the slope is \(1\), so the tangent is \(y=x-1\). At \((1,1)\), the slope is \(-1\), so the tangent is \(y-1=-(x-1)\), or \(y=-x+2\). Both lines are required, giving A. The source's notation \(y'(0)\) for the first branch is misleading: both slopes are evaluated at \(x=1\), at different points on the curve.`,
+  },
+  {
+    id: 10662, number: 539, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 11 },
+    topic: "Rate of Change", difficulty: 2, methods: ["Related Rates"],
+    question: String.raw`A particle moves along the curve \(y=x^{3/2}\) in the first quadrant in such a way that its distance from the origin increases at the rate of \(11\) units per second. Find \(dx/dt\) when \(x=3\).`,
+    choices: ["3 units/second", "2 units/second", "4 units/second", "6 units/second", "NOTA"], answer: "C",
+    solution: String.raw`Let \(D\) be the distance from the origin to \((x,y)\). Since \(y=x^{3/2}\),
+\[D=\sqrt{x^2+x^3},\qquad\frac{dD}{dt}=\frac{2x+3x^2}{2\sqrt{x^2+x^3}}\frac{dx}{dt}.\]
+At \(x=3\), \(D=\sqrt{9+27}=6\) and the coefficient of \(dx/dt\) is \((6+27)/12=11/4\). Thus
+\[11=\frac{11}4\frac{dx}{dt}\quad\Longrightarrow\quad\frac{dx}{dt}=4\text{ units/second}.\]
+The answer is C. The given rate is the rate of change of the straight-line distance, not the speed along the curve or either coordinate rate alone.`,
+  },
+  {
+    id: 10663, number: 540, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 12 },
+    topic: "Polar Area", difficulty: 3, methods: [],
+    question: String.raw`The area of the region inside the polar curve \(r=4-2\cos\theta\) but outside the polar curve \(r=6+2\cos\theta\) is of the form \(A\sqrt B-C\pi\), where \(A,C\) are positive rational numbers and \(B\) is a positive square-free integer. Find \((A)(B)(C)\).`,
+    choices: ["400", "300", "200", "100", "NOTA"], answer: "A",
+    solution: String.raw`The curves intersect when \(4-2\cos\theta=6+2\cos\theta\), or \(\cos\theta=-1/2\). Thus the relevant angles are \(2\pi/3\) and \(4\pi/3\). Both radii are positive for all angles, and the first curve is outside the second exactly between these angles.
+
+The area is therefore
+\[\frac12\int_{2\pi/3}^{4\pi/3}\bigl((4-2\cos\theta)^2-(6+2\cos\theta)^2\bigr)\,d\theta
+=\int_{2\pi/3}^{4\pi/3}(-10-20\cos\theta)\,d\theta.\]
+Evaluating gives
+\[[-10\theta-20\sin\theta]_{2\pi/3}^{4\pi/3}=20\sqrt3-\frac{20\pi}3.\]
+Hence \(A=20\), \(B=3\), \(C=20/3\), and \(ABC=400\), choice A. The source omits the necessary factor \(1/2\) in its polar-area setup but gives the value obtained with that factor. The coefficient domains in the prompt make the requested representation precise; \(C\) is rational, not necessarily an integer.`,
+  },
+  {
+    id: 10664, number: 541, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 13 },
+    topic: "Definite Integrals", difficulty: 3, methods: ["Symmetry"],
+    question: String.raw`Let \(f(x)\) and \(g(x)\) be positive, continuous functions such that \(f(x)=g(x)/g(-x)\), \(f(-x)=g(x)-1\), and \(\int_{-24}^{24}f(x)\,dx=48\). Find \(\displaystyle\int_{-24}^{24}\frac{f(x)}{g(x)}\,dx\).`,
+    choices: ["6", "12", "24", "48", "NOTA"], answer: "C",
+    solution: String.raw`Let \(I=\int_{-24}^{24}f(x)/g(x)\,dx\). Make the substitution \(u=-x\); the reversed bounds cancel the negative differential, so
+\[I=\int_{-24}^{24}\frac{f(-x)}{g(-x)}\,dx.\]
+Using the two given identities,
+\[\frac{f(-x)}{g(-x)}=\frac{g(x)-1}{g(-x)}=(g(x)-1)\frac{f(x)}{g(x)}
+=f(x)-\frac{f(x)}{g(x)}.\]
+Therefore \(I=48-I\), giving \(2I=48\) and \(I=24\), choice C. The source's last line replaces the supplied integral \(48\) by \(24\), incorrectly halving the answer again.
+
+As an independent check, the pointwise conditions force \(f(x)=1\) and \(g(x)=2\). Indeed \(f(x)f(-x)=1\), \(g(x)=1+1/f(x)\), and \(g(-x)=1+f(x)\), so the ratio identity also gives \(f(x)=1/f(x)\). Positivity forces \(f=1\). The desired integral is then \(48\cdot(1/2)=24\).`,
+  },
+  {
+    id: 10665, number: 542, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 14 },
+    topic: "Derivatives", difficulty: 2, methods: ["Logarithmic Differentiation"],
+    question: String.raw`Find the derivative of \(y=x^x\) with respect to \(x\), for \(x>0\).`,
+    choices: [String.raw`\(x^{x-1}\)`, String.raw`\(x^{\ln x+1}\)`, String.raw`\(x^x(\ln x+1)\)`, String.raw`\(x^x\ln x\)`, "NOTA"], answer: "C",
+    solution: String.raw`Since \(x>0\), \(y=x^x>0\), so take natural logarithms:
+\[\ln y=x\ln x.\]
+Differentiate using the Product Rule on the right:
+\[\frac{y'}y=\ln x+x\frac1x=\ln x+1.\]
+Thus \(y'=x^x(\ln x+1)\), choice C. Both the base and exponent depend on \(x\); treating the exponent as a constant would omit one contribution.`,
+  },
+  {
+    id: 10666, number: 543, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 15 },
+    topic: "Fundamental Theorem of Calculus", difficulty: 2, methods: ["Chain Rule"],
+    question: String.raw`Find \(dy/dx\), where \(\displaystyle y=\int_0^{e^{x^2}}\frac1{\sqrt t}\,dt\).`,
+    choices: [String.raw`\(2xe^{x^2/2}\)`, String.raw`\(2xe^{x^2}\)`, String.raw`\(2xe^{-x^2/2}\)`, String.raw`\(e^{-x^2/2}\)`, "NOTA"], answer: "A",
+    solution: String.raw`The integral is improper at \(t=0\), but it converges because an antiderivative is \(2\sqrt t\). For any positive upper bound \(u\),
+\[\int_0^u t^{-1/2}\,dt=2\sqrt u.\]
+Since \(u=e^{x^2}>0\), \(y=2e^{x^2/2}\), and differentiation gives \(y'=2xe^{x^2/2}\), choice A.
+
+Equivalently, applying the Fundamental Theorem of Calculus at the positive upper bound and then the Chain Rule gives \(y'=e^{-x^2/2}(2xe^{x^2})=2xe^{x^2/2}\). This justifies the endpoint issue omitted from the source's one-line solution.`,
+  },
+  {
+    id: 10667, number: 544, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 16 },
+    topic: "Improper Integrals", difficulty: 3, methods: ["Comparison Test"],
+    question: String.raw`Compute \(\displaystyle\lim_{n\to\infty}\int_0^{\pi/2}\sum_{k=0}^n(-1)^k\cot^k(x)\,dx\). Each integral is interpreted as an improper integral at \(x=0\).`,
+    choices: [String.raw`\(\pi\)`, String.raw`\(\frac12\)`, String.raw`\(\frac\pi2\)`, String.raw`\(\frac\pi4\)`, "NOTA"], answer: "E",
+    solution: String.raw`The printed finite-sum integrals do not converge for any \(n\ge1\). Fix such an \(n\), and set \(S_n(x)=\sum_{k=0}^n(-1)^k\cot^k x\). Since \(x\cot x\to1\) as \(x\to0^+\),
+\[\lim_{x\to0^+}x^nS_n(x)=(-1)^n.\]
+The highest power dominates; the terms of lower degree vanish after multiplication by \(x^n\). Thus the integrand behaves like \((-1)^nx^{-n}\), whose integral near zero diverges for every integer \(n\ge1\). The integral diverges to \(+\infty\) for even \(n\) and \(-\infty\) for odd \(n\). Consequently there is no requested finite limit, and the answer is E, not D.
+
+The source replaces the sum by \(1/(1+\cot x)\) and obtains \(\pi/4\) for a different integral. The correct finite geometric formula is
+\[S_n(x)=\frac{1-(-\cot x)^{n+1}}{1+\cot x}.\]
+Dropping the last term is invalid on \(0<x\le\pi/4\), where \(|\cot x|\ge1\). It is also invalid to exchange the limit and the improper integral. The original mathematical expression is retained; its divergent behavior, rather than an invented convergent replacement, is explained.`,
+  },
+  {
+    id: 10668, number: 545, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 17 },
+    topic: "Derivatives", difficulty: 3, methods: ["Product Rule"],
+    question: String.raw`Find the largest prime factor of \(|f''(0)|\) if
+\[f(x)=\cos(x)\cos(2x)\cos(3x)\cdots\cos(23x)\cos(24x).\]`,
+    choices: ["5", "7", "11", "13", "NOTA"], answer: "B",
+    solution: String.raw`When the Product Rule is applied twice, terms either differentiate one cosine factor twice or differentiate two different factors once each. At \(x=0\), every mixed term vanishes because it contains sine factors. A twice-differentiated factor \(\cos(kx)\) contributes \(-k^2\), and every undifferentiated cosine equals \(1\). Therefore,
+\[f''(0)=-\sum_{k=1}^{24}k^2=-\frac{24\cdot25\cdot49}{6}=-4900.\]
+Factoring the absolute value gives \(4900=2^2\cdot5^2\cdot7^2\). Its largest prime factor is \(7\), giving B. This explains why none of the many mixed terms in the source's expanded product contributes at zero.`,
+  },
+  {
+    id: 10669, number: 546, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 18 },
+    topic: "Polynomial Equations", difficulty: 3, methods: [],
+    question: String.raw`The differential equation \(f(2x)=f'(x)f''(x)\) has at least one polynomial solution. Find the sum of all possible values of \(f(3)\) over these polynomial solutions.`,
+    choices: ["6", "9", "12", "18", "NOTA"], answer: "C",
+    solution: String.raw`First, \(f(x)=0\) satisfies the equation and contributes zero to the final sum. A constant or linear polynomial has \(f''=0\), so the equation forces it to be identically zero. For a nonzero polynomial of degree \(n\ge2\), the left side has degree \(n\), and the right side has degree \((n-1)+(n-2)=2n-3\). Thus \(n=3\).
+
+Write \(f(x)=ax^3+bx^2+cx+d\), with \(a\ne0\). Then
+\[8ax^3+4bx^2+2cx+d
+=(3ax^2+2bx+c)(6ax+2b).\]
+Equating coefficients gives
+\[8a=18a^2,\quad4b=18ab,\quad2c=6ac+4b^2,\quad d=2bc.\]
+The first equation gives \(a=4/9\). The second becomes \(4b=8b\), so \(b=0\); the third becomes \(2c=(8/3)c\), so \(c=0\), and then \(d=0\). Thus the only nonzero solution is \(f(x)=4x^3/9\), giving \(f(3)=12\). Including the zero solution yields the sum \(12\), choice C. Substitution verifies both solutions, and the degree argument rules out all others.`,
+  },
+  {
+    id: 10670, number: 547, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 19 },
+    topic: "Differential Equations", difficulty: 3, methods: [],
+    question: String.raw`Let \(f\) be a real, continuously differentiable function satisfying, for all real \(x\),
+\[(f(x))^2=2024+\int_0^x\bigl((f(t))^2+(f'(t))^2\bigr)\,dt.\]
+Find the product of all possible values of \(f(\ln2)\).`,
+    choices: ["2024", "-2024", "-4048", "-8096", "NOTA"], answer: "D",
+    solution: String.raw`Differentiate the identity using the Fundamental Theorem of Calculus:
+\[2f(x)f'(x)=f(x)^2+f'(x)^2.\]
+Rearranging gives \((f(x)-f'(x))^2=0\), so \(f'=f\). Its solutions are \(f(x)=Ce^x\). At \(x=0\), the original identity gives \(f(0)^2=2024\), hence \(C=\pm\sqrt{2024}\).
+
+Both signs do satisfy the original equation: \(2024+\int_0^x2C^2e^{2t}\,dt=C^2e^{2x}\) when \(C^2=2024\). At \(x=\ln2\), the two possible values are \(\pm2\sqrt{2024}\), whose product is \(-4(2024)=-8096\), choice D. The real C1 assumption makes the integral differentiation and the implication from a zero square explicit.`,
+  },
+  {
+    id: 10671, number: 548, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 20 },
+    topic: "Optimization", difficulty: 2, methods: ["Quotient Rule"],
+    question: String.raw`Find values of \(a\) and \(b\) such that the function \(f(x)=(ax+b)/(x^2-1)\) has a local extreme value of \(1\) at \(x=3\).`,
+    choices: [String.raw`\(a=-6\) and \(b=26\)`, String.raw`\(a=1\) and \(b=1\)`, String.raw`\(a=6\) and \(b=-10\)`, "no real values of a and b make the statement true", "NOTA"], answer: "C",
+    solution: String.raw`The value condition is \(f(3)=1\), giving \(3a+b=8\). Since \(3\) is an interior point of the domain, a local extremum also requires \(f'(3)=0\). By the Quotient Rule,
+\[f'(x)=\frac{a(x^2-1)-2x(ax+b)}{(x^2-1)^2}=\frac{-ax^2-2bx-a}{(x^2-1)^2}.\]
+Thus \(-10a-6b=0\). Solving this together with \(3a+b=8\) gives \(a=6\), \(b=-10\), choice C.
+
+These necessary conditions are sufficient here. With these parameters the numerator of \(f'\) is \(N(x)=-6x^2+20x-6\). Since \(N(3)=0\), differentiating the quotient at \(3\) gives \(f''(3)=N'(3)/(3^2-1)^2=-16/64=-1/4<0\). Therefore a local maximum really occurs. The source's general second-derivative numerator incorrectly differentiates \(-2bx\) as \(-2bx\), rather than \(-2b\); the calculation above avoids that typo.`,
+  },
+  {
+    id: 10672, number: 549, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 21 },
+    topic: "Optimization", difficulty: 2, methods: ["Second Derivative Test"],
+    question: String.raw`The function \(f(x)=(ax+b)/(x^2-1)\) has a local extreme value of \(1\) at \(x=3\). Is this extreme value a local maximum or a local minimum?`,
+    choices: ["local maximum", "local minimum", "not a local maximum nor a local minimum", "cannot be determined", "NOTA"], answer: "A",
+    solution: String.raw`The conditions \(f(3)=1\) and \(f'(3)=0\) give \(3a+b=8\) and \(-10a-6b=0\), so \(a=6\) and \(b=-10\). For these parameters,
+\[f'(x)=\frac{-6x^2+20x-6}{(x^2-1)^2}.\]
+At \(3\) the numerator vanishes, and its derivative is \(-12(3)+20=-16\). Thus \(f''(3)=-16/64=-1/4<0\). By the Second Derivative Test, \((3,f(3))=(3,1)\) is a local maximum, giving A. The prompt repeats the previous item's conditions so the question is independently usable in the bank.`,
+  },
+  {
+    id: 10673, number: 550, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 22 },
+    topic: "Optimization", difficulty: 2, methods: [],
+    question: String.raw`Points \(A\) and \(B\) lie at the ends of a diameter of a unit circle and point \(C\) lies on the circumference. If triangle \(ABC\) has the maximum area, what type of triangle is it?`,
+    choices: ["acute", "isosceles", "equilateral", "scalene", "NOTA"], answer: "B",
+    solution: String.raw`The base \(AB\) is a diameter of length \(2\). The area is \(\frac12(2)h=h\), where \(h\) is the perpendicular distance from \(C\) to the diameter. On a unit circle, \(h\le1\), with equality only at one of the two points on the perpendicular diameter.
+
+At either maximum-area position, \(C\) is equally distant from \(A\) and \(B\), so \(AC=BC\). The triangle is isosceles, giving B. It is also right-angled at \(C\), since \(AB\) is a diameter; "right" is not a listed choice, and the isosceles classification is still correct. This supplies the reasoning missing from the source's one-word answer.`,
+  },
+  {
+    id: 10674, number: 551, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 23 },
+    topic: "Function Analysis", difficulty: 2, methods: ["First Derivative Test"],
+    question: String.raw`The equation \(e^x=x+1\) has how many real solutions?`,
+    choices: ["0", "1", "2", String.raw`\(\infty\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let \(F(x)=e^x-x-1\) and observe that \(F(0)=0\). Additionally, \(F'(x)=e^x-1\), so \(F'(x)>0\) for \(x>0\), and \(F'(x)<0\) for \(x<0\). Thus \(F\) is strictly increasing to the right of zero and strictly decreasing as \(x\) moves toward zero from the left.
+
+Its unique global minimum is \(F(0)=0\); all other values are positive. Therefore \(x=0\) is the only solution of the given equation. There is one real solution, giving B.`,
+  },
+  {
+    id: 10675, number: 552, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 24 },
+    topic: "Limits", difficulty: 2, methods: [],
+    question: String.raw`Let \(R\) be a rational function with real coefficients, defined and nonzero for every \(x\in\mathbb R\). Find \(\displaystyle\lim_{n\to\infty}\frac{R(n)}{R(n+1)}\).`,
+    choices: ["1", "0", String.raw`\(\infty\)`, "DNE", "NOTA"], answer: "A",
+    solution: String.raw`Write \(R(x)=P(x)/Q(x)\), where \(P,Q\) are nonzero polynomials. Then
+\[\frac{R(n)}{R(n+1)}=\frac{P(n)}{P(n+1)}\frac{Q(n+1)}{Q(n)}.\]
+If \(P\) has degree \(p\) and leading coefficient \(a\), its first ratio tends to \(an^p/[a(n+1)^p]\to1\). The same argument for \(Q\), of degree \(q\), gives the second ratio tending to \(1\). Hence the limit is \(1\), choice A.
+
+This covers constant polynomials as well. A rational function has only finitely many possible polynomial zeros/poles, so the asymptotic ratios are valid; the prompt's stronger everywhere-defined, nonzero condition guarantees the requested values are defined. The source proves only the special case where \(R\) is a polynomial; the two-factor argument completes the rational case.`,
+  },
+  {
+    id: 10676, number: 553, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 25 },
+    topic: "Definite Integrals", difficulty: 3, methods: [],
+    question: String.raw`Let \(f\) be a non-negative, continuous function on \([0,1]\) with the property that \(\int_0^1f(x)\,dx=c\), \(\int_0^1xf(x)\,dx=c^2\), and \(\int_0^1x^2f(x)\,dx=c^3\) for some real-valued constant \(c\). Find the sum of all possible values of \(f(1/2)\) in terms of \(c\).`,
+    choices: [String.raw`\(c+1\)`, String.raw`\(c^2+1\)`, String.raw`\(c^2-1\)`, String.raw`\(c^3-1\)`, "NOTA"], answer: "E",
+    solution: String.raw`Combine the given moments:
+\[\int_0^1(x-c)^2f(x)\,dx
+=c^3-2c(c^2)+c^2(c)=0.\]
+The integrand is continuous and nonnegative. If it were positive at any point, continuity would make its integral positive. Thus \((x-c)^2f(x)=0\) everywhere on \([0,1]\). At every point other than possibly \(x=c\), this forces \(f(x)=0\); continuity forces the same value at \(c\) if it is in the interval. Hence \(f\equiv0\), and the first moment condition gives \(c=0\).
+
+The only possible value of \(f(1/2)\) is \(0\), so its sum is \(0\). At \(c=0\), choices A-D are \(1,1,-1,-1\), none of which is zero. The answer is E.
+
+Continuity is an explicit repair to the original prompt. Without it, the source's argument establishes only \(f=0\) almost everywhere, not at a specified point. For example, a function zero everywhere except for an arbitrary nonnegative value at \(1/2\) has all three integrals zero, while its point value is unrestricted. The added hypothesis makes the intended unique point-value conclusion valid.`,
+  },
+  {
+    id: 10677, number: 554, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 26 },
+    topic: "Rate of Change", difficulty: 2, methods: [],
+    question: String.raw`Let \(s=f(t)\) be the position of a body moving on a coordinate line, with \(s\) in meters and \(t\) in seconds. When, if ever, during the interval does the body change direction?
+\[s=\frac{25}{t^2}-\frac5t,\qquad0<t\le3.\]`,
+    choices: [String.raw`\(t=0\) seconds`, String.raw`\(t=5\) seconds`, String.raw`\(t=0\) and \(t=5\) seconds`, "the body never changes direction", "NOTA"], answer: "D",
+    solution: String.raw`The body changes direction when velocity changes sign. Here
+\[v(t)=s'(t)=-50t^{-3}+5t^{-2}=\frac{5(t-10)}{t^3}.\]
+For \(0<t\le3\), the numerator is negative and the denominator is positive, so velocity is always negative. It never changes sign on the given interval; the answer is D.
+
+The only positive zero of velocity is \(t=10\), outside the interval. The source includes \(t=0\), although both position and velocity are undefined there. The interval is explicitly repaired to \((0,3]\); no direction change can be assigned at an undefined starting point.`,
+  },
+  {
+    id: 10678, number: 555, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 27 },
+    topic: "Power Series", difficulty: 3, methods: ["Geometric Series"],
+    question: String.raw`What is the maximum positive integer \(n\) such that \(3^n\) divides \(f^{(10)}(0)\), if \(f(x)=(x^3+2)/(x+1)\)?`,
+    choices: ["3", "4", "5", "6", "NOTA"], answer: "B",
+    solution: String.raw`Polynomial division gives
+\[f(x)=x^2-x+1+\frac1{1+x}.\]
+For \(|x|<1\), \(1/(1+x)=\sum_{k=0}^{\infty}(-1)^kx^k\). The coefficient of \(x^{10}\) in \(f\) is therefore \((-1)^{10}=1\); the polynomial part has no term of that degree. Matching Taylor coefficients gives \(f^{(10)}(0)=10!\).
+
+The number of factors of \(3\) in \(10!\) is
+\[\left\lfloor\frac{10}3\right\rfloor+\left\lfloor\frac{10}9\right\rfloor=3+1=4.\]
+Hence \(3^4\) divides the derivative, but \(3^5\) does not, giving B.
+
+The source expands \(1/(1+x)\) as though it were \(1/(1-x)\), omitting alternating signs, and incorrectly obtains \(3\cdot10!\). That erroneous value would contain five factors of \(3\), not the claimed four. The corrected derivative still gives the printed answer B.`,
+  },
+  {
+    id: 10679, number: 556, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 28 },
+    topic: "Improper Integrals", difficulty: 4, methods: ["U-Substitution", "Symmetry"],
+    question: String.raw`Evaluate:
+\[\int_{-\infty}^{\infty}\frac{\sin x\cos(2024/x)-\cos x\sin(2024/x)}x\,dx.\]
+Interpret the integral in the ordinary improper sense, splitting at \(x=0\) and taking the endpoint limits separately.`,
+    choices: [String.raw`\(\frac\pi4\)`, String.raw`\(\frac\pi2\)`, String.raw`\(\pi\)`, String.raw`\(2\pi\)`, "NOTA"], answer: "E",
+    solution: String.raw`Use the sine subtraction identity to write the integrand as \(F(x)=\sin(x-a/x)/x\), where \(a=2024\). Since \(F(-x)=F(x)\), the full integral is \(2J\), with \(J=\int_0^{\infty}F(x)\,dx\).
+
+First justify convergence; cancellation of paired cutoffs alone would not suffice for an ordinary improper integral. At infinity,
+\[\left|F(x)-\frac{\sin x}{x}\right|\le\frac{a}{x^2},\]
+because \(|\sin u-\sin v|\le|u-v|\). The comparison error is absolutely integrable, while \(\int_1^{\infty}\sin x/x\,dx\) converges by Dirichlet's test. Thus the upper tail converges.
+
+For the lower endpoint use \(u=a/x\). A finite lower piece transforms as
+\[\int_{\varepsilon}^bF(x)\,dx=-\int_{a/b}^{a/\varepsilon}F(u)\,du.\]
+Since the transformed upper tail converges, the lower-endpoint limit exists separately as well. We can now apply the same substitution to the convergent integral over \((0,\infty)\):
+\[J=\int_0^{\infty}\frac{\sin(a/u-u)}u\,du=-\int_0^{\infty}\frac{\sin(u-a/u)}u\,du=-J.\]
+Therefore \(J=0\), so the full integral is \(0\), absent from A-D, giving E.
+
+The source states the final value without showing the substitution or endpoint justification. The scaled reciprocal \(u=2024/x\) supplies both; alternatively first rescale \(x=\sqrt{2024}\,t\), then use \(t\mapsto1/t\). This establishes an ordinary improper value, not merely a principal value.`,
+  },
+  {
+    id: 10680, number: 557, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 29 },
+    topic: "Riemann Sums", difficulty: 2, methods: [],
+    question: String.raw`Find \(\displaystyle\lim_{n\to\infty}\left(\frac1{n+1}+\frac1{n+2}+\cdots+\frac1{2n}\right)\).`,
+    choices: [String.raw`\(\frac12\)`, "2", String.raw`\(\ln\frac12\)`, String.raw`\(\ln2\)`, "NOTA"], answer: "D",
+    solution: String.raw`Factor \(1/n\) out of each term:
+\[\sum_{k=1}^n\frac1{n+k}=\frac1n\sum_{k=1}^n\frac1{1+k/n}.\]
+This is the right-endpoint Riemann sum for \(1/(1+x)\) on \([0,1]\), with width \(1/n\). Since the function is continuous there, the limit is
+\[\int_0^1\frac{dx}{1+x}=[\ln(1+x)]_0^1=\ln2.\]
+Thus D. Equivalently, it is \(\int_1^2du/u\). The source mixes bounds \([1,2]\) with integrand \(1/(1+x)\), then evaluates using \([0,1]\); tracking the shifted variable fixes that mismatch.`,
+  },
+  {
+    id: 10681, number: 558, division: "Mu",
+    source: { ...nsuMarchStatewide2024, questionNumber: 30 },
+    topic: "Series", difficulty: 3, methods: ["Root Test"],
+    question: String.raw`Determine the convergence of the following series:
+\[\sum_{n=0}^{\infty}(-2024)^{-20n+(-0.24)^n}.\]
+Interpret rational powers of negative numbers by their real odd-root values; every exponent here has an odd denominator in lowest terms.`,
+    choices: ["Divergent", "Conditionally Convergent", "Absolutely Convergent", "Euler Convergent", "NOTA"], answer: "C",
+    solution: String.raw`Let \(a_n=(-2024)^{-20n+(-0.24)^n}\). The real-power convention is valid because \(-0.24=-6/25\), so every exponent is rational with an odd denominator, even after reduction. Its absolute value is
+\[|a_n|=2024^{-20n+(-0.24)^n}.\]
+For \(n\ge1\), apply the Root Test:
+\[\sqrt[n]{|a_n|}=2024^{-20+(-0.24)^n/n}\longrightarrow2024^{-20}<1.\]
+Thus the series of absolute values converges, and the answer is C. The \(n=0\) term is just \(-2024\), a single finite term that cannot change convergence. This spells out the source's one-line Root Test and makes the meaning of its negative-base rational powers explicit.`,
   },
 ];

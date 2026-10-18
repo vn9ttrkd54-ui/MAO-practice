@@ -40,6 +40,7 @@ paths=(
   docs/march-regional-2026-audit.md
   docs/march-regional-2025-audit.md
   docs/march-regional-2024-audit.md
+  docs/nsu-march-statewide-2024-audit.md
   docs/mu-national-permission.md
   docs/state-convention-2024-audit.md
   docs/state-convention-2025-audit.md
@@ -70,6 +71,7 @@ paths=(
   public/questions/mu-march-regional-2024-function.svg
   public/questions/mu-march-regional-2024-derivative.svg
   public/questions/mu-march-regional-2024-table.svg
+  public/questions/mu-nsu-statewide-2024-table.svg
   tests/browserFixtures/questionSources.tsx
   tests/integralPropertiesLabels.test.mjs
   tests/questionVectors.test.mjs
@@ -90,6 +92,7 @@ paths=(
   tests/muMarchRegional2026.test.mjs
   tests/muMarchRegional2025.test.mjs
   tests/muMarchRegional2024.test.mjs
+  tests/muNSUMarchStatewide2024.test.mjs
   tests/muNationalPublication.test.mjs
   tests/muStateConvention2024.test.mjs
   tests/muStateConvention2025.test.mjs
