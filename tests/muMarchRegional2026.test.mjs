@@ -55,13 +55,13 @@ test("all March formulas compile and original images are present at their exact 
     }
     assert.doesNotMatch(value.replace(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g,""),/\\[()[\]]/);
   }
-  for(const [file,width,height] of [["mu-336-338-original.png",607,155],["mu-348-original.png",690,359],["mu-345-original-solution.png",558,560]]){
+  for(const [file,width,height] of [["mu-336-338-original.svg",607,155],["mu-348-original.svg",690,359],["mu-345-original-solution.svg",558,560]]){
     const png=readFileSync(new URL("../public/questions/"+file,import.meta.url));
-    assert.equal(png.readUInt32BE(16),width);
-    assert.equal(png.readUInt32BE(20),height);
+    assert.match(png.toString("utf8"),new RegExp('width="'+width+'"'));
+    assert.match(png.toString("utf8"),new RegExp('height="'+height+'"'));
   }
-  for(const n of [11,12,13])assert.equal(get(n).illustration.src,"/questions/mu-336-338-original.png");
-  assert.equal(get(23).illustration.src,"/questions/mu-348-original.png");
+  for(const n of [11,12,13])assert.equal(get(n).illustration.src,"/questions/mu-336-338-original.svg");
+  assert.equal(get(23).illustration.src,"/questions/mu-348-original.svg");
   assert.doesNotMatch(get(20).question,/solution-diagram/);
   const require=createRequire(import.meta.url),exports={};
   const code=ts.transpileModule(readFileSync(new URL("../components/math/MathText.tsx",import.meta.url),"utf8"),{
@@ -69,7 +69,7 @@ test("all March formulas compile and original images are present at their exact 
   }).outputText;
   runInNewContext(code,{exports,require});
   const html=renderToStaticMarkup(React.createElement(exports.default,null,get(20).solution));
-  assert.match(html,/mu-345-original-solution\.png/);
+  assert.match(html,/mu-345-original-solution\.svg/);
   assert.doesNotMatch(html,/\[\[solution-diagram/);
 });
 

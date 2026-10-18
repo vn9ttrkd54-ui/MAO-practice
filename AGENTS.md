@@ -15,3 +15,7 @@ The 2026, 2025, 2024, and 2023 MAO National Convention Mu Individual sets are wi
 Use these internal references to calibrate difficulty (1-5), topic, and method labels for newly supplied approved questions. Do not import the reference file into application code, expose it through any catalog/API/UI, copy its questions into the public catalog, or assign it public question numbers. Restoring publication requires an explicit user instruction confirming permission.
 
 Keep public Mu display numbers consecutive from 1, but preserve established IDs and original-source credit numbers independently. Do not delete or reassign stored progress, bookmarks, or history when display numbers change.
+
+## Question Illustrations
+
+Create standalone SVGs for all question and solution diagrams, graphs, and tables. Use actual vector paths, shapes, and text, never PNGs embedded inside SVGs. Preserve source geometry, values, endpoint conventions, labels, and accessible descriptions. Reuse one SVG when several questions share the same source figure. Keep solution-only diagrams behind solution reveal. Run `tests/questionVectors.test.mjs` and check desktop/mobile rendering when adding or changing an illustration. The unreferenced source PNGs are provenance only, not runtime assets.

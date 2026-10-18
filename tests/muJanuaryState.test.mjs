@@ -43,10 +43,10 @@ test("all January Statewide formulas compile with KaTeX", () => {
 });
 
 test("the original shared graph is local and assigned to source questions 1 through 4", () => {
-  const graph = readFileSync(new URL("../public/questions/mu-207-210-original.png", import.meta.url));
-  assert.equal(graph.subarray(1,4).toString("ascii"), "PNG");
+  const graph = readFileSync(new URL("../public/questions/mu-207-210-original.svg", import.meta.url));
+  assert.match(graph.toString("utf8"), /<svg\b/);
   for (const q of questions.slice(0, 4)) {
-    assert.equal(q.illustration?.src, "/questions/mu-207-210-original.png");
+    assert.equal(q.illustration?.src, "/questions/mu-207-210-original.svg");
     assert.equal(q.illustration?.width, 1380);
     assert.equal(q.illustration?.height, 523);
   }
@@ -80,8 +80,8 @@ test("source errors and compressed explanations have explicit corrections", () =
   assert.match(get(235).solution, /sec\^3/);
   for (const number of [217,227]) {
     assert.ok(get(number).solution.includes(`[[solution-diagram:mu-${number}]]`));
-    const png = readFileSync(new URL(`../public/questions/mu-${number}-original-solution.png`, import.meta.url));
-    assert.equal(png.subarray(1,4).toString("ascii"), "PNG");
+    const png = readFileSync(new URL(`../public/questions/mu-${number}-original-solution.svg`, import.meta.url));
+    assert.match(png.toString("utf8"), /<svg\b/);
   }
 });
 

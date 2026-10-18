@@ -24,16 +24,16 @@ test("2024 States keeps all 30 original questions, credits, IDs, answers and rat
   }
 });
 
-test("2024 States original solution pictures are intact, solution-only PNGs",()=>{
+test("2024 States original solution pictures are intact, solution-only SVGs",()=>{
   for(const [n,width,height] of [[194,1353,172],[196,322,416],[201,387,291]]){
     const q=questions.find(q=>(q.id - 10000)===n);
     assert.ok(!q.illustration);
     assert.doesNotMatch(q.question,/solution-diagram/);
     assert.ok(q.solution.includes("[[solution-diagram:mu-"+n+"]]"));
-    const png=readFileSync(new URL("../public/questions/mu-"+n+"-original-solution.png",import.meta.url));
-    assert.equal(png.subarray(1,4).toString("ascii"),"PNG");
-    assert.equal(png.readUInt32BE(16),width);
-    assert.equal(png.readUInt32BE(20),height);
+    const png=readFileSync(new URL("../public/questions/mu-"+n+"-original-solution.svg",import.meta.url));
+    assert.match(png.toString("utf8"), /<svg\b/);
+    assert.match(png.toString("utf8"),new RegExp('width="'+width+'"'));
+    assert.match(png.toString("utf8"),new RegExp('height="'+height+'"'));
   }
 });
 

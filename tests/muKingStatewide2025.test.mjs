@@ -68,10 +68,10 @@ test("every mathematical expression compiles and all three graph questions reuse
     }
     assert.doesNotMatch(value.replace(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g,""),/\\[()[\]]/);
   }
-  const png=readFileSync(new URL("../public/questions/mu-442-444-original.png",import.meta.url));
-  assert.equal(png.readUInt32BE(16),290);
-  assert.equal(png.readUInt32BE(20),153);
-  for(const n of [27,28,29])assert.equal(get(n).illustration.src,"/questions/mu-442-444-original.png");
+  const png=readFileSync(new URL("../public/questions/mu-442-444-original.svg",import.meta.url));
+  assert.match(png.toString("utf8"),new RegExp('width="'+290+'"'));
+  assert.match(png.toString("utf8"),new RegExp('height="'+153+'"'));
+  for(const n of [27,28,29])assert.equal(get(n).illustration.src,"/questions/mu-442-444-original.svg");
   assert.equal(batch.filter(q=>q.illustration).length,3);
   assert.ok(get(28).question.includes(String.raw`F(x)=\int_5^{3x}f(t)\,dt`));
 });

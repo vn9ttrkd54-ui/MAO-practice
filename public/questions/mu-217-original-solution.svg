@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="507" height="371" viewBox="0 0 507 371" role="img" aria-labelledby="title">
+<title id="title">Equilateral triangle containing a square and its inscribed circle</title>
+<rect width="507" height="371" fill="white"/>
+<path d="M256 32L72 350H439ZM171 350V182H339V350" fill="none" stroke="#111" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" /><circle cx="255" cy="266" r="84" fill="none" stroke="#111" stroke-width="2"/><path d="M41 328L219 19M34 324L48 332M212 15L226 23" fill="none" stroke="#555" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5 4"/><text x="90" y="159" font-family="Times New Roman,serif" font-size="26" fill="#111" >a</text><text x="193" y="107" font-family="Times New Roman,serif" font-size="26" fill="#111" >s</text><text x="309" y="105" font-family="Times New Roman,serif" font-size="26" fill="#111" >s</text><text x="347" y="268" font-family="Times New Roman,serif" font-size="26" fill="#111" >s</text>
+</svg>

@@ -6,8 +6,8 @@ const kingFebruaryStatewide2025 = {
 };
 
 const kingFebruaryStatewide2025Graph = {
-  src: "/questions/mu-442-444-original.png",
-  alt: "Original f graph on [-1/2,15/2]: zero to x=0; line to (1,1); upper unit quarter circle to (2,0); line to (3,-1); horizontal to (4,-1); line to (5,0); upper unit semicircle centered at (6,0) to (7,0); then zero.",
+  src: "/questions/mu-442-444-original.svg",
+  alt: "Vector f graph on [-1/2,15/2]: zero to x=0; line to (1,1); upper unit quarter circle to (2,0); line to (3,-1); horizontal to (4,-1); line to (5,0); upper unit semicircle centered at (6,0) to (7,0); then zero.",
   width: 290, height: 153,
 };
 
@@ -22,7 +22,7 @@ const chilesStatewide2025 = {
 };
 
 const chilesStatewide2025Table = {
-  src: "/questions/mu-360-362-original.png",
+  src: "/questions/mu-360-362-original.svg",
   alt: "Columns x=-1,0,1,2. f(x)=3,1,7,-1; f prime(x)=5,4,-3,0; g(x)=-8,6,2,4; g prime(x)=6,0,3,1.",
   width: 906, height: 161,
 };
@@ -68,7 +68,7 @@ const marchRegional2026 = {
 };
 
 const marchRegional2026Table = {
-  src: "/questions/mu-336-338-original.png",
+  src: "/questions/mu-336-338-original.svg",
   alt: "At x=1, p=2, p prime=1, p double prime=1; at x=2, p=1, p prime=4, p double prime=-1; at x=3, p=4, p prime=3, p double prime=2.",
   width: 607, height: 155,
 };
@@ -656,7 +656,7 @@ and letting \(a\to b\) gives
 \[\frac{2\sqrt b}{\sqrt{2b}}=\boxed{\sqrt2}.\]
 The lengths \(x\) and \(y\) vary with \(a\); they cannot be held fixed while replacing \(\theta\) by \(\pi/4\). In fact \(x=at=\sqrt{ab}\) and \(y=b/t=\sqrt{ab}\), so the purported quotient \((x-y)/(\sqrt2(x-y))\) would be \(0/0\), not an evaluation of the limit. The rationalization above avoids that indeterminate substitution.`,
     illustration: {
-      src: "/questions/mu-146-original.png",
+      src: "/questions/mu-146-original.svg",
       alt: "Two adjacent right triangles with vertical sides a and b, bases x and y, diagonals c and d, and three angles labeled theta",
       width: 600,
       height: 390,
@@ -2003,7 +2003,7 @@ Therefore
 
 Evaluate \(\displaystyle\lim_{x\to-1}f(x)\). Select DNE if you believe the limit does not exist.`,
     illustration: {
-      src: "/questions/mu-207-210-original.png",
+      src: "/questions/mu-207-210-original.svg",
       alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
       width: 1380,
       height: 523,
@@ -2028,7 +2028,7 @@ A two-sided limit exists only when the one-sided limits agree. The filled dot gi
 
 Determine \(\displaystyle\lim_{x\to-1}[f(x)g(x)]\). Select DNE if you believe the limit does not exist.`,
     illustration: {
-      src: "/questions/mu-207-210-original.png",
+      src: "/questions/mu-207-210-original.svg",
       alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
       width: 1380,
       height: 523,
@@ -2054,7 +2054,7 @@ Therefore, \(\displaystyle\lim_{x\to-1}[f(x)g(x)]=0\).`,
 
 Determine \(\displaystyle\lim_{x\to0^-}f(g(x))\). Select DNE if you believe the limit does not exist.`,
     illustration: {
-      src: "/questions/mu-207-210-original.png",
+      src: "/questions/mu-207-210-original.svg",
       alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
       width: 1380,
       height: 523,
@@ -2076,7 +2076,7 @@ Determine \(\displaystyle\lim_{x\to0^-}f(g(x))\). Select DNE if you believe the 
 
 Determine the product of \(f(-1)\) and \(g(-3)\).`,
     illustration: {
-      src: "/questions/mu-207-210-original.png",
+      src: "/questions/mu-207-210-original.svg",
       alt: "Graphs of the piecewise functions f and g used in MU questions 207 through 210",
       width: 1380,
       height: 523,
@@ -2631,7 +2631,7 @@ The other domain boundary, \(x=-3\), is not a vertical asymptote: the numerator 
 
 For how many values of \(x\) on \([-5,6]\) is \(f\) discontinuous?`,
     illustration: {
-      src: "/questions/mu-238-240-original.png",
+      src: "/questions/mu-238-240-original.svg",
       alt: "Piecewise graph of f on the closed interval from negative 5 to 6",
       width: 374,
       height: 272,
@@ -2656,7 +2656,7 @@ The cusp at \(-3\), the vertical tangent at 2, and the corner at 5 do not break 
 
 For how many values of \(x\) on \((-5,6)\) is \(f\) non-differentiable?`,
     illustration: {
-      src: "/questions/mu-238-240-original.png",
+      src: "/questions/mu-238-240-original.svg",
       alt: "Piecewise graph of f on the closed interval from negative 5 to 6",
       width: 374,
       height: 272,
@@ -2679,7 +2679,7 @@ More explicitly, the discontinuities are \(x=-1,1,4\). A differentiable function
 
 At what value \(a\) do both \(\displaystyle\lim_{x\to a}f(x)\) and \(f(a)\) exist, but \(\displaystyle\lim_{x\to a}f(x)\ne f(a)\)?`,
     illustration: {
-      src: "/questions/mu-238-240-original.png",
+      src: "/questions/mu-238-240-original.svg",
       alt: "Piecewise graph of f on the closed interval from negative 5 to 6",
       width: 374,
       height: 272,
@@ -2839,7 +2839,7 @@ so \(h'=-5\). The height is decreasing at \(5\) inches per second.`,
     methods: [],
     question: String.raw`Three functions, \(p\), \(r\), and \(s\), are graphed. Which correctly matches how the graphs relate?`,
     illustration: {
-      src: "/questions/mu-250-original.png",
+      src: "/questions/mu-250-original.svg",
       alt: "Three curves labeled p, r, and s for identifying first- and second-derivative relationships",
       width: 440,
       height: 245,
@@ -4795,7 +4795,7 @@ The original B said we cannot say "anything at all" about the relationship, whic
     source: { ...marchRegional2026, questionNumber: 23 },
     topic: "Optimization", difficulty: 3, methods: ["First Derivative Test"],
     illustration: {
-      src: "/questions/mu-348-original.png",
+      src: "/questions/mu-348-original.svg",
       alt: "Meepfrog is 40 feet offshore. The seagull is on the shore 80 feet west of the point directly below Meepfrog.",
       width: 690, height: 359,
     },

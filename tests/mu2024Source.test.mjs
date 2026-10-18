@@ -60,13 +60,11 @@ test("solution diagrams render from local allowlisted sources", () => {
     assert.ok(q);
     assert.doesNotMatch(q.question, /solution-diagram/);
     const html = renderToStaticMarkup(React.createElement(MathText, null, q.solution));
-    const originalPng = [194,196,201,217,227].includes(n);
-    const filename = `mu-${n}-${originalPng ? "original-solution.png" : "solution.svg"}`;
+    const filename = `mu-${n}-original-solution.svg`;
     assert.ok(html.includes(`/questions/${filename}`));
     assert.doesNotMatch(html, /\[\[solution-diagram/);
     const asset = readFileSync(new URL(`../public/questions/${filename}`, import.meta.url));
-    if (originalPng) assert.equal(asset.subarray(1,4).toString("ascii"), "PNG");
-    else assert.match(asset.toString("utf8"), /<svg/);
+    assert.match(asset.toString("utf8"), /<svg\b/);
   }
   const html = renderToStaticMarkup(React.createElement(MathText, null, "[[solution-diagram:https://example.com/x]] <script>alert(1)</script>"));
   assert.doesNotMatch(html, /<img|<script/);

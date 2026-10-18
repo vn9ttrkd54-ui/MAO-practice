@@ -35,22 +35,27 @@ paths=(
   docs/state-convention-2024-audit.md
   docs/state-convention-2025-audit.md
   docs/state-convention-2026-audit.md
-  public/questions/mu-146-original.png
-  public/questions/mu-194-original-solution.png
-  public/questions/mu-196-original-solution.png
-  public/questions/mu-201-original-solution.png
-  public/questions/mu-207-210-original.png
-  public/questions/mu-217-original-solution.png
-  public/questions/mu-227-original-solution.png
-  public/questions/mu-238-240-original.png
-  public/questions/mu-250-original.png
-  public/questions/mu-336-338-original.png
-  public/questions/mu-345-original-solution.png
-  public/questions/mu-348-original.png
-  public/questions/mu-360-362-original.png
-  public/questions/mu-442-444-original.png
+  public/questions/mu-146-original.svg
+  public/questions/mu-194-original-solution.svg
+  public/questions/mu-196-original-solution.svg
+  public/questions/mu-201-original-solution.svg
+  public/questions/mu-207-210-original.svg
+  public/questions/mu-217-original-solution.svg
+  public/questions/mu-227-original-solution.svg
+  public/questions/mu-238-240-original.svg
+  public/questions/mu-250-original.svg
+  public/questions/mu-302-solution.svg
+  public/questions/mu-313-solution.svg
+  public/questions/mu-320-solution.svg
+  public/questions/mu-325-solution.svg
+  public/questions/mu-336-338-original.svg
+  public/questions/mu-345-original-solution.svg
+  public/questions/mu-348-original.svg
+  public/questions/mu-360-362-original.svg
+  public/questions/mu-442-444-original.svg
   tests/browserFixtures/questionSources.tsx
   tests/integralPropertiesLabels.test.mjs
+  tests/questionVectors.test.mjs
   tests/mu2024Source.test.mjs
   tests/mu2024State.test.mjs
   tests/muChilesStatewide2025.test.mjs

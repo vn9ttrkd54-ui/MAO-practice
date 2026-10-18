@@ -56,11 +56,11 @@ test("wording and explanatory corrections resolve source and catalog errors", ()
 
 test("original question 29 artwork is present before reveal and sourced locally", () => {
   const question = questions.find(question => question.id === 10146);
-  assert.equal(question.illustration.src, "/questions/mu-146-original.png");
+  assert.equal(question.illustration.src, "/questions/mu-146-original.svg");
   assert.equal(question.illustration.width,600);
   assert.equal(question.illustration.height,390);
   const png = readFileSync(new URL(`../public${question.illustration.src}`,import.meta.url));
-  assert.equal(png.subarray(1,4).toString("ascii"),"PNG");
+  assert.match(png.toString("utf8"), /<svg\b/);
   assert.equal(questions.filter(question => question.illustration).length,1);
 });
 

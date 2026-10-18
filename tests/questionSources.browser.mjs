@@ -35,8 +35,8 @@ const css = (await Promise.all(cssFiles.map(f => readFile(join(cssRoot, f), "utf
 const server = createServer(async (req, res) => {
   const pathname = new URL(req.url, "http://fixture.test").pathname;
   try {
-    if (/^\/questions\/mu-\d+(?:-\d+)?-(?:solution|original|original-solution)\.png$/.test(pathname)) {
-      res.setHeader("Content-Type", "image/png"); return res.end(await readFile(join(root, "public", pathname)));
+    if (/^\/questions\/mu-\d+(?:-\d+)?-(?:solution|original|original-solution)\.svg$/.test(pathname)) {
+      res.setHeader("Content-Type", "image/svg+xml"); return res.end(await readFile(join(root, "public", pathname)));
     }
     if (/^\/[a-f0-9]+\.png$/.test(pathname)) {
       res.setHeader("Content-Type", "image/png"); return res.end(await readFile(join(dir, pathname)));
@@ -51,9 +51,36 @@ let browser;
 const errors = [];
 try {
   browser = await chromium.launch({ headless: true });
+  const vectors=(await readdir(join(root,"public/questions"))).filter(name=>/^mu-.*(?:original|solution)\.svg$/.test(name));
+  assert.equal(vectors.length,23); // 18 current drawings and five legacy solution vectors.
+  const currentVectors=vectors.filter(name=>!/^mu-(194|196|201|217|227)-solution\.svg$/.test(name));
+  for(const width of [390,1280]){
+    for(let start=0;start<currentVectors.length;start+=6){
+      const page=await browser.newPage({viewport:{width,height:1000}});
+      await page.goto(origin);
+      await page.setContent(`<style>body{margin:16px;background:#eee;font:14px sans-serif}.gallery{display:grid;grid-template-columns:repeat(${width>600?2:1},minmax(0,1fr));gap:16px}figure{margin:0;background:white;padding:12px}img{display:block;max-width:100%;height:auto;max-height:360px;margin:8px auto;object-fit:contain}</style><div class="gallery">${currentVectors.slice(start,start+6).map(name=>`<figure><figcaption>${name}</figcaption><img src="${origin}/questions/${name}"></figure>`).join("")}</div>`);
+      const checks=await page.evaluate(async()=>{
+        return Promise.all([...document.images].map(async img=>{
+          await img.decode();
+          const source=await (await fetch(img.src)).text();
+          const xml=new DOMParser().parseFromString(source,"image/svg+xml");
+          const canvas=document.createElement("canvas");canvas.width=200;canvas.height=150;
+          const context=canvas.getContext("2d");context.drawImage(img,0,0,200,150);
+          const pixels=context.getImageData(0,0,200,150).data;let ink=0;
+          for(let i=0;i<pixels.length;i+=4)if(pixels[i+3]>0&&Math.min(pixels[i],pixels[i+1],pixels[i+2])<220)ink++;
+          return {src:img.src,valid:!xml.querySelector("parsererror"),ink,loaded:img.naturalWidth>0};
+        }));
+      });
+      for(const result of checks){assert.ok(result.valid&&result.loaded,result.src);assert.ok(result.ink>100,result.src+" is nonblank");}
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+      await page.screenshot({path:join(dir,`vectors-${start/6+1}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
   async function open(view, id, width, revealed = false) {
     const page = await browser.newPage({ viewport: { width, height: 1000 } });
     page.on("pageerror", error => errors.push(error.message));
+    page.on("request",request=>assert.ok(!/\/questions\/.*\.png(?:\?|$)/.test(request.url()),"question views never request raster assets"));
     await page.route("**/api/multiplayer/**", async route => {
       if (route.request().method() !== "GET") return route.fulfill({ json: { accepted: true } });
       return route.fulfill({ json: await page.evaluate(() => window.sourceCreditRound) });
@@ -93,10 +120,10 @@ try {
   for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
     for (const width of [1280, 390, 320]) {
       const page = await open(view, 10302, width);
-      if (view !== "results") assert.equal(await page.locator('img[src*="-solution.png"]').count(), 0, "solutions stay hidden before reveal");
+      if (view !== "results") assert.equal(await page.locator('img[src*="-solution.svg"]').count(), 0, "solutions stay hidden before reveal");
       if (view === "trainer") {
         await page.getByRole("button", { name: "Give Up", exact: true }).click();
-        await expect(page.locator('img[src="/questions/mu-302-solution.png"]')).toBeVisible();
+        await expect(page.locator('img[src="/questions/mu-302-solution.svg"]')).toBeVisible();
       }
       await page.screenshot({ path: join(dir, `${view}-${width}.png`), fullPage: true });
       await page.close();
@@ -104,7 +131,7 @@ try {
   }
   for (const id of [10302, 10313, 10320, 10325]) {
     const page = await open("trainer", id, 390, true);
-    const picture = page.locator(`img[src="/questions/mu-${id - 10000}-solution.png"]`);
+    const picture = page.locator(`img[src="/questions/mu-${id - 10000}-solution.svg"]`);
     await picture.scrollIntoViewIfNeeded();
     await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
     await page.screenshot({ path: join(dir, `diagram-${id}.png`), fullPage: true });
@@ -130,7 +157,7 @@ try {
   for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
     for (const width of [1280, 320]) {
       const page = await open(view, 10238, width);
-      const picture = page.locator('img[src="/questions/mu-238-240-original.png"]');
+      const picture = page.locator('img[src="/questions/mu-238-240-original.svg"]');
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth === 374)).toBe(true);
       await page.screenshot({ path: join(dir, `january-${view}-${width}.png`), fullPage: true });
@@ -140,7 +167,7 @@ try {
   for (const id of [10247, 10250, 10254, 10256, 10259, 10262]) {
     const page = await open("trainer", id, 320, true);
     if (id === 10250) {
-      const picture = page.locator('img[src="/questions/mu-250-original.png"]');
+      const picture = page.locator('img[src="/questions/mu-250-original.svg"]');
       await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth === 440)).toBe(true);
     }
     await page.screenshot({ path: join(dir, `january-solution-${id}.png`), fullPage: true });
@@ -149,7 +176,7 @@ try {
   for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
     for (const width of [1280, 320]) {
       const page = await open(view, 10207, width);
-      const picture = page.locator('img[src="/questions/mu-207-210-original.png"]');
+      const picture = page.locator('img[src="/questions/mu-207-210-original.svg"]');
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth === 1380)).toBe(true);
       await page.screenshot({ path: join(dir, `statewide-${view}-${width}.png`), fullPage: true });
@@ -159,7 +186,7 @@ try {
   for (const id of [10212,10217,10221,10222,10227,10231,10233,10234,10235]) {
     const page = await open("trainer", id, 320, true);
     if ([10217,10227].includes(id)) {
-      const picture = page.locator(`img[src="/questions/mu-${id-10000}-original-solution.png"]`);
+      const picture = page.locator(`img[src="/questions/mu-${id-10000}-original-solution.svg"]`);
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
     }
@@ -169,7 +196,7 @@ try {
   for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
     for (const width of [1280,320]) {
       const page = await open(view,10146,width);
-      const picture=page.locator('img[src="/questions/mu-146-original.png"]');
+      const picture=page.locator('img[src="/questions/mu-146-original.svg"]');
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===600)).toBe(true);
       await page.screenshot({path:join(dir,`states-${view}-${width}.png`),fullPage:true});
@@ -204,7 +231,7 @@ try {
   for(const id of [10178,10189,10192,10194,10195,10196,10197,10201,10203,10205,10206]){
     const page=await open("trainer",id,320,true);
     if([10194,10196,10201].includes(id)){
-      const picture=page.locator(`img[src="/questions/mu-${id-10000}-original-solution.png"]`);
+      const picture=page.locator(`img[src="/questions/mu-${id-10000}-original-solution.svg"]`);
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
     }
@@ -213,7 +240,7 @@ try {
   }
   for(const view of ["bank","trainer","play","spectate","results"]){
     for(const width of [1280,320]){
-      for(const [id,src] of [[10336,"mu-336-338-original.png"],[10348,"mu-348-original.png"]]){
+      for(const [id,src] of [[10336,"mu-336-338-original.svg"],[10348,"mu-348-original.svg"]]){
         const page=await open(view,id,width);
         const picture=page.locator('img[src="/questions/'+src+'"]');
         await picture.scrollIntoViewIfNeeded();
@@ -227,7 +254,7 @@ try {
   for(const id of [10332,10337,10338,10339,10340,10342,10343,10345,10347,10349,10351,10352,10353,10354,10355]){
     const page=await open("trainer",id,320,true);
     if(id===10345){
-      const picture=page.locator('img[src="/questions/mu-345-original-solution.png"]');
+      const picture=page.locator('img[src="/questions/mu-345-original-solution.svg"]');
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===558)).toBe(true);
     }
@@ -236,7 +263,7 @@ try {
   }
   for(const view of ["bank","trainer","play","spectate"]){
     const page=await open(view,10345,320);
-    assert.equal(await page.locator('img[src="/questions/mu-345-original-solution.png"]').count(),0,"inverse-function diagram remains solution-only");
+    assert.equal(await page.locator('img[src="/questions/mu-345-original-solution.svg"]').count(),0,"inverse-function diagram remains solution-only");
     await page.close();
   }
   for(let id=10326;id<=10355;id++){
@@ -247,7 +274,7 @@ try {
   for(const view of ["bank","trainer","play","spectate","results"]){
     for(const width of [1280,320]){
       const page=await open(view,10361,width);
-      const picture=page.locator('img[src="/questions/mu-360-362-original.png"]');
+      const picture=page.locator('img[src="/questions/mu-360-362-original.svg"]');
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===906)).toBe(true);
       if(view==="bank")await expect(page.getByRole("heading",{name:"Question 239",exact:true})).toBeVisible();
@@ -276,7 +303,7 @@ try {
   for(const view of ["bank","trainer","play","spectate","results"]){
     for(const width of [1280,320]){
       const page=await open(view,10442,width);
-      const picture=page.locator('img[src="/questions/mu-442-444-original.png"]');
+      const picture=page.locator('img[src="/questions/mu-442-444-original.svg"]');
       await picture.scrollIntoViewIfNeeded();
       await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===290)).toBe(true);
       if(view==="bank")await expect(page.getByRole("heading",{name:"Question 320",exact:true})).toBeVisible();

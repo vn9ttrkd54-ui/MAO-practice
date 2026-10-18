@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="280" height="200" viewBox="0 0 280 200" role="img" aria-labelledby="title">
+<title id="title">Cylinder rotated around a vertical generator sweeps a cylinder of double radius</title>
+<rect width="280" height="200" fill="white"/>
+<path d="M10 190L94 111L269 152M94 111V9" fill="none" stroke="#ccc" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" /><ellipse cx="148" cy="75" rx="114" ry="61" fill="#377936"/><ellipse cx="148" cy="98" rx="103" ry="45" fill="white"/><path d="M34 75A114 61 0 0 0 262 75V125A114 54 0 0 1 34 125Z" fill="#43833b"/><path d="M118 41V88A55 26 0 0 0 228 88V41Z" fill="#9d302c"/><ellipse cx="173" cy="41" rx="55" ry="26" fill="#c0473f"/><path d="M148 65V112" fill="none" stroke="#2875c1" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" />
+</svg>

@@ -53,10 +53,10 @@ test("every formula compiles and each table question uses the original source cr
     }
     assert.doesNotMatch(value.replace(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g,""),/\\[()[\]]/);
   }
-  const png=readFileSync(new URL("../public/questions/mu-360-362-original.png",import.meta.url));
-  assert.equal(png.readUInt32BE(16),906);
-  assert.equal(png.readUInt32BE(20),161);
-  for(const n of [5,6,7])assert.equal(get(n).illustration.src,"/questions/mu-360-362-original.png");
+  const png=readFileSync(new URL("../public/questions/mu-360-362-original.svg",import.meta.url));
+  assert.match(png.toString("utf8"),new RegExp('width="'+906+'"'));
+  assert.match(png.toString("utf8"),new RegExp('height="'+161+'"'));
+  for(const n of [5,6,7])assert.equal(get(n).illustration.src,"/questions/mu-360-362-original.svg");
   assert.equal(batch.filter(q=>q.illustration).length,3);
 });
 

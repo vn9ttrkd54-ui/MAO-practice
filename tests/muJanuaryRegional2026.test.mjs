@@ -43,12 +43,12 @@ test("all January Regional 2026 formulas compile with KaTeX", () => {
 });
 
 test("the two graph assets are local and assigned only where needed", () => {
-  for (const file of ["mu-238-240-original.png", "mu-250-original.png"]) {
+  for (const file of ["mu-238-240-original.svg", "mu-250-original.svg"]) {
     const png = readFileSync(new URL(`../public/questions/${file}`, import.meta.url));
-    assert.equal(png.subarray(1, 4).toString("ascii"), "PNG");
+    assert.match(png.toString("utf8"), /<svg\b/);
   }
-  for (const n of [238,239,240]) assert.equal(questions.find(q => (q.id - 10000) === n).illustration?.src, "/questions/mu-238-240-original.png");
-  assert.equal(questions.find(q => (q.id - 10000) === 250).illustration?.src, "/questions/mu-250-original.png");
+  for (const n of [238,239,240]) assert.equal(questions.find(q => (q.id - 10000) === n).illustration?.src, "/questions/mu-238-240-original.svg");
+  assert.equal(questions.find(q => (q.id - 10000) === 250).illustration?.src, "/questions/mu-250-original.svg");
   assert.equal(questions.filter(question => question.illustration).length, 4);
 });
 
