@@ -94,9 +94,9 @@ for(const publicRoom of [false,true])test(`${publicRoom?"public":"private"} roun
   const round=await f.service.getMultiplayerRoundState("room");
   for(const [question,id] of [[round.question,10238],[round.upcomingQuestion.question,10239]]) {
     assert.equal(question.illustration,muQuestions.find(q=>q.id===id).illustration);
-    assert.equal(question.illustration.src,"/questions/mu-238-240-graph.svg");
+    assert.equal(question.illustration.src,"/questions/mu-238-240-original.png");
     assert.equal(question.answer,undefined);assert.equal(question.solution,undefined);
-    assert.ok(readFileSync(new URL(`../public${question.illustration.src}`,import.meta.url),"utf8").includes("<svg"));
+    assert.equal(readFileSync(new URL(`../public${question.illustration.src}`,import.meta.url)).subarray(1,4).toString("ascii"),"PNG");
   }
   assert.equal(f.calls.length,1,"illustrations are catalog metadata, not another database read");
 });

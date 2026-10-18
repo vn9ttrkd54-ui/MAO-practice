@@ -5,6 +5,7 @@ import { runInNewContext } from "node:vm";
 import test from "node:test";
 import ts from "typescript";
 import { muQuestions } from "../data/questions/mu.ts";
+import { muNationalReferences } from "../data/question-references/muNationals.ts";
 import { alphaQuestions } from "../data/questions/alpha.ts";
 import { thetaQuestions } from "../data/questions/theta.ts";
 import { selectNextTrainerQuestion } from "../lib/trainer.ts";
@@ -38,6 +39,9 @@ test("Trainer metadata and single-question delivery preserve original catalog co
   for (const query of ["", "id=0", "id=-1", "id=1e4", "id=10001&id=10002", "id=01", "id=9999999999999999999"]) {
     assert.equal((await GET(new Request(`https://example.test/?${query}`))).status, 400);
   }
+  for (const id of [...muNationalReferences.map(q=>q.id),10232, 10248, 10278, 10285]) {
+    assert.equal((await GET(new Request(`https://example.test/?id=${id}`))).status, 404);
+  }
   assert.equal((await GET(new Request("https://example.test/?id=9999999"))).status, 404);
 });
 
@@ -45,6 +49,18 @@ test("960 seeded selections match the pre-refactor algorithm across all division
   // Golden digest recorded and compared against a7cad0c:lib/trainer.ts before
   // refactoring. Includes cooldown fallback, topic weights, session retries,
   // starting/target difficulties, challenge questions and previous exclusion.
+  // Preserve the original golden catalog fixture after retiring Regional
+  // questions. They exist only in this algorithm fixture, never the live catalog.
+  const baselineQuestions = [
+    ...muNationalReferences.map(q=>({id:q.id,number:q.id-10000,division:q.division,topic:q.topic,difficulty:q.difficulty})).sort((a,b)=>a.id-b.id),
+    ...questions.filter(q=>q.division!=="Mu"||q.id<=10325).map(q=>q.division==="Mu"?{...q,number:q.id-10000}:q),
+  ];
+  for (const [id, topic, difficulty] of [[10232, "Differential Equations", 3], [10248, "Inequalities", 5], [10278, "Limits", 4], [10285, "Analytic Geometry", 4]]) {
+    const nextIndex = baselineQuestions.findIndex(question => question.id === id + 1);
+    assert.ok(nextIndex >= 0);
+    baselineQuestions.splice(nextIndex, 0, { id, number: id - 10000, division: "Mu", topic, difficulty });
+  }
+  const baselineMetadata = baselineQuestions.map(({ id, number, division, topic, difficulty }) => ({ id, number, division, topic, difficulty }));
   let seed = 1;
   const math = Object.create(Math);
   math.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 2 ** 32; };
@@ -52,7 +68,7 @@ test("960 seeded selections match the pre-refactor algorithm across all division
   const now = 1800000000000;
   const selected = [];
   for (const division of ["Mu", "Alpha", "Theta"]) for (let scenario = 0; scenario < 8; scenario++) {
-    const group = questions.filter(q => q.division === division);
+    const group = baselineQuestions.filter(q => q.division === division);
     const progress = new Map(group.filter((_, i) => scenario !== 0 && (scenario === 1 || i % 3 !== 0)).map((q, i) => [q.id, {
       attempts: scenario === 1 ? 1 : i % 10 + 1, correct: scenario === 1 ? 1 : i % 4,
       lastResult: scenario === 1 ? "correct" : ["correct", "incorrect", "give-up", null][i % 4],
@@ -61,7 +77,7 @@ test("960 seeded selections match the pre-refactor algorithm across all division
     const options = { division, previousQuestionId: scenario > 1 ? group[0].id : null,
       targetDifficulty: scenario > 2 ? scenario % 5 + 1 : null, forceChallenge: scenario === 6,
       sessionResults: scenario > 3 ? group.slice(0, scenario === 7 ? group.length : 12).map((q, i) => ({ questionId: q.id, result: i % 2 ? "correct" : "incorrect" })) : [] };
-    for (let trial = 1; trial <= 40; trial++) { seed = trial; selected.push(select(metadata, progress, options, now)?.id ?? null); }
+    for (let trial = 1; trial <= 40; trial++) { seed = trial; selected.push(select(baselineMetadata, progress, options, now)?.id ?? null); }
   }
   assert.equal(createHash("sha256").update(JSON.stringify(selected)).digest("hex"), "69e4629c259bf8bfa25d9e5c9a81ca3448c57b9ca1789b7c355881f4ae8a8043");
   assert.equal(select([], new Map(), { division: "Mu" }), null);

@@ -6,15 +6,15 @@ import katex from "katex";
 const source = await readFile(new URL("../data/questions/mu.ts", import.meta.url), "utf8");
 const javascript = source.replace(/^import type .*;\s*/m, "").replace(": Question[]", "");
 const { muQuestions } = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString("base64")}`);
-const batch = muQuestions.filter(q => q.number >= 177 && q.number <= 206);
+const batch = muQuestions.filter(q => (q.id - 10000) >= 177 && (q.id - 10000) <= 206);
 
 test("2024 State MU set keeps all 30 source answers and unique bank identifiers", () => {
   assert.equal(batch.length, 30);
   assert.equal(batch.map(q => q.answer).join(""), "AACBADA DAABEBCCABCCBB DACADCCBD".replaceAll(" ", ""));
   assert.equal(new Set(muQuestions.map(q => q.id)).size, muQuestions.length);
-  assert.equal(new Set(muQuestions.map(q => q.number)).size, muQuestions.length);
+  assert.equal(new Set(muQuestions.map(q => (q.id - 10000))).size, muQuestions.length);
   batch.forEach((q, i) => {
-    assert.equal(q.number, 177 + i);
+    assert.equal((q.id - 10000), 177 + i);
     assert.equal(q.id, 10177 + i);
     assert.equal(q.division, "Mu");
     assert.equal(q.choices.length, 5);
@@ -33,10 +33,10 @@ test("all new question, choice and solution formulas render with KaTeX", () => {
       for (const m of expressions) {
         assert.doesNotThrow(() => katex.renderToString(m[1] ?? m[2], {
           throwOnError: true, displayMode: m[2] !== undefined,
-        }), `MU ${q.number}: ${m[0]}`);
+        }), `MU ${(q.id - 10000)}: ${m[0]}`);
       }
       const remainder = text.replace(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g, "");
-      assert.doesNotMatch(remainder, /\\[()[\]]/, `unmatched math delimiter in MU ${q.number}`);
+      assert.doesNotMatch(remainder, /\\[()[\]]/, `unmatched math delimiter in MU ${(q.id - 10000)}`);
     }
   }
 });
@@ -45,7 +45,12 @@ test("adapted questions include assumptions and avoid previous-question dependen
   assert.match(batch[1].question, /continuous at/);
   assert.match(batch[19].question, /right circular cone/);
   assert.match(batch[26].question, /least upper bound/);
-  for (const q of batch) assert.doesNotMatch(q.question, /previous problem|see problem/i);
+  for (const q of batch.filter(q=>(q.id - 10000)!==206)) assert.doesNotMatch(q.question, /previous problem|see problem/i);
+  // Q30 retains its original sentence but explicitly supplies every dependency.
+  assert.match(batch[29].question,/For this standalone question/);
+  for(const formula of [String.raw`I_n=\int_{-\infty}^{\infty}`,String.raw`f(n)=(n/e)^n`,String.raw`L=\sqrt2 I_0`]){
+    assert.ok(batch[29].question.includes(formula));
+  }
 });
 
 const near = (actual, expected, tolerance = 1e-9) => assert.ok(

@@ -7,6 +7,8 @@ const sources = questionFiles.map(file => ({
   file,
   source: readFileSync(new URL(`../data/questions/${file}`, import.meta.url), "utf8"),
 }));
+// Internal national references retain canonical labels for editorial calibration only.
+sources.push({file:"muNationals.ts",source:readFileSync(new URL("../data/question-references/muNationals.ts",import.meta.url),"utf8")});
 
 const topics = sources.flatMap(({ source }) =>
   [...source.matchAll(/topic:\s*"([^"]+)"/g)].map(match => match[1]),
@@ -35,7 +37,7 @@ test("question-bank labels use canonical names", () => {
   ];
   const approvedMethods = [
     "AM-GM", "Absolute Value", "Alternating Series Test", "Angle Bisector Theorem", "Angle Chasing", "Arc Length", "Arguments of Complex Numbers",
-    "Asymptotes", "Base Conversion", "Binomial Theorem", "Cauchy-Schwarz Inequality",
+    "Asymptotes", "Base Conversion", "Binomial Theorem",
     "Chain Rule", "Change of Base", "Chinese Remainder Theorem", "Comparison Test", "Complement Rule", "Completing the Square",
     "Conditional Probability", "Conjugates", "Continued Fractions", "Critical Points",
     "Cross Product", "Cross Sections", "De Moivre's Theorem",

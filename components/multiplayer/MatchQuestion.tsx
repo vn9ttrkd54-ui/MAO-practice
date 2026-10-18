@@ -331,7 +331,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   return (
     <main className={`${styles.page} mx-auto max-w-6xl px-6 py-8 sm:px-8`}>
       <header className={`${styles.header} flex items-center justify-between gap-4`}><div><p className="text-sm font-semibold text-blue-600">{round.question.division} · {round.question.topic}</p><h1 className="mt-1 text-2xl font-bold">Question {round.questionNumber} of {round.totalQuestions}</h1></div><div className={`rounded-2xl px-5 py-3 text-center ${secondsLeft !== null && secondsLeft <= 10 ? "bg-red-100 text-red-700" : "bg-gray-100"}`}><p className="text-xs font-semibold uppercase">Time</p><p className="text-2xl font-bold tabular-nums">{secondsLeft === null ? "--" : `${secondsLeft}s`}</p></div></header>
-      <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className={`${styles.panel} rounded-3xl border bg-white p-6 shadow-sm sm:p-8`}>
+      <div className={`mt-6 grid items-start gap-4 ${round.spectators.length > 0 ? "lg:grid-cols-[minmax(0,1fr)_16rem]" : ""}`}><section className={`${styles.panel} min-w-0 rounded-3xl border bg-white p-6 shadow-sm sm:p-8`}>
         {submissionNotice}
         {(round.scoringVersion ?? 1) === 1 ? <p className="mb-4 text-sm text-slate-600">Legacy scoring: correct answers earn 1,000–1,500 points; wrong or blank earns 0.</p> : null}
         <QuestionSourceCredit source={round.question.source} />

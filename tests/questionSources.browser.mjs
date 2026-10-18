@@ -27,13 +27,15 @@ const compiler = require("next/dist/compiled/webpack/webpack").webpack({
 await new Promise((resolve, reject) => compiler.run((error, stats) => error || stats.hasErrors()
   ? reject(error ?? new Error(stats.toString())) : compiler.close(resolve)));
 const bundle = await readFile(join(dir, "client.js"));
+assert.equal(bundle.includes(Buffer.from("muNationalReferences")),false,"internal references are not bundled");
+assert.equal(bundle.includes(Buffer.from("Clayton decides to stop teasing Anagh")),false,"withheld national prose is not bundled");
 const cssRoot = join(root, ".next/static");
 const cssFiles = (await readdir(cssRoot, { recursive: true })).filter(f => f.endsWith(".css"));
 const css = (await Promise.all(cssFiles.map(f => readFile(join(cssRoot, f), "utf8")))).join("\n");
 const server = createServer(async (req, res) => {
   const pathname = new URL(req.url, "http://fixture.test").pathname;
   try {
-    if (/^\/questions\/mu-\d+-solution\.png$/.test(pathname)) {
+    if (/^\/questions\/mu-\d+(?:-\d+)?-(?:solution|original|original-solution)\.png$/.test(pathname)) {
       res.setHeader("Content-Type", "image/png"); return res.end(await readFile(join(root, "public", pathname)));
     }
     if (/^\/[a-f0-9]+\.png$/.test(pathname)) {
@@ -58,10 +60,35 @@ try {
     });
     await page.goto(`${origin}/?guest&view=${view}&id=${id}${revealed ? "&revealed" : ""}`);
     const credit = page.getByLabel("Question source", { exact: true });
-    await expect(credit).toHaveText(`Source: 2026 February King Invitational · Calculus Individual · Question ${id - 10295}`);
+    const king2025 = id >= 10416 && id <= 10444;
+    const january2025 = id >= 10386 && id <= 10415;
+    const chiles = id >= 10356 && id <= 10385;
+    const march = id >= 10326 && id <= 10355;
+    const states2024 = id >= 10177 && id <= 10206;
+    const states2025 = id >= 10148 && id <= 10176;
+    const states = id >= 10119 && id <= 10147;
+    const statewide = id >= 10207 && id <= 10235;
+    const january = id >= 10236 && id <= 10265;
+    const regional = id >= 10266 && id <= 10295;
+    const competition = king2025 ? "2025 February King Statewide" : january2025 ? "2025 January Regional" : chiles ? "2025 Chiles Statewide" : march ? "2026 March Regional" : states2024 ? "2024 FAMAT State Convention" : states2025 ? "2025 FAMAT State Convention" : states ? "2026 FAMAT State Convention" : statewide ? "2026 January Statewide" : january ? "2026 January Regional" : `2026 February ${regional ? "Regional" : "King Invitational"}`;
+    const originalNumber = king2025 ? id-10415 : january2025 ? id-10385 : chiles ? id-10355 : march ? id-10325 : states2024 ? id-10176 : states2025 ? id-(id<=10163?10147:10146) : states ? id - (id<=10143 ? 10118 : 10117) : statewide ? id - (id < 10234 ? 10206 : 10205) : id - (january ? 10235 : regional ? 10265 : 10295);
+    await expect(credit).toHaveText(`Source: ${competition} · Calculus Individual · Question ${originalNumber}`);
     assert.equal(await page.locator(".katex-error").count(), 0, "no broken math");
-    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, "no page overflow");
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+    if (overflow) {
+      await page.screenshot({ path: join(dir, `overflow-${view}-${id}-${width}.png`), fullPage: true });
+      console.error(await page.evaluate(() => [...document.querySelectorAll("body *")]
+        .filter(node => node.getBoundingClientRect().right > innerWidth + 1)
+        .slice(0, 8).map(node => ({ tag: node.tagName, className: node.className, text: node.textContent?.slice(0, 70) }))));
+    }
+    assert.equal(overflow, false, `no page overflow: ${view}, ${id}, ${width}; screenshots: ${dir}`);
     return page;
+  }
+  for(const width of [1280,320]){
+    const page=await open("bank",10119,width);
+    await expect(page.getByRole("heading",{name:"Question 1",exact:true})).toBeVisible();
+    await page.screenshot({path:join(dir,`renumbered-mu-1-${width}.png`),fullPage:true});
+    await page.close();
   }
   for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
     for (const width of [1280, 390, 320]) {
@@ -86,6 +113,180 @@ try {
   for (const id of [10310, 10317, 10324]) {
     const page = await open("trainer", id, 320, true);
     await page.screenshot({ path: join(dir, `long-math-${id}.png`), fullPage: true });
+    await page.close();
+  }
+  for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
+    for (const width of [1280, 320]) {
+      const page = await open(view, 10293, width, true);
+      await page.screenshot({ path: join(dir, `regional-${view}-${width}.png`), fullPage: true });
+      await page.close();
+    }
+  }
+  for (const id of [10276, 10281, 10284, 10289, 10295]) {
+    const page = await open("trainer", id, 320, true);
+    await page.screenshot({ path: join(dir, `regional-solution-${id}.png`), fullPage: true });
+    await page.close();
+  }
+  for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
+    for (const width of [1280, 320]) {
+      const page = await open(view, 10238, width);
+      const picture = page.locator('img[src="/questions/mu-238-240-original.png"]');
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth === 374)).toBe(true);
+      await page.screenshot({ path: join(dir, `january-${view}-${width}.png`), fullPage: true });
+      await page.close();
+    }
+  }
+  for (const id of [10247, 10250, 10254, 10256, 10259, 10262]) {
+    const page = await open("trainer", id, 320, true);
+    if (id === 10250) {
+      const picture = page.locator('img[src="/questions/mu-250-original.png"]');
+      await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth === 440)).toBe(true);
+    }
+    await page.screenshot({ path: join(dir, `january-solution-${id}.png`), fullPage: true });
+    await page.close();
+  }
+  for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
+    for (const width of [1280, 320]) {
+      const page = await open(view, 10207, width);
+      const picture = page.locator('img[src="/questions/mu-207-210-original.png"]');
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth === 1380)).toBe(true);
+      await page.screenshot({ path: join(dir, `statewide-${view}-${width}.png`), fullPage: true });
+      await page.close();
+    }
+  }
+  for (const id of [10212,10217,10221,10222,10227,10231,10233,10234,10235]) {
+    const page = await open("trainer", id, 320, true);
+    if ([10217,10227].includes(id)) {
+      const picture = page.locator(`img[src="/questions/mu-${id-10000}-original-solution.png"]`);
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(() => picture.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+    }
+    await page.screenshot({ path: join(dir, `statewide-solution-${id}.png`), fullPage: true });
+    await page.close();
+  }
+  for (const view of ["bank", "trainer", "play", "spectate", "results"]) {
+    for (const width of [1280,320]) {
+      const page = await open(view,10146,width);
+      const picture=page.locator('img[src="/questions/mu-146-original.png"]');
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===600)).toBe(true);
+      await page.screenshot({path:join(dir,`states-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
+  for (const id of [10129,10131,10137,10138,10140,10142,10143,10144]) {
+    const page = await open("trainer",id,320,true);
+    await page.screenshot({path:join(dir,`states-solution-${id}.png`),fullPage:true});
+    await page.close();
+  }
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      const page=await open(view,10158,width);
+      await page.screenshot({path:join(dir,`states2025-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
+  for(const id of [10153,10156,10159,10162,10165,10167,10168,10172,10173,10176]){
+    const page=await open("trainer",id,320,true);
+    await page.screenshot({path:join(dir,`states2025-solution-${id}.png`),fullPage:true});
+    await page.close();
+  }
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      const page=await open(view,10196,width);
+      if(view!=="results")assert.equal(await page.locator('img[src*="original-solution"]').count(),0);
+      await page.screenshot({path:join(dir,`states2024-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
+  for(const id of [10178,10189,10192,10194,10195,10196,10197,10201,10203,10205,10206]){
+    const page=await open("trainer",id,320,true);
+    if([10194,10196,10201].includes(id)){
+      const picture=page.locator(`img[src="/questions/mu-${id-10000}-original-solution.png"]`);
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+    }
+    await page.screenshot({path:join(dir,`states2024-solution-${id}.png`),fullPage:true});
+    await page.close();
+  }
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      for(const [id,src] of [[10336,"mu-336-338-original.png"],[10348,"mu-348-original.png"]]){
+        const page=await open(view,id,width);
+        const picture=page.locator('img[src="/questions/'+src+'"]');
+        await picture.scrollIntoViewIfNeeded();
+        await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+        if(view==="bank")await expect(page.getByRole("heading",{name:"Question "+(id-10122),exact:true})).toBeVisible();
+        await page.screenshot({path:join(dir,`march-${id}-${view}-${width}.png`),fullPage:true});
+        await page.close();
+      }
+    }
+  }
+  for(const id of [10332,10337,10338,10339,10340,10342,10343,10345,10347,10349,10351,10352,10353,10354,10355]){
+    const page=await open("trainer",id,320,true);
+    if(id===10345){
+      const picture=page.locator('img[src="/questions/mu-345-original-solution.png"]');
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===558)).toBe(true);
+    }
+    await page.screenshot({path:join(dir,`march-solution-${id}.png`),fullPage:true});
+    await page.close();
+  }
+  for(const view of ["bank","trainer","play","spectate"]){
+    const page=await open(view,10345,320);
+    assert.equal(await page.locator('img[src="/questions/mu-345-original-solution.png"]').count(),0,"inverse-function diagram remains solution-only");
+    await page.close();
+  }
+  for(let id=10326;id<=10355;id++){
+    const page=await open("trainer",id,320);
+    await page.screenshot({path:join(dir,`march-question-${id}.png`),fullPage:true});
+    await page.close();
+  }
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      const page=await open(view,10361,width);
+      const picture=page.locator('img[src="/questions/mu-360-362-original.png"]');
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===906)).toBe(true);
+      if(view==="bank")await expect(page.getByRole("heading",{name:"Question 239",exact:true})).toBeVisible();
+      await page.screenshot({path:join(dir,`chiles-table-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
+  for(let id=10356;id<=10385;id++){
+    const page=await open("trainer",id,320,true);
+    await page.screenshot({path:join(dir,`chiles-solution-${id}.png`),fullPage:true});
+    await page.close();
+  }
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      const page=await open(view,10412,width);
+      if(view==="bank")await expect(page.getByRole("heading",{name:"Question 290",exact:true})).toBeVisible();
+      await page.screenshot({path:join(dir,`january2025-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
+  for(let id=10386;id<=10415;id++){
+    const page=await open("trainer",id,320,true);
+    await page.screenshot({path:join(dir,`january2025-solution-${id}.png`),fullPage:true});
+    await page.close();
+  }
+  for(const view of ["bank","trainer","play","spectate","results"]){
+    for(const width of [1280,320]){
+      const page=await open(view,10442,width);
+      const picture=page.locator('img[src="/questions/mu-442-444-original.png"]');
+      await picture.scrollIntoViewIfNeeded();
+      await expect.poll(()=>picture.evaluate(img=>img.complete&&img.naturalWidth===290)).toBe(true);
+      if(view==="bank")await expect(page.getByRole("heading",{name:"Question 320",exact:true})).toBeVisible();
+      await page.screenshot({path:join(dir,`king2025-graph-${view}-${width}.png`),fullPage:true});
+      await page.close();
+    }
+  }
+  for(let id=10416;id<=10444;id++){
+    const page=await open("trainer",id,320,true);
+    await page.screenshot({path:join(dir,`king2025-solution-${id}.png`),fullPage:true});
     await page.close();
   }
   assert.deepEqual(errors, []);

@@ -2,9 +2,14 @@ import katex from "katex";
 import Image from "next/image";
 
 type MathTextProps = { children: string; className?: string };
-const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325)\]\])/g;
+const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325|345)\]\])/g;
 // Explicit local allowlist: never interpret arbitrary URLs or HTML from text.
 const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: number; height: number }> = {
+  "[[solution-diagram:mu-345]]": {
+    src: "/questions/mu-345-original-solution.png",
+    alt: "Original general illustration of signed integrals of a function and its inverse partitioning a rectangle; the example curve is increasing, unlike the decreasing function in the question.",
+    width: 558, height: 560,
+  },
   "[[solution-diagram:mu-302]]": {
     src: "/questions/mu-302-solution.png",
     alt: "Original solution diagram: a red cylinder rotates about the blue generator line, sweeping the larger green cylinder.",
@@ -26,29 +31,29 @@ const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: numbe
     width: 227, height: 207,
   },
   "[[solution-diagram:mu-194]]": {
-    src: "/questions/mu-194-solution.svg",
+    src: "/questions/mu-194-original-solution.png",
     alt: "Graph of arccos(cos x): triangular waves of height pi, with zeros at multiples of 2 pi.",
-    width: 1000, height: 210,
+    width: 1353, height: 172,
   },
   "[[solution-diagram:mu-196]]": {
-    src: "/questions/mu-196-solution.svg",
+    src: "/questions/mu-196-original-solution.png",
     alt: "Axial cone cross section through a cube face diagonal. Cube height 1, half-diagonal square root of 2 over 2, extra base radius x times square root of 2 over 2, and height above the cube 1 over x.",
-    width: 420, height: 390,
+    width: 322, height: 416,
   },
   "[[solution-diagram:mu-201]]": {
-    src: "/questions/mu-201-solution.svg",
+    src: "/questions/mu-201-original-solution.png",
     alt: "Ladder triangle: ground b equals 5, leaning tree segment c equals 3, ladder a equals 7, with angle A equal to 2 pi over 3 at the tree base.",
-    width: 460, height: 240,
+    width: 387, height: 291,
   },
   "[[solution-diagram:mu-217]]": {
-    src: "/questions/mu-217-solution.svg",
+    src: "/questions/mu-217-original-solution.png",
     alt: "A circle inscribed in a square of side s, with the square inscribed in an equilateral triangle of side a.",
-    width: 440, height: 360,
+    width: 507, height: 371,
   },
   "[[solution-diagram:mu-227]]": {
-    src: "/questions/mu-227-solution.svg",
+    src: "/questions/mu-227-original-solution.png",
     alt: "A centered ellipse and hyperbola intersecting at four points symmetric about x equals 2 and y equals negative 1.",
-    width: 440, height: 360,
+    width: 380, height: 354,
   },
 };
 

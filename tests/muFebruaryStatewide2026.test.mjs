@@ -6,11 +6,11 @@ import katex from "katex";
 const source = readFileSync(new URL("../data/questions/mu.ts", import.meta.url), "utf8");
 const js = source.replace(/^import type .*;\s*/m, "").replace(": Question[]", "");
 const { muQuestions } = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
-const questions = muQuestions.filter(question => question.number >= 296 && question.number <= 325);
+const questions = muQuestions.filter(question => (question.id - 10000) >= 296 && (question.id - 10000) <= 325);
 
 test("King February Statewide 2026 contains all 30 sequential questions", () => {
   assert.equal(questions.length, 30);
-  assert.deepEqual(questions.map(question => question.number), Array.from({ length: 30 }, (_, index) => 296 + index));
+  assert.deepEqual(questions.map(question => (question.id - 10000)), Array.from({ length: 30 }, (_, index) => 296 + index));
   assert.deepEqual(questions.map(question => question.id), Array.from({ length: 30 }, (_, index) => 10296 + index));
   assert.equal(questions.map(question => question.answer).join(""), "ADACDABBACAACEBCDDDBBECCDABBAB");
   questions.forEach(question => assert.equal(question.choices.length, 5));
@@ -18,7 +18,7 @@ test("King February Statewide 2026 contains all 30 sequential questions", () => 
 });
 
 test("shared setups are repeated and source corrections are retained", () => {
-  const get = number => questions.find(question => question.number === number);
+  const get = number => questions.find(question => (question.id - 10000) === number);
 
   for (const number of [305, 306]) assert.ok(get(number).question.includes(String.raw`x(t)=t\cos(t)`));
   for (const number of [319, 320, 321]) assert.match(get(number).question, /is sadder than another function/);
@@ -50,7 +50,7 @@ test("every supplied question has an exact original-number credit and keeps the 
     assert.equal(question.difficulty, difficulties[index]);
   }
   for (const [bankNumber, token] of [[302,302],[313,313],[320,320],[325,325]]) {
-    assert.ok(questions.find(q => q.number === bankNumber).solution.includes(`[[solution-diagram:mu-${token}]]`));
+    assert.ok(questions.find(q => (q.id - 10000) === bankNumber).solution.includes(`[[solution-diagram:mu-${token}]]`));
   }
 });
 
@@ -102,7 +102,7 @@ test("all King February Statewide 2026 formulas compile with KaTeX", () => {
         assert.doesNotThrow(() => katex.renderToString(match[1] ?? match[2], {
           throwOnError: true,
           displayMode: match[2] !== undefined,
-        }), `MU ${question.number}`);
+        }), `MU ${(question.id - 10000)}`);
       }
     }
   }

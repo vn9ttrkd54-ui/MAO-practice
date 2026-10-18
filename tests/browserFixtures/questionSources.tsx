@@ -15,7 +15,8 @@ const round: MultiplayerRoundState = {
   questionNumber: 2, totalQuestions: 5, questionDurationSeconds: 90,
   questionStartedAt: Date.now() - 1000, questionEndsAt: Date.now() + 89000, intermissionEndsAt: null,
   question: { questionId: question.id, number: 2, division: question.division, topic: question.topic,
-    difficulty: question.difficulty, question: question.question, choices: question.choices, source: question.source },
+    difficulty: question.difficulty, question: question.question, choices: question.choices, source: question.source,
+    illustration: question.illustration },
   players: [], spectators: [], upcomingQuestion: null,
 };
 Object.assign(window, { sourceCreditRound: round });
@@ -30,7 +31,7 @@ function Fixture() {
       roomId: "fixture", viewerMode: "spectator", placement: null, score: null, ranked: false,
       ratingChange: null, finalLeaderboard: [], rounds: [{
         questionId: question.id, questionNumber: 2, question: question.question, choices: question.choices,
-        source: question.source, selectedAnswer: null, correctAnswer: question.answer, correct: false,
+        source: question.source, illustration: question.illustration, selectedAnswer: null, correctAnswer: question.answer, correct: false,
         answerTimeMs: null, pointsEarned: 0, solution: question.solution,
       }],
     }} />;

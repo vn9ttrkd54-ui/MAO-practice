@@ -152,8 +152,8 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
         <div className="rounded-xl bg-gray-100 px-4 py-2 text-xl font-bold tabular-nums">{state.roundClosed ? "Round complete" : preparing ? (countdown === null ? "Preparing…" : `Starts in ${countdown}s`) : `${seconds}s`}</div>
       </header>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_18rem]">
-        <div className="space-y-4">
+      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="min-w-0 space-y-4">
           <section className={`${styles.panel} rounded-2xl border bg-white p-6 shadow-sm`}>
             {preparing ? <p>Waiting for the shared question start…</p> : <>
             <QuestionSourceCredit source={state.question.source} />

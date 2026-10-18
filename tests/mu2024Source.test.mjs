@@ -10,7 +10,7 @@ import katex from "katex";
 const source = readFileSync(new URL("../data/questions/mu.ts", import.meta.url), "utf8");
 const js = source.replace(/^import type .*;\s*/m, "").replace(": Question[]", "");
 const { muQuestions } = await import(`data:text/javascript;base64,${Buffer.from(js).toString("base64")}`);
-const questions = muQuestions.filter(q => q.number >= 177 && q.number <= 206);
+const questions = muQuestions.filter(q => (q.id - 10000) >= 177 && (q.id - 10000) <= 206);
 const get = n => questions[n - 177];
 const require = createRequire(import.meta.url);
 const compiled = ts.transpileModule(readFileSync(new URL("../components/math/MathText.tsx", import.meta.url), "utf8"), {
@@ -24,7 +24,7 @@ test("source answer key, numbering and all 30 entries remain intact", () => {
   assert.equal(questions.length, 30);
   assert.equal(questions.map(q => q.answer).join(""), "AACBADADAABEBCCABCCBBDACADCCBD");
   questions.forEach((q, i) => {
-    assert.equal(q.number, 177+i);
+    assert.equal((q.id - 10000), 177+i);
     assert.equal(q.id, 10177+i);
     assert.equal(q.choices.length, 5);
   });
@@ -49,20 +49,24 @@ test("all restored math compiles without KaTeX errors", () => {
     for (const m of text.matchAll(/\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g)) {
       assert.doesNotThrow(() => katex.renderToString(m[1] ?? m[2], {
         throwOnError: true, displayMode: m[2] !== undefined,
-      }), `MU ${q.number}`);
+      }), `MU ${(q.id - 10000)}`);
     }
   }
 });
 
 test("solution diagrams render from local allowlisted sources", () => {
   for (const n of [194,196,201,217,227]) {
-    const q = muQuestions.find(question => question.number === n);
+    const q = muQuestions.find(question => (question.id - 10000) === n);
     assert.ok(q);
     assert.doesNotMatch(q.question, /solution-diagram/);
     const html = renderToStaticMarkup(React.createElement(MathText, null, q.solution));
-    assert.match(html, new RegExp(`/questions/mu-${n}-solution.svg`));
+    const originalPng = [194,196,201,217,227].includes(n);
+    const filename = `mu-${n}-${originalPng ? "original-solution.png" : "solution.svg"}`;
+    assert.ok(html.includes(`/questions/${filename}`));
     assert.doesNotMatch(html, /\[\[solution-diagram/);
-    assert.match(readFileSync(new URL(`../public/questions/mu-${n}-solution.svg`, import.meta.url), "utf8"), /<svg/);
+    const asset = readFileSync(new URL(`../public/questions/${filename}`, import.meta.url));
+    if (originalPng) assert.equal(asset.subarray(1,4).toString("ascii"), "PNG");
+    else assert.match(asset.toString("utf8"), /<svg/);
   }
   const html = renderToStaticMarkup(React.createElement(MathText, null, "[[solution-diagram:https://example.com/x]] <script>alert(1)</script>"));
   assert.doesNotMatch(html, /<img|<script/);
