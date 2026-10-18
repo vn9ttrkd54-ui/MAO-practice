@@ -2,9 +2,14 @@ import katex from "katex";
 import Image from "next/image";
 
 type MathTextProps = { children: string; className?: string };
-const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325|345|502)\]\])/g;
+const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325|345|502|558)\]\])/g;
 // Explicit local allowlist: never interpret arbitrary URLs or HTML from text.
 const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: number; height: number }> = {
+  "[[solution-diagram:mu-558]]": {
+    src: "/questions/mu-558-solution.svg",
+    alt: "Green graph y equals ln of one plus x squared, with the two dashed slope-one-half tangent lines at x equals two minus square root of three and two plus square root of three. Their intercepts bound the three-intersection range.",
+    width: 620, height: 380,
+  },
   "[[solution-diagram:mu-502]]": {
     src: "/questions/mu-502-solution.svg",
     alt: "Labeled paper fold: crease L between the top and right edges; reflected legs x and z, right-edge segments x and 8 minus x, bottom gap y.",

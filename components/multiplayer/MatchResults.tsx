@@ -64,13 +64,13 @@ export default function MatchResults({ result }: { result: MultiplayerMatchResul
               </div>
               <QuestionImage illustration={round.illustration} />
 
-              <div className="mt-4 grid gap-2">
+              <div className="mt-4 grid min-w-0 grid-cols-1 gap-2">
                 {round.choices.map((choice, index) => {
                   const label = labels[index];
                   const isCorrect = label === round.correctAnswer;
                   const isSelected = !isSpectator && label === round.selectedAnswer;
                   return (
-                    <div key={label} className={`flex items-start rounded-lg border px-3 py-2 text-sm ${isCorrect ? "border-green-300 bg-green-50" : isSelected ? "border-red-300 bg-red-50" : "border-slate-200 bg-slate-50"}`}>
+                    <div key={label} className={`flex min-w-0 items-start rounded-lg border px-3 py-2 text-sm ${isCorrect ? "border-green-300 bg-green-50" : isSelected ? "border-red-300 bg-red-50" : "border-slate-200 bg-slate-50"}`}>
                       <span className="mr-2 font-bold">{label}.</span>
                       <div className="min-w-0 flex-1"><MathText>{choice}</MathText></div>
                       {isCorrect ? <span className="ml-2">✓</span> : isSelected ? <span className="ml-2">(your answer)</span> : null}

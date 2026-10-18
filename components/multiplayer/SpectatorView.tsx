@@ -159,11 +159,11 @@ export default function SpectatorView({ initialState }: { initialState: Multipla
             <QuestionSourceCredit source={state.question.source} />
             <div className="text-lg font-semibold leading-8"><MathText>{state.question.question}</MathText></div>
             <QuestionImage illustration={state.question.illustration} />
-            <div className="mt-5 grid gap-2">
+            <div className="mt-5 grid min-w-0 grid-cols-1 gap-2">
               {state.question.choices.map((choice, index) => (
-                <div key={`${index}-${choice}`} className="flex items-start gap-3 rounded-xl border px-4 py-3">
+                <div key={`${index}-${choice}`} className="flex min-w-0 items-start gap-3 rounded-xl border px-4 py-3">
                   <b>{String.fromCharCode(65 + index)}</b>
-                  <MathText>{choice}</MathText>
+                  <MathText className="min-w-0 flex-1">{choice}</MathText>
                 </div>
               ))}
             </div>

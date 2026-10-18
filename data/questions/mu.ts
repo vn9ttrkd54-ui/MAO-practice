@@ -1,5 +1,10 @@
 import type { Question } from "@/types/question";
 
+const januaryRegional2024 = {
+  competition: "2024 January Regional",
+  event: "Calculus Individual",
+};
+
 const januaryInvitational2024 = {
   competition: "2024 FAMAT January Invitational",
   event: "Calculus Individual",
@@ -8184,5 +8189,497 @@ None of A-D must be true, so the answer is E. The fixed-partition wording makes 
 =\frac{x^2+2-(x^2+1)}{x-3-(x-2)}
 =\frac1{-1}=-1.\]
 The denominator is exactly \(-1\) for all sufficiently large \(x\), so it is nonzero there. The expression is eventually constant, and its limit is therefore \(-1\), choice C.`,
+  },
+  {
+    id: 10535, number: 412, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 1 },
+    topic: "Derivatives", difficulty: 1, methods: [],
+    question: String.raw`In order to travel to the Grand Line, Nami must figure out a derivative to find the slope of the boat's trajectory. If \(f(x)=(x+8)(2x+9)(x+10)\), evaluate \(f'''(2024)\).`,
+    choices: [String.raw`\(0\)`, String.raw`\(6\)`, String.raw`\(12\)`, String.raw`\(2024\)`, "NOTA"], answer: "C",
+    solution: String.raw`Note that since the leading term of \(f(x)\) has degree \(3\), when we take the third derivative all the smaller terms vanish. The leading term is \(x(2x)x=2x^3\), so
+\[f'''(x)=2\cdot3!=12.\]
+This third derivative is constant, and therefore \(f'''(2024)=12\). There is no need to substitute \(2024\) into the original cubic or expand its lower-degree terms.`,
+  },
+  {
+    id: 10536, number: 413, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 2 },
+    topic: "Implicit Differentiation", difficulty: 1, methods: ["Implicit Differentiation"],
+    question: String.raw`The secret organization Cipher Pol works heavily in the field of cryptography. Specifically, elliptic curves are very useful in encoding messages. Find the slope of the line tangent to \(y^2=x^3+ax+b\) at point \((0,\sqrt b)\) in terms of \(a\) and/or \(b\). Assume \(b>0\).`,
+    choices: [String.raw`\(\frac{a\sqrt b}{2b}\)`, String.raw`\(\frac{a}{2b}\)`, String.raw`\(\frac{b\sqrt a}{2a}\)`, String.raw`\(\frac{b}{2a}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Taking the implicit derivative yields
+\[2yy'=3x^2+a\quad\Longrightarrow\quad y'=\frac{3x^2+a}{2y}.\]
+Since \(x=0\), \(y=\sqrt b\), we have
+\[y'=\frac{a}{2\sqrt b}=\frac{a\sqrt b}{2b}.\]
+The added condition \(b>0\) ensures that the point is real and the denominator is nonzero, so the tangent has the finite slope being requested. The source omits this condition; at \(b=0\) the displayed finite-slope formula need not apply.`,
+  },
+  {
+    id: 10537, number: 414, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 3 },
+    topic: "Limits", difficulty: 1, methods: ["Exponential Limits"],
+    question: String.raw`Nami is trying to calculate the amount of interest that has accrued from the money she has lent Luffy. Help her by evaluating the following limit:
+\[\lim_{x\to\infty}\left(1+\frac1x\right)^{100x}.\]`,
+    choices: [String.raw`\(1\)`, String.raw`\(100\)`, String.raw`\(100e\)`, String.raw`\(e^{100}\)`, "NOTA"], answer: "D",
+    solution: String.raw`It is well known that
+\[\lim_{x\to\infty}\left(1+\frac ax\right)^{bx}=e^{ab}.\]
+Here \(a=1\) and \(b=100\), so the answer is \(e^{100}\). Equivalently, if \(L_x=(1+1/x)^{100x}\), then
+\[\ln L_x=100x\ln(1+1/x)\longrightarrow100,\]
+using \(\lim_{u\to0}\ln(1+u)/u=1\). Exponentiation is continuous, so \(L_x\to e^{100}\).
+
+The source's general-limit formula has \(x+a/x\) in its base; that is a typo. The correct base is \(1+a/x\), as used here and in the question.`,
+  },
+  {
+    id: 10538, number: 415, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 4 },
+    topic: "Derivatives", difficulty: 1, methods: ["Mean Value Theorem"],
+    question: String.raw`Find the value of \(c\) which satisfies Mean Value Theorem for Derivatives for \(f(x)=\ln(x)\) on the interval \([1,e]\).`,
+    choices: [String.raw`\(e\)`, String.raw`\(\frac1e\)`, String.raw`\(e-1\)`, String.raw`\(\frac1{e-1}\)`, "NOTA"], answer: "C",
+    solution: String.raw`The Mean Value Theorem states that
+\[\frac{f(e)-f(1)}{e-1}=f'(c)\]
+for some \(c\in(1,e)\). Its hypotheses hold because \(\ln x\) is continuous on \([1,e]\) and differentiable on \((1,e)\). In this case the equation simplifies to
+\[\frac1{e-1}=\frac1c,\]
+thus \(c=e-1\). This value lies strictly between \(1\) and \(e\). The source writes a closed interval for the MVT point; the theorem places \(c\) in the open interval.`,
+  },
+  {
+    id: 10539, number: 416, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 5 },
+    topic: "Limits", difficulty: 1, methods: [],
+    question: String.raw`For
+\[f(x)=\frac{x^2+2024}{x+1}+ax+b,\]
+if \(\lim_{x\to0}f(x)=0\), what is the value of \(b\)?`,
+    choices: [String.raw`\(0\)`, String.raw`\(-2023\)`, String.raw`\(-2024\)`, String.raw`\(-2025\)`, "NOTA"], answer: "C",
+    solution: String.raw`First, let's combine all of \(f(x)\) into a single fraction, yielding
+\[f(x)=\frac{x^2+ax^2+ax+bx+b+2024}{x+1}.\]
+Now, for this limit to evaluate to \(0\), we see by substitution that \(b+2024=0\), hence \(b=-2024\). Direct substitution is valid because the denominator tends to \(1\), not \(0\), as \(x\to0\). The terms containing \(a\) vanish in this limit, so no value of \(a\) is needed.`,
+  },
+  {
+    id: 10540, number: 417, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 6 },
+    topic: "Limits", difficulty: 2, methods: [],
+    question: String.raw`For
+\[f(x)=\frac{x^2+2024}{x+1}+ax+b,\]
+if \(\lim_{x\to\infty}f(x)=0\), what is the value of \(b\)?`,
+    choices: [String.raw`\(1\)`, String.raw`\(0\)`, String.raw`\(-1\)`, String.raw`\(-2\)`, "NOTA"], answer: "A",
+    solution: String.raw`Combining the terms into one fraction gives
+\[f(x)=\frac{(1+a)x^2+(a+b)x+b+2024}{x+1}.\]
+For the limit to evaluate to \(0\), first our \(x^2\) terms must cancel, yielding \(a=-1\). Next, we must have the linear terms cancel, hence \(a+b=-1+b=0\), thus \(b=1\).
+
+Polynomial division makes both conditions especially clear:
+\[f(x)=(1+a)x+(b-1)+\frac{2025}{x+1}.\]
+The last term tends to \(0\). A finite limit forces \(1+a=0\), and that finite limit is then \(b-1\); for it to be \(0\), \(b=1\). These assumptions are independent of those in the preceding source question.`,
+  },
+  {
+    id: 10541, number: 418, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 7 },
+    topic: "Analytic Geometry", difficulty: 1, methods: ["Tangency"],
+    question: String.raw`Let \(L\) be the line tangent to the graph of \(y=x^2+2x+2\) at \(x=3\). Find the \(y\)-intercept of \(L\).`,
+    choices: [String.raw`\(-7\)`, String.raw`\(-4\)`, String.raw`\(7\)`, String.raw`\(4\)`, "NOTA"], answer: "A",
+    solution: String.raw`Note that \(y=(x+1)^2+1\), and that \(y'=2(x+1)\). Hence, at \(x=3\), the point is \((3,17)\) and the slope is \(8\). The equation for our line is
+\[y-17=8(x-3),\qquad y=8x-7.\]
+Thus, our \(y\)-intercept is the constant term of this line, which is \(-7\).`,
+  },
+  {
+    id: 10542, number: 419, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 8 },
+    topic: "Sequences and Series", difficulty: 2, methods: ["Recursion"],
+    question: String.raw`Define a recursion for \(n\ge0\) as \(x_{n+1}=x_n+\frac1{x_n}\), where \(x_0=1\). Evaluate \(\lim_{n\to\infty}x_n\).`,
+    choices: [String.raw`\(2\)`, String.raw`\(e\)`, String.raw`\(4\)`, String.raw`\(\infty\)`, "NOTA"], answer: "D",
+    solution: String.raw`All terms are positive, starting with \(x_0=1\), and
+\[x_{n+1}-x_n=\frac1{x_n}>0.\]
+Thus the sequence is strictly increasing. If it were bounded above, the monotone convergence theorem for sequences would give a finite limit \(L\ge1\). Taking limits in the recurrence would yield
+\[L=L+\frac1L,\]
+which is impossible. Hence the increasing sequence is unbounded and tends to \(+\infty\), choice D.
+
+There is also a direct lower bound:
+\[x_{n+1}^2=x_n^2+2+\frac1{x_n^2}>x_n^2+2,\]
+so \(x_n^2\ge1+2n\), and \(x_n\to+\infty\).
+
+The source's finite-limit contradiction alone does not prove divergence to \(+\infty\); positivity and monotonicity, or the lower bound, supply that missing justification. Infinity is not a real value that can be substituted into \(1/x_n=0\).`,
+  },
+  {
+    id: 10543, number: 420, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 9 },
+    topic: "Functions", difficulty: 1, methods: [],
+    question: String.raw`Let \(f(x)=3x^2-2x+1\). Find \(f(a+1)-f(a)\) in terms of \(a\).`,
+    choices: [String.raw`\(6a-2\)`, String.raw`\(6a+1\)`, String.raw`\(3a-2\)`, String.raw`\(3a+1\)`, "NOTA"], answer: "B",
+    solution: String.raw`Directly computing \(f(a+1)-f(a)\) yields \(6a+1\):
+\[f(a+1)=3(a+1)^2-2(a+1)+1=3a^2+4a+2,\]
+\[f(a+1)-f(a)=(3a^2+4a+2)-(3a^2-2a+1)=6a+1.\]
+This is a finite difference over an input increment of \(1\), not the derivative \(f'(a)=6a-2\).`,
+  },
+  {
+    id: 10544, number: 421, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 10 },
+    topic: "Derivatives", difficulty: 1, methods: ["Quotient Rule"],
+    question: String.raw`Evaluate the derivative of \(\frac{\cos(\pi x)}{x^2+1}\) at \(x=1\).`,
+    choices: [String.raw`\(\frac12\)`, String.raw`\(-\frac12\)`, String.raw`\(\frac14\)`, String.raw`\(-\frac14\)`, "NOTA"], answer: "A",
+    solution: String.raw`Using quotient rule yields that the derivative is equal to
+\[\frac{-\pi\sin(\pi x)(x^2+1)-2x\cos(\pi x)}{(x^2+1)^2}.\]
+At \(x=1\), \(\sin\pi=0\) and \(\cos\pi=-1\). Direct substitution gives
+\[\frac{0-2(1)(-1)}{(1+1)^2}=\frac24=\frac12.\]`,
+  },
+  {
+    id: 10545, number: 422, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 11 },
+    topic: "Limits", difficulty: 3, methods: ["Power Series"],
+    question: String.raw`Robin is in the process of translating an ancient Ponegliff, which contains a mysterious limit. Help Robin out by evaluating
+\[\lim_{x\to0}\frac1{x^2}\ln\left(\frac{\sin x}{x}\right).\]`,
+    choices: [String.raw`\(0\)`, String.raw`\(-\frac13\)`, String.raw`\(-\frac16\)`, "D.N.E", "NOTA"], answer: "C",
+    solution: String.raw`It is possible to repeatedly use L'Hopital's rule to solve this, but instead we will take advantage of the approximation \(\sin x\approx x-x^3/6\). To control the approximation after dividing by \(x^2\), include a remainder:
+\[\frac{\sin x}{x}=1-\frac{x^2}{6}+O(x^4).\]
+This ratio is positive near \(0\), so the logarithm is real. Let \(u=-x^2/6+O(x^4)\). Since \(\ln(1+u)=u+O(u^2)\),
+\[\ln\left(\frac{\sin x}{x}\right)=-\frac{x^2}{6}+O(x^4).\]
+Dividing by \(x^2\) gives \(-1/6+O(x^2)\), whose limit is \(-1/6\).
+
+The source substitutes a truncated sine expression into the logarithm and then uses L'Hopital's rule. The remainder above explains why the truncation does not change the limit, rather than treating an approximation as an exact equality.`,
+  },
+  {
+    id: 10546, number: 423, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 12 },
+    topic: "Function Analysis", difficulty: 1, methods: ["Second Derivative Test"],
+    question: String.raw`On what interval is the graph \(y=x^3-3x^2+3x\) concave up?`,
+    choices: [String.raw`\((-\infty,\infty)\)`, String.raw`\((-\infty,1)\)`, String.raw`\((1,\infty)\)`, String.raw`\((-1,1)\)`, "NOTA"], answer: "C",
+    solution: String.raw`We see that
+\[y'=3x^2-6x+3,\qquad y''=6x-6=6(x-1).\]
+The second derivative is positive precisely when \(x>1\). Hence the graph is concave up on \((1,\infty)\), choice C. At \(x=1\), the second derivative changes sign, so it is an inflection point rather than part of an open concavity interval.`,
+  },
+  {
+    id: 10547, number: 424, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 13 },
+    topic: "Polynomial Equations", difficulty: 1, methods: [],
+    question: String.raw`Define a fixed point as an ordered pair of the form \((a,a)\), such that the \(x\) coordinate and the \(y\) coordinate are equivalent real numbers. Find how many distinct fixed points are on the graph
+\[y=x^3-3x^2+4x-1.\]`,
+    choices: [String.raw`\(0\)`, String.raw`\(1\)`, String.raw`\(2\)`, String.raw`\(3\)`, "NOTA"], answer: "B",
+    solution: String.raw`To find fixed points, we simply find all solutions to \(y=x\). In this case, the equation simplifies into
+\[x^3-3x^2+3x-1=0\quad\Longrightarrow\quad(x-1)^3=0.\]
+Clearly there is only one solution, \(x=1\), so the only distinct fixed point is \((1,1)\). Its algebraic multiplicity of three does not create three distinct points. The answer is B.`,
+  },
+  {
+    id: 10548, number: 425, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 14 },
+    topic: "Continuity", difficulty: 1, methods: [],
+    question: String.raw`For
+\[g(x)=\begin{cases}\dfrac{e^{ax}}{e^{bx}+e^{-bx}},&x<0,\\cx+d,&x\ge0,\end{cases}\]
+if \(g(x)\) is continuous at \(x=0\), what is the value of \(d\)?`,
+    choices: [String.raw`\(-1\)`, String.raw`\(0\)`, String.raw`\(1\)`, String.raw`\(\frac12\)`, "NOTA"], answer: "D",
+    solution: String.raw`To be continuous at \(x=0\), both parts of the piecewise function must agree with the function's value there. The left-hand limit is
+\[\lim_{x\to0^-}\frac{e^{ax}}{e^{bx}+e^{-bx}}=\frac1{1+1}=\frac12.\]
+The right-hand limit and the actual value \(g(0)\) both equal \(d\). Thus continuity yields \(1/2=d\), so the answer is D. No restriction on \(a,b,c\) is needed for this equality.`,
+  },
+  {
+    id: 10549, number: 426, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 15 },
+    topic: "Derivatives", difficulty: 2, methods: ["Quotient Rule"],
+    question: String.raw`For
+\[g(x)=\begin{cases}\dfrac{e^{ax}}{e^{bx}+e^{-bx}},&x<0,\\cx+d,&x\ge0,\end{cases}\]
+now suppose that
+\[\lim_{x\to0^-}g'(x)=\lim_{x\to0^+}g'(x).\]
+Find the value of \(c\) in terms of \(a\) and/or \(b\).`,
+    choices: [String.raw`\(2a\)`, String.raw`\(ab\)`, String.raw`\(\frac a2\)`, String.raw`\(\frac b4\)`, "NOTA"], answer: "C",
+    solution: String.raw`To find \(c\), we must set the limiting derivative of the first half of the function equal to that of the second half at \(x=0\). For \(x<0\), the quotient rule gives
+\[g'(x)=\frac{ae^{ax}(e^{bx}+e^{-bx})-e^{ax}(be^{bx}-be^{-bx})}{(e^{bx}+e^{-bx})^2}.\]
+As \(x\to0^-\), this tends to
+\[\frac{a(1)(2)-(1)(b-b)}{2^2}=\frac a2.\]
+For \(x>0\), \(g'(x)=c\). The required equality is therefore \(a/2=c\), so the answer is C.
+
+The parameter \(b\) cancels because the derivative of \(e^{bx}+e^{-bx}\) vanishes at \(0\). Matching these derivative limits by itself does not ensure continuity; if continuity is also required as in source question 14, then additionally \(d=1/2\).`,
+  },
+  {
+    id: 10550, number: 427, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 16 },
+    topic: "Improper Integrals", difficulty: 3, methods: ["Squeeze Theorem"],
+    question: String.raw`The Straw Hat pirates needed help solving a certain integral, so they asked their friend Buggy to attempt it. Using the powers of his Chop-Chop fruit, he was successful in tackling it! Try to follow in his footsteps and solve the integral:
+\[\lim_{n\to\infty}\int_0^\infty\frac{\sin(\pi x)}{1+x^n}\,dx.\]
+Here \(n\) tends to infinity through the positive integers.`,
+    choices: [String.raw`\(0\)`, String.raw`\(\frac1\pi\)`, String.raw`\(\frac2\pi\)`, "D.N.E", "NOTA"], answer: "C",
+    solution: String.raw`The name of the devil fruit is a hint: let's analyze how the integral behaves as \(n\) goes to infinity. When \(0\le x<1\), \(x^n\to0\), and hence the first part of the integral approaches \(\int_0^1\sin(\pi x)\,dx\). When \(x>1\), \(x^n\to\infty\), suggesting that the rest of the integral goes to \(0\).
+
+Pointwise convergence alone does not justify this conclusion on an unbounded interval. Here are explicit error bounds. For integers \(n\ge2\),
+\[\left|\int_0^1\frac{\sin(\pi x)}{1+x^n}\,dx-\int_0^1\sin(\pi x)\,dx\right|
+\le\int_0^1\frac{x^n}{1+x^n}\,dx
+\le\frac1{n+1}.\]
+For the tail,
+\[\left|\int_1^\infty\frac{\sin(\pi x)}{1+x^n}\,dx\right|
+\le\int_1^\infty x^{-n}\,dx=\frac1{n-1}.\]
+Thus the improper integral is absolutely convergent for every \(n\ge2\), and its total error from \(\int_0^1\sin(\pi x)\,dx\) is at most \(1/(n+1)+1/(n-1)\), which tends to \(0\). The initial value \(n=1\) does not affect a limit as \(n\to\infty\).
+
+Hence the answer is
+\[\int_0^1\sin(\pi x)\,dx
+=-\frac1\pi\cos(\pi\cdot1)+\frac1\pi\cos(\pi\cdot0)=\frac2\pi.\]`,
+  },
+  {
+    id: 10551, number: 428, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 17 },
+    topic: "Derivatives", difficulty: 2, methods: ["Logarithmic Differentiation"],
+    question: String.raw`Evaluate the derivative of \(y=\sqrt{(x-1)(x-2)^3(x+1)^5}\) at \(x=3\).`,
+    choices: [String.raw`\(76\)`, String.raw`\(76\sqrt2\)`, String.raw`\(32\)`, String.raw`\(32\sqrt2\)`, "NOTA"], answer: "B",
+    solution: String.raw`Observe that near \(x=3\), every factor inside the radical is positive. Thus
+\[\ln y=\frac12\ln(x-1)+\frac32\ln(x-2)+\frac52\ln(x+1).\]
+We can then proceed by implicitly differentiating to solve for \(y'\), which saves a lot of arithmetic. We get
+\[y'=y\left(\frac1{2(x-1)}+\frac3{2(x-2)}+\frac5{2(x+1)}\right).\]
+At \(x=3\),
+\[y=\sqrt{2\cdot1^3\cdot4^5}=32\sqrt2,\qquad
+\frac1{2(2)}+\frac3{2(1)}+\frac5{2(4)}=\frac{19}{8}.\]
+Therefore \(y'(3)=32\sqrt2\cdot19/8=76\sqrt2\).`,
+  },
+  {
+    id: 10552, number: 429, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 18 },
+    topic: "Rate of Change", difficulty: 3, methods: ["Related Rates", "Distance Formula"],
+    question: String.raw`Albert the Ant is on the surface of a cube and is tasked with travelling from one vertex of the cube to the opposite vertex. Find the rate of change of the shortest distance to the opposite vertex if the side lengths of the cube are increasing at a rate of 2 cm/s.
+
+Here "shortest distance" means the minimum surface-path length between the two vertices at that instant.`,
+    choices: ["10 cm/s", "5 cm/s", String.raw`\(2\sqrt5\text{ cm/s}\)`, String.raw`\(\sqrt5\text{ cm/s}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Let's find an expression for the shortest distance to the opposite vertex. Observe that by "unfolding" the cube, the shortest distance is the length of the diagonal of the rectangle formed by two of the faces. Its sides are \(2s\) and \(s\), where \(s\) is the side length of the cube:
+\[d(s)=\sqrt{(2s)^2+s^2}=s\sqrt5.\]
+To justify minimality, put the initial vertex at the origin and its opposite at \((s,s,s)\). A surface path must pass from one of the three faces incident to the origin to a face not incident to it. By symmetry, take that first crossing point to be \((s,u,0)\), where \(0\le u\le s\). The path's length is at least the sum of the straight-line distances to and from that point:
+\[\sqrt{s^2+u^2}+\sqrt{s^2+(s-u)^2}.\]
+This convex symmetric expression is minimized at \(u=s/2\), giving \(s\sqrt5\). The two-face unfolded straight path attains this bound.
+
+Differentiating with respect to time,
+\[\frac{dd}{dt}=\sqrt5\frac{ds}{dt}=2\sqrt5\text{ cm/s}.\]
+We are differentiating the minimum surface-path length between the two opposite vertices, not the ant's current remaining distance after an unspecified amount of travel. The interior space diagonal \(s\sqrt3\) is not an allowable surface route.`,
+  },
+  {
+    id: 10553, number: 430, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 19 },
+    topic: "Telescoping Series", difficulty: 2, methods: ["Telescoping"],
+    question: String.raw`While undergoing Marine training, Koby was taking a class in Limits and Summations. He was able to solve all the problems on his homework except one. Help Koby finish his homework by evaluating the following sum:
+\[\sum_{n=1}^{\infty}\frac{1+2+\cdots+n}{1^3+2^3+\cdots+n^3}.\]`,
+    choices: [String.raw`\(\frac12\)`, String.raw`\(1\)`, String.raw`\(2\)`, String.raw`\(4\)`, "NOTA"], answer: "C",
+    solution: String.raw`Note that
+\[1+2+\cdots+n=\frac{n(n+1)}2,\qquad
+1^3+2^3+\cdots+n^3=\left(\frac{n(n+1)}2\right)^2.\]
+Hence the summand simplifies to
+\[\frac2{n(n+1)}=2\left(\frac1n-\frac1{n+1}\right).\]
+The \(N\)th partial sum is
+\[2\sum_{n=1}^N\left(\frac1n-\frac1{n+1}\right)
+=2\left(1-\frac1{N+1}\right).\]
+All intermediate terms cancel. Taking \(N\to\infty\), the series converges to \(2\), choice C.`,
+  },
+  {
+    id: 10554, number: 431, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 20 },
+    topic: "Analytic Geometry", difficulty: 3, methods: ["Tangency"],
+    illustration: {
+      src: "/questions/mu-554-parabolas.svg",
+      alt: "A centered smaller square with four outward-opening parabolas whose vertices are the side midpoints. Adjacent parabolas touch at the four corners of a larger concentric square on the extended diagonals.",
+      width: 480, height: 420,
+    },
+    question: String.raw`Refer to the diagram below. A square is centered at the origin, and there are four parabolas whose vertices touch the midpoints of the sides of the square. The parabolas are tangent to each other along the extended diagonals of the square. A larger square is formed by the points of tangency of the parabolas with each other. Find the ratio of the side length of the larger square to side length of the smaller square. (NOTE: The figure is not to scale).
+
+As in the diagram, each parabola opens outward with its axis perpendicular to the corresponding side of the smaller square.`,
+    choices: [String.raw`\(\sqrt2\)`, String.raw`\(2\)`, String.raw`\(2\sqrt2\)`, String.raw`\(4\)`, "NOTA"], answer: "B",
+    solution: String.raw`Let the side length of the square be \(2s\), with its sides parallel to the coordinate axes. Then, let's focus on the uppermost parabola. This will take the form \(y=kx^2+s\), with \(k>0\).
+
+At the tangency point \((t,t)\) on the positive diagonal, the right-hand parabola is \(x=\ell y^2+s\), with \(\ell>0\). Both curves pass through \((t,t)\), so \(kt^2+s=t=\ell t^2+s\); hence \(k=\ell\). Their slopes there are \(2kt\) and \(1/(2kt)\). Tangency requires equality, and positivity gives \(2kt=1\). Thus the common tangent is parallel to the diagonal \(y=x\); because the point also lies on that diagonal, the tangent is the diagonal itself.
+
+Note that the upper parabola has \(y'=2kx\). Setting this equal to \(1\) yields \(t=1/(2k)\). Now, we plug this into the equation \(kt^2+s=t\), which yields
+\[\frac1{4k}+s=\frac1{2k}\quad\Longrightarrow\quad s=\frac1{4k},\qquad k=\frac1{4s}.\]
+Thus the coordinates of the point of tangency are \((2s,2s)\). The same argument applies at the other three corners, so the larger square has vertices \((\pm2s,\pm2s)\) and side length \(4s\). The desired ratio is \(4s/(2s)=2\).
+
+The outward-axis wording makes explicit the configuration in the source figure. The argument above also justifies the source's use of the diagonal as the common tangent, rather than assuming it merely because the point lies on that diagonal.`,
+  },
+  {
+    id: 10555, number: 432, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 21 },
+    topic: "Derivatives", difficulty: 2, methods: ["Logarithmic Differentiation"],
+    question: String.raw`Evaluate the derivative of \(y=x^x\) at \(x=e\).`,
+    choices: [String.raw`\(1\)`, String.raw`\(2(e+1)\)`, String.raw`\(e^e\)`, String.raw`\(2e^e\)`, "NOTA"], answer: "D",
+    solution: String.raw`Taking the natural log of both sides yields \(\ln y=x\ln x\), valid for \(x>0\). Differentiating both sides,
+\[\frac{y'}y=\ln x+1,\qquad y'=y(\ln x+1)=x^x(\ln x+1).\]
+Substituting in \(x=e\) yields that the derivative is \(e^e(1+1)=2e^e\). Ordinary power rule with a constant exponent does not apply directly, since both the base and the exponent vary.`,
+  },
+  {
+    id: 10556, number: 433, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 22 },
+    topic: "Power Series", difficulty: 1, methods: ["Power Series"],
+    question: String.raw`Given that:
+\[\sin(x)=x-\frac{x^3}{3!}+\frac{x^5}{5!}-\frac{x^7}{7!}+\cdots\]
+Evaluate the following expression:
+\[1-\frac{\pi^2}{2!}+\frac{\pi^4}{4!}-\frac{\pi^6}{6!}+\cdots.\]`,
+    choices: [String.raw`\(-1\)`, String.raw`\(1\)`, String.raw`\(0\)`, String.raw`\(\frac{\pi^2}{6}\)`, "NOTA"], answer: "A",
+    solution: String.raw`Observe that taking the derivative of the known sum yields
+\[\cos x=1-\frac{x^2}{2!}+\frac{x^4}{4!}-\frac{x^6}{6!}+\cdots.\]
+Term-by-term differentiation is valid because the sine power series has infinite radius of convergence. We achieve the desired sum by letting \(x=\pi\), and hence the sum evaluates to \(\cos\pi=-1\).`,
+  },
+  {
+    id: 10557, number: 434, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 23 },
+    topic: "Limits", difficulty: 3, methods: ["Power Series"],
+    question: String.raw`Evaluate
+\[\lim_{x\to0}\frac{(1+x)^{1/x}-e}{x}.\]`,
+    choices: [String.raw`\(1\)`, String.raw`\(\frac e2\)`, String.raw`\(-\frac e2\)`, String.raw`\(-e\)`, "NOTA"], answer: "C",
+    solution: String.raw`Notice that the limit is indeterminate, since both the numerator and denominator approach \(0\). The fastest way to evaluate this limit is to approximate \((1+x)^{1/x}\) using a series. Let \(y=(1+x)^{1/x}\). For nonzero \(x\) sufficiently close to \(0\), the base is positive, and
+\[\ln y=\frac1x\ln(1+x).\]
+Now, observe that the Taylor series for
+\[\ln(1+x)=x-\frac{x^2}{2}+\frac{x^3}{3}+O(x^4).\]
+This can be derived by integrating the infinite geometric series with common ratio \(-x\). Hence,
+\[\ln y=1-\frac x2+O(x^2),\]
+so
+\[y=e\exp\left(-\frac x2+O(x^2)\right)
+=e\left(1-\frac x2+O(x^2)\right).\]
+Substituting into the requested quotient gives
+\[\frac{y-e}{x}=-\frac e2+O(x)\longrightarrow-\frac e2.\]
+The source's intermediate exponential has a positive \(x/2\) where a negative \(x/2\) is needed. That sign is corrected here; the source's final answer C is correct. Keeping the remainder also makes the use of the approximation rigorous on both sides of \(0\).`,
+  },
+  {
+    id: 10558, number: 435, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 24 },
+    topic: "Function Analysis", difficulty: 3, methods: ["First Derivative Test", "Tangency"],
+    question: String.raw`Find the set of values of \(b\) such that the graph of \(y=\frac12x+b\) intersects the graph of \(y=\ln(1+x^2)\) exactly once.`,
+    choices: [
+      String.raw`\[\begin{gathered}\left(-\infty,\ \ln(8-4\sqrt3)-\left(1-\frac{\sqrt3}{2}\right)\right)\\
+\cup\left(\ln(8+4\sqrt3)-\left(1+\frac{\sqrt3}{2}\right),\ \infty\right)\end{gathered}\]`,
+      String.raw`\[\begin{gathered}(-\infty,2-\sqrt3)\\\cup(2+\sqrt3,\infty)\end{gathered}\]`,
+      String.raw`\((-\infty,\infty)\)`,
+      String.raw`\[[2-\sqrt3,2+\sqrt3]\]`, "NOTA",
+    ], answer: "A",
+    solution: String.raw`Refer to the graph below.
+
+[[solution-diagram:mu-558]]
+
+The dashed lines correspond to lines with slope \(1/2\), which are tangent to \(\ln(1+x^2)\). Note that any line in between these two will have \(3\) intersection points, while any lines strictly outside the two boundary intercepts will have only one. The two boundary lines themselves have two distinct intersection points.
+
+To establish this count and find the intercepts, put
+\[H(x)=\ln(1+x^2)-\frac x2.\]
+An intersection with \(y=x/2+b\) is exactly a solution to \(H(x)=b\). Differentiate:
+\[H'(x)=\frac{2x}{1+x^2}-\frac12
+=-\frac{x^2-4x+1}{2(1+x^2)}.\]
+The critical points are \(u=2-\sqrt3\) and \(v=2+\sqrt3\). The function is strictly decreasing on \((-\infty,u)\), strictly increasing on \((u,v)\), and strictly decreasing on \((v,\infty)\). Also,
+\[\lim_{x\to-\infty}H(x)=+\infty,\qquad
+\lim_{x\to+\infty}H(x)=-\infty.\]
+Consequently, levels strictly between \(H(u)\) and \(H(v)\) meet all three monotone branches. Each boundary level meets a stationary point and one other branch, giving two distinct intersections. Levels outside that closed range meet only one branch.
+
+Finally,
+\[H(u)=\ln(8-4\sqrt3)-\left(1-\frac{\sqrt3}{2}\right),\]
+\[H(v)=\ln(8+4\sqrt3)-\left(1+\frac{\sqrt3}{2}\right).\]
+Thus exactly one intersection occurs when \(b<H(u)\) or \(b>H(v)\), which is choice A. The endpoints are excluded, because tangency still counts as one distinct point in addition to the other intersection. The wording says "set of values" rather than a single "interval," since the answer is a union of two disjoint intervals.`,
+  },
+  {
+    id: 10559, number: 436, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 25 },
+    topic: "Limits", difficulty: 1, methods: ["Squeeze Theorem"],
+    question: String.raw`Evaluate the following limit:
+\[\lim_{n\to\infty}\sqrt[n]{20^n+2^n+4^n}.\]`,
+    choices: [String.raw`\(0\)`, String.raw`\(20\)`, String.raw`\(2\)`, String.raw`\(4\)`, "NOTA"], answer: "B",
+    solution: String.raw`To solve the limit, first factor out \(20^n\) from the \(n\)th root, which yields
+\[20\sqrt[n]{1+(2/20)^n+(4/20)^n}.\]
+As \(n\to\infty\), the quantity under this last root lies between \(1\) and \(3\), so
+\[20\le\sqrt[n]{20^n+2^n+4^n}\le20\cdot3^{1/n}.\]
+Both outer bounds tend to \(20\), establishing the limit by the Squeeze Theorem. Since there is a factor of \(20\) outside of the root, the answer is \(20\).`,
+  },
+  {
+    id: 10560, number: 437, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 26 },
+    topic: "Sequences and Series", difficulty: 3, methods: ["Recursion"],
+    question: String.raw`Suppose that the following recurrence relationship holds true:
+\[x_{n+1}=x_n-\frac{x_n^2+x_n-20}{2x_n+1}.\]
+If \(x_0=-2024\), evaluate \(\lim_{n\to\infty}x_n\).`,
+    choices: [String.raw`\(-5\)`, String.raw`\(-4\)`, String.raw`\(4\)`, String.raw`\(5\)`, "NOTA"], answer: "A",
+    solution: String.raw`If we define \(f(x)=x^2+x-20\), observe that the recursion takes the form
+\[x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)},\]
+which is Newton's Method. However,
+\[f(x)=(x+5)(x-4),\]
+so the roots are \(-5\) and \(4\), not \(-4\) and \(5\) as stated in the supplied solution. The corrected answer is A.
+
+We must also justify convergence, rather than assume Newton's Method always converges to the nearest root. Let
+\[T(x)=x-\frac{x^2+x-20}{2x+1}=\frac{x^2+20}{2x+1}.\]
+For \(x<-5\),
+\[T(x)+5=\frac{(x+5)^2}{2x+1}<0,\]
+so \(T(x)<-5\), and
+\[T(x)-x=-\frac{(x+5)(x-4)}{2x+1}>0.\]
+Starting from \(-2024<-5\), the sequence is therefore increasing and remains strictly below \(-5\). It is bounded above, so it has a limit \(L\le-5\). Every denominator is nonzero, and \(T\) is continuous on this range, so \(L=T(L)\), giving
+\[L^2+L-20=0.\]
+The only root no greater than \(-5\) is \(L=-5\), as required.`,
+  },
+  {
+    id: 10561, number: 438, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 27 },
+    topic: "Complex Numbers", difficulty: 3, methods: ["De Moivre's Theorem", "Trigonometric Identities"],
+    question: String.raw`Let
+\[\left(\frac{\sqrt3}{8}-\frac18i\right)^n=x_n+iy_n,\]
+where \(x_n,y_n\) are real numbers for all \(n=0,1,2,3,\ldots\). Evaluate the limit as \(n\) ranges through the positive integers of:
+\[\lim_{n\to\infty}4^{2n}\left(x_{n+1}x_{n-1}+y_{n+1}y_{n-1}\right).\]`,
+    choices: [String.raw`\(-\frac12\)`, String.raw`\(\frac12\)`, String.raw`\(-\frac{\sqrt3}{2}\)`, String.raw`\(\frac{\sqrt3}{2}\)`, "NOTA"], answer: "B",
+    solution: String.raw`First observe that
+\[\left(\frac{\sqrt3}{8}-\frac i8\right)^n
+=\frac1{4^n}\left(\frac{\sqrt3}{2}-\frac i2\right)^n
+=\frac1{4^n}\operatorname{cis}\left(\frac{11\pi n}{6}\right),\]
+where \(\operatorname{cis}\theta=\cos\theta+i\sin\theta\). Hence,
+\[x_n=\frac1{4^n}\cos\left(\frac{11\pi n}{6}\right),\qquad
+y_n=\frac1{4^n}\sin\left(\frac{11\pi n}{6}\right).\]
+Substituting these into the expression, the powers of \(4\) cancel exactly, because \((n+1)+(n-1)=2n\). The expression simplifies to
+\[\cos\left(\frac{11\pi(n+1)}6\right)\cos\left(\frac{11\pi(n-1)}6\right)
++\sin\left(\frac{11\pi(n+1)}6\right)\sin\left(\frac{11\pi(n-1)}6\right).\]
+By the angle-difference identity this equals
+\[\cos\left(\frac{11\pi}3\right)=\cos\left(\frac{5\pi}3\right)=\frac12.\]
+It is constant for every positive integer \(n\), so its limit is \(1/2\), choice B. The source's last cosine evaluation has the wrong sign, leading it to the incorrect key A.
+
+One can also use the equivalent argument \(-\pi/6\) for the original complex number; then the final cosine is \(\cos(-\pi/3)=1/2\).`,
+  },
+  {
+    id: 10562, number: 439, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 28 },
+    topic: "Optimization", difficulty: 3, methods: ["First Derivative Test"],
+    question: String.raw`Suppose \(p,q>1\) are real numbers such that \(\frac1p+\frac1q=1\). For a fixed nonnegative real number \(y\), find the minimum value, over nonnegative real \(x\), of:
+\[\frac{x^p}{p}-xy.\]`,
+    choices: [String.raw`\(-\frac{x^py^q}{pq}\)`, String.raw`\(\frac{x^py^q}{pq}\)`, String.raw`\(-\frac{y^q}{q}\)`, String.raw`\(\frac{y^q}{q}\)`, "NOTA"], answer: "C",
+    solution: String.raw`Fix \(y\ge0\). Taking the derivative of the expression with respect to \(x\), we seek to solve
+\[x^{p-1}-y=0.\]
+If \(y>0\), this yields \(x=y^{1/(p-1)}\). Since \(p>1\), \(x^{p-1}\) is strictly increasing on \(x\ge0\), so the derivative is negative before this point and positive afterward. This gives the global minimum on the nonnegative half-line.
+
+Plugging this into our expression yields
+\[\frac1p y^{p/(p-1)}-y^{1+1/(p-1)}
+=\left(\frac1p-1\right)y^{p/(p-1)}.\]
+The conjugate-exponent relation gives \(q=p/(p-1)\) and \(1/p-1=-1/q\), so this is \(-y^q/q\). If \(y=0\), the minimum is \(0\), attained at \(x=0\), which agrees with the same formula. This is also known as Young's Inequality.
+
+The source says \(a,b\) are nonnegative but then uses \(x,y\), without stating which variable is minimized. That mismatch is repaired in the question: \(y\) is fixed and \(x\) is the nonnegative optimization variable, exactly as used in the source solution. If both \(x\) and \(y\) were free, no finite global minimum would exist.`,
+  },
+  {
+    id: 10563, number: 440, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 29 },
+    topic: "Analytic Geometry", difficulty: 3, methods: [],
+    question: String.raw`Dr. Vegapunk has developed a new plane curve, which he calls "The Witch of Punk Hazard." Here are the instructions to construct it:
+
+Start with a unit circle, centered at the origin. Let \(L\) be the line tangent to the unit circle at the point \((0,1)\). For any line \(y=mx\), where \(m\) is a nonzero real number, denote its intersection with the circle that has a positive \(y\) value be \(A\), and let its intersection with \(L\) be \(B\). The point on the plane curve corresponding to this value of \(m\) will have point \(A\)'s \(y\) value and point \(B\)'s \(x\) value. Trace out all such points for every nonzero real \(m\), and include the limiting point \((0,1)\).
+
+Let the constructed curve be \(f(x)\). Vegapunk needs to evaluate the derivative of \(f(x)\) to power his new generation of Pacifistas. Help him by evaluating \(f'(1)\).`,
+    choices: [String.raw`\(-\frac{\sqrt2}{2}\)`, String.raw`\(-\frac{\sqrt2}{4}\)`, String.raw`\(-\frac12\)`, String.raw`\(-\frac14\)`, "NOTA"], answer: "B",
+    solution: String.raw`Consider the angle \(\theta\in(0,\pi)\) of the radius from the origin to the chosen point \(A\) on the upper semicircle. The tangent line \(L\) is \(y=1\). A radial line of slope \(m\ne0\) meets \(L\) at \(B=(1/m,1)\).
+
+We may define the \(x\) and \(y\) coordinates of our graph parametrically this way:
+\[(x,y)=(\cot\theta,\sin\theta).\]
+The vertical direction \(\theta=\pi/2\) is supplied by the limiting point \((0,1)\). Now, since \(x=\cot\theta\) and \(\sin\theta>0\), the identity \(1+\cot^2\theta=\csc^2\theta\) gives
+\[y=\frac1{\sqrt{x^2+1}}.\]
+Thus \(f(x)=1/\sqrt{x^2+1}\), and hence
+\[f'(x)=-\frac{x}{(x^2+1)^{3/2}},\qquad
+f'(1)=-\frac1{2^{3/2}}=-\frac{\sqrt2}{4}.\]
+The positive square root is essential, because \(A\) was chosen with positive \(y\)-coordinate. The source's construction includes \(m=0\), but that horizontal line has neither a positive-\(y\) circle intersection nor an intersection with \(L\). Excluding \(m=0\) repairs this, and the continuous extension at \(x=0\) completes the intended graph without changing the derivative at \(1\).`,
+  },
+  {
+    id: 10564, number: 441, division: "Mu",
+    source: { ...januaryRegional2024, questionNumber: 30 },
+    topic: "Definite Integrals", difficulty: 3, methods: ["Product Rule"],
+    question: String.raw`Let
+\[g(x)=\prod_{n=1}^{2024}(x-a_n),\]
+where each \(a_n\) is a positive integer. It is known that:
+\[\int_{a_1}^{a_{2024}}\frac{g(x)}{x-a_{1012}}\,dx=1012.\]
+Given this, evaluate:
+\[\int_{a_1}^{a_{2024}}\sum_{\substack{1\le n\le2024\\n\ne1012}}\frac{g(x)}{x-a_n}\,dx.\]
+Interpret each quotient by canceling its indicated factor, including at a root.`,
+    choices: [String.raw`\(2024\)`, String.raw`\(-2024\)`, String.raw`\(1012\)`, String.raw`\(-1012\)`, "NOTA"], answer: "D",
+    solution: String.raw`First, note that
+\[g'(x)=\sum_{n=1}^{2024}\frac{g(x)}{x-a_n}.\]
+To see why without any logarithm-domain restrictions, differentiate the finite product directly:
+\[g'(x)=\sum_{n=1}^{2024}\prod_{\substack{1\le j\le2024\\j\ne n}}(x-a_j).\]
+Each product is precisely the polynomial obtained by canceling the indicated factor from \(g(x)/(x-a_n)\). This remains valid even at roots, including repeated roots.
+
+Now, with this result, one can observe that
+\[\frac{g(x)}{x-a_{1012}}+\sum_{\substack{1\le n\le2024\\n\ne1012}}\frac{g(x)}{x-a_n}=g'(x).\]
+Since we are essentially "filling the gap" of the summation, take the integral of both sides from \(a_1\) to \(a_{2024}\). By the Fundamental Theorem of Calculus,
+\[\int_{a_1}^{a_{2024}}g'(x)\,dx=g(a_{2024})-g(a_1)=0,\]
+since both endpoints are roots of \(g\). Thus the given integral plus the requested integral equals \(0\). The desired answer is therefore \(-1012\).
+
+The source uses \(\ln g(x)=\sum\ln(x-a_n)\), which is not a valid real-log identity throughout an interval containing roots and negative factors. The direct product rule above proves the identity everywhere after cancellation and avoids that problem. No ordering or distinctness of the \(a_n\) is required.`,
   },
 ];

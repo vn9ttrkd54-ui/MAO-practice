@@ -29,10 +29,10 @@
 .questionHeading { font-size: 16px; line-height: 1.3; font-weight: 700; }
 .problem { font-size: 18px; line-height: 1.8; margin: 28px 0; overflow-wrap: anywhere; }
 .problem :global(.katex-display) { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
-.choices { display: grid; gap: 10px; }
-.choice { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 56px; padding: 10px 14px; border: 1px solid #dce7f5; border-radius: 6px; background: #fff; color: #17233d; text-align: left; font-size: 16px; }
+.choices { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
+.choice { display: flex; align-items: center; gap: 14px; width: 100%; min-width: 0; min-height: 56px; padding: 10px 14px; border: 1px solid #dce7f5; border-radius: 6px; background: #fff; color: #17233d; text-align: left; font-size: 16px; }
 .letter { display: grid; place-items: center; width: 30px; height: 30px; flex: none; border-radius: 4px; background: var(--detail-paper); color: #5c6c82; font-size: 13px; font-weight: 700; }
-.choiceText { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.choiceText { min-width: 0; flex: 1; overflow-wrap: anywhere; overflow-x: auto; }
 .choiceText :global(.katex-display) { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 .choice > svg { flex: none; color: #a7b7cd; }
 .choice:not(:disabled):hover { border-color: var(--detail-color); }

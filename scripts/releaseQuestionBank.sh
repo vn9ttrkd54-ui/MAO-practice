@@ -19,7 +19,9 @@ fi
 paths=(
   AGENTS.md
   components/math/MathText.tsx
+  components/practice/question-detail.module.css
   components/multiplayer/MatchQuestion.tsx
+  components/multiplayer/MatchResults.tsx
   components/multiplayer/SpectatorView.tsx
   data/questions/mu.ts
   data/question-references/README.md
@@ -29,6 +31,7 @@ paths=(
   docs/february-regional-2025-audit.md
   docs/january-regional-2025-audit.md
   docs/january-invitational-2024-audit.md
+  docs/january-regional-2024-audit.md
   docs/january-regional-2026-audit.md
   docs/january-statewide-2026-audit.md
   docs/king-statewide-2025-audit.md
@@ -59,6 +62,8 @@ paths=(
   public/questions/mu-483-table.svg
   public/questions/mu-502-fold.svg
   public/questions/mu-502-solution.svg
+  public/questions/mu-554-parabolas.svg
+  public/questions/mu-558-solution.svg
   tests/browserFixtures/questionSources.tsx
   tests/integralPropertiesLabels.test.mjs
   tests/questionVectors.test.mjs
@@ -70,6 +75,7 @@ paths=(
   tests/muFebruaryStatewide2026.test.mjs
   tests/muJanuaryRegional2025.test.mjs
   tests/muJanuaryInvitational2024.test.mjs
+  tests/muJanuaryRegional2024.test.mjs
   tests/muJanuaryRegional2026.test.mjs
   tests/muJanuaryState.test.mjs
   tests/muKingStatewide2025.test.mjs
