@@ -6,10 +6,11 @@ import MatchQuestion from "@/components/multiplayer/MatchQuestion";
 import MatchResults from "@/components/multiplayer/MatchResults";
 import SpectatorView from "@/components/multiplayer/SpectatorView";
 import { muQuestions } from "@/data/questions/mu";
+import { thetaQuestions } from "@/data/questions/theta";
 import type { MultiplayerRoundState } from "@/types/multiplayer";
 
 const params = new URLSearchParams(location.search);
-const question = muQuestions.find(q => q.id === Number(params.get("id") ?? "10302"))!;
+const question = [...muQuestions, ...thetaQuestions].find(q => q.id === Number(params.get("id") ?? "10302"))!;
 const round: MultiplayerRoundState = {
   roomId: "fixture", currentPlayerId: "player", stateVersion: 1, scoringVersion: 3,
   questionNumber: 2, totalQuestions: 5, questionDurationSeconds: 90,

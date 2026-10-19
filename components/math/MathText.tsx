@@ -2,9 +2,14 @@ import katex from "katex";
 import Image from "next/image";
 
 type MathTextProps = { children: string; className?: string };
-const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:mu-(?:194|196|201|217|227|302|313|320|325|345|502|558)\]\])/g;
+const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:(?:mu-(?:194|196|201|217|227|302|313|320|325|345|502|558)|theta-7)\]\])/g;
 // Explicit local allowlist: never interpret arbitrary URLs or HTML from text.
 const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: number; height: number }> = {
+  "[[solution-diagram:theta-7]]": {
+    src: "/questions/theta-7-solution.svg",
+    alt: "Balance configurations for package weights 1 through 9 pounds. The object is on the left. Added left weights are none, 1, none, 1, none, none, 1, none, none; right weights are 1; 3; 3; 5; 5; 5 and 1; 5 and 3; 5 and 3; 5, 3 and 1 pounds, respectively.",
+    width: 600, height: 720,
+  },
   "[[solution-diagram:mu-558]]": {
     src: "/questions/mu-558-solution.svg",
     alt: "Green graph y equals ln of one plus x squared, with the two dashed slope-one-half tangent lines at x equals two minus square root of three and two plus square root of three. Their intercepts bound the three-intersection range.",

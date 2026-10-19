@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="350" viewBox="0 0 600 350" role="img" aria-labelledby="title desc">
   <title id="title">Balloon pattern equations</title>
-  <desc id="desc">Four separate equations involving checker, gray, striped, and dotted balloons.</desc>
+  <desc id="desc">Three checker balloons equal 300. Gray plus checker plus gray equals 140. Gray plus striped plus checker plus striped equals 180. Gray plus dotted plus dotted plus striped equals an unknown value. Every pattern has a distinct positive integer value.</desc>
   <defs>
     <pattern id="checker" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="#111"/><rect x="5" y="5" width="5" height="5" fill="#111"/></pattern>
     <pattern id="stripes" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="4" fill="#222"/></pattern>

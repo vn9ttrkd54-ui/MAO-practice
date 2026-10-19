@@ -1,17 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="600" height="230" viewBox="0 0 600 230" role="img" aria-labelledby="title desc">
   <title id="title">Balance scale and three weights</title>
-  <desc id="desc">A balanced two-pan scale holds an object on the left pan. Separate weights are labeled 1 pound, 3 pounds, and 5 pounds.</desc>
+  <desc id="desc">A two-pan balance scale is shown with its left pan lower and an object on that pan, as in the source illustration. Separate cylindrical weights are labeled 1 pound, 3 pounds, and 5 pounds. The illustration does not specify the object's weight.</desc>
   <rect x="1.5" y="1.5" width="597" height="227" rx="8" fill="#fff" stroke="#d9e1ea" stroke-width="3"/>
   <g stroke="#151515" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M70 91 H300"/><path d="M185 91 V176"/><path d="M150 176 H220"/><circle cx="185" cy="91" r="11" fill="#fff"/>
-    <path d="M94 91 L75 137 H135 L116 91"/><path d="M254 91 L235 137 H295 L276 91"/>
-    <path d="M69 137 Q105 154 141 137"/><path d="M229 137 Q265 154 301 137"/>
+    <path d="M105 159 L265 122"/><path d="M185 139 V176"/><path d="M150 176 H220"/><circle cx="185" cy="139" r="11" fill="#fff"/>
+    <path d="M105 159 V142 M265 122 V105"/>
+    <path d="M69 142 H141 Q136 160 105 160 Q74 160 69 142Z" fill="#555"/>
+    <path d="M229 105 H301 Q296 123 265 123 Q234 123 229 105Z" fill="#555"/>
   </g>
-  <g fill="#fff" stroke="#151515" stroke-width="3"><rect x="85" y="101" width="40" height="29" rx="2"/><path d="M89 101 L98 91 H125 V101"/></g>
-  <text x="105" y="84" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#151515">object</text>
+  <g fill="#fff" stroke="#151515" stroke-width="3"><rect x="85" y="113" width="32" height="26"/><path d="M85 113 L94 104 H126 L117 113 M117 139 L126 130 V104"/></g>
+  <text x="105" y="94" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#151515">object</text>
   <g font-family="Arial, sans-serif" text-anchor="middle" fill="#151515">
-    <g transform="translate(385)"><text y="45" font-size="18">1 lb</text><path d="M0 53 V83" stroke="#151515" stroke-width="2"/><path d="M-5 76 L0 85 L5 76" fill="#151515"/><rect x="-15" y="91" width="30" height="25" rx="6" fill="#f8fafc" stroke="#151515" stroke-width="3"/></g>
-    <g transform="translate(465)"><text y="45" font-size="18">3 lb</text><path d="M0 53 V76" stroke="#151515" stroke-width="2"/><path d="M-5 69 L0 78 L5 69" fill="#151515"/><rect x="-22" y="84" width="44" height="38" rx="8" fill="#f8fafc" stroke="#151515" stroke-width="3"/></g>
-    <g transform="translate(550)"><text y="45" font-size="18">5 lb</text><path d="M0 53 V68" stroke="#151515" stroke-width="2"/><path d="M-5 61 L0 70 L5 61" fill="#151515"/><rect x="-29" y="76" width="58" height="51" rx="10" fill="#f8fafc" stroke="#151515" stroke-width="3"/></g>
+    <g transform="translate(385)"><text y="45" font-size="18">1 lb</text><path d="M0 53 V112" stroke="#151515" stroke-width="2"/><path d="M-5 105 L0 114 L5 105" fill="#151515"/><path d="M-15 125 V147 A15 5 0 0 0 15 147 V125" fill="#fff" stroke="#151515" stroke-width="2"/><ellipse cy="125" rx="15" ry="5" fill="#fff" stroke="#151515" stroke-width="2"/></g>
+    <g transform="translate(465)"><text y="72" font-size="18">3 lb</text><path d="M0 80 V100" stroke="#151515" stroke-width="2"/><path d="M-5 93 L0 102 L5 93" fill="#151515"/><path d="M-22 114 V146 A22 6 0 0 0 22 146 V114" fill="#fff" stroke="#151515" stroke-width="2"/><ellipse cy="114" rx="22" ry="6" fill="#fff" stroke="#151515" stroke-width="2"/></g>
+    <g transform="translate(550)"><text y="45" font-size="18">5 lb</text><path d="M0 53 V89" stroke="#151515" stroke-width="2"/><path d="M-5 82 L0 91 L5 82" fill="#151515"/><path d="M-29 104 V145 A29 7 0 0 0 29 145 V104" fill="#fff" stroke="#151515" stroke-width="2"/><ellipse cy="104" rx="29" ry="7" fill="#fff" stroke="#151515" stroke-width="2"/></g>
   </g>
 </svg>

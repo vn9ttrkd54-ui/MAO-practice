@@ -55,6 +55,13 @@ test("960 seeded selections match the pre-refactor algorithm across all division
     ...muNationalReferences.map(q=>({id:q.id,number:q.id-10000,division:q.division,topic:q.topic,difficulty:q.difficulty})).sort((a,b)=>a.id-b.id),
     ...questions.filter(q=>q.division!=="Mu"||q.id<=10325).map(q=>q.division==="Mu"?{...q,number:q.id-10000}:q),
   ];
+  // Keep the historical golden fixture independent of the Chiles 2025 review's
+  // public difficulty recalibration. Do not change the algorithm's golden hash.
+  for (const [id, difficulty] of [[30007, 3], [30025, 4], [30030, 1]]) {
+    const index = baselineQuestions.findIndex(q => q.id === id);
+    assert.ok(index >= 0);
+    baselineQuestions[index] = { ...baselineQuestions[index], difficulty };
+  }
   for (const [id, topic, difficulty] of [[10232, "Differential Equations", 3], [10248, "Inequalities", 5], [10278, "Limits", 4], [10285, "Analytic Geometry", 4]]) {
     const nextIndex = baselineQuestions.findIndex(question => question.id === id + 1);
     assert.ok(nextIndex >= 0);

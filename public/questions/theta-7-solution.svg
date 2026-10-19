@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="720" viewBox="0 0 400 480" role="img" aria-labelledby="title desc">
+  <title id="title">All nine package weights can be balanced</title>
+  <desc id="desc">Source solution table. Each row lists the object weight, contents of the left pan, and contents of the right pan. Weights are in pounds, and the object always stays on the left pan.</desc>
+  <rect width="400" height="480" fill="white"/>
+  <g fill="none" stroke="#333" stroke-width="1.5">
+    <path d="M10 10H390V468H10Z M80 10V468 M220 10V468 M10 90H390 M10 132H390 M10 174H390 M10 216H390 M10 258H390 M10 300H390 M10 342H390 M10 384H390 M10 426H390"/>
+  </g>
+  <g font-family="Arial, sans-serif" font-size="22" text-anchor="middle" fill="#151515">
+    <text x="45" y="43" font-size="20">Object</text><text x="45" y="71">(lb)</text>
+    <text x="150" y="43">Left side</text><text x="150" y="71">of scale</text>
+    <text x="305" y="43">Right side</text><text x="305" y="71">of scale</text>
+    <text x="45" y="120">1</text><text x="150" y="120">object</text><text x="305" y="120">1 lb</text>
+    <text x="45" y="162">2</text><text x="150" y="162">object, 1 lb</text><text x="305" y="162">3 lb</text>
+    <text x="45" y="204">3</text><text x="150" y="204">object</text><text x="305" y="204">3 lb</text>
+    <text x="45" y="246">4</text><text x="150" y="246">object, 1 lb</text><text x="305" y="246">5 lb</text>
+    <text x="45" y="288">5</text><text x="150" y="288">object</text><text x="305" y="288">5 lb</text>
+    <text x="45" y="330">6</text><text x="150" y="330">object</text><text x="305" y="330">5 lb, 1 lb</text>
+    <text x="45" y="372">7</text><text x="150" y="372">object, 1 lb</text><text x="305" y="372">5 lb, 3 lb</text>
+    <text x="45" y="414">8</text><text x="150" y="414">object</text><text x="305" y="414">5 lb, 3 lb</text>
+    <text x="45" y="456">9</text><text x="150" y="456">object</text><text x="305" y="456">5 lb, 3 lb, 1 lb</text>
+  </g>
+</svg>

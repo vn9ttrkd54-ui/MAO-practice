@@ -24,9 +24,11 @@ paths=(
   components/multiplayer/MatchResults.tsx
   components/multiplayer/SpectatorView.tsx
   data/questions/mu.ts
+  data/questions/theta.ts
   data/question-references/README.md
   data/question-references/muNationals.ts
   docs/chiles-statewide-2025-audit.md
+  docs/theta-chiles-statewide-2025-audit.md
   docs/february-regional-2026-audit.md
   docs/february-regional-2025-audit.md
   docs/february-regional-2024-audit.md
@@ -72,6 +74,9 @@ paths=(
   public/questions/mu-march-regional-2024-derivative.svg
   public/questions/mu-march-regional-2024-table.svg
   public/questions/mu-nsu-statewide-2024-table.svg
+  public/questions/theta-7-balance-scale.svg
+  public/questions/theta-7-solution.svg
+  public/questions/theta-29-balloons.svg
   tests/browserFixtures/questionSources.tsx
   tests/integralPropertiesLabels.test.mjs
   tests/questionVectors.test.mjs
@@ -100,6 +105,8 @@ paths=(
   tests/multiplayerRoundFeedback.test.mjs
   tests/questionLabelConsistency.test.mjs
   tests/questionSources.browser.mjs
+  tests/thetaChilesStatewide2025.test.mjs
+  tests/thetaChiles2025.browser.mjs
   tests/trainerPerformance.test.mjs
   scripts/releaseQuestionBank.sh
 )
@@ -129,6 +136,6 @@ if git diff --cached --quiet; then
   exit 1
 fi
 git diff --cached --stat
-git commit -m "Update Mu question bank, source reviews, and national publication hold"
+git commit -m "Update reviewed question banks, source credits, and publication holds"
 git push origin main
 printf '%s\n' "Pushed question-bank work to origin/main. If main is your hosting production branch, its Git integration will deploy this commit. Verify the hosting deployment before treating the changes as live."
