@@ -29,6 +29,7 @@ paths=(
   data/question-references/muNationals.ts
   docs/chiles-statewide-2025-audit.md
   docs/theta-chiles-statewide-2025-audit.md
+  docs/theta-six-2026-source-audit.md
   docs/february-regional-2026-audit.md
   docs/february-regional-2025-audit.md
   docs/february-regional-2024-audit.md
@@ -77,6 +78,14 @@ paths=(
   public/questions/theta-7-balance-scale.svg
   public/questions/theta-7-solution.svg
   public/questions/theta-29-balloons.svg
+  public/questions/theta-january-statewide-2026-table.svg
+  public/questions/theta-nsu-2026-14-solution.svg
+  public/questions/theta-feb-2026-6-solution.svg
+  public/questions/theta-feb-2026-11-solution.svg
+  public/questions/theta-feb-2026-21-solution.svg
+  public/questions/theta-feb-2026-27-solution.svg
+  public/questions/theta-feb-2026-28-solution.svg
+  public/questions/theta-feb-2026-29-solution.svg
   tests/browserFixtures/questionSources.tsx
   tests/integralPropertiesLabels.test.mjs
   tests/questionVectors.test.mjs
@@ -107,6 +116,10 @@ paths=(
   tests/questionSources.browser.mjs
   tests/thetaChilesStatewide2025.test.mjs
   tests/thetaChiles2025.browser.mjs
+  tests/theta2026Sources.test.mjs
+  tests/theta2026Sources.browser.mjs
+  tests/thetaFebruaryRegional2026.test.mjs
+  tests/thetaJanuaryStatewide2025.test.mjs
   tests/trainerPerformance.test.mjs
   scripts/releaseQuestionBank.sh
 )

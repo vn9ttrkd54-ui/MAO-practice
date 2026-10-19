@@ -336,518 +336,719 @@ The numerator and denominator of the original rational function have the same de
   },
   {
     id: 30031, number: 31, division: "Theta", topic: "Logs and Exponents", difficulty: 1, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 1 },
     question: String.raw`Evaluate \((2^{3^2})(-2^{-2})\).`,
     choices: ["−512", "−128", "−64", "128", "NOTA"], answer: "B",
-    solution: String.raw`\[(2^{3^2})(-2^{-2})=2^9\left(-\frac1{2^2}\right)=-2^7=\boxed{-128}.\]`,
+    solution: String.raw`\[(2^{3^2})(-2^{-2})=2^9\left(-\frac1{2^2}\right)=-\frac{2^9}{2^2}=-2^7=-128.\]
+Note - the negative is NOT included under the exponent.`,
   },
   {
     id: 30032, number: 32, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 2 },
     question: String.raw`Given that \(f(x)=x^3-5x^2+1\) and \(g(x)=2x+5\), determine \(f(g(f(1)))\).`,
     choices: ["−71", "−5", "−3", "−1", "NOTA"], answer: "B",
-    solution: String.raw`Work from the inside out: \(f(1)=-3\), \(g(-3)=-1\), and \(f(-1)=-5\). Therefore the answer is \(\boxed{-5}\).`,
+    solution: String.raw`Work from the inside out: \(f(1)=1^3-5(1)^2+1=-3\). \(g(-3)=2(-3)+5=-1\). \(f(-1)=(-1)^3-5(-1)^2+1=-5\).`,
   },
   {
     id: 30033, number: 33, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: ["Discriminant Test"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 4 },
     question: String.raw`For how many values of \(a\) does \(f(x)=ax^2-5x+6\) have one and only one real root?`,
     choices: ["0", "1", "2", "Infinitely many", "NOTA"], answer: "C",
-    solution: String.raw`For a quadratic, \(25-24a=0\), so \(a=\frac{25}{24}\). Also, when \(a=0\), the function is linear and has exactly one real root. Therefore there are \(\boxed2\) values.`,
+    solution: String.raw`Setting the discriminant equal to zero will give us a single root, therefore \((-5)^2-4(a)(6)=0\), so \(a=\frac{25}{24}\) for one value; however, if \(a\) equals zero, we have a line with slope of \(-5\) which also has only one real root, therefore there are 2 values of \(a\), \(0\) and \(\frac{25}{24}\).`,
   },
   {
     id: 30034, number: 34, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
-    question: String.raw`The following table represents select values of an odd function \(f(x)\).
-\[\begin{array}{c|ccccc}x&-7&-2&4&a&7\\\hline f(x)&b&7&5&-7&4\end{array}\]
-Determine the following: \(af(a)f(b)\).`,
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 5 },
+    question: String.raw`The following table represents select values of an odd, one-to-one function \(f(x)\). Determine the following: \(af(a)f(b)\).`,
     choices: ["−56", "35", "56", "70", "NOTA"], answer: "D",
-    solution: String.raw`Since \(f\) is odd, \(a=2\), \(b=-4\), and \(f(b)=-5\). Thus \(af(a)f(b)=(2)(-7)(-5)=\boxed{70}\).`,
+    solution: String.raw`Given that \(f(x)\) is odd, \(f(-x)=-f(x)\). Since \(f(-2)=7\), \(f(2)=-7\), so \(a=2\). The one-to-one assumption ensures that no other input can have the same output \(-7\). Additionally, \(f(7)=4\), therefore \(f(-7)=-4\), so \(b=-4\). Additionally, since \(f(4)=5\), \(f(-4)=-5\), thus we have
+\[af(a)f(b)=(2)(f(2))(f(-4))=(2)(-7)(-5)=70.\]`,
+    illustration: {"src":"/questions/theta-january-statewide-2026-table.svg","alt":"Table: x values negative 7, negative 2, 4, a, 7; corresponding f(x) values b, 7, 5, negative 7, 4.","width":660,"height":120},
   },
   {
     id: 30035, number: 35, division: "Theta", topic: "Binomial Expansion", difficulty: 2, methods: ["Binomial Theorem"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 6 },
     question: String.raw`Given that \(f(x)=(2x^3-3)^5\), determine the coefficient of the \(12^{\text{th}}\) degree term if \(f(x)\) is fully expanded.`,
     choices: ["−240", "−120", "32", "720", "NOTA"], answer: "A",
-    solution: String.raw`The \(12^{\text{th}}\)-degree term occurs when \(2x^3\) is raised to the fourth power:
-\[5(2x^3)^4(-3)=-240x^{12}.\]
-The coefficient is \(\boxed{-240}\).`,
+    solution: String.raw`Use the binomial theorem and Pascal's triangle to expand the binomial, giving us the general form:
+\[(a+b)^5=a^5+5a^4b+10a^3b^2+10a^2b^3+5ab^4+b^5.\]
+Therefore the 12th degree term will happen when \(2x^3\) is raised to the 4th power, so plugging in to \(5a^4b\), we get
+\[5(2x^3)^4(-3)=(-15)(16)x^{12}=-240x^{12}.\]`,
   },
   {
     id: 30036, number: 36, division: "Theta", topic: "Complex Numbers", difficulty: 3, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 7 },
     question: String.raw`Given that \((1-i)^3+(1-i)^5+(1-i)^7=a+bi\), determine the product of \(a\) and \(b\).`,
     choices: ["−12", "4", "20", "84", "NOTA"], answer: "C",
-    solution: String.raw`Since \((1-i)^2=-2i\), factoring \(1-i\) gives \(2+10i\). Thus \(a=2\), \(b=10\), and \(ab=\boxed{20}\).`,
+    solution: String.raw`Given that \((1-i)^2=1-2i+i^2=1-2i-1=-2i\), rewrite the expression as
+\[\begin{aligned}
+&(-2i)(1-i)+(-2i)^2(1-i)+(-2i)^3(1-i)\\
+&=-2i+2i^2+4i^2(1-i)-8i^3(1-i)\\
+&=-2i-2-4(1-i)+8i(1-i)\\
+&=-2i-2-4+4i+8i-8i^2\\
+&=2+10i.
+\end{aligned}\]
+\(a=2\), \(b=10\), \(ab=2(10)=20\).`,
   },
   {
     id: 30037, number: 37, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Rational Root Theorem", "Vieta's Formulas"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 8 },
     question: String.raw`Determine the sum of the non-real roots of \(f(x)=x^7+3x^6+2x^5+5x^3+11x^2+8x+2\).`,
     choices: ["1", "2", "4", "6", "NOTA"], answer: "B",
-    solution: String.raw`Repeated division by \(x+1\) gives \(f(x)=(x+1)^5(x^2-2x+2)\). The non-real roots are \(1+i\) and \(1-i\), whose sum is \(\boxed2\).`,
+    solution: String.raw`Testing rational roots given the rational root theorem, we have all possible rational roots \(\pm1,\pm2\). Looking at the fact that all coefficients are positive, we'll try \(x=-1\) first.
+\[(-1)^7+3(-1)^6+2(-1)^5+5(-1)^3+11(-1)^2+8(-1)+2=0,\]
+therefore \(-1\) is a root of \(f(x)\). Using long division by \((x+1)\), we get the quotient \(x^6+2x^5+5x^2+6x+2\). Testing \(x=-1\) again results in a 2nd root of \(-1\) so dividing again by \((x+1)\) gives us a quotient of \(x^5+x^4-x^3+x^2+4x+2\). If we keep going, we will notice we can divide by \((x+1)\) five times, resulting in
+\[f(x)=(x+1)^5(x^2-2x+2).\]
+Only the quadratic factor will result in non-real roots, giving us \(1+i\) and \(1-i\). Adding those together we get \(1+i+1-i=2\). Alternatively, we can see by Vieta that the sum of all roots is \(-3\), then subtract five \(-1\)'s for the real roots giving us the sum of the non-real roots or \(-3-(-5)=2\).`,
   },
   {
     id: 30038, number: 38, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: ["Discriminant Test"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 9 },
     question: String.raw`Which of the following values of \(a\) guarantee that the following parabolic system has only one solution:
 \[y=ax^2-2x-5\]
 \[y=2x^2+6x+5+\sqrt5\]`,
     choices: [String.raw`\(\frac25\)`, String.raw`\(\frac{30+16\sqrt5}{95}\)`, String.raw`\(\frac{30+8\sqrt5}{95}\)`, String.raw`\(\frac{350+16\sqrt5}{95}\)`, "NOTA"], answer: "B",
-    solution: String.raw`Setting the curves equal gives \((a-2)x^2-8x-10-\sqrt5=0\). Setting its discriminant equal to zero and rationalizing gives \(a=\boxed{\frac{30+16\sqrt5}{95}}\).`,
+    solution: String.raw`Note that we do not have to check \(a=0\) because we are told this is a system of parabolas, and we don't need to check \(a=2\) because it isn't an answer choice. Setting the curves equal to each other we have
+\[ax^2-2x-5=2x^2+6x+5+\sqrt5.\]
+Setting equal to zero and reorganizing: \((a-2)x^2-8x-10-\sqrt5=0\). Setting the discriminant equal to zero we have
+\[(-8)^2-4(a-2)(-10-\sqrt5)=0.\]
+Simplifying, we have \((a-2)(-10-\sqrt5)=16\), then
+\[a-2=\frac{16}{-10-\sqrt5},\qquad a=\frac{4+2\sqrt5}{10+\sqrt5}.\]
+Rationalizing, we have
+\[\frac{4+2\sqrt5}{10+\sqrt5}\cdot\frac{10-\sqrt5}{10-\sqrt5}
+=\frac{30+16\sqrt5}{95}.\]`,
   },
   {
     id: 30039, number: 39, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 10 },
     question: String.raw`Evaluate \(\left(\frac{7!!}{90}\right)^{-1}\).`,
-    choices: [String.raw`\(\frac67\)`, String.raw`\(\frac{67}{6}\)`, "67", String.raw`\(6^{-7}\)`, "NOTA"], answer: "A",
-    solution: String.raw`The double factorial is \(7!!=105\). Therefore
-\[\left(\frac{7!!}{90}\right)^{-1}=\left(\frac{105}{90}\right)^{-1}=\boxed{\frac67}.\]`,
+    choices: [String.raw`\(\frac67\)`, String.raw`\(\frac{67}{76}\)`, String.raw`67`, String.raw`\(6^{-7}\)`, String.raw`NOTA`], answer: "A",
+    solution: String.raw`The double factorial evaluates as the product of every other value of a standard factorial so \(7!!=7\times5\times3\times1=105\).
+\[\left(\frac{105}{90}\right)^{-1}=\left(\frac76\right)^{-1}=\frac67.\]`,
   },
   {
     id: 30040, number: 40, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 11 },
     question: String.raw`Given a parabola in the form \(f(x)=ax^2+bx+c\) that passes through the points \((1,2)\), \((3,4)\), and \((5,3)\), determine the product of \(a\), \(b\), and \(c\).`,
     choices: [String.raw`\(-\frac{15}{128}\)`, String.raw`\(\frac{15}{64}\)`, String.raw`\(\frac{15}{16}\)`, String.raw`\(\frac{16}{15}\)`, "NOTA"], answer: "E",
-    solution: String.raw`Substitution gives \(a=-\frac38\), \(b=\frac52\), and \(c=-\frac18\). Hence \(abc=\frac{15}{128}\), which is not listed. Therefore the answer is \(\boxed{\text{NOTA}}\).`,
+    solution: String.raw`Plugging in the points results in the following system:
+\[\begin{aligned}2&=a+b+c\\4&=9a+3b+c\\3&=25a+5b+c.\end{aligned}\]
+Elimination results in \(a=-\frac38\), \(b=\frac52\), and \(c=-\frac18\).
+\[abc=\left(-\frac38\right)\left(\frac52\right)\left(-\frac18\right)=\frac{15}{128}.\]
+This is not listed, so the answer is NOTA.`,
   },
   {
     id: 30041, number: 41, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 12 },
     question: String.raw`Choose the answer that correctly simplifies the expression
 \[\frac{\log_7(5^9)\cdot\log_5(3^8)\cdot\log_3(2^6)}{\log_7(3^4)\cdot\log_3(5^3)\cdot\log_5(2^2)}.\]`,
     choices: ["9", "18", String.raw`\(\log_7(5^9\cdot3^8\cdot2^6)\)`, String.raw`\(5^6\cdot3^4\cdot2^4\)`, "NOTA"], answer: "B",
-    solution: String.raw`Using exponent properties gives \(\frac{9\cdot8\cdot6}{4\cdot3\cdot2}=18\). By change of base, the remaining logarithmic factors cancel, leaving \(\boxed{18}\).`,
+    solution: String.raw`Use the exponent property of logarithms, then simplify the coefficients:
+\[\frac{9\log_7(5)\cdot8\log_5(3)\cdot6\log_3(2)}
+{4\log_7(3)\cdot3\log_3(5)\cdot2\log_5(2)}
+=18\frac{\log_7(5)\log_5(3)\log_3(2)}
+{\log_7(3)\log_3(5)\log_5(2)}.\]
+Using change of base, then canceling:
+\[18\frac{\frac{\ln5}{\ln7}\cdot\frac{\ln3}{\ln5}\cdot\frac{\ln2}{\ln3}}
+{\frac{\ln3}{\ln7}\cdot\frac{\ln5}{\ln3}\cdot\frac{\ln2}{\ln5}}
+=18\frac{\ln2/\ln7}{\ln2/\ln7}=18.\]`,
   },
   {
     id: 30042, number: 42, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Vieta's Formulas"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 13 },
     question: String.raw`Given a polynomial \(p(x)\) with roots \(x=1\), \(x=2-i\), and \(x=\pm\sqrt2\), determine the value of the constant term if the polynomial is written in standard form: \(p(x)=x^5+bx^4+cx^3+dx^2+ex+f\) where \(b,c,d,e,\) and \(f\) are integers.`,
     choices: ["−4", "−5", "5", "10", "NOTA"], answer: "D",
-    solution: String.raw`Since the coefficients are integers, \(2+i\) is also a root. The product is \(1(2-i)(2+i)(\sqrt2)(-\sqrt2)=-10\). Since the product is \(-f\), \(f=\boxed{10}\).`,
+    solution: String.raw`By Vieta's formulas, the product of the roots would be \(-f\). Since \(2-i\) is a root, \(2+i\) must also be a root. A 5th degree polynomial must have 5 complex roots; therefore, the product of the roots will be:
+\[1(2-i)(2+i)(\sqrt2)(-\sqrt2)=(4-i^2)(-2)=(5)(-2)=-10.\]
+Since \(-f=-10\), \(f=10\).`,
   },
   {
     id: 30043, number: 43, division: "Theta", topic: "Matrices", difficulty: 4, methods: ["Matrix Multiplication", "Determinant", "Vieta's Formulas"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 14 },
     question: String.raw`Given that matrix \(A=\begin{pmatrix}x&3\\5&-1\end{pmatrix}\) and matrix \(B=\begin{pmatrix}1&-5\\x^2&2x\end{pmatrix}\), the product \(A\cdot B\) results in an invertible matrix with a determinant equal to \(-42x^2\). Determine the product of all values of \(x\) that satisfies these conditions.`,
     choices: ["−7", "−1", "0", "6", "NOTA"], answer: "D",
-    solution: String.raw`Computing the determinant and setting it equal to \(-42x^2\) gives \(-5x(x^2+7x+6)=0\). Exclude \(x=0\), which makes the matrix noninvertible. By Vieta's formulas, the product of the remaining roots is \(\boxed6\).`,
+    solution: String.raw`Multiplying
+\[\begin{pmatrix}x&3\\5&-1\end{pmatrix}
+\begin{pmatrix}1&-5\\x^2&2x\end{pmatrix}
+=\begin{pmatrix}x+3x^2&x\\5-x^2&-25-2x\end{pmatrix}.\]
+Given that the resulting matrix is invertible, the determinant must not be equal to zero.
+\[(x+3x^2)(-25-2x)-x(5-x^2)=-42x^2.\]
+Simplifying, we have \(-25x-2x^2-75x^2-6x^3-(5x-x^3)=-42x^2\). Setting equal to zero we have \(-5x^3-35x^2-30x=0\). Since zero can't be a solution, divide through by \(-5x\), resulting in \(x^2+7x+6=0\). By Vieta, the product of the roots would be \(\frac61=6\). Note, \(\det(AB)=\det(A)\det(B)\) so this would be an alternate approach.`,
   },
   {
     id: 30044, number: 44, division: "Theta", topic: "Complex Numbers", difficulty: 2, methods: ["Modular Arithmetic"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 15 },
     question: String.raw`Find the value of \(|7-i^{6767}|\).`,
     choices: ["6", String.raw`\(4\sqrt3\)`, String.raw`\(5\sqrt2\)`, "8", "NOTA"], answer: "C",
-    solution: String.raw`Since \(6767\equiv3\pmod4\), \(i^{6767}=-i\). Thus \(|7+i|=\sqrt{50}=\boxed{5\sqrt2}\).`,
+    solution: String.raw`Dividing the power of \(i\) by 4 and looking at the remainder, we have \(i^{6767}=i^3=-i\). Thus,
+\[|7-i^{6767}|=|7+i|=\sqrt{7^2+1^2}=\sqrt{50}=5\sqrt2.\]`,
   },
   {
     id: 30045, number: 45, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: ["Logarithms"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 16 },
     question: String.raw`Which of the following is the minimum possible value for \(x\) given the expression \(\ln(\ln(\ln(\ln x)))\).`,
     choices: ["0", "1", String.raw`\(e\)`, String.raw`\(e^e\)`, "NOTA"], answer: "E",
-    solution: String.raw`The domain is \(x>e^e\). Since \(e^e\) is not included, there is no minimum possible value. Therefore the answer is \(\boxed{\text{NOTA}}\).`,
+    solution: String.raw`Although \(x\) must be greater than \(e^e\), there is no minimum value. Notice if we plug in \(e^e\), we have
+\[\ln(\ln(\ln(\ln e^e)))=\ln(\ln(\ln e))=\ln(\ln(1))=\ln0,\]
+which is undefined, however for any value greater than \(e^e\), we would have a positive value inside the final natural log, so the domain would be \(x>e^e\).`,
   },
   {
     id: 30046, number: 46, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 17 },
     question: String.raw`Determine the only real root for \(f(x)=x^9-8\).`,
     choices: [String.raw`\(2^{1/9}\)`, String.raw`\(2^{1/3}\)`, String.raw`\(2^{1/2}\)`, "2", "NOTA"], answer: "B",
-    solution: String.raw`Factoring gives \(x^9-8=(x^3-2)(x^6+2x^3+4)\). The latter factor has no real zeros, so the only real root is \(\boxed{2^{1/3}}\).`,
+    solution: String.raw`Factoring by the difference of cubes we have \(f(x)=(x^3-2)(x^6+2x^3+4)\), and again
+\[f(x)=(x-2^{1/3})(x^2+2^{1/3}x+2^{2/3})(x^6+2x^3+4).\]
+The quadratic in \(x\) and the quadratic in \(x^3\) have negative discriminants, so neither can vanish for real \(x\). The only real solution comes from the first factor \(x-2^{1/3}=0\), so \(x=2^{1/3}\).`,
   },
   {
     id: 30047, number: 47, division: "Theta", topic: "Functions", difficulty: 4, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 18 },
     question: String.raw`Given \(f(x)=\frac{x}{x^2-1}\), \(g(x)=\frac{x+1}{x-3}\), and \(h(x)=\sqrt{x-1}\), for which of the following integers is \(f(g(h(x)))\) undefined?
 \[\text{I. }1\qquad\text{II. }2\qquad\text{III. }3\qquad\text{IV. }10\]`,
     choices: ["I, II, and III only", "II and III only", "II and IV only", "I, II, III, and IV", "NOTA"], answer: "C",
-    solution: String.raw`Testing each value, \(x=1\) and \(x=3\) produce defined outputs. For \(x=2\), \(g(h(2))=-1\), where \(f\) is undefined. For \(x=10\), \(h(10)=3\), where \(g\) is undefined. Thus the answer is \(\boxed{\text{II and IV only}}\).`,
+    solution: String.raw`Testing each value,
+\[f(g(h(1)))=f(g(0))=f\left(-\frac13\right),\]
+which is defined.
+\[f(g(h(2)))=f(g(1))=f(-1)=\frac{-1}{(-1)^2-1}=\frac{-1}{0},\]
+which is undefined.
+\[f(g(h(3)))=f(g(\sqrt2))=f\left(\frac{\sqrt2+1}{\sqrt2-3}\right),\]
+which is defined: the input to \(f\) is neither \(1\) nor \(-1\).
+\[f(g(h(10)))=f(g(3)),\]
+which is undefined as \(g(3)=\frac{3+1}{3-3}=\frac40\), which is not defined. Thus II and IV only.`,
   },
   {
     id: 30048, number: 48, division: "Theta", topic: "Systems of Equations", difficulty: 3, methods: ["Determinant"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 19 },
     question: String.raw`Given the system:
 \[x+2y-z=3\]
 \[2x-y+3z=1\]
 \[ax+y+z=5\]
 For what value of \(a\) does this system have no unique solution?`,
     choices: ["−3", "−1", "0", "2", "NOTA"], answer: "D",
-    solution: String.raw`The system has no unique solution when
-\[\begin{vmatrix}1&2&-1\\2&-1&3\\a&1&1\end{vmatrix}=5a-10=0.\]
-Thus \(a=\boxed2\).`,
+    solution: String.raw`A linear system has no unique solution if the determinant of its coefficient matrix is zero, therefore:
+\[\begin{aligned}
+\begin{vmatrix}1&2&-1\\2&-1&3\\a&1&1\end{vmatrix}
+&=1((-1)(1)-(3)(1))\\
+&\quad-2((2)(1)-(3)(a))\\
+&\quad+(-1)((2)(1)-(-1)(a))\\
+&=-4-2(2-3a)-(2+a)\\
+&=5a-10=0.
+\end{aligned}\]
+Thus \(5a=10\) or \(a=2\). A zero determinant need not mean no solution; it means no unique solution, as the question asks.`,
   },
   {
     id: 30049, number: 49, division: "Theta", topic: "Simplification", difficulty: 4, methods: ["Binomial Theorem"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 20 },
     question: String.raw`Which of the following correctly simplifies the expression
 \[\frac{x^5-5x^4+10x^3-10x^2+5x-1}{x^7+3x^6+x^5-5x^4-5x^3+x^2+3x+1}\]
 where defined, given the fact that the expression is undefined at \(x=1\).`,
     choices: [String.raw`\(\frac1{(x+1)^2}\)`, String.raw`\(\frac{(x-1)^3}{(x+1)^3}\)`, String.raw`\(\frac{(x-1)^3}{(x+1)^5}\)`, String.raw`\(\frac{(x-1)^5}{(x+1)^5}\)`, "NOTA"], answer: "C",
-    solution: String.raw`The numerator is \((x-1)^5\), while the denominator factors as \((x-1)^2(x+1)^5\). Therefore the expression simplifies to \(\boxed{\frac{(x-1)^3}{(x+1)^5}}\).`,
+    solution: String.raw`The numerator is the binomial expansion of \((x-1)^5\). Additionally, \((x-1)\) must be a factor of the denominator as we have been told the expression is undefined at \(x=1\). Dividing the denominator by \((x-1)\) results in \(x^6+4x^5+5x^4-5x^2-4x-1\). We can now use the rational root theorem; however, looking at the answer choices suggests we should try to divide by \((x-1)\) again, resulting in \(x^5+5x^4+10x^3+10x^2+5x+1\) which is the binomial expansion of \((x+1)^5\). Thus:
+\[\frac{(x-1)^5}{(x-1)^2(x+1)^5}=\frac{(x-1)^3}{(x+1)^5}.\]
+The original restrictions \(x\ne1,-1\) still apply.`,
   },
   {
     id: 30050, number: 50, division: "Theta", topic: "Number Theory", difficulty: 3, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 21 },
     question: String.raw`Which of the following correctly writes \(0.00\overline{76}\) as a fraction?`,
     choices: [String.raw`\(\frac{19}{2475}\)`, String.raw`\(\frac{19}{2250}\)`, String.raw`\(\frac{38}{4995}\)`, String.raw`\(\frac{76}{9999}\)`, "NOTA"], answer: "A",
-    solution: String.raw`Since \(0.\overline{76}=\frac{76}{99}\),
-\[0.00\overline{76}=\frac{76}{99}\cdot\frac1{100}=\frac{76}{9900}=\boxed{\frac{19}{2475}}.\]`,
+    solution: String.raw`Given that \(0.\overline{ab}=\frac{ab}{99}\), multiply the expression by 100, resulting in \(0.\overline{76}=\frac{76}{99}\). Now divide by 100 resulting in \(\frac{76}{99}\cdot\frac1{100}=\frac{76}{9900}\) which simplifies to \(\frac{19}{2475}\). Here \(ab\) denotes the two-digit numeral, not a product.`,
   },
   {
     id: 30051, number: 51, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 22 },
     question: String.raw`The population of Boringville can be represented by \(450p\) people where \(p\) represents some positive integer. Let \(A\) represent the number of people in Boringville that are under the age of 18, let \(B\) represent the number of people who are between 18 and 35, let \(C\) represent the number of people between 36 and 50, \(D\) represent the number of people between 51 and 65, \(E\) represent the number of people over 65. Given that the ratio of \(A:B:C\) is \(1:3:7\) and the ratio of \(C:D:E\) is \(2:5:6\), what is the minimum possible value for \(p\) that guarantees an integer number of people in each category, \(A,B,C,D,\) and \(E\)?`,
     choices: ["1", "11", "23", "99", "NOTA"], answer: "B",
-    solution: String.raw`Combining the ratios gives \(A:B:C:D:E=2:6:14:35:42\), totaling \(99\) parts. Thus \(99x=450p\). Since \(\gcd(450,99)=9\), the least possible \(p\) is \(\boxed{11}\).`,
+    solution: String.raw`Multiply the 1st ratio by 2 and the 2nd ratio by 7 so as to combine into a single ratio: \(A:B:C:D:E=2:6:14:35:42\). Writing as an algebraic expression we have \(2x+6x+14x+35x+42x=450p\). Simplifying, we have: \(99x=450p\). We are looking for the smallest value of \(p\) such that the amount of people in each category is an integer amount; therefore, we need \(x\) to be an integer, thus \(450p\) must be divisible by 99. Since the greatest common factor of 450 and 99 is 9, but 99 is also divisible by 11, \(p\) must equal 11. More explicitly, the integer category sizes force \(x\) to be an integer because \(\gcd(2,6,14,35,42)=1\); the least positive \(p\) making \(99\mid450p\) is \(99/\gcd(99,450)=11\).`,
   },
   {
     id: 30052, number: 52, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 23 },
     question: String.raw`Determine the value of \(y\) given that
 \[\frac1{x-y}+\frac1{x+y}=\frac13\qquad\text{and}\qquad\frac1x=x-\frac{y^2}{x}.\]`,
     choices: ["0", String.raw`\(\frac16\)`, String.raw`\(\frac{\sqrt{35}}6\)`, "6", "NOTA"], answer: "E",
-    solution: String.raw`The second equation gives \(1=x^2-y^2\). The first then gives \(2x=\frac13\), so \(x=\frac16\). Hence \(y^2=-\frac{35}{36}\), which has no real solution. The answer is \(\boxed{\text{NOTA}}\).`,
+    solution: String.raw`Multiplying the 2nd equation through by \(x\), we have \(1=x^2-y^2\). Taking the left side of the 1st equation and finding a common denominator we have
+\[\frac1{x-y}\cdot\frac{x+y}{x+y}+\frac1{x+y}\cdot\frac{x-y}{x-y}
+=\frac{x+y+x-y}{x^2-y^2}=\frac{2x}{x^2-y^2}.\]
+Substituting \(1=x^2-y^2\), we have \(\frac{2x}{1}=\frac13\), or \(x=\frac16\). Plugging into \(1=x^2-y^2\) gets us \(1=\frac1{36}-y^2\), and then \(-\frac{35}{36}=y^2\) which has no real solution. If complex solutions are allowed, \(y=\pm i\sqrt{35}/6\); neither is listed. In either interpretation, the answer is NOTA.`,
   },
   {
     id: 30053, number: 53, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 24 },
     question: String.raw`Determine the slope of the line that passes through the focus of the parabola \(y^2+2y-x=1\) and the origin.`,
     choices: [String.raw`\(-\frac74\)`, String.raw`\(\frac12\)`, String.raw`\(\frac47\)`, String.raw`\(\frac23\)`, "NOTA"], answer: "C",
-    solution: String.raw`Completing the square gives \((y+1)^2=x+2\). Since \(4p=1\), the focus is \(\left(-\frac74,-1\right)\). The slope from the origin is \(\frac{-1}{-7/4}=\boxed{\frac47}\).`,
+    solution: String.raw`Rewrite \(y^2+2y-x=1\) as \(y^2+2y=x+1\), then complete the square to write in focus/directrix form \(y^2+2y+1=x+1+1\), and then \((y+1)^2=x+2\). A parabola written in the form \((y-k)^2=4p(x-h)\) has a focus at \((h+p,k)\). Therefore, the focus is found at \((-2+\frac14,-1)=(-\frac74,-1)\). The line going through this point and the origin would have a slope of
+\[\frac{-1-0}{-7/4-0}=\frac1{7/4}=\frac47.\]`,
   },
   {
     id: 30054, number: 54, division: "Theta", topic: "Conic Sections", difficulty: 5, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 25 },
     question: String.raw`How many of the following conics are degenerate?
 \[x^2+4xy+4y^2-2x+4y=-1.\]
 \[9x^2+16y^2-54x+64y+145=0.\]
 \[x^2-y^2-4x-6y+13=0.\]`,
     choices: ["0", "1", "2", "3", "NOTA"], answer: "B",
-    solution: String.raw`The first is a rotated, nondegenerate parabola. Completing the square in the second gives
-\[9(x-3)^2+16(y+2)^2=0,\]
-a single point, so it is degenerate. The third becomes \((x-2)^2-(y+3)^2=-18\), a nondegenerate hyperbola. Exactly \(\boxed1\) conic is degenerate.`,
+    solution: String.raw`The first equation is the trickiest as, for the others, all we have to do is complete the square. Factoring its quadratic part gives \((x+2y)^2-2x+4y=-1\). The direction \((-2,1)\) makes the squared part constant but has nonzero linear coefficient \((-2,4)\cdot(-2,1)=8\), so this is a genuine rotated parabola, not a degenerate pair of lines.
+
+For the other equations, we will complete the square twice:
+\[\begin{aligned}
+9x^2+16y^2-54x+64y+145&=0,\\
+9(x^2-6x)+16(y^2+4y)&=-145,\\
+9(x-3)^2+16(y+2)^2&=-145+81+64=0.
+\end{aligned}\]
+This is the single point \((3,-2)\), so it is degenerate.
+\[\begin{aligned}
+x^2-y^2-4x-6y+13&=0,\\
+(x^2-4x)-(y^2+6y)&=-13,\\
+(x-2)^2-(y+3)^2&=-13+4-9=-18.
+\end{aligned}\]
+Note that the negative value from the last conic is not a problem: dividing by \(-18\) gives a nondegenerate hyperbola. So only one of the conics is degenerate.`,
   },
   {
     id: 30055, number: 55, division: "Theta", topic: "Inequalities", difficulty: 4, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 26 },
     question: String.raw`How many integer solutions are there to the inequality \(2|3x-1|-|2-x|<5\)?`,
     choices: ["0", "1", "2", "3", "NOTA"], answer: "C",
-    solution: String.raw`The critical values are \(x=\frac13\) and \(x=2\). Checking the resulting intervals shows that the only integer solutions are \(x=0\) and \(x=1\). Therefore there are \(\boxed2\) integer solutions.`,
+    solution: String.raw`The absolute value equation has critical values where each absolute value term equals zero, so we will bound our intervals by \(x=\frac13\) and \(x=2\).
+
+When \(x<\frac13\), our inequality becomes \(2(1-3x)-(2-x)<5\) which simplifies to \(-5x<5\), and then \(x>-1\). The only integer on the interval \(-1<x<\frac13\) is 0.
+
+When \(\frac13\le x<2\), we can just test \(x=1\) as this is the only integer in this interval: \(2|3(1)-1|-|2-1|=4-1=3<5\), therefore 1 is also a solution.
+
+For \(x\ge2\), our inequality becomes \(2(3x-1)-(x-2)<5\) which simplifies to \(6x-2-x+2<5\), and then \(5x<5\), and then \(x<1\), which is not within \(x\ge2\) so there are no additional integer solutions here.
+
+Therefore, the only integer solutions are \(x=0\) and \(x=1\), or 2 solutions.`,
   },
   {
     id: 30056, number: 56, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 27 },
     question: String.raw`Given that \(f(x)=\frac1{x-2}+\frac2{x+1}-\frac3{x^2-x-2}\), how many vertical asymptotes does \(f(x)\) have?`,
     choices: ["0", "1", "2", "3", "NOTA"], answer: "B",
-    solution: String.raw`Combining the terms gives
-\[f(x)=\frac{3(x-2)}{(x+1)(x-2)}=\frac3{x+1},\]
-with a hole at \(x=2\). The only vertical asymptote is \(x=-1\), so the answer is \(\boxed1\).`,
+    solution: String.raw`Add terms together by finding common denominators to check for holes that are masquerading as asymptotes.
+\[\begin{aligned}
+\frac1{x-2}+\frac2{x+1}-\frac3{(x+1)(x-2)}
+&=\frac{x+1+2x-4-3}{(x+1)(x-2)}\\
+&=\frac{3x-6}{(x+1)(x-2)}\\
+&=\frac{3(x-2)}{(x+1)(x-2)}.
+\end{aligned}\]
+As the factor \((x-2)\) is in the numerator and denominator, this represents a hole (removable discontinuity), with a hole at \(x=2\); therefore, the only vertical asymptote comes from the \((x+1)\) in the denominator, or at \(x=-1\).`,
   },
   {
     id: 30057, number: 57, division: "Theta", topic: "Systems of Equations", difficulty: 5, methods: ["Substitution"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 28 },
     question: String.raw`Given that \(xy=6\) and \(x^3y+xy^3-2x^2y^2-2x-2y=16\), which of the following is a possible value of \(x^2+y^2\)?`,
     choices: [String.raw`\(\frac{148}{9}\)`, String.raw`\(\frac{202}{9}\)`, String.raw`\(\frac{68}{3}\)`, String.raw`\(\frac{74}{3}\)`, "NOTA"], answer: "A",
-    solution: String.raw`Using \(xy=6\), the equation reduces to \(3(x+y)^2-(x+y)-80=0\). Thus \(x+y=\frac{16}{3}\) or \(5\). The first value gives
-\[x^2+y^2=(x+y)^2-2xy=\frac{256}{9}-12=\boxed{\frac{148}{9}},\]
-which appears among the choices.`,
+    solution: String.raw`We can start by substituting \(xy=6\) into the larger equation, giving us \(6x^2+6y^2-72-2x-2y=16\). Reorganizing, we have \(6(x^2+y^2)-2(x+y)-88=0\). Divide by 2 and we have \(3(x^2+y^2)-(x+y)-44=0\). Now note that \((x+y)^2=x^2+2xy+y^2\), or \((x+y)^2-12=x^2+y^2\). Substituting again, we have \(3((x+y)^2-12)-(x+y)-44=0\). Now simplify:
+\[3(x+y)^2-(x+y)-80=0.\]
+Let's set \(x+y=Q\), then we see we have a simple quadratic
+\[3Q^2-Q-80=(3Q-16)(Q+5)=0,\]
+so \(Q=\frac{16}{3}\) and \(Q=-5\). Looking at the answer choices, we will focus on \(Q=x+y=\frac{16}{3}\). Since
+\[(x+y)^2-12=x^2+y^2=\left(\frac{16}{3}\right)^2-12=\frac{256}{9}-\frac{108}{9}=\frac{148}{9}.\]
+The other branch gives \(x^2+y^2=13\), not listed. Both sums are compatible with real \(x,y\), since the discriminants of \(t^2-Qt+6\) are nonnegative.`,
   },
   {
     id: 30058, number: 58, division: "Theta", topic: "Polynomial Equations", difficulty: 4, methods: ["Substitution", "Vieta's Formulas"],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 29 },
     question: String.raw`Find the sum of all solutions to the equation \(2^{4x}+70(2^{2x})+64=15(2^{3x})+120(2^x)\).`,
     choices: ["5", "6", "7", "15", "NOTA"], answer: "B",
-    solution: String.raw`Let \(u=2^x\). The equation becomes
+    solution: String.raw`Make \(u=2^x\), then rewrite the equation as \(u^4+70u^2+64=15u^3+120u\). Setting equal to zero we have
 \[u^4-15u^3+70u^2-120u+64=0.\]
-If its positive roots are \(u_1,\ldots,u_4\), the sum of the corresponding \(x\)-values is
-\[\log_2(u_1u_2u_3u_4)=\log_2(64)=\boxed6\]
-by Vieta's formulas.`,
+This factors as \((u-1)(u-2)(u-4)(u-8)=0\), so all four roots are positive and correspond to real \(x\). If we call the roots of the original equation \(x_1,x_2,x_3,x_4\), each root has the relationship with the \(u\) equation as \(x=\log_2(u)\). Therefore, the sum of the roots of the original equation equals
+\[\log_2(u_1)+\log_2(u_2)+\log_2(u_3)+\log_2(u_4),\]
+which, using properties of logarithms becomes \(\log_2(u_1u_2u_3u_4)\). By Vieta, \(u_1u_2u_3u_4=64\), therefore \(x_1+x_2+x_3+x_4=\log_2 64=6\).`,
   },
   {
     id: 30059, number: 59, division: "Theta", topic: "Simplification", difficulty: 1, methods: [],
+    source: { competition: "2026 January Statewide", event: "Algebra 2 Individual", questionNumber: 30 },
     question: String.raw`\[\frac{10\%}{5\%}=\_\_\_\]`,
     choices: ["0.5", "2%", "20%", "200%", "NOTA"], answer: "D",
-    solution: String.raw`\[\frac{10\%}{5\%}=\frac{1/10}{1/20}=2=\boxed{200\%}.\]`,
+    solution: String.raw`\[\frac{10\%}{5\%}=\frac{1/10}{1/20}=2=200\%.\]`,
   },
   {
     id: 30060, number: 60, division: "Theta", topic: "Number Theory", difficulty: 1, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 1 },
     question: String.raw`How many of these four sets below are CLOSED under the given operation?
 \[\begin{array}{ll}
 \{\text{Odd Integers}\}\text{ Addition} & \{\text{Integers}\}\text{ Multiplication}\\
 \{\text{Rational Numbers}\}\text{ Division} & \{\text{Natural Numbers}\}\text{ Subtraction}
-\end{array}\]`,
+\end{array}\] Here CLOSED requires the operation to be defined and stay in the set for every ordered pair, including a zero divisor when testing division.`,
     choices: ["1", "2", "3", "4", "NOTA"], answer: "A",
-    solution: String.raw`Odd plus odd is even, so the odd integers are not closed under addition. Division by \(0\), which is rational, is undefined, so the rational numbers are not closed under division. Since \(3-8=-5\), the natural numbers are not closed under subtraction. However, the product of two integers is always an integer. Therefore, \(\boxed1\) set is closed.`,
+    solution: String.raw`Odd + odd = even, so the odd integers are not closed under addition. Division by \(0\) (which is rational) is undefined, so the rational numbers are not closed under division. Since \(3-8=-5\) the Natural numbers are not closed under subtraction. However, the product of two integers will always result in another integer. Thus only \(\boxed1\) of the sets is closed under its given operation. Here closure requires that the operation be defined and remain in the set for every ordered pair, including a zero divisor in the division test.`,
   },
   {
     id: 30061, number: 61, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Rational Root Theorem"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 2 },
     question: String.raw`Find the number of rational zeros of \(P(x)=x^3+2x^2-4x+5\).`,
     choices: ["1", "2", "3", "4", "NOTA"], answer: "E",
-    solution: String.raw`By the Rational Zero's Theorem, the potential rational zeros are \(\{\pm1,\pm5\}\). Testing them gives
-\[P(-1)=10,\quad P(1)=4,\quad P(-5)=-50,\quad P(5)=160.\]
+    solution: String.raw`By the Rational Zero's Theorem, the set of potential rational zeros of \(P(x)\) is \(\{\pm1,\pm5\}\). Testing each of these values one at a time we get:
+\[\begin{aligned}
+P(-1)&=(-1)^3+2(-1)^2-4(-1)+5=10,\\
+P(1)&=1^3+2(1)^2-4(1)+5=4,\\
+P(-5)&=(-5)^3+2(-5)^2-4(-5)+5=-50,\\
+P(5)&=5^3+2(5)^2-4(5)+5=160.
+\end{aligned}\]
 Therefore, \(P(x)\) has no rational zeros, so the answer is \(\boxed{\text{NOTA}}\).`,
   },
   {
     id: 30062, number: 62, division: "Theta", topic: "Analytic Geometry", difficulty: 1, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 3 },
     question: String.raw`Write the equation of a line in standard form passing through the point \((3,-5)\) and perpendicular to the line \(y=\frac34x+2\).`,
     choices: [String.raw`\(3x-4y=29\)`, String.raw`\(3x+4y=-11\)`, String.raw`\(4x+3y=-3\)`, String.raw`\(4x-3y=27\)`, "NOTA"], answer: "C",
-    solution: String.raw`A perpendicular line has slope \(-\frac43\). Using point-slope form,
-\[y+5=-\frac43(x-3).\]
-Multiplying by \(3\) and rearranging gives \(\boxed{4x+3y=-3}\).`,
+    solution: String.raw`The line \(y=\frac34x+2\) has slope \(\frac34\). A perpendicular line has slope \(-\frac43\), so write it as \(4x+3y=C\). Substituting \((3,-5)\) gives
+\[4(3)+3(-5)=12-15=-3.\]
+The answer is \(\boxed{4x+3y=-3}\), or \(4x+3y+3=0\).`,
   },
   {
     id: 30063, number: 63, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 4 },
     question: String.raw`Given \(f(x)=3x+7\) and \(g(x)=x^2+2x-1\), then \(g(g(g(f(-2))))=?\)`,
     choices: ["-7", "2", "7", "62", "NOTA"], answer: "D",
-    solution: String.raw`Working from the inside out,
-\[f(-2)=1,\quad g(1)=2,\quad g(2)=7,\quad g(7)=62.\]
-Thus the value is \(\boxed{62}\).`,
+    solution: String.raw`\[f(-2)=3(-2)+7=1,\qquad g(1)=1^2+2(1)-1=2.\]
+\[g(2)=2^2+2(2)-1=7,\qquad g(7)=7^2+2(7)-1=49+14-1=\boxed{62}.\]`,
   },
   {
     id: 30064, number: 64, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: ["Row Operations"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 5 },
     question: String.raw`Given \(x-2y+3z=3\), \(2x+y+5z=8\), and \(3x-y-3z=-22\), solve for \((x,y,z)\). What is \(x+y+z\)?`,
     choices: ["-4", "0", "1", "3", "NOTA"], answer: "B",
-    solution: String.raw`Eliminating \(y\) gives
-\[5x+2z=-14,\qquad 5x+13z=19.\]
-Subtracting yields \(11z=33\), so \(z=3\). Then \(x=-4\), and substitution gives \(y=1\). Therefore,
-\[x+y+z=-4+1+3=\boxed0.\]`,
+    solution: String.raw`Add the equations \(2x+y+5z=8\) and \(3x-y-3z=-22\) to eliminate \(y\):
+\[(2x+y+5z=8)+(3x-y-3z=-22)\ \Longrightarrow\ 5x+2z=-14.\]
+Add twice \(2x+y+5z=8\) to \(x-2y+3z=3\):
+\[(x-2y+3z=3)+2(2x+y+5z=8)\ \Longrightarrow\ 5x+13z=19.\]
+Subtracting gives \(11z=33\), so \(z=3\). Then
+\[5x+2(3)=-14\ \Longrightarrow\ x=-4,\]
+\[2(-4)+y+5(3)=8\ \Longrightarrow\ y=1.\]
+Therefore, \(x+y+z=-4+1+3=\boxed0\).`,
   },
   {
     id: 30065, number: 65, division: "Theta", topic: "Inequalities", difficulty: 3, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 6 },
     question: String.raw`When the following system is graphed, there are no solutions in which quadrant(s)?
 \[2x+y\le4\]
 \[x-2y\le-2\]`,
     choices: ["I, II", "II", "II, III", "IV", "NOTA"], answer: "D",
-    solution: String.raw`The inequalities are \(y\le4-2x\) and \(y\ge\frac{x+2}{2}\). Their overlap lies above the increasing line and below the decreasing line. In quadrant IV, \(x>0\) and \(y<0\), but \(y\ge\frac{x+2}{2}>0\), which is impossible. The answer is \(\boxed{\text{IV}}\).`,
+    solution: String.raw`Shade below \(2x+y\le4\), shade above \(x-2y\le-2\). In slope-intercept form, these are
+\[y\le4-2x,\qquad y\ge\frac{x}{2}+1.\]
+Both boundary lines are solid because equality is included. Their intersection satisfies \(4-2x=x/2+1\), giving \((x,y)=(6/5,8/5)\). The overlap is the wedge to the left of this point.
+[[solution-diagram:theta-feb-2026-6]]
+The overlap contains points in Quadrants I, II, and III, for example \((1,2)\), \((-1,1)\), and \((-4,-1/2)\). If \(x>0\), the second inequality forces \(y\ge x/2+1>0\), so no point in Quadrant \(\boxed{\text{IV}}\) satisfies the system.`,
   },
   {
     id: 30066, number: 66, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 7 },
     question: String.raw`For the function \(y=2x^2-8x+3\), determine the equation of the axis of symmetry \((x=a)\) and the minimum value \((y=b)\). What is \(a+b\)?`,
     choices: ["-3", "1", "2", "5", "NOTA"], answer: "A",
-    solution: String.raw`Completing the square gives
-\[y=2(x-2)^2-5.\]
-Thus \(a=2\) and \(b=-5\), so \(a+b=\boxed{-3}\).`,
+    solution: String.raw`\[y=2x^2-8x+3=2(x^2-4x)+3.\]
+To complete the square, \(\left(\frac12(-4)\right)^2=(-2)^2=4\). Hence
+\[y=2(x^2-4x+4)+3-4(2)=2(x-2)^2-5.\]
+Thus \(a=2\), \(b=-5\), and \(a+b=2+(-5)=\boxed{-3}\).`,
   },
   {
     id: 30067, number: 67, division: "Theta", topic: "Polynomial Equations", difficulty: 1, methods: ["Discriminant Test"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 8 },
     question: String.raw`What are the \(x\)-coordinates of the \(x\)-intercepts of \(f(x)=x^2-3x+15\)?`,
     choices: ["3, 5", "-3, 5", "3, -5", "-3, -5", "NOTA"], answer: "E",
-    solution: String.raw`The discriminant is
-\[b^2-4ac=(-3)^2-4(1)(15)=-51<0.\]
-There are no real roots and therefore no \(x\)-intercepts. The answer is \(\boxed{\text{NOTA}}\).`,
+    solution: String.raw`The discriminant \((b^2-4ac)\) is
+\[(-3)^2-4(1)(15)=9-60=-51.\]
+\(b^2-4ac<0\) implies no real root (no \(x\)-intercepts), so the answer is \(\boxed{\text{NOTA}}\).`,
   },
   {
     id: 30068, number: 68, division: "Theta", topic: "Complex Numbers", difficulty: 1, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 9 },
     question: String.raw`In what quadrant does the point \(-3+5i\) lie on the argand plane (the complex number plane)?`,
     choices: ["I", "II", "III", "IV", "NOTA"], answer: "B",
-    solution: String.raw`The real part is negative and the imaginary part is positive, corresponding to the point \((-3,5)\). It lies in \(\boxed{\text{Quadrant II}}\).`,
+    solution: String.raw`Move left \(3\) on the real number axis and up \(5\) on the imaginary axis (like graphing \((-3,5)\)). This is in Quadrant \(\boxed{\text{II}}\).`,
   },
   {
     id: 30069, number: 69, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: ["Row Operations"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 10 },
     question: String.raw`Find the quadratic function \(f(x)=ax^2+bx+c\) that passes through the points \((-2,9)\), \((1,-6)\), \((3,4)\). What is the sum \(a+b+c\)?`,
     choices: ["-12", "-9", "-6", "0", "NOTA"], answer: "C",
-    solution: String.raw`Substitution of the three points gives
-\[4a-2b+c=9,\qquad a+b+c=-6,\qquad 9a+3b+c=4.\]
-Elimination yields \(a=2\), \(b=-3\), and \(c=-5\). Hence \(a+b+c=\boxed{-6}\).`,
+    solution: String.raw`Substituting the three points into \(y=Ax^2+Bx+C\) gives
+\[\begin{aligned}
+9A+3B+C&=4 &&\text{from }(3,4),\\
+4A-2B+C&=9 &&\text{from }(-2,9),\\
+A+B+C&=-6 &&\text{from }(1,-6).
+\end{aligned}\]
+Subtracting the second equation from the first gives \(5A+5B=-5\), or \(A+B=-1\). Subtracting the third equation from the second gives \(3A-3B=15\), or \(A-B=5\). Adding these yields \(2A=4\), so \(A=2\). Then \(2+B=-1\), giving \(B=-3\), and \(2-3+C=-6\), giving \(C=-5\).
+\[A+B+C=2-3-5=\boxed{-6}.\]`,
   },
   {
     id: 30070, number: 70, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 11 },
     question: String.raw`How many pounds of salt must be added to 80 pounds of a \(5\%\) salt solution to make a \(24\%\) salt solution?`,
     choices: ["5 lbs.", "15 lbs.", "20 lbs.", "30 lbs.", "NOTA"], answer: "C",
-    solution: String.raw`The original solution contains \(0.05(80)=4\) pounds of salt. If \(x\) pounds of pure salt are added, then
-\[4+x=0.24(80+x).\]
-Thus \(4+x=19.2+0.24x\), so \(0.76x=15.2\) and \(x=\boxed{20}\) pounds.`,
+    solution: String.raw`Let \(x\) be the number of pounds of pure salt added. The table organizes the mixture; its last column is \(100\) times the salt mass, so the percentages can be used without decimal factors.
+[[solution-diagram:theta-feb-2026-11]]
+\[400+100x=24x+1920\ \Longrightarrow\ 76x=1520\ \Longrightarrow\ x=20.\]
+The answer is \(\boxed{20}\) pounds of salt.`,
   },
   {
     id: 30071, number: 71, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 12 },
     question: String.raw`When simplifying the expression
 \[\frac{(6x^{2/7}y^{-4}z^0)^3}{9x^2y^5z^{-8}},\]
 the final result is of the form \(Kx^ay^bz^c\) where \(K,a,b,\) and \(c\) are some rational numbers. What is \(a+b+c\)?`,
     choices: [String.raw`\(-\frac{71}{7}\)`, String.raw`\(-\frac{92}{7}\)`, String.raw`\(-\frac{99}{7}\)`, String.raw`\(-\frac{101}{7}\)`, "NOTA"], answer: "A",
-    solution: String.raw`The expression simplifies to
-\[24x^{6/7-2}y^{-12-5}z^{0-(-8)}=24x^{-8/7}y^{-17}z^8.\]
-Therefore,
+    solution: String.raw`Apply the power rule to each factor in the numerator, then subtract denominator exponents:
+\[\frac{(6x^{2/7}y^{-4}z^0)^3}{9x^2y^5z^{-8}}
+=\frac{216x^{6/7}y^{-12}}{9x^2y^5z^{-8}}
+=24x^{-8/7}y^{-17}z^8.\]
+Thus
 \[a+b+c=-\frac87-17+8=\boxed{-\frac{71}{7}}.\]`,
   },
   {
     id: 30072, number: 72, division: "Theta", topic: "Logs and Exponents", difficulty: 5, methods: ["Logarithms"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 13 },
     question: String.raw`Which of the following expressions is equal to \(\log_2x\), if \(x>0\) satisfies the following equation?
 \[\frac{\log_2(\sqrt{x})+\log_{\sqrt2}(x)}{\sqrt{\log_2(x)}}
 =
 \frac{\log_4(\sqrt[4]{x})+\log_{\sqrt[4]{4}}(x)}{\sqrt[4]{\log_4(x)}}\]`,
     choices: [String.raw`\(8\left(\frac5{17}\right)^4\)`, String.raw`\(2\left(\frac{17}{5}\right)^4\)`, String.raw`\(8\left(\frac{17}{5}\right)^4\)`, String.raw`\(8\left(\frac{10}{17}\right)^4\)`, "NOTA"], answer: "D",
-    solution: String.raw`By logarithm properties, the equation becomes
+    solution: String.raw`By log properties, we can rewrite the equation as
+\[\frac{\frac12\log_2x+2\log_2x}{\sqrt{\log_2x}}
+=\frac{\frac14\log_4x+4\log_4x}{\sqrt[4]{\log_4x}}.\]
+The real radicals and nonzero denominators require \(x>1\). Thus both logarithms are positive, and simplifying gives
 \[\frac52(\log_2x)^{1/2}=\frac{17}{4}(\log_4x)^{3/4}.\]
-Since \(\log_4x=\frac12\log_2x\), rearranging gives
+Since \(\log_4x=\frac12\log_2x\), we can rearrange to get
+\[\frac{10}{17}(\log_2x)^{1/2}=2^{-3/4}(\log_2x)^{3/4},\]
 \[(\log_2x)^{1/4}=\frac{10}{17}\sqrt[4]{8}.\]
-Raising both sides to the fourth power yields
-\[\log_2x=\boxed{8\left(\frac{10}{17}\right)^4}.\]`,
+Raise both positive sides to the fourth power:
+\[\log_2x=\left(\frac{10}{17}\sqrt[4]{8}\right)^4=\boxed{8\left(\frac{10}{17}\right)^4}.\]`,
   },
   {
     id: 30073, number: 73, division: "Theta", topic: "Logs and Exponents", difficulty: 1, methods: ["Logarithms"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 14 },
     question: String.raw`Given \(x=\log_2(\log_3(\log_4 64))\), then \(x=?\)`,
     choices: ["1", "2", "3", "4", "NOTA"], answer: "E",
-    solution: String.raw`\[\log_4 64=3,\qquad \log_3 3=1,\qquad \log_2 1=0.\]
-Thus \(x=0\), so the answer is \(\boxed{\text{NOTA}}\).`,
+    solution: String.raw`\[x=\log_2(\log_3(\log_4 64))=\log_2(\log_3 3)=\log_2 1=0.\]
+Since \(0\) is not listed, the answer is \(\boxed{\text{NOTA}}\).`,
   },
   {
     id: 30074, number: 74, division: "Theta", topic: "Probability", difficulty: 4, methods: [],
-    question: String.raw`A real number \(x\) is randomly chosen from the interval \((0,10)\). What is the probability that
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 15 },
+    question: String.raw`A real number \(x\) is chosen uniformly at random from the interval \((0,10)\). What is the probability that
 \[(x^2-5x+6)(x^2-9x+18)(x^2-9x+14)(x^2-7x+12)\]
 is positive?`,
     choices: [String.raw`\(\frac12\)`, String.raw`\(\frac35\)`, String.raw`\(\frac7{10}\)`, String.raw`\(\frac45\)`, "NOTA"], answer: "D",
-    solution: String.raw`Factoring gives
-\[(x-2)^2(x-3)^3(x-4)(x-6)(x-7).\]
-The expression is positive on \((0,3)\cup(4,6)\cup(7,10)\), whose total length is \(3+2+3=8\). Therefore, the probability is \(\frac8{10}=\boxed{\frac45}\).`,
+    solution: String.raw`Factoring each quadratic gives
+\[(x-2)(x-3)(x-3)(x-6)(x-2)(x-7)(x-3)(x-4),\]
+or \((x-2)^2(x-3)^3(x-4)(x-6)(x-7)\). This expression is positive when \(x>7\), and then changes signs at \(x=3,4,6,\) and \(7\). It does not change sign at \(x=2\), but equals zero there. Thus, within \((0,10)\), the expression is positive for
+\[x\in(0,2)\cup(2,3)\cup(4,6)\cup(7,10).\]
+The isolated zero at \(2\) has no effect on length. These intervals have total length \(8\), while \((0,10)\) has length \(10\). Thus, the probability is \(\frac8{10}=\boxed{\frac45}\).`,
   },
   {
     id: 30075, number: 75, division: "Theta", topic: "Simplification", difficulty: 1, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 16 },
     question: String.raw`Factor: \((3x-4)^2-(2x+5)^2\). Which of the following is one of the factors?`,
     choices: [String.raw`\(x-1\)`, String.raw`\(x-9\)`, String.raw`\(5x-1\)`, String.raw`\(5x-9\)`, "NOTA"], answer: "B",
-    solution: String.raw`Using the difference of squares,
-\[(3x-4)^2-(2x+5)^2=[(3x-4)+(2x+5)][(3x-4)-(2x+5)]
-=(5x+1)(x-9).\]
-Thus one factor is \(\boxed{x-9}\).`,
+    solution: String.raw`\[\begin{aligned}
+(3x-4)^2-(2x+5)^2
+&=[(3x-4)+(2x+5)][(3x-4)-(2x+5)]\\
+&=(5x+1)(x-9).
+\end{aligned}\]
+The answer is \(\boxed{x-9}\).`,
   },
   {
     id: 30076, number: 76, division: "Theta", topic: "Function Analysis", difficulty: 1, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 17 },
     question: String.raw`What is(are) the equation(s) of the horizontal asymptote(s) for the following rational function?
 \[f(x)=\frac{6x^2-3x+2}{4x^2-9}\]`,
     choices: [String.raw`\(y=\pm\frac32\)`, String.raw`\(x=\pm\frac32\)`, String.raw`\(y=\frac32\)`, String.raw`\(x=\frac32\)`, "NOTA"], answer: "C",
-    solution: String.raw`When the numerator and denominator have equal degree, the horizontal asymptote is the ratio of their leading coefficients. Thus
+    solution: String.raw`When the degree of the numerator and denominator are equal, the horizontal asymptote is the quotient of the leading coefficients:
 \[y=\frac64=\boxed{\frac32}.\]`,
   },
   {
     id: 30077, number: 77, division: "Theta", topic: "Polynomials", difficulty: 2, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 18 },
     question: String.raw`When multiplied, what is the coefficient of the \(x^3\) term for \((x^2-x+2)(x^3+3x^2-5x+4)\)?`,
     choices: ["-6", "-1", "-8", "-3", "NOTA"], answer: "A",
     solution: String.raw`The terms contributing to \(x^3\) are
 \[(x^2)(-5x)+(-x)(3x^2)+2(x^3)=(-5-3+2)x^3=-6x^3.\]
-The coefficient is \(\boxed{-6}\).`,
+The answer is \(\boxed{-6}\).`,
   },
   {
     id: 30078, number: 78, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 19 },
     question: String.raw`Factor by completing the square: \(x^4+2x^2+9\). Which of the following is one of the factors?`,
     choices: [String.raw`\(x^2+3\)`, String.raw`\(x^2+x+3\)`, String.raw`\(x^2-x+3\)`, String.raw`\(x^2-2x+3\)`, "NOTA"], answer: "D",
-    solution: String.raw`\[
-x^4+2x^2+9=(x^2+3)^2-(2x)^2
-=(x^2+2x+3)(x^2-2x+3).
-\]
-Therefore, one factor is \(\boxed{x^2-2x+3}\).`,
+    solution: String.raw`\[\begin{aligned}
+x^4+2x^2+9
+&=x^4+2x^2+4x^2+9-4x^2\\
+&=(x^4+6x^2+9)-4x^2\\
+&=(x^2+3)^2-(2x)^2\\
+&=(x^2+3+2x)(x^2+3-2x)\\
+&=(x^2+2x+3)(x^2-2x+3).
+\end{aligned}\]
+Thus \(\boxed{x^2-2x+3}\) is a factor.`,
   },
   {
     id: 30079, number: 79, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 20 },
     question: String.raw`What is the least common multiple, plus the greatest common factor of 126 and 140?`,
     choices: ["14", "648", "1274", "1310", "NOTA"], answer: "C",
-    solution: String.raw`The prime factorizations are \(126=2\cdot3^2\cdot7\) and \(140=2^2\cdot5\cdot7\). Therefore,
-\[\operatorname{lcm}(126,140)=1260,\qquad \gcd(126,140)=14.\]
-Their sum is \(\boxed{1274}\).`,
+    solution: String.raw`\[126=6\times21=2\times3\times7\times3=2\times3^2\times7,\]
+\[140=10\times14=2^2\times5\times7.\]
+The LCM uses the largest exponent of each prime, and the GCF uses the smallest:
+\[\operatorname{LCM}=2^2\times3^2\times5\times7=1260,\]
+\[\operatorname{GCF}=2\times7=14.\]
+The sum is \(1260+14=\boxed{1274}\).`,
   },
   {
     id: 30080, number: 80, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Remainder Theorem"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 21 },
     question: String.raw`What is the remainder when \(x^4+7x^3+5x^2-8x-14\) is divided by \(x+6\)?`,
     choices: ["-6", "-2", "4", "6", "NOTA"], answer: "B",
-    solution: String.raw`By the Remainder Theorem, the remainder is
-\[P(-6)=(-6)^4+7(-6)^3+5(-6)^2-8(-6)-14=\boxed{-2}.\]`,
+    solution: String.raw`Use synthetic division, \(x+6=0\ \Longrightarrow\ x=-6\).
+[[solution-diagram:theta-feb-2026-21]]
+Bring down the leading \(1\), then repeatedly multiply by \(-6\) and add in the next column. The quotient is \(x^3+x^2-x-2\); the final entry is the remainder, \(\boxed{-2}\).`,
   },
   {
     id: 30081, number: 81, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: ["Substitution"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 22 },
     question: String.raw`Given \(3x^2-5y^2=22\) and \(3x^2-y^2-6x=8\), solve the system for all real ordered pairs \((x,y)\) that satisfy the system. What is the sum of all the real coordinates of the ordered pair solutions? That is, what is \(x_1+y_1+x_2+y_2+\cdots\) where each \(x_k\) and \(y_k\) corresponds to a real ordered pair solution \((x_k,y_k)\).`,
     choices: ["8", "6", "5", "4", "NOTA"], answer: "B",
-    solution: String.raw`From the first equation, \(y^2=\frac{3x^2-22}{5}\). Substituting into the second gives
-\[2x^2-5x-3=0,\]
-so \(x=3\) or \(x=-\frac12\). The latter produces no real \(y\). When \(x=3\), \(y=\pm1\), so the real solutions are \((3,1)\) and \((3,-1)\). The requested sum is
-\[3+1+3-1=\boxed6.\]`,
+    solution: String.raw`\[3x^2-5y^2=22\ \Longrightarrow\ y^2=\frac{3x^2-22}{5}.\]
+Substitute this into the other equation:
+\[3x^2-\frac{3x^2-22}{5}-6x=8,\]
+\[15x^2-3x^2+22-30x=40,\]
+\[12x^2-30x-18=0\ \Longrightarrow\ 2x^2-5x-3=0.\]
+The correct factorization is
+\[(2x+1)(x-3)=0,\]
+giving \(x=3\) or \(x=-\frac12\). For \(x=3\), \(y^2=1\), so \(y=1,-1\). For \(x=-\frac12\), \(y^2=-17/4<0\), so there is no real \(y\). The real ordered pairs that satisfy the system are \((3,1)\) and \((3,-1)\). The final answer is
+\[3+1+3+(-1)=\boxed6.\]`,
   },
   {
     id: 30082, number: 82, division: "Theta", topic: "Sequences", difficulty: 3, methods: ["Recursion"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 23 },
     question: String.raw`Define a sequence such that \(a_1=1\) and \(a_{n+1}=1+ia_n\) for all \(n\ge1\) and \(i=\sqrt{-1}\). Compute \(a_{1066}\). (By the way, the year 1066 is when the Battle of Hastings was fought in England.)`,
     choices: ["1", "-1", String.raw`\(i\)`, String.raw`\(-i\)`, "NOTA"], answer: "E",
-    solution: String.raw`The first terms are
-\[a_1=1,\quad a_2=1+i,\quad a_3=i,\quad a_4=0,\quad a_5=1,\]
-so the sequence repeats every four terms. Since \(1066\equiv2\pmod4\), \(a_{1066}=1+i\), which is \(\boxed{\text{NOTA}}\).`,
-  },
-  {
-    id: 30083, number: 83, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
-    question: String.raw`Find the quadratic function \(f(x)\) which has a zero of \(x=-5+2i\sqrt3\) in the form \(f(x)=ax^2+bx+c\) where \(a,b,\) and \(c\) are pairwise relatively prime integers and \(a>0\). What is \(a+b+c\)?`,
-    choices: ["48", "37", "28", "-26", "NOTA"], answer: "A",
-    solution: String.raw`Because the polynomial has real integer coefficients, \(-5-2i\sqrt3\) is also a zero. Therefore,
-\[(x+5-2i\sqrt3)(x+5+2i\sqrt3)=x^2+10x+37.\]
-Thus \(a+b+c=1+10+37=\boxed{48}\).`,
+    solution: String.raw`The first few terms are \(a_1=1\), \(a_2=1+i\), \(a_3=i\), \(a_4=0\), \(a_5=1\), and from there it repeats every \(4\) terms. Since \(1066\equiv2\pmod4\), \(a_{1066}=1+i\). This is not listed, so the answer is \(\boxed{\text{NOTA}}\).`,
   },
   {
     id: 30084, number: 84, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: ["Point-to-Line Distance Formula"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 25 },
     question: String.raw`The shortest distance between a point \((x_0,y_0)\) and a line \(Ax+By+C=0\) is given by
 \[\frac{|Ax_0+By_0+C|}{\sqrt{A^2+B^2}}.\]
 Compute the shortest distance between the lines \(x+2y=20\) and \(x+2y=25\).`,
     choices: ["5", String.raw`\(\sqrt5\)`, "1", String.raw`\(\frac{\sqrt5}{5}\)`, "NOTA"], answer: "B",
-    solution: String.raw`The lines are parallel. Taking \((20,0)\) on the first line, its distance from the second line is
-\[\frac{|20+2(0)-25|}{\sqrt{1^2+2^2}}=\frac5{\sqrt5}=\boxed{\sqrt5}.\]`,
+    solution: String.raw`To compute the distance between the lines, it suffices to consider one point on one of the lines and find the distance from that point to the other line (since the lines are equally spaced everywhere). Picking \((20,0)\) from the first line, the formula gives
+\[\frac{|1(20)+2(0)-25|}{\sqrt{1^2+2^2}}=\frac5{\sqrt5}=\boxed{\sqrt5}.\]`,
   },
   {
     id: 30085, number: 85, division: "Theta", topic: "Analytic Geometry", difficulty: 5, methods: ["Point-to-Line Distance Formula"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 26 },
     question: String.raw`The shortest distance between a point \((x_0,y_0)\) and a line \(Ax+By+C=0\) is given by
 \[\frac{|Ax_0+By_0+C|}{\sqrt{A^2+B^2}}.\]
 Let \(S\) be the set of all points \(P\) such that the distance from \(P\) to \((0,0)\) is half the distance from \(P\) to the line \(3x+4y=5\). There exist real numbers \(A,B,C,D,\) and \(E\) such that \(S\) is modeled by the equation
 \[Ax^2+Bxy+Cy^2+Dx+Ey=1.\]
 Compute \(A+B+C+D+E\).`,
     choices: [String.raw`\(\frac{67}{50}\)`, String.raw`\(\frac{81}{25}\)`, String.raw`\(-\frac{213}{50}\)`, String.raw`\(\frac{221}{25}\)`, "NOTA"], answer: "D",
-    solution: String.raw`For \(P=(x,y)\),
-\[\sqrt{x^2+y^2}=\frac12\cdot\frac{|3x+4y-5|}{5}=\frac1{10}|3x+4y-5|.\]
-Squaring and rearranging into the requested form gives
+    solution: String.raw`For a point \((x,y)\), the distance to \((0,0)\) is \(\sqrt{x^2+y^2}\), while the distance to the line \(3x+4y=5\) is \(\frac{|3x+4y-5|}{\sqrt{3^2+4^2}}\). So, we're interested in points such that
+\[\sqrt{x^2+y^2}=\frac1{10}|3x+4y-5|.\]
+Multiplying both sides by \(10\) and squaring gives
+\[100x^2+100y^2=9x^2+16y^2+25+24xy-30x-40y.\]
+Rearranging and dividing by \(25\),
 \[\frac{91}{25}x^2-\frac{24}{25}xy+\frac{84}{25}y^2+\frac{30}{25}x+\frac{40}{25}y=1.\]
-The sum of the coefficients is \(\boxed{\frac{221}{25}}\).`,
+Adding the coefficients on the LHS (left-hand side) gives
+\[\frac{91-24+84+30+40}{25}=\boxed{\frac{221}{25}}.\]`,
   },
   {
     id: 30086, number: 86, division: "Theta", topic: "Conic Sections", difficulty: 5, methods: ["Discriminant Test"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 27 },
     question: String.raw`The shortest distance between a point \((x_0,y_0)\) and a line \(Ax+By+C=0\) is given by
 \[\frac{|Ax_0+By_0+C|}{\sqrt{A^2+B^2}}.\]
 Let \(S\) be the set of all points \(P\) such that the product of the distance from \(P\) to the line \(y=x\) and the distance from \(P\) to the line \(y=-\frac34x\) is \(\frac1{5\sqrt2}\). Set \(S\) consists of two slightly rotated hyperbolas such that one of which has a transverse axis with a positive slope (call this hyperbola \(H\)). Compute the smallest positive \(x\)-coordinate of any point on \(H\).`,
     choices: [String.raw`\(\frac47\)`, String.raw`\(\frac35\)`, String.raw`\(\frac59\)`, String.raw`\(\frac23\)`, "NOTA"], answer: "A",
-    solution: String.raw`The distance product condition becomes
-\[\left|\frac{x-y}{\sqrt2}\right|\left|\frac{3x+4y}{5}\right|=\frac1{5\sqrt2},\]
-so \(|x-y||3x+4y|=1\). The hyperbola with a positive-slope transverse axis has
-\[(x-y)(3x+4y)=1,\]
-or \(3x^2+xy-4y^2=1\). Treating this as a quadratic in \(y\), a real point exists when
-\[\Delta=x^2-4(-4)(3x^2-1)=49x^2-16\ge0.\]
-For positive \(x\), this means \(x\ge\boxed{\frac47}\).`,
+    solution: String.raw`\(S\) is defined via
+\[\frac{|x-y|}{\sqrt2}\cdot\frac{|3x+4y|}{5}=\frac1{5\sqrt2},\]
+or \(|x-y|\cdot|3x+4y|=1\). The two different hyperbolas correspond to whether or not the absolute values introduce a negative sign, so they have equations
+\[(x-y)(3x+4y)=1,\qquad(x-y)(3x+4y)=-1.\]
+We can expand the LHS out to \(3x^2+xy-4y^2\). Recalling (or observing) that the axes of a hyperbola correspond to the angle bisectors of the asymptotes, and noting that \(y=x\) is steeper positive than \(y=-\frac34x\) is negative, the hyperbola with positive-slope transverse axis corresponds to the rightwards and leftwards portions between these lines. On its right branch, \(x-y>0\) and \(3x+4y>0\), so we are interested in \(3x^2+xy-4y^2=1\) (the purple curve below).
+[[solution-diagram:theta-feb-2026-27]]
+To find the smallest positive \(x\)-coordinate, we are interested in a positive real number \(x\) such that \(3x^2+xy-4y^2=1\) has a real solution for \(y\). Taking the discriminant of \(-4y^2+xy+(3x^2-1)=0\) gives
+\[x^2-4(-4)(3x^2-1)=49x^2-16.\]
+To have a solution, we need this to be non-negative, so \(x^2\ge16/49\). Since \(x\) must be positive, \(x\ge4/7\), giving a minimum value of \(\boxed{\frac47}\). Equality is attained at \(y=x/8=1/14\), so this bound is actually reached.`,
   },
   {
     id: 30087, number: 87, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 28 },
     question: String.raw`According to Descartes' Rule of Signs, there are a few possible candidates for the numbers of positive real, negative real, and non-real complex roots of the following function:
 \[f(x)=x^4-2x^3-x+1.\]
 Which of the following is one such candidate? Answers are in the form of an ordered triple as follows: (positive real, negative real, non-real complex).`,
     choices: ["(2, 1, 1)", "(2, 0, 2)", "(1, 2, 1)", "(2, 2, 0)", "NOTA"], answer: "B",
-    solution: String.raw`There are two sign changes in \(f(x)\), so there are \(2\) or \(0\) positive real roots. Also,
-\[f(-x)=x^4+2x^3+x+1\]
-has no sign changes, so there are no negative real roots. Since the polynomial has degree \(4\), \((2,0,2)\) is a possible distribution. The answer is \(\boxed{(2,0,2)}\).`,
+    solution: String.raw`\(P(x)=x^4-2x^3-x+1\). There are \(2\) sign changes: from \(x^4\) to \(-2x^3\) and from \(-x\) to \(1\). Thus, there are two or no positive roots. \(P(-x)=x^4+2x^3+x+1\). Since there are no sign changes, there are no negative roots. Since \(P(x)\) is degree \(4\), there are four total complex roots, counting multiplicity.
+[[solution-diagram:theta-feb-2026-28]]
+Of the possible choices from above, only one listed is \(\boxed{(2,0,2)}\).`,
   },
   {
     id: 30088, number: 88, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 29 },
     question: String.raw`A plane can fly 200mph in still air. Flying with the wind, it can fly 960 miles. Flying against the wind, it can fly only two-thirds of the distance in the same amount of time. Find the speed of the wind in mph.`,
     choices: ["20", "40", "60", "80", "NOTA"], answer: "B",
-    solution: String.raw`If the wind speed is \(w\), equal travel times give
-\[\frac{960}{200+w}=\frac{640}{200-w}.\]
-Cross-multiplying yields \(192000-960w=128000+640w\), so \(1600w=64000\) and \(w=\boxed{40}\) mph.`,
+    solution: String.raw`Let \(w\) be the speed of the wind in mph. The distance against the wind is \(\frac23(960)=640\) miles.
+[[solution-diagram:theta-feb-2026-29]]
+The times are equal, so
+\[\frac{960}{200+w}=\frac{640}{200-w}\ \Longrightarrow\ \frac3{200+w}=\frac2{200-w}.\]
+Cross-multiplying gives
+\[400+2w=600-3w\ \Longrightarrow\ 5w=200\ \Longrightarrow\ w=\boxed{40\text{ mph}}.\]`,
   },
   {
     id: 30089, number: 89, division: "Theta", topic: "Systems of Equations", difficulty: 1, methods: ["Row Operations"],
+    source: { competition: "2026 February Regional", event: "Algebra 2 Individual", questionNumber: 30 },
     question: String.raw`Solve this system: \(3x+4y=1\) and \(5x+9y=2\). What is \(x+y\)?`,
     choices: [String.raw`\(\frac27\)`, String.raw`\(\frac49\)`, String.raw`\(\frac73\)`, String.raw`\(\frac45\)`, "NOTA"], answer: "A",
-    solution: String.raw`Eliminating \(x\) gives \(7y=1\), so \(y=\frac17\). Substitution gives \(x=\frac17\). Therefore,
-\[x+y=\boxed{\frac27}.\]`,
+    solution: String.raw`Solve by using Cramer's rule. For
+\[Ax+By=C,\qquad Dx+Ey=F,\]
+when \(AE-BD\ne0\), the solution is
+\[(x,y)=\left(\frac{CE-BF}{AE-BD},\frac{AF-CD}{AE-BD}\right).\]
+For \(3x+4y=1\) and \(5x+9y=2\), \(AE-BD=3(9)-4(5)=7\), so
+\[x=\frac{1(9)-4(2)}7=\frac17,\qquad y=\frac{3(2)-1(5)}7=\frac17.\]
+Therefore \(x+y=\boxed{\frac27}\). You can always use elimination and have fun working with fractions.`,
   },
   {
     id: 30090, number: 90, division: "Theta", topic: "Analytic Geometry", difficulty: 1, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 1 },
     question: String.raw`Let's get familiar with coordinates. In what quadrant is the coordinate \(\left(-e,\frac{2\pi}{7}\right)\) located?`,
     choices: ["Quadrant 1", "Quadrant 2", "Quadrant 3", "Quadrant 4", "NOTA"], answer: "B",
     solution: String.raw`Since the \(x\)-coordinate is negative, it must be in either Quadrant 2 or 3. Since the \(y\)-coordinate is positive, the point must be in Quadrant 2.`,
   },
   {
     id: 30091, number: 91, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: ["Distance Formula"],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 2 },
     question: String.raw`Consider the distance between the coordinate \(\left(-e,\frac{2\pi}{7}\right)\) and the origin. Which of the following best represents this distance, \(d\)?`,
     choices: [String.raw`\(0<d<1\)`, String.raw`\(1<d<2\)`, String.raw`\(2<d<3\)`, String.raw`\(3<d<4\)`, "NOTA"], answer: "C",
-    solution: String.raw`Since \(e\approx2.71\) and \(\frac{2\pi}{7}\approx0.89\), the distance formula gives
-\[d=\sqrt{e^2+\left(\frac{2\pi}{7}\right)^2}\approx\sqrt{(2.71)^2+(0.89)^2}<3.\]
-Because \(e>2\), the distance is greater than \(2\). Therefore, \(2<d<3\).`,
+    solution: String.raw`\(e\approx2.71\). \(2\pi\approx6.28\), so \(\frac{2\pi}{7}<1\) (or approximately 0.89).
+\[d=\sqrt{(x_2-x_1)^2+(y_2-y_1)^2},\]
+so \(\sqrt{(2.71)^2+(0.89)^2}\approx2.85<3\). Also \(d>e>2\), so \(2<d<3\).`,
   },
   {
     id: 30092, number: 92, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 3 },
     question: String.raw`Let's introduce our very special coordinate for this test: \((h,k)\). Consider the line \(f(x)=x\). What is the \(y\)-intercept of the transformed function \(f(x-h)+k\)?`,
     choices: [String.raw`\(k\)`, String.raw`\(h+k\)`, String.raw`\(-h+k\)`, String.raw`\(-h-k\)`, "NOTA"], answer: "C",
-    solution: String.raw`In the parent linear function, a horizontal shift in either direction also changes the \(y\)-intercept in that corresponding direction. In other words, \(y=(0-h)+k\) has value \(-h+k\).`,
+    solution: String.raw`The transformed function is \(y=f(x-h)+k=(x-h)+k\). In other words, \(y=(0-h)+k\) has value \(-h+k\) at the \(y\)-intercept.`,
   },
   {
     id: 30093, number: 93, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 4 },
     question: String.raw`The line \(2x-4y=5\) is shifted horizontally by \(h\) and vertically by \(k\). If the transformed function is mapped onto the original function for all points \((x,y)\), what could be the values of \(h\) and \(k\)?`,
     choices: [String.raw`\(h=3,k=6\)`, String.raw`\(h=-4,k=8\)`, String.raw`\(h=10,k=-5\)`, String.raw`\(h=5,k=\frac52\)`, "NOTA"], answer: "D",
-    solution: String.raw`The transformed equation
-\[2(x-h)-4(y-k)=5\]
-can be rewritten as \(y=\frac12x-\frac54-\frac12h+k\). Setting this equal to the original function gives \(k=\frac12h\). Of the choices, \(h=5\) and \(k=\frac52\) satisfy this condition.`,
+    solution: String.raw`\(2(x-h)-4(y-k)=5\) results in the function \(y=\frac12x-\frac54-\frac12h+k\). When setting this transformed equation equal to the original function, this gives the equivalency \(k=\frac12h\). A translation parallel to a line leaves that line unchanged. Among the choices, \(h=5,\ k=\frac52\) satisfies this relation.`,
   },
   {
     id: 30094, number: 94, division: "Theta", topic: "Inverse Functions", difficulty: 2, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 5 },
     question: String.raw`Consider linear function \(g(x)\) where \(g(2)=3\) and \(g(-4)=10\). Find \(g^{-1}(-4)\).`,
     choices: ["-10", "-4", "8", "10", "NOTA"], answer: "C",
-    solution: String.raw`The slope is \(m=-\frac76\), so
-\[g(x)=-\frac76(x-2)+3.\]
-Since we are looking for the inverse function's value at \(-4\), solve \(g(x)=-4\):
+    solution: String.raw`\(m=-\frac76\), so \(y=-\frac76(x-2)+3\). Then, since we are looking for the inverse function's value at \(-4\), substitute \(-4\) for \(y\) on the given function:
 \[-4=-\frac76(x-2)+3.\]
-This gives \(x=8\), so \(g^{-1}(-4)=8\).`,
+This gives \(x-2=6\) and \(x=8\), so \(g^{-1}(-4)=8\).`,
   },
   {
     id: 30095, number: 95, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 6 },
     question: String.raw`Consider two perpendicular lines graphed on a coordinate plane. Which of the following must be true?
 \[\begin{array}{ll}
 \text{I.} & \text{Two perpendicular lines will always intersect exactly once}\\
@@ -856,19 +1057,21 @@ This gives \(x=8\), so \(g^{-1}(-4)=8\).`,
 \text{IV.} & \text{If a line is a function, then a line perpendicular to it must also be a function.}
 \end{array}\]`,
     choices: ["I only", "I, III", "I, III, IV", "I, II, IV", "NOTA"], answer: "A",
-    solution: String.raw`The first statement is true: two perpendicular lines intersect once and only once. The second is false because infinitely many parallel lines can have the required perpendicular slope. The third is not always true; reflection across \(y=x\) does not generally produce a perpendicular line. The fourth is not always true because a line perpendicular to a horizontal function is vertical. Therefore, I is the only statement that must be true.`,
+    solution: String.raw`The first option is true; when two lines that are not parallel are graphed on a coordinate plane, they must intersect once (and only once). The second choice is not true; for any given line, there are infinitely many perpendicular lines through different points. For a nonzero finite slope \(m\), they have slope \(-\frac1m\) and different \(y\)-intercepts. The third choice is sometimes true but not always true; the inverse relation of a horizontal line \((y=a,\ m=0)\) is a vertical line \((x=a,\ m\text{ undefined})\), but the inverse of many other linear functions (including \(y=x\)) is not perpendicular. The fourth option is sometimes true; consider vertical and horizontal lines. Therefore, I is the only statement that must be true.`,
   },
   {
     id: 30096, number: 96, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 7 },
     question: String.raw`Let's take another look at our special coordinate \((h,k)\). The quadratic function \(y=4x^2+6x-5\) can be rewritten as \(y=4(x-h)^2+k\). Find \(h+k\).`,
     choices: ["-8", String.raw`\(-\frac{23}{4}\)`, String.raw`\(-\frac{21}{2}\)`, String.raw`\(-\frac64\)`, "NOTA"], answer: "A",
-    solution: String.raw`Complete the square:
-\[y=4\left(x^2+\frac32x+\frac9{16}\right)-5-\frac94
-=4\left(x+\frac34\right)^2-\frac{29}{4}.\]
-Thus \(h=-\frac34\), \(k=-\frac{29}{4}\), and \(h+k=-8\).`,
+    solution: String.raw`Complete the square to write the given quadratic in vertex form.
+\[y=4\left(x^2+\frac32x+\frac9{16}\right)-5-\frac94\]
+\[y=4\left(x+\frac34\right)^2-\frac{29}{4}\]
+\[-\frac34-\frac{29}{4}=-8.\]`,
   },
   {
     id: 30097, number: 97, division: "Theta", topic: "Function Analysis", difficulty: 1, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 8 },
     question: String.raw`Which of the following correctly describes the translations that occurred to \(y=4x^2\) to create the function \(y=4\left(x-\frac34\right)^2-\frac{17}{4}\)?`,
     choices: [
       String.raw`Translation to the right by \(\frac34\), translation down by \(\frac{17}{4}\)`,
@@ -877,58 +1080,62 @@ Thus \(h=-\frac34\), \(k=-\frac{29}{4}\), and \(h+k=-8\).`,
       String.raw`Translation to the left by \(\frac34\), translation up by \(\frac{17}{4}\)`,
       "NOTA",
     ], answer: "A",
-    solution: String.raw`The general form \(y=a(x-h)^2+k\) is translated horizontally \(h\) units and vertically \(k\) units from \(y=ax^2\). The given function has been translated \(\frac34\) unit to the right and \(\frac{17}{4}\) units down.`,
+    solution: String.raw`Consider the general form \(y=a(x-h)^2+k\) which has been translated horizontally \(h\) units and vertically \(k\) units from \(y=ax^2\). The function given has been translated \(\frac34\) units to the right and \(\frac{17}{4}\) units down.`,
   },
   {
     id: 30098, number: 98, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 9 },
     question: String.raw`A quadratic relation has an axis of symmetry of \(y=5\), an \(x\)-intercept of \((48,0)\) and intersects with the coordinate \((6,3)\). Find the sum of the coefficients \((a,b,\text{ and }c)\) of this relation when it is written in the form \(x=ay^2+by+c\).`,
     choices: ["-60", "30", "60", "70", "NOTA"], answer: "B",
-    solution: String.raw`Based on the given information, we can generate a system of equations from the general form \(x=a(y-k)^2+h\):
-\[48=a(0-5)^2+h,\qquad 6=a(3-5)^2+h.\]
-Solving gives \(a=2\) and \(h=-2\). Expanding to standard form gives \(x=2y^2-20y+48\), whose sum of coefficients is \(30\).`,
+    solution: String.raw`Based on the given information, we can generate a system of equations based on the general form \(x=a(y-k)^2+h\).
+\[48=a(0-5)^2+h\quad\text{and}\quad6=a(3-5)^2+h.\]
+Solving this system results in \(a=2\) and \(h=-2\). Expanding to standard form gives the equation \(x=2y^2-20y+48\) whose sum of coefficients is 30.`,
   },
   {
     id: 30099, number: 99, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Vieta's Formulas"],
-    question: String.raw`Questions #10-12 all concern the same quadratic. Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), which of the following must be true?
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 10 },
+    question: String.raw`Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), which of the following must be true?
 \[\begin{array}{ll}
 \text{I.} & \text{The sum of the roots is an integer.}\\
 \text{II.} & \text{The roots are integers.}\\
 \text{III.} & f(x)\text{ is defined for all integer values of }x.
 \end{array}\]`,
     choices: ["I only", "II only", "III only", "I, III", "NOTA"], answer: "C",
-    solution: String.raw`By Vieta's formulae, the sum of the roots is \(-\frac ba\), which may not be an integer. If \(b^2-4ac\) is not a perfect square, the roots may not be rational and therefore may not be integers. Quadratic functions with integer coefficients are defined for all values of \(x\). This means that only III is necessarily true.`,
+    solution: String.raw`By Vieta's formulae, the sum of the roots of this polynomial is \(-\frac ba\) which may not be an integer. By the quadratic formula and the discriminant, if \(b^2-4ac\) is not a perfect square, the roots may not be rational (and therefore not integers). Yes, quadratic functions with integer coefficients are certainly defined for all values of \(x\). This means that only III is necessarily true.`,
   },
   {
     id: 30100, number: 100, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
-    question: String.raw`Questions #10-12 all concern the same quadratic. Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), Dorin rewrites the function in vertex form, giving \(f(x)=a(x-h)^2+11\). Which of the following must be true?
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 11 },
+    question: String.raw`Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), Dorin rewrites the function in vertex form, giving \(f(x)=a(x-h)^2+11\). Which of the following must be true?
 \[\begin{array}{ll}
 \text{I.} & f(x)\text{ must have two non-real, complex roots}\\
 \text{II.} & f(x)\text{ must have a double root at }x=h\\
 \text{III.} & f(x)\text{ must have an axis of symmetry at }x=11
 \end{array}\]`,
     choices: ["I, II", "I, III", "II, III", "I, II, and III", "NOTA"], answer: "E",
-    solution: String.raw`If \(a\) is negative, \(f(x)\) has two real roots, so I need not be true. With a vertex \(y\)-coordinate of \(11\), there cannot be a double root at \(x=h\), so II is false. The axis of symmetry is \(x=h\), which may be \(x=11\) but does not have to be. This results in none of the above answers.`,
+    solution: String.raw`If \(a\) is negative, \(f(x)\) would have two real roots. With a vertex \(y\)-coordinate at 11, there cannot be a double root at \(x=h\). Based on the equation in vertex form, \(f(x)\) must have an axis of symmetry at \(x=h\), which may be at \(x=11\) but does not have to be. This results in none of the above answers.`,
   },
   {
     id: 30101, number: 101, division: "Theta", topic: "Conic Sections", difficulty: 4, methods: [],
-    question: String.raw`Questions #10-12 all concern the same quadratic. Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), Dorin rewrites the function in vertex form as \(f(x)=a(x-h)^2+11\). Through further inspection, Dorin finds the focus of the function at \((3,10.75)\). Find \(a+b+c\).`,
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 12 },
+    question: String.raw`Given \(f(x)=ax^2+bx+c\) where \(a,b,c\in\mathbb Z\), Dorin rewrites the function in vertex form as \(f(x)=a(x-h)^2+11\). Through further inspection, Dorin finds the focus of the function at \((3,10.75)\). Find \(a+b+c\).`,
     choices: ["6", "-6", "7", "15", "NOTA"], answer: "C",
-    solution: String.raw`The focus reveals that the quadratic has a negative leading coefficient, signed focal length \(p=-\frac14\), and axis of symmetry \(x=3\). Therefore,
-\[y=-(x-3)^2+11=-x^2+6x+2.\]
-Thus \(a+b+c=-1+6+2=7\).`,
+    solution: String.raw`This last bit of information reveals that the quadratic has a negative leading coefficient, focal length \(|p|=\frac14\), and axis of symmetry \(x=3\). The signed focal parameter is \(p=10.75-11=-\frac14\), so \(a=\frac1{4p}=-1\). This results in:
+\[y=-1(x-3)^2+11,\]
+which, written in standard form, \(y=-x^2+6x+2\), where \(a+b+c=7\).`,
   },
   {
     id: 30102, number: 102, division: "Theta", topic: "Polynomial Equations", difficulty: 4, methods: [],
-    question: String.raw`Our coordinate helps us change and move functions yet again! This time, a cubic function \(c(x)\) has roots at \(x=-1\) and \(x=4\), \(c(1)=2\), and \(c(x)\ge0\) on the interval \([-1,\infty)\). What is the \(y\)-intercept of the function \(c(x+3)-1\)?`,
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 13 },
+    question: String.raw`Our coordinate is back again! This time, a cubic function \(c(x)\) has roots at \(x=-1\) and \(x=4\), \(c(1)=2\), and \(c(x)\ge0\) on the interval \([-1,\infty)\). What is the \(y\)-intercept of the function \(c(x+3)-1\)?`,
     choices: ["-1", String.raw`\(-\frac59\)`, String.raw`\(\frac19\)`, String.raw`\(\frac59\)`, "NOTA"], answer: "B",
-    solution: String.raw`Since \(c(x)\ge0\) on \([-1,\infty)\), there must be a double root at \(x=4\) and a positive leading coefficient. Thus
-\[c(x)=a(x+1)(x-4)^2.\]
-Using \(c(1)=2\) gives \(a=\frac19\). Therefore,
+    solution: String.raw`Since \(c(x)\ge0\) on the interval \([-1,\infty)\), there must be a double root at \(x=4\) and positive leading coefficient, resulting in the equation \(y=a(x+1)(x-4)^2\). By substituting the coordinate \((1,2)\), we can find \(a=\frac19\). Then, considering the transformations given, the equation
 \[c(x+3)-1=\frac19(x+4)(x-1)^2-1,\]
 which has a \(y\)-intercept of \(-\frac59\).`,
   },
   {
     id: 30103, number: 103, division: "Theta", topic: "Functions", difficulty: 4, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 14 },
     question: String.raw`This coordinate helps us change and move functions, no matter their behavior. Consider the parent cubic function \(f(x)=x^3\) with point \(A(0,0)\). Point \(A\) (and all other coordinates of \(f(x)\)) has been translated to create function \(g(x)=f(x-h)+k\). Similarly, exponential function \(d(x)=2^x\) has been translated to create \(p(x)=d(x-h)+k\). Find \(p(1)-g(1)\) in terms of \(h\).`,
     choices: [
       String.raw`\(\frac1{2^h}-(h+1)^3\)`,
@@ -937,29 +1144,32 @@ which has a \(y\)-intercept of \(-\frac59\).`,
       String.raw`\(h^3-3h^2-3h-1+\frac2{2^h}\)`,
       "NOTA",
     ], answer: "B",
-    solution: String.raw`We have \(p(1)=2^{1-h}+k\) and \(g(1)=(1-h)^3+k\). Subtracting eliminates \(k\):
-\[p(1)-g(1)=2^{1-h}-(1-h)^3.\]
-Since \(-(1-h)^3=(h-1)^3\) and \(2^{1-h}=\frac2{2^h}\), this is
-\[(h-1)^3+\frac2{2^h}.\]`,
+    solution: String.raw`\(p(1)=2^{1-h}+k\) and \(g(1)=(1-h)^3+k\). Subtracting \(g(1)\) from \(p(1)\) eliminates the \(k\) and can be written as \(2^{1-h}-(1-h)^3\). By recalling laws of negative exponents, and by factoring out a negative from the second expression, this can be rewritten as
+\[\frac{2^1}{2^h}-((-1)(h-1))^3,\]
+which is equivalent to \((h-1)^3+\frac2{2^h}\).`,
   },
   {
     id: 30104, number: 104, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Rational Root Theorem"],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 15 },
     question: String.raw`Consider \(y=3x^5+7x^4-x^2+x-12\). The rational root theorem defines a set of possible rational roots of certain polynomial functions. How many unique integer roots are contained in this set of possible roots of \(y\)?`,
     choices: ["5", "6", "12", "18", "NOTA"], answer: "C",
-    solution: String.raw`The Rational Root Theorem gives possible rational roots \(\frac pq\), where \(p\mid12\) and \(q\mid3\). The integer candidates among them are
-\[\{\pm1,\pm2,\pm3,\pm4,\pm6,\pm12\}.\]
-There are \(12\) unique integer candidates in this set.`,
+    solution: String.raw`Read this question carefully! While the rational root theorem does establish a set of possible rational roots (in this case,
+\[\begin{gathered}
+\pm1,\pm2,\pm3,\pm4,\pm6,\pm12,\\
+\pm\frac13,\pm\frac23,\pm\frac43
+\end{gathered}\]
+) only a subset of those potential roots are integers. There are 12 integer candidates within the set \(\{\pm(1,2,3,4,6,12)\}\). This counts possible roots, not actual zeros of the polynomial.`,
   },
   {
     id: 30105, number: 105, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 16 },
     question: String.raw`The radical \(\sqrt{a+\sqrt{bc}}\) can be simplified into \(\sqrt{\frac b2}+\sqrt{\frac c2}\). If \(x^3-64=(x-b)(x^2+bx+c)\), what is \(a\)?`,
     choices: ["2", "10", "16", "32", "NOTA"], answer: "B",
-    solution: String.raw`By the difference of cubes, \(b=4\) and \(c=16\). Thus
-\[\sqrt{a+\sqrt{64}}=\sqrt2+\sqrt8=3\sqrt2.\]
-Squaring both sides gives \(a+8=18\), so \(a=10\).`,
+    solution: String.raw`Based on the difference of cubes, \(b=4\) and \(c=16\). \(\sqrt{a+\sqrt{64}}=\sqrt2+\sqrt8\), then \(\sqrt{a+8}=3\sqrt2\). By squaring both sides, \(a+8=18\), so \(a=10\).`,
   },
   {
     id: 30106, number: 106, division: "Theta", topic: "Polynomials", difficulty: 3, methods: ["Remainder Theorem"],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 17 },
     question: String.raw`Consider the following functions:
 \[f(x)=3x^3-2x+10,\quad g(x)=x-\frac13,\quad h(x)=2x+4,\quad j(x)=x+2,\quad k(x)=3x-1.\]
 Which order below shows the remainders of the polynomial divisions in order from least to greatest?`,
@@ -970,23 +1180,21 @@ Which order below shows the remainders of the polynomial divisions in order from
       String.raw`\(\frac{f(x)}{k(x)},\frac{f(x)}{g(x)},\frac{f(x)}{h(x)},\frac{f(x)}{j(x)}\)`,
       "NOTA",
     ], answer: "C",
-    solution: String.raw`The remainder when dividing by a linear polynomial is the value of \(f\) at its zero. Both \(j(x)\) and \(h(x)\) have zero \(-2\), so their remainders are
-\[f(-2)=-10.\]
-Both \(k(x)\) and \(g(x)\) have zero \(\frac13\), so their remainders are
-\[f\left(\frac13\right)=\frac{85}{9}.\]
-Therefore, a valid nondecreasing order is
-\[\frac{f(x)}{j(x)},\frac{f(x)}{h(x)},\frac{f(x)}{k(x)},\frac{f(x)}{g(x)}.\]`,
+    solution: String.raw`Possibly most obvious using long division, but remainders can be found using synthetic division in all four cases. A linear divisor's remainder is \(f(r)\), where \(r\) is its zero. Since \(h(x)=2j(x)\), \(h\) and \(j\) have the same zero, \(-2\), and both remainders are \(f(-2)=-10\). Since \(k(x)=3g(x)\), \(k\) and \(g\) have the same zero, \(\frac13\), and both remainders are \(f(\frac13)=\frac{85}{9}\). Scaling a divisor changes the quotient, not the constant remainder. The appropriate order of remainders is
+\[\frac{f(x)}{j(x)},\ \frac{f(x)}{h(x)},\ \frac{f(x)}{k(x)},\ \frac{f(x)}{g(x)}.\]`,
   },
   {
     id: 30107, number: 107, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 18 },
     question: String.raw`The following questions (#18-19) consider the function
 \[h(x)=\frac{ax^2+bx+c}{x^2-2x-35},\qquad a,b,c\in\mathbb Z.\]
 If it is known that \(h(x)\) has no vertical asymptotes, what is the value of \(h(x)\) on its domain?`,
     choices: [String.raw`\(h(x)=a\)`, String.raw`\(h(x)=b\)`, String.raw`\(h(x)=c\)`, String.raw`\(h(x)=1\)`, "NOTA"], answer: "A",
-    solution: String.raw`If \(h(x)\) has no vertical asymptotes, the denominator must divide the numerator entirely. Because both are quadratic and the numerator's leading coefficient is \(a\), the simplified value is \(h(x)=a\) on its domain.`,
+    solution: String.raw`If \(h(x)\) has no vertical asymptotes, the denominator (entirely) must be a factor of the numerator, leaving the value of \(a\). Indeed, the denominator is \((x-7)(x+5)\); the numerator of degree at most 2 must vanish at both roots. It is therefore \(a(x-7)(x+5)\), including the zero-polynomial case \(a=0\). On the original domain \(x\ne7,-5\), \(h(x)=a\).`,
   },
   {
     id: 30108, number: 108, division: "Theta", topic: "Function Analysis", difficulty: 4, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 19 },
     question: String.raw`The following questions (#18-19) consider the function
 \[h(x)=\frac{ax^2+bx+c}{x^2-2x-35},\qquad a,b,c\in\mathbb Z.\]
 If it is known that \(h(x)\) has exactly one removable discontinuity, which of the following could be true?
@@ -996,38 +1204,40 @@ If it is known that \(h(x)\) has exactly one removable discontinuity, which of t
 \text{III.} & c\text{ is divisible by both 7 and 5}
 \end{array}\]`,
     choices: ["I only", "III only", "I and II", "I, II, and III", "NOTA"], answer: "D",
-    solution: String.raw`The denominator factors as \((x-7)(x+5)\). Exactly one removable discontinuity means the numerator can share either one of these factors, but not both. Each condition can occur: for example, numerators with other factors \(x+7\), \(x+10\), and \(x+25\), respectively, give constant terms meeting I, II, and III while sharing only one denominator factor. Thus all three could be true.`,
+    solution: String.raw`Since the denominator of \(h(x)\) can be factored as \((x-7)(x+5)\), then exactly one of these distinct factors must cancel to give exactly one removable discontinuity. The first option could be true; the numerator factors could be \((x-7)(x+7)\), giving \(c=-49\). The second option could be true; the factors could be \((x-7)(x+10)\), giving \(c=-70\). The third option could be true; the factors could be \((x-14)(x+5)\), also giving \(c=-70\). Each example cancels exactly one denominator factor. So all three (I, II, III) could be true.`,
   },
   {
     id: 30109, number: 109, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 20 },
     question: String.raw`Don't worry, \((h,k)\) is back again! Consider \(f(x)=\frac{4x-8}{x^2-4}\) and \(g(x)=f(x+h)-k\) where \(h,k\in\mathbb N\). If \(g(x)\) has a vertical asymptote at \(x=-8\) and horizontal asymptote at \(y=-1\), what is the value of \(h+k\)?`,
     choices: ["-9", "-7", "7", "11", "NOTA"], answer: "C",
-    solution: String.raw`Simplifying \(f(x)\) gives
-\[f(x)=\frac4{x+2}\]
-with a vertical asymptote at \(x=-2\) and horizontal asymptote at \(y=0\). To obtain \(g(x)\), the graph is translated left \(6\) units and down \(1\) unit. Thus \(h=6\), \(k=1\), and \(h+k=7\).`,
+    solution: String.raw`Simplifying \(f(x)\) reveals a vertical asymptote at \(x=-2\) and horizontal asymptote at \(y=0\). To result in the new function \(g(x)\), we must translate the original function to the left 6 units and down 1 unit. So, \(g(x)=f(x+6)-1\) and \(h+k=7\).`,
   },
   {
     id: 30110, number: 110, division: "Theta", topic: "Vectors", difficulty: 1, methods: ["Distance Formula"],
-    question: String.raw`Let's look at \((h,k)\) in a slightly different light. Consider point \(A_0(x,y)\) on any function \(f(x)\) corresponding to point \(A_1\) on function \(g(x)\), where \(g(x)=f(x-h)+k\). What is the displacement from \(A_0\) to \(A_1\) in terms of \(h\) and \(k\)?`,
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 21 },
+    question: String.raw`Let's look at \((h,k)\) in a slightly different light. Consider point \(A_0(x,y)\) on any function \(f(x)\) corresponding to point \(A_1\) on function \(g(x)\), where \(g(x)=f(x-h)+k\). What is the magnitude of the displacement from \(A_0\) to \(A_1\) in terms of \(h\) and \(k\)?`,
     choices: [String.raw`\(h+k\)`, String.raw`\(\sqrt{h^2+k^2}\)`, String.raw`\(h-k\)`, String.raw`\(\sqrt{h^2-k^2}\)`, "NOTA"], answer: "B",
-    solution: String.raw`The translation moves each point by the vector \(\langle h,k\rangle\). Its magnitude, and therefore the displacement, is \(\sqrt{h^2+k^2}\) by the distance formula.`,
+    solution: String.raw`This is the distance formula/Pythagorean Theorem at work. The corresponding point is \(A_1=(x+h,y+k)\), so the displacement vector is \(\langle h,k\rangle\), and its magnitude is \(\sqrt{h^2+k^2}\).`,
   },
   {
     id: 30111, number: 111, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 22 },
     question: String.raw`A vector is a quantity that has both magnitude and direction. When functions are translated by horizontal and vertical shifts, the change in each coordinate's position can be modeled by a vector \((h,k)\). If function \(f(x)=\ln(x+1)-10\) is translated by \((3,-2)\), which of the following coordinates lies on the transformed function?`,
     choices: ["(0, -10)", "(-3, -2)", "(3, -12)", "(-3, -12)", "NOTA"], answer: "C",
-    solution: String.raw`The parent function \(y=\ln x\) has an \(x\)-intercept at \((1,0)\). The function \(f(x)=\ln(x+1)-10\) shifts this point left \(1\) and down \(10\), giving \((0,-10)\). Translating by \((3,-2)\) moves it to \((3,-12)\).`,
+    solution: String.raw`Parent function \(y=\ln x\) has an \(x\)-intercept at \((1,0)\). When it is transformed to the function given, with a shift left of 1 and shift down 10, there is a corresponding point located at \((0,-10)\). Finally, when transformed by the vector \(\langle3,-2\rangle\), that same corresponding point becomes \((3,-12)\).`,
   },
   {
     id: 30112, number: 112, division: "Theta", topic: "Vectors", difficulty: 1, methods: ["Distance Formula"],
-    question: String.raw`If \(f(x)=\log_2x\) is first translated by \((-3,4)\), then translated again by \((8,15)\), find the total displacement of any point on \(f(x)\) to its corresponding translated point.`,
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 23 },
+    question: String.raw`If \(f(x)=\log_2x\) is first translated by \((-3,4)\), then translated again by \((8,15)\), find the magnitude of the total displacement of any point on \(f(x)\) to its corresponding translated point.`,
     choices: [String.raw`\(\sqrt{146}\)`, "17", String.raw`\(\sqrt{386}\)`, "22", "NOTA"], answer: "C",
-    solution: String.raw`The two vectors combine to give the vector \((5,19)\). Its magnitude is
-\[\sqrt{5^2+19^2}=\sqrt{25+361}=\sqrt{386}.\]`,
+    solution: String.raw`These two vectors working together will cause a final displacement along the vector \(\langle5,19\rangle\) of a point on the parent function to a corresponding point on the transformed function. This results in a total displacement magnitude of \(\sqrt{25+361}=\sqrt{386}\).`,
   },
   {
     id: 30113, number: 113, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
-    question: String.raw`Steven likes logarithms. He realizes that dilations and translations aren't so different when dealing with functions like \(y=\log_5x\). Which of the following functions has equivalent translations to \((2,-3)\)?`,
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 24 },
+    question: String.raw`Steven likes logarithms. He realizes that dilations and translations aren't so different when dealing with functions like \(y=\log_5x\). Which of the following functions have equivalent translations to \((2,-3)\)?`,
     choices: [
       String.raw`\(\log_5\frac{x-2}{5}\)`,
       String.raw`\(\log_5(125x-25)\)`,
@@ -1035,83 +1245,84 @@ with a vertical asymptote at \(x=-2\) and horizontal asymptote at \(y=0\). To ob
       String.raw`\(\log_5(125(x-25))\)`,
       "NOTA",
     ], answer: "C",
-    solution: String.raw`The translated function is \(\log_5(x-2)-3\). By the quotient rule for logarithms,
-\[\log_5(x-2)-\log_5 125=\log_5\left(\frac{x-2}{125}\right).\]`,
+    solution: String.raw`These transformations would first be written as \(\log_5(x-2)-3\), which can also be written as \(\log_5(x-2)-\log_5 125\). By the quotient rule for logarithms, this can be written as \(\log_5\frac{x-2}{125}\).`,
   },
   {
     id: 30114, number: 114, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 25 },
     question: String.raw`Translations still have applications to non-functions. Consider \(16x=8(y-20)^2+2\). What translation would map the focus of this relation to its vertex?`,
     choices: [String.raw`\(\left\langle-\frac12,0\right\rangle\)`, String.raw`\(\left\langle\frac12,0\right\rangle\)`, String.raw`\(\left\langle0,\frac12\right\rangle\)`, String.raw`\(\left\langle0,-\frac12\right\rangle\)`, "NOTA"], answer: "A",
-    solution: String.raw`Rewriting gives
-\[(y-20)^2=2\left(x-\frac18\right).\]
-The vertex is \(\left(\frac18,20\right)\) and the focal length is \(p=\frac12\), so the focus is \(\left(\frac58,20\right)\). To map the focus onto the vertex, translate by \(\left\langle-\frac12,0\right\rangle\).`,
+    solution: String.raw`Rewrite the relation as \((y-20)^2=2(x-\frac18)\). This quadratic relation has a vertex at \((\frac18,20)\) and a focal length of \(p=\frac12\). Its focus is \((\frac58,20)\). To map its focus onto its vertex, the relation would have to be translated \(\langle-\frac12,0\rangle\).`,
   },
   {
     id: 30115, number: 115, division: "Theta", topic: "Conic Sections", difficulty: 4, methods: ["Eccentricity"],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 26 },
     question: String.raw`Consider \(2x^2+8x=-y^2-y+10\). Tahir finds the center of this ellipse, then translates the relation so that the center is located at the origin. Find the eccentricity of this ellipse.`,
     choices: [String.raw`\(\frac{\sqrt2}{4}\)`, String.raw`\(\frac{\sqrt2}{2}\)`, "1", String.raw`\(\frac{\sqrt2}{8}\)`, "NOTA"], answer: "B",
-    solution: String.raw`Completing the square gives
-\[2(x+2)^2+\left(y+\frac12\right)^2=\frac{73}{4},\]
-or
+    solution: String.raw`Begin by completing the square to find this ellipse in standard form:
+\[2\left(x^2+4x+4\right)+\left(y^2+y+\frac14\right)=10+8+\frac14\]
+\[2(x+2)^2+\left(y+\frac12\right)^2=\frac{73}{4}\]
 \[\frac{(x+2)^2}{73/8}+\frac{(y+1/2)^2}{73/4}=1.\]
-Thus \(a^2=\frac{73}{4}\), \(b^2=\frac{73}{8}\), and \(c^2=a^2-b^2=\frac{73}{8}\). The eccentricity is
-\[\frac ca=\frac{\sqrt{73/8}}{\sqrt{73/4}}=\frac{\sqrt2}{2}.\]`,
+The translation changes the center but does not change the eccentricity of the ellipse, which can be found by \(\frac ca\). \(a=\sqrt{\frac{73}{4}}=\frac{\sqrt{73}}2\) and \(a^2-b^2=c^2\), so \(\frac{73}{4}-\frac{73}{8}=c^2\) and \(c=\sqrt{\frac{73}{8}}=\frac{\sqrt{73}}{2\sqrt2}\). Simplifying \(\frac ca\) gives \(\frac{\sqrt2}{2}\).`,
   },
   {
     id: 30116, number: 116, division: "Theta", topic: "Binomial Expansion", difficulty: 3, methods: ["Binomial Theorem"],
-    question: String.raw`Even binomials can be translated! Consider the expansion of \((x+2)^4\). Find the difference between the cubic term of \((x+2)^4\) and the cubic term of \(((x-h)+2)^4\) in terms of \(h\).`,
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 27 },
+    question: String.raw`Even binomials can be translated! Consider the expansion of \((x+2)^4\). Find the difference between the coefficient of the cubic term of \((x+2)^4\) and the coefficient of the cubic term of \(((x-h)+2)^4\) (original minus translated), in terms of \(h\).`,
     choices: ["0", "-4h", "4h", "8 - 4h", "NOTA"], answer: "C",
-    solution: String.raw`The cubic term of \((x+2)^4\) is
-\[\binom41x^3(2)=8x^3.\]
-Since \(((x-h)+2)^4=(x+(2-h))^4\), its cubic term is
-\[\binom41x^3(2-h)=(8-4h)x^3.\]
-The difference between the cubic terms is \(8x^3-(8-4h)x^3=4hx^3\), so the difference between their coefficients is \(4h\).`,
+    solution: String.raw`The cubic term of \((x+2)^4\) is \(\binom41x^3 2^1=8x^3\). The cubic term of the translated binomial is similar; \(((x-h)+2)^4=(x+(2-h))^4\), where the cubic term is \(\binom41x^3(2-h)=(8-4h)x^3\). The difference between their coefficients is \(4h\), since \(8-(8-4h)=4h\). The full difference of the terms would be \(4hx^3\), so the prompt explicitly asks for coefficients.`,
   },
   {
     id: 30117, number: 117, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 28 },
     question: String.raw`Which of the following is equivalent to \(424_6\)?`,
     choices: [String.raw`\(160_9\)`, String.raw`\(311_7\)`, String.raw`\(242_8\)`, String.raw`\(2200_4\)`, "NOTA"], answer: "D",
-    solution: String.raw`In base ten,
-\[424_6=4(6^2)+2(6)+4=160.\]
-The choices have base-ten values \(160_9=135\), \(311_7=155\), \(242_8=162\), and \(2200_4=160\). Therefore, \(424_6=2200_4\).`,
+    solution: String.raw`\(424_6=4(6^0)+2(6^1)+4(6^2)=160\) (in base 10). Through inspection of the answer choices:
+\[\begin{aligned}
+160_9&=0(9^0)+6(9^1)+1(9^2)=135,\\
+311_7&=1(7^0)+1(7^1)+3(7^2)=155,\\
+242_8&=2(8^0)+4(8^1)+2(8^2)=162,\\
+2200_4&=0(4^0)+0(4^1)+2(4^2)+2(4^3)=160.
+\end{aligned}\]`,
   },
   {
     id: 30118, number: 118, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: ["Substitution"],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 29 },
     question: String.raw`Find the sum of the solutions to \(2^{2x-1}-4=2^x\).`,
     choices: ["1", "2", "3", String.raw`\(\frac32\)`, "NOTA"], answer: "B",
-    solution: String.raw`Let \(a=2^x\). Then
-\[\frac12a^2-a-4=0,\]
-so
-\[\left(\frac12a-2\right)(a+2)=0.\]
-The solution \(a=-2\) is extraneous because \(2^x>0\). Thus \(a=4\), so \(x=2\). The sum of the solutions is \(2\).`,
+    solution: String.raw`Using laws of exponents, we can rewrite the first term as \(\frac12(2^x)^2\). This is a quadratic which can be represented using the substitution \(a=2^x\):
+\[\frac12a^2-a-4=0\]
+\[\left(\frac12a-2\right)(a+2)=0\]
+\[a=4,\quad a=-2.\]
+Considering the original substitution, one of these solutions is extraneous as \(2^x\ne-2\). However, by solving the equation \(2^x=4\), we find \(x=2\).`,
   },
   {
     id: 30119, number: 119, division: "Theta", topic: "Probability", difficulty: 1, methods: [],
+    source: { competition: "2026 King February Statewide", event: "Algebra 2 Individual", questionNumber: 30 },
     question: String.raw`What is the difference between the number of distinct arrangements of the word "LIONS" and the number of distinct arrangements of the letters "ROOAR"?`,
     choices: ["0", "90", "105", "120", "NOTA"], answer: "B",
-    solution: String.raw`The number of arrangements of "LIONS" is \(5!=120\). The number of distinct arrangements of "ROOAR" is
-\[\frac{5!}{2!2!}=30\]
-because the letters O and R are each repeated. The difference is \(120-30=90\).`,
+    solution: String.raw`The number of possible arrangements of the word "LIONS" is \(5!=120\) (all of which are distinct, since each letter is different). The number of distinct arrangements of "ROOAR" is \(\frac{5!}{2!\cdot2!}=30\) since the letters "O" and "R" are doubled. The difference between the two arrangements \((120-30)\) is 90.`,
   },
   {
     id: 30120, number: 120, division: "Theta", topic: "Polynomial Equations", difficulty: 3, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 1 },
     question: String.raw`One of the most celebrated traditions of March is "March Madness" when people fill out their NCAA Division I men's basketball tournament brackets to predict who will win. Which of the following is a root of the following polynomial equation, which uses brackets to group terms together?
 \[\left[4x^3-8x^2+3x-6\right]\left[9x^2-4\right]=0\]`,
     choices: ["-2", String.raw`\(-\frac{i\sqrt3}{2}\)`, String.raw`\(\frac{1-i\sqrt5}{2}\)`, String.raw`\(\frac32\)`, "NOTA"], answer: "B",
-    solution: String.raw`Factor the first expression:
-\[4x^2(x-2)+3(x-2)=(4x^2+3)(x-2),\]
-so its roots are \(x=2\) and \(x=\pm\frac{i\sqrt3}{2}\). The second expression factors as \((3x+2)(3x-2)\), with roots \(x=-\frac23\) and \(x=\frac23\). From this, only \(x=-\frac{i\sqrt3}{2}\) is a listed root.`,
+    solution: String.raw`Factor the first as \(4x^2(x-2)+3(x-2)=(4x^2+3)(x-2)\), so the roots are \(x=2\) and \(x=\pm\frac{i\sqrt3}{2}\). Factor the second as \((3x+2)(3x-2)\), so its roots are \(x=-\frac23\) and \(x=\frac23\). From this, only \(x=-\frac{i\sqrt3}{2}\) is a root among the choices.`,
   },
   {
     id: 30121, number: 121, division: "Theta", topic: "Systems of Equations", difficulty: 1, methods: ["Row Operations"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 2 },
     question: String.raw`How fast can you "march" through this problem? Find the sum of \(x\) and \(y\), which are the solutions to the following system of equations.
 \[2x-3y=-39\]
 \[-4x+5y=73\]`,
     choices: ["-11", "-9", "-7", "-5", "NOTA"], answer: "C",
-    solution: String.raw`Adding twice the top equation, \(4x-6y=-78\), to the bottom equation gives \(-y=-5\), so \(y=5\). Solving \(2x-15=-39\) gives \(x=-12\). Therefore, \(x+y=-12+5=-7\).`,
+    solution: String.raw`Adding twice the top equation \((4x-6y=-78)\) to the bottom equation gives \(-y=-5\), so \(y=5\). Solving \(2x-15=-39\) gives \(x=-12\). The sum \(x+y=-12+5=-7\).`,
   },
   {
     id: 30122, number: 122, division: "Theta", topic: "Matrices", difficulty: 2, methods: ["Determinant"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 3 },
     question: String.raw`Beware the Ides of March and large matrices! If \(D\) is determinant of the following matrix, find the remainder when \(|D|\) is divided by 10.
 \[\begin{bmatrix}
 1&5&1&5\\
@@ -1120,13 +1331,12 @@ so its roots are \(x=2\) and \(x=\pm\frac{i\sqrt3}{2}\). The second expression f
 0&0&0&9
 \end{bmatrix}\]`,
     choices: ["1", "3", "5", "9", "NOTA"], answer: "E",
-    solution: String.raw`Expanding along row 4, the determinant is \(9\) times the determinant of the upper \(3\times3\) matrix. Expanding that determinant along column 1 leaves
-\[\begin{vmatrix}15&15\\15&15\end{vmatrix}=0.\]
-Thus \(D=0\), and the remainder when \(|D|\) is divided by \(10\) is \(0\), or NOTA.`,
+    solution: String.raw`Taking the determinant by minors along row 4, the determinant of the matrix is \(+9\) times the determinant of the upper 3-by-3 matrix. Using minors again along column 1, the determinant of that is \(+1\) times \(\begin{vmatrix}15&15\\15&15\end{vmatrix}\), which is 0, so the overall matrix has determinant 0.`,
   },
   {
     id: 30123, number: 123, division: "Theta", topic: "Logs and Exponents", difficulty: 4, methods: ["Logarithms"],
-    question: String.raw`Spring is in the air, and the bunnies are multiplying exponentially! Megan's farm has 5 bunnies at the end of March 1st and 600 bunnies at the end of March 10th. If \(a=\ln2\), \(b=\ln3\), and \(c=\ln5\), then which expression below represents the rate of growth per day for the bunny population on the farm in terms of \(a\), \(b\), and \(c\)?`,
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 4 },
+    question: String.raw`Spring is in the air, and the bunnies are multiplying exponentially! Megan's farm has 5 bunnies at the end of March 1st and 600 bunnies at the end of March 10th. If \(a=\ln2\), \(b=\ln3\), and \(c=\ln5\), then which expression below represents the continuous rate of growth per day for the bunny population on the farm in terms of \(a\), \(b\), and \(c\)?`,
     choices: [
       String.raw`\(\frac{3a+b+c}{e^{2b}}\)`,
       String.raw`\(\frac{3a+b+c}{e^{a+c}}\)`,
@@ -1134,117 +1344,128 @@ Thus \(D=0\), and the remainder when \(|D|\) is divided by \(10\) is \(0\), or N
       String.raw`\(\frac{3a+b+3c}{e^{a+c}}\)`,
       "NOTA",
     ], answer: "A",
-    solution: String.raw`The number of bunnies multiplies by \(\frac{600}{5}=120\) in 9 days, so the continuous rate is
-\[\frac{\ln120}{9}=\frac{\ln8+\ln3+\ln5}{e^{\ln9}}=\frac{3a+b+c}{e^{2b}}.\]`,
+    solution: String.raw`The number of bunnies multiplies by \(\frac{600}{5}=120\) in 9 days, so the continuous growth rate is
+\[\frac{\ln120}{9}=\frac{\ln8+\ln3+\ln5}{e^{\ln9}}=\frac{3a+b+c}{e^{2b}}.\]
+Here the exponential model is \(P(t)=P_0e^{rt}\); the daily percentage increase in a discrete model would instead be \(e^r-1\).`,
   },
   {
     id: 30124, number: 124, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 5 },
     question: String.raw`Randall is chasing after one of the bunnies on the farm, which got loose and is now hopping along the bunny trail! The bunny takes one gigantic bounce whose height during the hop can be modeled by the equation \(y=-3t^2+25.5t-45\), where \(t\) is time in seconds. How many seconds pass while the bunny has jumped in the air? You may assume \(y=0\) is the ground.`,
     choices: ["3.5", "4.5", "6", "6.5", "NOTA"], answer: "A",
-    solution: String.raw`Multiplying the equation by \(-\frac23\) gives
-\[2t^2-17t+30=0.\]
-This factors as \((2t-5)(t-6)=0\), so the bunny is in the air from \(t=\frac52\) to \(t=6\). The elapsed time is \(6-2.5=3.5\) seconds.`,
+    solution: String.raw`Multiplying the equation by \(-\frac23\), \(2t^2-17t+30=0\). This factors as \((2t-5)(t-6)\), so the bunny is in the air from \(t=\frac52\) to \(t=6\). The time in the air \(6-2.5=3.5\) seconds.`,
   },
   {
     id: 30125, number: 125, division: "Theta", topic: "Analytic Geometry", difficulty: 4, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 6 },
     question: String.raw`One of the best holidays in March is, of course, Pi Day! Find the \(x\)-coordinate of the \(x\)-intercept of the line that perpendicularly bisects the segment with endpoints \((\pi,1)\) and \((-3\pi,-5)\).`,
     choices: [String.raw`\(1-\pi\)`, "-2", String.raw`\(\frac9{2\pi}-\pi\)`, String.raw`\(\pi\)`, "NOTA"], answer: "E",
-    solution: String.raw`The midpoint is
-\[\left(\frac{\pi-3\pi}{2},\frac{1-5}{2}\right)=(-\pi,-2).\]
-The segment's slope is \(\frac{3}{2\pi}\), so the perpendicular bisector's slope is \(-\frac{2\pi}{3}\). Its equation is
-\[y+2=-\frac{2\pi}{3}(x+\pi).\]
-Setting \(y=0\) gives \(x=-\pi-\frac3\pi\), which is not among choices A-D. Therefore, the answer is NOTA.`,
+    solution: String.raw`The midpoint of the line segment is \(\left(\frac{\pi-3\pi}{2},\frac{1-5}{2}\right)=(-\pi,-2)\). The slope of the line is \(\frac{1+5}{\pi+3\pi}=\frac3{2\pi}\). The slope of the perpendicular bisector is \(-\frac{2\pi}{3}\), so the equation is
+\[y=-\frac{2\pi}{3}x-\left(2+\frac{2\pi^2}{3}\right).\]
+The \(x\)-intercept of this is
+\[\frac3{2\pi}\left(-2-\frac{2\pi^2}{3}\right)=-\pi-\frac3\pi.\]
+This is not listed, so the answer is NOTA.`,
   },
   {
     id: 30126, number: 126, division: "Theta", topic: "Probability", difficulty: 2, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 7 },
     question: String.raw`Before 150 B.C.E., March was the first month of the calendar! You can still see traces of this in the modern calendar. For example, December is named after the Latin word for ten. Find the number of distinct permutations of the letters in the word DECEMBER.`,
     choices: ["720", "6720", "13440", "20160", "NOTA"], answer: "B",
-    solution: String.raw`There are 8 letters in DECEMBER, 3 of which are E; all others are unique. Therefore, the number of distinct permutations is
-\[\frac{8!}{3!}=\frac{40320}{6}=6720.\]`,
+    solution: String.raw`There are 8 letters in DECEMBER, 3 of which are E; all others are unique: \(\frac{8!}{3!}=\frac{40320}{6}=6720\).`,
   },
   {
     id: 30127, number: 127, division: "Theta", topic: "Polynomials", difficulty: 5, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 8 },
     question: String.raw`March was named for the Roman god of war, Mars. Suppose Mars is arranging his soldiers in rows so that the \(n\)th row of soldiers contains \(f(n)\) soldiers for some degree-4 polynomial \(f(n)\). The first five rows contain 8, 27, 64, 125, and 336 soldiers, respectively. How many soldiers are there in the ninth row?`,
     choices: ["9400", "14824", "17280", "20683", "NOTA"], answer: "A",
-    solution: String.raw`For \(n\in\{1,2,3,4\}\), the values agree with \((n+1)^3\). Therefore, \(f(n)-(n+1)^3\) is a quartic with roots \(1,2,3,\) and \(4\), so
-\[f(n)=(n+1)^3+A(n-1)(n-2)(n-3)(n-4).\]
-Using \(f(5)=336\) gives \(336=216+24A\), so \(A=5\). Hence
-\[f(9)=10^3+5(8)(7)(6)(5)=9400.\]`,
+    solution: String.raw`Noting that \(f(n)=(n+1)^3\) for \(n\in\{1,2,3,4\}\), \(f(n)-(n+1)^3\) is a quartic polynomial with roots 1, 2, 3, and 4;
+\[f(x)=(x+1)^3+A(x-1)(x-2)(x-3)(x-4).\]
+Plugging in \(x=5\), \(336=216+24A\), so \(A=5\).
+\[f(9)=10^3+5\cdot8\cdot7\cdot6\cdot5=1000+40\cdot7\cdot30=9400.\]`,
   },
   {
     id: 30128, number: 128, division: "Theta", topic: "Binomial Expansion", difficulty: 2, methods: ["Binomial Theorem"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 9 },
     question: String.raw`NASA astronaut Scott Kelly returned to Earth after one full year in space on March 2nd, 2016. In honor of Scott, find the coefficient of the \(x^3y^2\) term in the expansion of \((2y-x)^5\).`,
     choices: ["-80", "-40", "40", "80", "NOTA"], answer: "B",
-    solution: String.raw`\[\binom53(-x)^3(2y)^2=10(-x^3)(4y^2)=-40x^3y^2.\]
-Thus the coefficient is \(-40\).`,
+    solution: String.raw`\[\binom53(-x)^3(2y)^2=10\cdot(-x^3)\cdot4y^2=-40x^3y^2.\]
+The requested coefficient is \(-40\).`,
   },
   {
     id: 30129, number: 129, division: "Theta", topic: "Probability", difficulty: 1, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 10 },
     question: String.raw`On March 17th, 1973, Pink Floyd's album "The Dark Side of the Moon" first hit the Billboard Top 200 album chart at number 95. If the claim made at the closing of the album that, "There is no dark side of the moon...as a matter of fact, it's all dark." is true, in other words, all sides of the moon are actually dark; then, what is the probability of randomly selecting a point on the moon that is on the dark side of the moon?`,
     choices: ["0", String.raw`\(\frac12\)`, "1", String.raw`\(\frac23\)`, "NOTA"], answer: "C",
-    solution: String.raw`Given that all sides of the moon are dark, the probability of randomly selecting a point on the moon that is on the dark side of the moon is \(1\).`,
+    solution: String.raw`Given that all sides of the moon are dark, then the probability of randomly selecting a point on the moon that is on the dark side of the moon is 1.`,
   },
   {
     id: 30130, number: 130, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 11 },
     question: String.raw`As the saying goes, March comes "in like a lion, out like a lamb." That was certainly true on March 1st, 2007, when a detachment of 170 Swiss infantrymen accidentally invaded neighboring Liechtenstein when they got lost on a training mission. Rewrite the logarithmic expression \(\log_3 170\) in terms of \(a=\log3\) and \(b=\log289\).`,
     choices: [String.raw`\(1+\frac{b}{2a}\)`, String.raw`\(\frac{1+a}{b}\)`, String.raw`\(1+\frac b2+\frac1a\)`, String.raw`\(\frac{2+b}{2a}\)`, "NOTA"], answer: "D",
-    solution: String.raw`Using change of base,
-\[\log_3 170=\frac{\log170}{\log3}
-=\frac{\log10+\log17}{\log3}
-=\frac{1+\frac b2}{a}
-=\frac{2+b}{2a}.\]`,
+    solution: String.raw`Using Change of Base,
+\[\begin{aligned}
+\log_3 170&=\frac{\log170}{\log3}\\
+&=\frac{\log10+\log17}{\log3}\\
+&=\frac{1+\log17}{\log3}\\
+&=\frac{1+b/2}{a}=\frac{2+b}{2a}.
+\end{aligned}\]`,
   },
   {
     id: 30131, number: 131, division: "Theta", topic: "Matrices", difficulty: 3, methods: ["Matrix Inverse"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 12 },
     question: String.raw`Find \(A_{12}\) if \(A^{-1}=\begin{bmatrix}2&3\\5&7\end{bmatrix}\). Note \(A_{12}\) means the entry in the first row and second column.`,
     choices: ["-5", "-3", "3", "5", "NOTA"], answer: "C",
-    solution: String.raw`Since \(A=(A^{-1})^{-1}\) and the determinant of \(A^{-1}\) is \(2(7)-3(5)=-1\),
+    solution: String.raw`\(A=(A^{-1})^{-1}\). The determinant of \(A^{-1}\) is \(2\cdot7-3\cdot5=-1\).
 \[A=-\begin{bmatrix}7&-3\\-5&2\end{bmatrix}
-=\begin{bmatrix}-7&3\\5&-2\end{bmatrix}.\]
-Therefore, \(A_{12}=3\).`,
+=\begin{bmatrix}-7&3\\5&-2\end{bmatrix},\]
+so \(A_{12}=3\).`,
   },
   {
     id: 30132, number: 132, division: "Theta", topic: "Sequences and Series", difficulty: 3, methods: ["Infinite Geometric Series"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 13 },
     question: String.raw`A University of Miami player drops a basketball beginning at a point 10 feet in the air and it begins bouncing off the ground. After the initial bounce off the ground, the ball continues bouncing straight up and down vertically returning to a height that is \(\frac45\) of the height of the bounce before it. If this ball could continue bouncing forever, find the sum of the vertical distances (both up and down) the ball travels beginning with the initial drop, in feet.`,
     choices: ["40", "50", "80", "90", "NOTA"], answer: "D",
-    solution: String.raw`The downward distances form a geometric series with first term \(10\) and ratio \(\frac45\), with sum
-\[\frac{10}{1-4/5}=50.\]
-The upward distances form a geometric series with first term \(10\cdot\frac45=8\), with sum
-\[\frac8{1-4/5}=40.\]
-The total distance is \(50+40=90\) feet.`,
+    solution: String.raw`The distance going down is a geometric series with first term 10 and ratio \(\frac45\) and has sum \(\frac{10}{1-4/5}=50\). The distance going up is a geometric series with first term \(10\cdot\frac45=8\) (coming off the first bounce) and has sum \(\frac8{1-4/5}=40\), for a total distance of 90.`,
   },
   {
     id: 30133, number: 133, division: "Theta", topic: "Simplification", difficulty: 4, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 14 },
     question: String.raw`March is a radical month! Simplify
 \[(\sqrt[3]{36}-\sqrt[3]{6}+1)(\sqrt{56}-\sqrt{24})(\sqrt[3]{6}+1)(\sqrt{56}+\sqrt{24}).\]`,
     choices: ["160", "224", "400", "560", "NOTA"], answer: "B",
-    solution: String.raw`Reordering the cube-root factors gives a sum-of-cubes factorization:
-\[(\sqrt[3]{36}-\sqrt[3]{6}+1)(\sqrt[3]{6}+1)=6+1=7.\]
-The square-root factors give a difference of squares:
-\[(\sqrt{56}-\sqrt{24})(\sqrt{56}+\sqrt{24})=56-24=32.\]
-Thus the product is \(7\cdot32=224\).`,
+    solution: String.raw`Swapping the second and third factors gives the sum of cubes factorization for \((\sqrt[3]6)^3+1^3=7\) multiplied by the difference of squares factorization for \((\sqrt{56})^2-(\sqrt{24})^2=32\). Then \(7\cdot32=224\).`,
   },
   {
     id: 30134, number: 134, division: "Theta", topic: "Probability", difficulty: 1, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 15 },
     question: String.raw`On March 5, 1981, Clive Sinclair launched the ZX81 computer, the first British model to sell more than a million units. It cost just €70, and nobody who uses its peculiar keyboard will ever forget it. The ZX81 uses an 8-bit processor, meaning it uses strings of 8 values, each of which is either a 0 or a 1. How many different 8-bit strings are possible?`,
     choices: ["127", "128", "255", "256", "NOTA"], answer: "D",
-    solution: String.raw`Each of the eight bits can independently take one of 2 values, so there are \(2^8=256\) possible strings.`,
+    solution: String.raw`Each of the eight bits can independently take one of 2 values. \(2^8=256\).`,
   },
   {
     id: 30135, number: 135, division: "Theta", topic: "Probability", difficulty: 3, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 16 },
     question: String.raw`Blaise Pascal time-travels to the future along with a 23-bit processor. He inputs a value into the computer to generate a 23-bit string, but due to the time travel, the processor is faulty, and up to 3 bits may be processed as the wrong values. How many possible values might the computer have stored incorrectly after Blaise's input?`,
     choices: ["2023", "2024", "2047", "2048", "NOTA"], answer: "C",
-    solution: String.raw`Choose \(1\), \(2\), or \(3\) of the \(23\) bits to be incorrect. The case with no incorrectly processed bits is excluded by the wording. Therefore, the number of incorrectly stored values is
-\[\binom{23}{1}+\binom{23}{2}+\binom{23}{3}=23+253+1771=2047.\]`,
+    solution: String.raw`Of the 23 bits, you can choose 0, 1, 2, or 3 of them to be incorrect.
+\[\binom{23}{0}+\binom{23}{1}+\binom{23}{2}+\binom{23}{3}\]
+can be simplified using the principles of Pascal's Triangle.
+\[\binom{24}{1}+\binom{24}{3}
+=24+\frac{24\cdot23\cdot22}{3\cdot2}
+=24+4\cdot23\cdot22=24+2024=2048;\]
+however, since \(\binom{23}{0}\) actually represents the case where there are no incorrectly stored values, we should not count it in the total. The case with no incorrectly processed bits is excluded. So, the final answer is \(2048-1=2047\).`,
   },
   {
     id: 30136, number: 136, division: "Theta", topic: "Polynomial Equations", difficulty: 1, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 17 },
     question: String.raw`Read Across America is celebrated on Dr. Seuss's birthday, March 2. What would you be reading about if you saw the statement "Every polynomial equation with complex coefficients and degree \(\ge1\) has at least one complex root."?`,
     choices: ["Descartes's Rule of Signs", "Fundamental Theorem of Algebra", "Fundamental Theorem of Arithmetic", "Rational Root Theorem", "NOTA"], answer: "B",
-    solution: String.raw`This is a formulation of the Fundamental Theorem of Algebra, which also states that a degree-\(n\ge1\) polynomial with complex coefficients has exactly \(n\) complex roots when multiplicity is counted.`,
+    solution: String.raw`This is another formulation of the Fundamental Theorem of Algebra, which also states that a degree-\(n\ge1\) polynomial with complex coefficients has exactly \(n\) complex roots, counting multiplicity.`,
   },
   {
     id: 30137, number: 137, division: "Theta", topic: "Inequalities", difficulty: 4, methods: ["Rational Root Theorem"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 18 },
     question: String.raw`March is Women's History Month. Help fight the inequality and give the interval of real values for \(x\) such that
 \[x^5-5x^4+4x^3+4x^2+3x+9>0.\]`,
     choices: [
@@ -1254,33 +1475,27 @@ Thus the product is \(7\cdot32=224\).`,
       String.raw`\((-1,\infty)\)`,
       "NOTA",
     ], answer: "C",
-    solution: String.raw`The polynomial factors as
-\[(x+1)(x-3)^2(x^2+1).\]
-The second and third factors are nonnegative for real \(x\), with zeros at \(x=3\) for the squared factor. The strict inequality therefore holds on
-\[(-1,3)\cup(3,\infty).\]`,
+    solution: String.raw`The Rational Root Theorem narrows down the roots to be tested; the given polynomial factors as \((x+1)(x-3)^2(x^2+1)\). The second two factors are always non-negative, so the relaxed inequality would solve as \([-1,\infty)\). Eliminating the roots of \(-1\) and 3 gives the strict inequality solution as \((-1,3)\cup(3,\infty)\).`,
   },
   {
     id: 30138, number: 138, division: "Theta", topic: "Conic Sections", difficulty: 5, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 19 },
     question: String.raw`March 31 is the International Transgender Day of Visibility. The rectangular transgender pride flag consists of five congruent rectangles (colored blue, pink, white, pink, and blue) stacked on top of each other. This flag is placed on the coordinate plane such that each of its vertices has an \(x\)-coordinate of \(\pm5\) and a \(y\)-coordinate of \(\pm3\). An ellipse is drawn around the flag such that it passes through each vertex of the flag and the points \((\sqrt5,\sqrt{21})\) and \((2\sqrt5,\sqrt{k})\). Find \(k\).`,
     choices: ["6", "8", "10", "12", "NOTA"], answer: "D",
-    solution: String.raw`By symmetry, the ellipse is centered at the origin and has equation
-\[\frac{x^2}{a^2}+\frac{y^2}{b^2}=1.\]
-Using \((5,3)\) and \((\sqrt5,\sqrt{21})\) gives
-\[\frac{25}{a^2}+\frac9{b^2}=1,\qquad \frac5{a^2}+\frac{21}{b^2}=1,\]
-which yields \(a^2=40\) and \(b^2=24\). Substituting \((2\sqrt5,\sqrt{k})\) gives
-\[\frac{20}{40}+\frac{k}{24}=1,\]
-so \(k=12\).`,
+    solution: String.raw`By symmetry, the center of the ellipse is the origin, so the ellipse has the equation \(\frac{x^2}{a^2}+\frac{y^2}{b^2}=1\). More explicitly, substituting all four corners \((\pm5,\pm3)\) into a general conic forces the \(xy\), \(x\), and \(y\) coefficients to vanish. We have a system of equations
+\[\frac{25}{a^2}+\frac9{b^2}=1,\qquad\frac5{a^2}+\frac{21}{b^2}=1,\]
+which solves as \(a=\sqrt{40}\) and \(b=\sqrt{24}\). The solution to \(\frac{20}{40}+\frac{k}{24}=1\) is \(k=12\).`,
   },
   {
     id: 30139, number: 139, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 20 },
     question: String.raw`Which of the following is an asymptote of the graph of the equation \(y=\frac{x^3-1}{x-1}\)?`,
     choices: [String.raw`\(x=-1\)`, String.raw`\(x=1\)`, String.raw`\(y=1\)`, String.raw`\(y=x^2\)`, "NOTA"], answer: "E",
-    solution: String.raw`Using the difference of cubes,
-\[\frac{x^3-1}{x-1}=x^2+x+1\qquad(x\ne1).\]
-The graph is the parabola \(y=x^2+x+1\) with a hole at \((1,3)\), so it has no asymptotes. The answer is NOTA.`,
+    solution: String.raw`Using Difference of Cubes, this is the parabola \(y=x^2+x+1\) with a hole at \((1,3)\). Thus, there are no straight-line asymptotes. The listed curve \(y=x^2\) is not an asymptote either, since the difference \(x+1\) does not tend to zero. The answer is NOTA.`,
   },
   {
     id: 30140, number: 140, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: ["Symmetry"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 21 },
     question: String.raw`How many of the following describe the graph of \(xy=1\)?
 \[\begin{array}{lll}
 \text{i.} & \text{Relation}\\
@@ -1291,10 +1506,11 @@ The graph is the parabola \(y=x^2+x+1\) with a hole at \((1,3)\), so it has no a
 \text{vi.} & \text{Symmetric about the line }y=x
 \end{array}\]`,
     choices: ["2", "3", "4", "5", "NOTA"], answer: "C",
-    solution: String.raw`The equation \(y=\frac1x\) is a relation, a function, and a one-to-one function. It is also its own inverse, so it is symmetric about \(y=x\). It is not symmetric about either coordinate axis. Therefore, \(4\) statements describe the graph.`,
+    solution: String.raw`\(y=\frac1x\) is a relation that describes a rotated hyperbola. It passes both the horizontal- and vertical-line tests, so it is a one-to-one function that is also its own inverse, so it is symmetric about the line \(y=x\). Graphing shows it is not symmetric about either axis, so the number of true statements is 4.`,
   },
   {
     id: 30141, number: 141, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: ["Discriminant Test"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 22 },
     question: String.raw`Which of the following equations describes a parabola?`,
     choices: [
       String.raw`\(x^2+6xy+9y^2+20x+24y+311838=0\)`,
@@ -1303,174 +1519,155 @@ The graph is the parabola \(y=x^2+x+1\) with a hole at \((1,3)\), so it has no a
       String.raw`\(7x^2+6xy+3y^2+20x+24y+311838=0\)`,
       "NOTA",
     ], answer: "A",
-    solution: String.raw`A nondegenerate conic is a parabola when \(B^2-4AC=0\). For choice A,
-\[6^2-4(1)(9)=0,\]
-so \(x^2+6xy+9y^2+20x+24y+311838=0\) describes a parabola.`,
+    solution: String.raw`If the discriminant of a nondegenerate conic is 0, then it is a parabola. By inspection, \(6^2-4\cdot1\cdot9=0\), so
+\[x^2+6xy+9y^2+20x+24y+311838=0\]
+is a parabola. Nondegeneracy matters: its squared quadratic part is \((x+3y)^2\), and along the perpendicular direction \((-3,1)\) the linear term has coefficient \(20(-3)+24=-36\ne0\). Thus it is a genuine parabola, not parallel lines or an empty conic. The other choices have \(B^2-4AC<0\).`,
   },
   {
     id: 30142, number: 142, division: "Theta", topic: "Systems of Equations", difficulty: 4, methods: ["Substitution"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 23 },
     question: String.raw`The Easter Bunny takes a parabolic hop starting at \(t=0\) seconds and a height of 0 cm. At time \(t=3\) seconds, he is at a height of 60 cm, and at \(t=4\) seconds he is at a height of 66 cm. At what time (in seconds) will he land at a height of 0 cm again?`,
     choices: ["7", String.raw`\(\frac{51}{7}\)`, "8", String.raw`\(\frac{61}{7}\)`, "NOTA"], answer: "D",
-    solution: String.raw`Because the parabola passes through \((0,0)\), write it as \(y=at^2+bt\). The other points give
-\[9a+3b=60,\qquad16a+4b=66.\]
-Solving yields \(a=-\frac72\) and \(b=\frac{61}{2}\). Thus
-\[y=\frac t2(-7t+61),\]
-whose nonzero root is \(t=\frac{61}{7}\).`,
+    solution: String.raw`The parabola passes through \((0,0)\), \((3,60)\), and \((4,66)\). Because of the first point, the parabola can be written as \(y=at^2+bt\) for coefficients \(a\) and \(b\). Plugging in the other points, \(9a+3b=60\) and \(16a+4b=66\). The solution to this system is \(a=-\frac72\) and \(b=\frac{61}{2}\). The other root of the polynomial is \(\frac{61}{7}\).`,
   },
   {
     id: 30143, number: 143, division: "Theta", topic: "Sequences", difficulty: 2, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 24 },
     question: String.raw`St. Patrick's Day is famous for its green attire. In the year 2010, 712 students wore green shirts to the IMAO National Convention. In the year 2019, 1027 students wore green shirts to the IMAO National Convention. If the number of students who wear green shirts follows an arithmetic progression every year, how many students are predicted to be wearing green in the year 2038?`,
     choices: ["1622", "1657", "1692", "1787", "NOTA"], answer: "C",
-    solution: String.raw`The number of students increases by \(1027-712=315\) in \(9\) years, or \(35\) students per year. The year 2038 is \(28\) years after 2010, so the prediction is
-\[712+35(28)=1692.\]`,
+    solution: String.raw`The number of students wearing green increases 315 in 9 years, meaning there are 35 more students wearing green per year, specifically \(712+35n\) students \(n\) years after 2010. Plugging in \(n=28\) gives 1692 students predicted to wear green in 2038.`,
   },
   {
     id: 30144, number: 144, division: "Theta", topic: "Number Theory", difficulty: 2, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 25 },
     question: String.raw`March 9 is a date such that the number of the month is the square root of the number of the day - nice! Find the digit \(M\) such that the five-digit integer formed by \(3M9M2\) is divisible by 12. What is \(M\)?`,
     choices: ["1", "5", "8", "9", "NOTA"], answer: "B",
-    solution: String.raw`The number must be divisible by both \(3\) and \(4\). Its digit sum is \(14+2M\), so divisibility by \(3\) gives \(M\in\{2,5,8\}\). Its final two digits are \(M2\), so divisibility by \(4\) gives \(M\in\{1,5,9\}\). The intersection is \(M=5\).`,
+    solution: String.raw`The number must be divisible by 3 and 4. For the former, the sum of the digits \((14+2M)\) must be a multiple of 3, giving \(M\in\{2,5,8\}\). For the latter, the last two digits must be a multiple of 4, giving \(M\in\{1,5,9\}\). The intersection of these sets is \(M=5\).`,
   },
   {
     id: 30145, number: 145, division: "Theta", topic: "Probability", difficulty: 4, methods: ["Complement Rule"],
-    question: String.raw`March is Red Cross Month. Every 8 minutes, the American Red Cross responds to an emergency. One of the ways people at least 17 years old can help the Red Cross is to donate blood. The 8 blood types are \(O^-,O^+,A^-,A^+,B^-,B^+,AB^-,\) and \(AB^+\), where the positive and negative signs indicate the presence of the rhesus factor on the surface of red blood cells. Suppose you randomly select 3 out of those 8 blood types. Let \(X\) represent the probability that your 3 randomly selected blood types are either not all positive or not all negative for the rhesus factor when the selections are done without replacement. Let \(Y\) represent the probability that your 3 randomly selected blood types are either not all positive or not all negative for the rhesus factor when the selections are done with replacement. What is \(X-Y\)?`,
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 26 },
+    question: String.raw`March is Red Cross Month. Every 8 minutes, the American Red Cross responds to an emergency. One of the ways people at least 17 years old can help the Red Cross is to donate blood. The 8 blood types are \(O^-,O^+,A^-,A^+,B^-,B^+,AB^-,\) and \(AB^+\), where the positive and negative signs indicate the presence of the rhesus factor on the surface of red blood cells. Suppose you randomly select 3 out of those 8 blood types. Let \(X\) represent the probability that your 3 randomly selected blood types are not all positive and not all negative for the rhesus factor when the selections are done without replacement. Let \(Y\) represent the probability that your 3 randomly selected blood types are not all positive and not all negative for the rhesus factor when the selections are done with replacement. What is \(X-Y\)?`,
     choices: [String.raw`\(\frac3{28}\)`, String.raw`\(\frac67\)`, String.raw`\(\frac14\)`, String.raw`\(\frac{17}{28}\)`, "NOTA"], answer: "A",
-    solution: String.raw`Without replacement, there are \(\binom83=56\) selections. There are \(2\binom43=8\) selections that are all positive or all negative, so
-\[X=\frac{56-8}{56}=\frac67.\]
-With replacement, the \(2^3=8\) equally likely sign patterns include two constant-sign patterns, so
-\[Y=\frac{8-2}{8}=\frac34.\]
-Therefore,
-\[X-Y=\frac67-\frac34=\frac3{28}.\]`,
+    solution: String.raw`There are \(\binom83=56\) ways to choose 3 distinct blood types when sampling without replacement. There are \(\binom43\binom40=4\) ways to select three positive and no negative types, and another 4 ways to select three negative and no positive types. Therefore,
+\[X=\frac{56-2(4)}{56}=\frac{48}{56}=\frac67.\]
+Now, there are \(2^3=8\) ways of randomly selecting 3 blood types with respect to each one being either rhesus factor positive or rhesus factor negative when sampling with replacement; and we want neither one of the two cases where all 3 blood types are either all rhesus factor positive or all rhesus factor negative. Thus, \(Y=\frac{8-2}{8}=\frac68=\frac34\). Finally, \(X-Y=\frac67-\frac34=\frac3{28}\).`,
   },
   {
     id: 30146, number: 146, division: "Theta", topic: "Logs and Exponents", difficulty: 4, methods: ["Logarithms"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 27 },
     question: String.raw`March is Fire Prevention Month. A wood fire burns at \(600^\circ\text{C}\). Newton's Law of Cooling states that the difference in temperature between an object and its ambient environment experiences exponential decay; despite being named after the case when an object is cooling down, it also applies when an object is heating up! An object at \(80^\circ\text{C}\) at time \(t=0\) minutes has a temperature of \(470^\circ\text{C}\) at \(t=4\) minutes. Assuming Newton's Law of Cooling to be true, at an integer \(t=T\) minutes, the temperature of the object will be closest to \(599^\circ\text{C}\). Find \(T\).`,
     choices: ["11", "14", "18", "19", "NOTA"], answer: "C",
-    solution: String.raw`The difference from the ambient temperature is \(520^\circ\text{C}\) at \(t=0\) and \(130^\circ\text{C}\) at \(t=4\). Thus the difference is quartered every \(4\) minutes, or halved every \(2\) minutes. After \(18\) minutes, the difference is
-\[\frac{520}{2^9}=\frac{65}{64},\]
-so the temperature is \(598.984375^\circ\text{C}\), closer to \(599^\circ\text{C}\) than at either adjacent integer time. Therefore, \(T=18\).`,
+    solution: String.raw`The difference in temperature at \(t=0\) is 520, and the difference at \(t=4\) is 130. The difference decreases by half every 2 minutes. Noting \(130\approx2^7\), it will take 7 more halvings of temperature to attain a difference of approximately 1. \(4+7\cdot2=18\). To verify the closest integer time rather than just approximate it, the temperature is \(600-520\cdot2^{-t/2}\). It equals 599 at \(t=2\log_2 520\approx18.045\). Monotonicity means only 18 and 19 need comparing. At 18 the difference from 599 is \(|1-520/512|=0.015625\); at 19 it is approximately \(0.282\). Thus \(T=18\).`,
   },
   {
     id: 30147, number: 147, division: "Theta", topic: "Complex Numbers", difficulty: 2, methods: ["De Moivre's Theorem"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 28 },
     question: String.raw`The zodiac signs for the month of March are Pisces and Aries. If \(i=\sqrt{-1}\), find \((1+i)^{10}\).`,
     choices: [String.raw`\(-32i\)`, "-32", "32", String.raw`\(32i\)`, "NOTA"], answer: "D",
-    solution: String.raw`Observe that \((1+i)^2=2i\). Therefore,
-\[(1+i)^{10}=(2i)^5=2^5i^5=32i.\]`,
+    solution: String.raw`Observe \((1+i)^2=2i\). \((1+i)^{10}=(2i)^5=2^5i^5=32i\).`,
   },
   {
     id: 30148, number: 148, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: ["Eccentricity"],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 29 },
     question: String.raw`Spring into this problem and find the eccentricity of the following hyperbola.
 \[2x^2-y^2-6y=-4\]`,
     choices: [String.raw`\(\frac{\sqrt6}{2}\)`, String.raw`\(\sqrt2\)`, String.raw`\(\frac32\)`, String.raw`\(\sqrt3\)`, "NOTA"], answer: "A",
-    solution: String.raw`Completing the square gives
-\[2x^2-(y^2+6y+9)=-13,\]
-so
+    solution: String.raw`Rewrite the hyperbola as \(2x^2-(y^2+6y+9)=-13\), so
 \[\frac{(y+3)^2}{13}-\frac{x^2}{13/2}=1.\]
 The eccentricity is
 \[\frac{\sqrt{13+13/2}}{\sqrt{13}}=\sqrt{1+\frac12}=\frac{\sqrt6}{2}.\]`,
   },
   {
     id: 30149, number: 149, division: "Theta", topic: "Simplification", difficulty: 2, methods: [],
+    source: { competition: "2026 March Regional", event: "Algebra 2 Individual", questionNumber: 30 },
     question: String.raw`Time goes on eternally, much like the following infinitely nested radical. Find its value.
 \[\sqrt{3+\sqrt{3+\sqrt{3+\sqrt{3+\cdots}}}}\]`,
     choices: ["2", String.raw`\(\frac12+\sqrt3\)`, String.raw`\(\frac{1+\sqrt{13}}2\)`, "3", "NOTA"], answer: "C",
-    solution: String.raw`Let the nested radical equal \(x\). Then
-\[x=\sqrt{3+x}.\]
-Squaring gives \(x^2-x-3=0\), so
-\[x=\frac{1\pm\sqrt{13}}2.\]
-The nested radical is positive, so \(x=\frac{1+\sqrt{13}}2\).`,
+    solution: String.raw`Let the nested radical equal \(x\). Then \(x=\sqrt{3+x}\). Squaring, \(x^2=3+x\), so \(x^2-x-3=0\) and \(x=\frac{1\pm\sqrt{13}}2\). Obviously, \(x\) is positive, so \(x=\frac{1+\sqrt{13}}2\). To justify that the infinite radical exists, its finite truncations start at \(\sqrt3\), increase, and remain bounded above by this positive fixed point; their limit therefore satisfies the displayed equation.`,
   },
   {
     id: 30150, number: 150, division: "Theta", topic: "Inverse Functions", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 1 },
     question: String.raw`What is the range of the function \(f^{-1}(x)\) if \(f(x)=\frac{\ln(x+1)}{\sqrt{x-13}}\)?`,
     choices: [String.raw`\(y>-1\)`, String.raw`\(y>13\)`, String.raw`\(-1<x<13\)`, String.raw`\(x>-1\)`, "NOTA"], answer: "B",
-    solution: String.raw`The range of \(f^{-1}(x)\) is the same as the domain of \(f(x)\). For \(\ln(x+1)\), we need \(x+1>0\), so \(x>-1\). The denominator \(\sqrt{x-13}\) requires \(x\ge13\), but it also cannot equal \(0\), so \(x>13\). Both conditions together give \(x>13\). Therefore, the range of \(f^{-1}(x)\) is \(y>13\).`,
+    solution: String.raw`The range of \(f^{-1}(x)\) is the same as the domain of \(f(x)\). To solve for the domain of \(f(x)\), note on the top of the fraction that we have \(\ln(x+1)\) which means that \(x+1>0\); and so, \(x>-1\). On the bottom of the fraction, we have \(\sqrt{x-13}\), which means \(x\ge13\) for the square root and \(x\ne13\) for the denominator, so \(x>13\). So, we need \(x>-1\) and \(x>13\) at the same time, which means we just need \(x>13\). Since we're talking about the range of \(f^{-1}(x)\), this translates into \(y>13\).`,
   },
   {
     id: 30151, number: 151, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 2 },
     question: String.raw`Express the following as a single simplified radical expression without rationalizing the denominator:
 \[\sqrt[12]{x^5y}\div\sqrt[8]{x^3y^5}\]`,
     choices: [String.raw`\(\sqrt[24]{\frac{x}{y^{13}}}\)`, String.raw`\(\sqrt{\frac{x}{y^2}}\)`, String.raw`\(\sqrt[4]{\frac{x}{y^2}}\)`, String.raw`\(\sqrt[48]{\frac{x}{y^2}}\)`, "NOTA"], answer: "A",
-    solution: String.raw`The twelfth root is a \(\frac1{12}\) power and the eighth root is a \(\frac18\) power. The least common multiple of \(12\) and \(8\) is \(24\), so
-\[\sqrt[12]{x^5y}=\sqrt[24]{x^{10}y^2},\qquad
-\sqrt[8]{x^3y^5}=\sqrt[24]{x^9y^{15}}.\]
-Combining the roots gives \(\sqrt[24]{\frac{x}{y^{13}}}\).`,
+    solution: String.raw`The twelfth root is like a \(\frac1{12}\)th power, and the eighth root is like a \(\frac18\)th power. The least common multiple of 12 and 8 is 24, so we should express each of these roots as an equivalent twenty-fourth root. That gives us \(\sqrt[24]{x^{10}y^2}\div\sqrt[24]{x^9y^{15}}\). Combining these roots and using the properties of exponents we get \(\sqrt[24]{\frac{x}{y^{13}}}\). The original denominator requires \(x^3y^5>0\); keep that restriction when simplifying.`,
   },
   {
     id: 30152, number: 152, division: "Theta", topic: "Functions", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 3 },
     question: String.raw`The function \(y=g(x)\) has the property that \(f(g(x))=x+2\) for all values of \(x\). If \(f(x)=\sqrt[3]{x-1}\), and \(g(x)=x^3+bx^2+cx+d\), then give the value of \(\frac{b+c}{d}\).`,
     choices: ["-1", "0", "1", "2", "NOTA"], answer: "D",
-    solution: String.raw`Since \(f(x)=\sqrt[3]{x-1}\),
-\[\sqrt[3]{g(x)-1}=x+2.\]
-Cubing gives \(g(x)-1=x^3+6x^2+12x+8\), so
-\[g(x)=x^3+6x^2+12x+9.\]
-Thus \(b=6\), \(c=12\), and \(d=9\), giving \(\frac{b+c}{d}=2\).`,
+    solution: String.raw`Since \(f(x)=\sqrt[3]{x-1}\), then \(f(g(x))=\sqrt[3]{g(x)-1}\), so \(\sqrt[3]{g(x)-1}=x+2\). Cubing both sides gives \(g(x)-1=x^3+6x^2+12x+8\), which means that \(g(x)=x^3+6x^2+12x+9\), so \(b=6\), \(c=12\) and \(d=9\). Therefore, \(\frac{b+c}{d}=2\).`,
   },
   {
     id: 30153, number: 153, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 4 },
     question: String.raw`Pat can cut and split a cord of firewood in 6 fewer hours than Jesse can. When they work together, it takes them 4 hr. How long would it take Jesse to do the job alone?`,
     choices: ["2 hr.", "6 hr.", "7 hr.", "12 hr.", "NOTA"], answer: "D",
-    solution: String.raw`Let \(J\) be Jesse's time, so Pat's time is \(J-6\). The work-rate equation is
-\[\frac4{J-6}+\frac4J=1.\]
-Multiplying by \(J(J-6)\) and simplifying gives
-\[J^2-14J+24=0=(J-12)(J-2).\]
-The value \(J=2\) is impossible because their combined time is \(4\) hours, so \(J=12\).`,
+    solution: String.raw`Since Pat (\(P\)) can do the job in 6 less hours than Jesse (\(J\)), this sets up the equation \(P=J-6\). The working together/apart equation is represented in this case by \(\frac{t}{P}+\frac{t}{J}=1\). Using that the total time together \(t=4\) and \(P=J-6\), this becomes \(\frac4{J-6}+\frac4J=1\). Multiplying everything by the common denominator \(J(J-6)\) we get \(4J+4(J-6)=J^2-6J\). Rearranging, we get \(0=J^2-14J+24\), and factoring we get \(0=(J-12)(J-2)\). This gives either \(J=2\) (impossible since it takes them 4 hours working together) or the correct answer of \(J=12\).`,
   },
   {
     id: 30154, number: 154, division: "Theta", topic: "Inequalities", difficulty: 1, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 5 },
     question: String.raw`Which mathematical symbol best compares \(|x+y|\) and \(|x|+|y|\) over all real numbers \(x\) and \(y\) (that is, replace "and" with one of the following symbols to make a true mathematical statement in all cases)?`,
     choices: ["<", String.raw`\(\le\)`, "=", String.raw`\(\ge\)`, "NOTA"], answer: "B",
-    solution: String.raw`By the triangle inequality,
-\[|x+y|\le|x|+|y|.\]
-Equality occurs when \(x\) and \(y\) have the same sign, while the inequality is strict for some values with opposite signs.`,
+    solution: String.raw`While \(|x+y|\) could add nonnegative and negative stuff that interacts before you take the absolute value, \(|x|+|y|\) only adds nonnegative stuff to other nonnegative stuff. If \(x\) and \(y\) are both the same sign, both statements are equal, but if \(x\) and \(y\) are opposite signs, then \(|x+y|<|x|+|y|\). If either number is zero, equality holds as well. Therefore the symbol valid in all cases is \(\le\).`,
   },
   {
     id: 30155, number: 155, division: "Theta", topic: "Polynomial Equations", difficulty: 3, methods: ["Substitution"],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 6 },
     question: String.raw`How many real number solutions does the following equation have?
 \[\left(\frac1x+2\right)^2+5\left(\frac1x+2\right)-14=0\]`,
     choices: ["0", "1", "2", "3", "NOTA"], answer: "B",
-    solution: String.raw`Let \(u=\frac1x+2\). Then
-\[u^2+5u-14=(u+7)(u-2)=0,\]
-so \(u=-7\) or \(u=2\). The first gives \(\frac1x=-9\), hence \(x=-\frac19\). The second gives \(\frac1x=0\), which has no solution. Therefore, the original equation has one real solution.`,
+    solution: String.raw`Let \(u=\frac1x+2\) so that the equation reads \(u^2+5u-14=0\). This can factor into \((u+7)(u-2)=0\) or you can use the quadratic formula to find that \(u=-7\) and \(u=2\). Since \(u=\frac1x+2\), this means \(\frac1x+2=-7\), which has solution \(x=-\frac19\) and \(\frac1x+2=2\), which has no solution. So, this equation has one solution.`,
   },
   {
     id: 30156, number: 156, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: [],
-    question: String.raw`For a given line \(l_1\) with slope \(m\), we'll call a perpendicular line \(l_2\) and the "inverse" line to \(l_1\) we'll call \(l_3\), where the "inverse" line is defined as \(y=\frac1m x-\frac bm\). What is the product of the slopes of \(l_2\) and \(l_3\)?`,
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 7 },
+    question: String.raw`For a given line \(l_1\) with nonzero slope \(m\), we'll call a perpendicular line \(l_2\) and the "inverse" line to \(l_1\) we'll call \(l_3\) where the "inverse" line is defined as \(y=\frac1m x-\frac bm\). What is the product of the slopes of \(l_2\) and \(l_3\)?`,
     choices: ["We cannot determine", "-1", String.raw`\(\frac1m\)`, String.raw`\(-\frac1m\)`, "NOTA"], answer: "E",
-    solution: String.raw`For \(l_1:y=mx+b\), a perpendicular line has slope \(-\frac1m\), while the defined "inverse" line has slope \(\frac1m\). Their product is
-\[-\frac1m\cdot\frac1m=-\frac1{m^2},\]
-which is not listed among choices A-D. Therefore, the answer is NOTA.`,
+    solution: String.raw`For a line \(y=mx+b\), the perpendicular line has slope \(-\frac1m\), while the inverse line is \(y=\frac1m x-\frac bm\) and therefore has slope \(\frac1m\). Therefore, the product of the two slopes is \(-\frac1{m^2}\), which is not listed.`,
   },
   {
     id: 30157, number: 157, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 8 },
     question: String.raw`The current in a river moves at a rate of 3 ft/sec. Rowing his kayak with the current, Pat travels 150 ft forward in the time it takes to travel 50 ft in the opposite direction. How fast can Pat row in still water?`,
     choices: ["5 ft/sec.", "10 ft/sec.", "12 ft/sec.", "15 ft/sec.", "NOTA"], answer: "E",
-    solution: String.raw`Let \(r\) be Pat's still-water speed and \(t\) the common travel time. Then
-\[150=(r+3)t,\qquad50=(r-3)t.\]
-Dividing the equations gives \(3=\frac{r+3}{r-3}\), so \(r=6\) ft/sec. Since \(6\) is not listed, the answer is NOTA.`,
+    solution: String.raw`This sets up the distance = rate * time equation \(d=r*t\). In the first scenario, Pat is getting a boost from the current, so the new rate is \(r+3\). Against the current gives \(r-3\). So, the first scenario becomes \(150=(r+3)*t\) and the second scenario is \(50=(r-3)*t\). One thing to do is to divide the first scenario by the second, which eliminates time and gives us \(3=\frac{r+3}{r-3}\). Solving for \(r\) then gives that \(r=6\) ft/sec. This is not listed, so the answer is NOTA.`,
   },
   {
     id: 30158, number: 158, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: ["Geometric Sequence"],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 9 },
     question: String.raw`The number of poodles in Pat's Pet Palace doubles every three months. If after nine months, Pat has \(p\) poodles, which expression below represents how many poodles will Pat have after \(y\) years?`,
     choices: [String.raw`\((2p)^{4y}\)`, String.raw`\(p(2^{3y-2})\)`, String.raw`\(p(2^{4y-3})\)`, String.raw`\((2p)^3(4y-3)\)`, "NOTA"], answer: "C",
-    solution: String.raw`In nine months, the population has doubled three times, so Pat began with \(\frac{p}{2^3}\) poodles. Since \(y\) years is \(12y\) months, there are \(4y\) doubling periods. Thus the population is
-\[\frac{p}{2^3}(2^{4y})=p(2^{4y-3}).\]`,
+    solution: String.raw`In nine months, Pat's poodles have doubled three times, so Pat began with \(\frac{p}{2^3}\) poodles. Since \(y\) years is \(12y\) months, in terms of the doubling time, this is \(4y*3\) months, so after \(y\) years, Pat will have \(p\left(\frac1{2^3}\right)(2^{4y})=p(2^{4y-3})\) poodles.`,
   },
   {
     id: 30159, number: 159, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms"],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 10 },
     question: String.raw`What is the domain of the relation \(y=\log_2\left(\frac{\sqrt{6-2x}}{x-5}\right)\) in interval notation?`,
     choices: [String.raw`\((5,\infty)\)`, String.raw`\((-\infty,3]\)`, String.raw`\([3,5)\)`, String.raw`\((-\infty,3]\cup(5,\infty)\)`, "NOTA"], answer: "E",
-    solution: String.raw`The logarithm's argument must be positive. The numerator \(\sqrt{6-2x}\) exists only for \(x\le3\) and equals \(0\) at \(x=3\); the denominator is negative throughout \(x\le3\). Thus the quotient is never positive. There is no real domain, so the answer is NOTA.`,
+    solution: String.raw`To make the log part work, the inside of the parentheses must be greater than 0. Since the inside of the parentheses is a fraction, that means the numerator and the denominator must both be negative or both be positive. Since the numerator is a square root, it is always nonnegative but only exists when \(x\le3\), while the denominator is positive when \(x>5\). Since no number satisfies these two conditions, there is no number that satisfies the domain of this function. In particular, at \(x=3\) the logarithm's argument is zero, also forbidden. The domain is empty, so the answer is NOTA.`,
   },
   {
     id: 30160, number: 160, division: "Theta", topic: "Optimization", difficulty: 1, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 11 },
     question: String.raw`Over all integers, what integer will minimize \(f(x)=5x^2-7x+11\)?`,
     choices: ["-1", "0", "1", "2", "NOTA"], answer: "C",
-    solution: String.raw`The vertex occurs at
-\[x=-\frac{b}{2a}=\frac7{10}.\]
-Since the parabola opens upward, the closest integer to \(\frac7{10}\) minimizes the function. That integer is \(x=1\).`,
+    solution: String.raw`For this quadratic equation, the vertex occurs at \(h=-\frac b{2a}=-\frac{-7}{2*5}=\frac7{10}\). Since this is an upward facing quadratic, the vertex corresponds to a minimum for the function. Since \(\frac7{10}\) isn't an integer, the closest integer will minimize the function. The closest integer is \(x=1\).`,
   },
   {
     id: 30161, number: 161, division: "Theta", topic: "Inequalities", difficulty: 5, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 12 },
     question: String.raw`What is the solution set to the following inequality in interval notation?
 \[\frac{x^7(x-2)^4}{(x+5)^3(x+8)^6(x-9)^{11}}\le0\]`,
     choices: [
@@ -1480,11 +1677,11 @@ Since the parabola opens upward, the closest integer to \(\frac7{10}\) minimizes
       String.raw`\((-\infty,-8)\cup(-8,-5)\cup(0,2)\cup(2,9)\)`,
       "NOTA",
     ], answer: "B",
-    solution: String.raw`A sign chart uses the critical values \(-8,-5,0,2,\) and \(9\). The even powers at \(-8\) and \(2\) do not change the sign, although \(x=-8\) is excluded because it makes the denominator zero. The odd powers change the sign at \(-5,0,\) and \(9\). The expression is nonpositive on
-\[(-\infty,-8)\cup(-8,-5)\cup[0,9).\]`,
+    solution: String.raw`The easiest way to solve is to draw a number line with the zeros of the terms in parentheses labelled. When you do this and label the intervals where each part is positive or negative (the terms raised to an even power are positive away from their zeros), you find that the intervals \((-\infty,-8)\), \((-8,-5)\), \([0,2]\), and \([2,9)\) work with the inequality. The values of \(-8\) and \(-5\) are not allowed since it will make you divide by 0, but the values of 0 and 2 are fine. Since we are taking the union of two intervals at the end containing 2, those just become one interval \([0,9)\). Thus the answer is \((-\infty,-8)\cup(-8,-5)\cup[0,9)\).`,
   },
   {
     id: 30162, number: 162, division: "Theta", topic: "Functions", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 13 },
     question: String.raw`For \(f(x)=\frac{x-1}{x-2}\) and \(g(x)=\frac{x-3}{x-2}\), where \(x\) is over the real numbers, what is the domain of \(f\circ g\) in set notation?`,
     choices: [
       String.raw`\(\{x\mid x\ne2\}\)`,
@@ -1493,12 +1690,13 @@ Since the parabola opens upward, the closest integer to \(\frac7{10}\) minimizes
       String.raw`\(\{x\mid x\ne1,x\ne2,x\ne3\}\)`,
       "NOTA",
     ], answer: "B",
-    solution: String.raw`The inner function requires \(x\ne2\). The outer function also requires \(g(x)\ne2\). Solving
-\[\frac{x-3}{x-2}=2\]
-gives \(x=1\). Therefore, the domain is \(\{x\mid x\ne1,x\ne2\}\).`,
+    solution: String.raw`Write the composite function without simplifying to find
+\[f\circ g(x)=f(g(x))=\frac{\frac{x-3}{x-2}-1}{\frac{x-3}{x-2}-2}.\]
+The value \(x=2\) will right away make you divide by zero, while \(x=1\) will make the denominator \(\frac{x-3}{x-2}-2\) equal zero, so that's out too. Anything else is fine, as it will not make you divide by zero. The domain is \(\{x\in\mathbb R\mid x\ne1,\ x\ne2\}\).`,
   },
   {
     id: 30163, number: 163, division: "Theta", topic: "Inequalities", difficulty: 4, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 14 },
     question: String.raw`Solve the inequality \(|x+2|+|2x+10|>4\) in interval notation.`,
     choices: [
       String.raw`\((-\infty,-\frac{16}{3})\cup(\frac83,\infty)\)`,
@@ -1507,17 +1705,23 @@ gives \(x=1\). Therefore, the domain is \(\{x\mid x\ne1,x\ne2\}\).`,
       String.raw`\((-4,-2)\cup(\frac83,\infty)\)`,
       "NOTA",
     ], answer: "B",
-    solution: String.raw`The critical points are \(x=-5\) and \(x=-2\). Solving on the three intervals gives:
-\[\begin{array}{ll}
-x<-5:&-3x-12>4\Longrightarrow x<-\frac{16}{3},\\
--5\le x<-2:&x+8>4\Longrightarrow x>-4,\\
-x\ge-2:&3x+12>4,
-\end{array}\]
-and the last inequality holds for every \(x\ge-2\). Combining the valid portions gives
-\[(-\infty,-\tfrac{16}{3})\cup(-4,\infty).\]`,
+    solution: String.raw`Split the real line at the zeros \(x=-5\) and \(x=-2\) of the expressions inside the absolute values.
+\[
+|x+2|+|2x+10|=
+\begin{cases}
+-3x-12,&x<-5,\\
+x+8,&-5\le x<-2,\\
+3x+12,&x\ge-2.
+\end{cases}
+\]
+In the first case, \(-3x-12>4\) gives \(x<-\frac{16}{3}\). In the second, \(x+8>4\) gives \(-4<x<-2\). In the third, \(3x+12>4\) holds for all \(x\ge-2\). The above results now give us the interval
+\[\left(-\infty,-\frac{16}{3}\right)\cup(-4,\infty)\]
+as the solution set in interval notation. The graph below also confirms this is indeed the correct solution:
+[[solution-diagram:theta-nsu-2026-14]]`,
   },
   {
     id: 30164, number: 164, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 15 },
     question: String.raw`Simplify \(\sqrt{27x-18}+\sqrt{3x^3-2x^2}-\sqrt{12x-8}\) by collecting radical terms so that you are only left with one radical expression. Assume all expressions under all radicals represent nonnegative real numbers and \(x\) is a nonnegative real number as well.`,
     choices: [
       String.raw`\((x+1)\sqrt{3x-2}\)`,
@@ -1526,146 +1730,131 @@ and the last inequality holds for every \(x\ge-2\). Combining the valid portions
       String.raw`\((x^2+5)\sqrt{3x-2}\)`,
       "NOTA",
     ], answer: "A",
-    solution: String.raw`Treat each square root separately:
-\[\sqrt{27x-18}=3\sqrt{3x-2},\]
-\[\sqrt{3x^3-2x^2}=x\sqrt{3x-2}\]
-because \(x\ge0\), and
-\[\sqrt{12x-8}=2\sqrt{3x-2}.\]
-Collecting like radical terms gives \((x+1)\sqrt{3x-2}\).`,
+    solution: String.raw`Treat each square root as its own expression. For the first square root, you can factor out a 9, which becomes a 3 outside the square root. For the second square root, you can factor out an \(x^2\), which becomes an \(x\) outside the square root (since we assume \(x\) is nonnegative). For the third square root, you can factor out a 4, which becomes a 2 outside the square root. Inside each square root is now \(3x-2\), so that becomes a common term you can factor out. Putting together like terms and not combining unlike terms, you get \((x+1)\) times the common factor of \(\sqrt{3x-2}\).`,
   },
   {
     id: 30165, number: 165, division: "Theta", topic: "Sequences and Series", difficulty: 2, methods: ["Telescoping"],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 16 },
     question: String.raw`What is \(\sum_{n=1}^{100}\left(\frac1n-\frac1{n+1}\right)\)?`,
     choices: ["1", String.raw`\(\frac12\)`, String.raw`\(\frac{99}{100}\)`, String.raw`\(\frac{100}{101}\)`, "NOTA"], answer: "D",
-    solution: String.raw`Writing out the sum,
-\[\left(1-\frac12\right)+\left(\frac12-\frac13\right)+\cdots+\left(\frac1{100}-\frac1{101}\right),\]
-all intermediate terms cancel. The result is
-\[1-\frac1{101}=\frac{100}{101}.\]`,
+    solution: String.raw`As we start writing out the sum
+\[\left(1-\frac12\right)+\left(\frac12-\frac13\right)+\left(\frac13-\frac14\right)+\cdots+\left(\frac1{99}-\frac1{100}\right)+\left(\frac1{100}-\frac1{101}\right)\]
+we see that the middle terms all cancel out, leaving us with just the end terms \(1-\frac1{101}\), which is \(\frac{100}{101}\).`,
   },
   {
     id: 30166, number: 166, division: "Theta", topic: "Simplification", difficulty: 4, methods: ["Partial Fractions"],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 17 },
     question: String.raw`If
 \[\frac{x^2+7x}{(x-1)(x^2+1)}=\frac{A}{x-1}+\frac{Bx+C}{x^2+1},\]
 then what is \(\frac{AB}{C}\)?`,
     choices: ["-3", "-12", "6", "9", "NOTA"], answer: "A",
-    solution: String.raw`Equating numerators gives
-\[x^2+7x=A(x^2+1)+(Bx+C)(x-1).\]
-Matching coefficients yields
-\[1=A+B,\qquad7=-B+C,\qquad0=A-C.\]
-Solving gives \(A=4\), \(B=-3\), and \(C=4\). Therefore,
-\[\frac{AB}{C}=\frac{4(-3)}4=-3.\]`,
+    solution: String.raw`We multiply what's needed to each fraction to get the common denominator of \((x-1)(x^2+1)\) and then equate the numerators: \(x^2+7x=A(x^2+1)+(Bx+C)(x-1)\). By distributing, we get \(x^2+7x=Ax^2+A+Bx^2-Bx+Cx-C\). By looking at the like terms for \(x^2\), \(x\) and the constants, it builds the system of equations:
+\[\begin{aligned}1&=A+B\\7&=-B+C\\0&=A-C.\end{aligned}\]
+Solving this system of equations gives \(A=4\), \(B=-3\), \(C=4\), which leads to answer A, since \(\frac{AB}{C}=-3\).`,
   },
   {
     id: 30167, number: 167, division: "Theta", topic: "Inequalities", difficulty: 2, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 18 },
     question: String.raw`If \(f(x)=x^2-8x+23\) and \(g(x)=2x-13\), find all values of \(a\) such that \(g(a)<f(x)\) for all values of \(x\). Express your answer in interval notation.`,
     choices: [String.raw`\((-\infty,4)\)`, String.raw`\((4,\infty)\)`, String.raw`\((-\infty,10)\)`, String.raw`\((10,\infty)\)`, "NOTA"], answer: "C",
-    solution: String.raw`Completing the square gives
-\[f(x)=(x-4)^2+7,\]
-so the minimum value of \(f\) is \(7\). We need
-\[g(a)=2a-13<7,\]
-which gives \(a<10\). Therefore, the solution is \((-\infty,10)\).`,
+    solution: String.raw`For \(f(x)=x^2-8x+23\), we can find the \(y\) value of the vertex by either using the formula \(k=c-\frac{b^2}{4a}\) or by completing the square to find that the vertex has \(y\) value 7. Therefore, \(f(x)\) is a quadratic with range \([7,\infty)\). So, we need \(g(a)=2a-13<7\), which gives \(a<10\), which is displayed in interval notation in answer choice C.`,
   },
   {
     id: 30168, number: 168, division: "Theta", topic: "Inequalities", difficulty: 1, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 19 },
     question: String.raw`If \(f(x)=x^2-8x+23\) and \(g(x)=2x-13\) as in the problem above, find all values of \(a\) such that \(g(a)<f(x)\) for some value \(x\). Express your answer in interval notation.`,
     choices: [String.raw`\((-\infty,\infty)\)`, String.raw`\([7,\infty)\)`, String.raw`\((-\infty,10)\)`, String.raw`\((4,\infty)\)`, "NOTA"], answer: "A",
-    solution: String.raw`The parabola \(f(x)=(x-4)^2+7\) is unbounded above. For every real \(a\), the value \(g(a)\) is finite, so some sufficiently large \(|x|\) makes \(f(x)>g(a)\). Thus every real \(a\) works, giving \((-\infty,\infty)\).`,
+    solution: String.raw`Since the range of \(f(x)\) is \([7,\infty)\), and the range of the line \(g(x)\) is \((-\infty,\infty)\), for any \(a\) we can find at least one \(x\) such that \(g(a)<f(x)\). For example, if \(a=x\) it is always true that \(g(a)=g(x)<f(x)\); i.e., the graph of the parabola is always above the graph of the line. Indeed, \(f(x)-g(x)=x^2-10x+36=(x-5)^2+11>0\). Thus every real \(a\) works.`,
   },
   {
     id: 30169, number: 169, division: "Theta", topic: "Probability", difficulty: 4, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 20 },
     question: String.raw`Angela has exactly one $1 bill, one $5 bill, one $10 bill, one $20 bill, one $50 bill and one $100 bill. She wants to give Bob and Casey all of her money so that the difference in the amounts she gives them differs by $25 or less. How many different ways can Angela give Bob and Casey her money?`,
     choices: ["8", "6", "4", "2", "NOTA"], answer: "B",
-    solution: String.raw`The total is \(\$186\), so each person must receive between \(\$81\) and \(\$105\). The possible unordered splits are
-\[\$81/\$105,\qquad \$85/\$101,\qquad \$86/\$100.\]
-Each split can be assigned to Bob and Casey in two orders, giving \(3\cdot2=6\) ways.`,
+    solution: String.raw`The minimum amount that either Bob or Casey can receive is \(\frac{186-25}{2}=80.5\), so \(\$81\). The maximum amount that either one can receive is \(\$186-\$81=\$105\). The only values within this range that are possible to form from the given set of bills are listed below for a total of 6 ways when we consider that either Bob or Casey can receive either amount listed:
+\[\begin{aligned}
+50+20+10+1&=81,\quad100+5=105,\\
+50+20+10+5&=85,\quad100+1=101,\\
+50+20+10+5+1&=86,\quad100=100.
+\end{aligned}\]
+Their respective differences are \(|81-105|=24\), \(|85-101|=16\), and \(|86-100|=14\). To see completeness, the recipient without the \(\$100\) bill has at most \(\$86\), so must receive between \(\$81\) and \(\$86\). Omitting any of the \(\$50,\$20,\$10\) bills makes that impossible; the optional \(\$5,\$1\) bills give exactly \(81,85,86\). Each split has two assignments to the two named recipients.`,
   },
   {
     id: 30170, number: 170, division: "Theta", topic: "Polynomials", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 21 },
     question: String.raw`When the cubic function \(f(x)=9x^3-x+5\) is divided by \(g(x)=3x-2\), it approaches a quadratic function as \(x\) goes to positive infinity. What is the smallest positive integer value for \(x\) such that the height difference between \(f(x)\div g(x)\) and the quadratic equation it approaches is less than one?`,
     choices: ["2", "3", "4", "5", "NOTA"], answer: "C",
-    solution: String.raw`Polynomial division gives
-\[\frac{9x^3-x+5}{3x-2}=3x^2+2x+1+\frac7{3x-2}.\]
-For positive \(x\), the height difference is \(\frac7{3x-2}\). Solving
-\[\frac7{3x-2}<1\]
-gives \(x>3\). Therefore, the smallest positive integer is \(x=4\).`,
+    solution: String.raw`When we long divide \(f(x)=9x^3-x+5\) by \(g(x)=3x-2\), we get
+\[3x^2+2x+1+\frac7{3x-2}.\]
+Therefore, the quadratic equation \(f\div g\) approaches is \(3x^2+2x+1\), with error/remainder \(\frac7{3x-2}\). Therefore, we want the absolute height difference to be less than 1. For positive integer \(x\), \(3x-2>0\), so solving \(\frac7{3x-2}<1\) gives \(x>3\), and thus, we need \(x=4\).`,
   },
   {
     id: 30171, number: 171, division: "Theta", topic: "Logs and Exponents", difficulty: 2, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 22 },
     question: String.raw`A mold grows exponentially and doubles its size every 4 years. If there is 100 grams of mold to begin with, which value or expression below represents how many grams of mold there will be after 7 years?`,
     choices: [String.raw`\(200\sqrt[4]{8}\)`, "350", String.raw`\(175\ln2\)`, "275", "NOTA"], answer: "A",
-    solution: String.raw`With a doubling time of \(4\) years, the amount after \(7\) years is
-\[100\cdot2^{7/4}=100\cdot2\cdot2^{3/4}=200\sqrt[4]{8}.\]`,
+    solution: String.raw`Since the doubling time is every 4 years, this creates the exponential equation \(2=e^{4k}\), where \(k\) is the growth rate. Solving for \(k\), we get \(k=\frac{\ln2}{4}\). Now, using the exponential growth equation \(P(t)=P_0e^{kt}\), with \(P_0=100\), after 7 years we get
+\[P(7)=100e^{\frac{\ln2}{4}(7)},\]
+which, after properties of logs, simplifies to \(100e^{\ln(2^{7/4})}=100(2^{7/4})\), which simplifies finally to \(200\sqrt[4]{8}\).`,
   },
   {
     id: 30172, number: 172, division: "Theta", topic: "Function Analysis", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 23 },
     question: String.raw`What is the range of the function \(f(x)=\frac1{x^2-6x+14}-7\)?`,
     choices: [String.raw`\((-\frac{34}{5},\infty)\)`, String.raw`\([-7,\infty)\)`, String.raw`\([-\frac{34}{5},\infty)\)`, String.raw`\((-\frac{34}{5},-7)\)`, "NOTA"], answer: "E",
-    solution: String.raw`Complete the square:
-\[x^2-6x+14=(x-3)^2+5.\]
-The reciprocal term has range \((0,\frac15]\). Subtracting \(7\) gives
-\[\left(-7,-\frac{34}{5}\right].\]
-This interval is not listed, so the answer is NOTA.`,
+    solution: String.raw`We can either complete the square in the denominator or figure out the coordinates of the vertex to find \(x^2-6x+14=(x-3)^2+5\). This means that the denominator is at least 5 (since \((x-3)^2\ge0\)) and can go to infinity. So, the fraction can go down to 0 (but never actually reach 0) since the quadratic can go up to infinity, and the fraction can be \(\frac15\) at its biggest (and can actually reach \(\frac15\)). So, subtracting 7 at the end means that \(f(x)\) will go between \(\frac15-7=-\frac{34}{5}\) and \(0-7=-7\). It will actually reach \(-\frac{34}{5}\) but will never reach \(-7\). So, the answer is \(\left(-7,-\frac{34}{5}\right]\), which is not any of the choices.`,
   },
   {
     id: 30173, number: 173, division: "Theta", topic: "Geometry", difficulty: 2, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 24 },
     question: String.raw`What is the area between the \(x\)-axis and the function \(f(x)=|6-2x|\) between the \(x\) values (vertical lines) of \(x=-1\) and \(x=5\)?`,
     choices: ["12", "20", "24", "40", "NOTA"], answer: "B",
-    solution: String.raw`The graph meets the \(x\)-axis at \(x=3\). From \(x=-1\) to \(x=3\), it forms a triangle with base \(4\) and height \(8\), having area \(16\). From \(x=3\) to \(x=5\), it forms a triangle with base \(2\) and height \(4\), having area \(4\). The total area is \(16+4=20\).`,
+    solution: String.raw`We can draw this function and see that it makes two triangles, one starting at height 8 when \(x=-1\) and then going down to height 0 when \(x=3\). That's when the other triangle begins, going until \(x=5\), when the height becomes 4. So, the first triangle has height 8 and base 4, which means area \(\frac12*8*4=16\), and the second triangle has height 4 and base 2, which means area \(\frac12*4*2=4\). Adding these areas together gives total area 20.`,
   },
   {
     id: 30174, number: 174, division: "Theta", topic: "Systems of Equations", difficulty: 2, methods: ["Substitution"],
-    question: String.raw`Alex was digging a hole in his yard when he thought: "I've dug half of the depth of this hole. I'm 70 inches tall, and right now my head is above ground-level by a certain amount when I stand in the hole. When I am done digging this hole and stand in it, my head will be twice as far below ground-level as it is now above." What will be the hole's final depth?`,
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 25 },
+    question: String.raw`Alex was digging a hole in her yard when she thought: "I've dug half of the depth of this hole. I'm 70 inches tall, and right now my head is above ground-level by a certain amount when I stand in the hole. When I am done digging this hole and stand in it, my head will be twice as far below ground-level as it is now above." What will be the hole's final depth?`,
     choices: ["100 inches", "105 inches", "110 inches", "115 inches", "NOTA"], answer: "B",
-    solution: String.raw`Let \(x\) be the final depth and \(y\) the amount Alex's head is currently above ground level. Then
-\[\frac12x+y=70,\qquad x-2y=70.\]
-Solving the system gives \(x=105\) inches.`,
+    solution: String.raw`Let \(x\) be the final depth of the hole and let \(y\) be the amount that Alex's head is above ground-level when the hole is half dug. So \(\frac12x+y=70\) and \(x-2y=70\). Solving this system of equations gives \(x=105\) inches.`,
   },
   {
     id: 30175, number: 175, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 26 },
     question: String.raw`The outer edge of a picture frame measures 14 cm by 20 cm and the picture inside the frame measures \(160\text{ cm}^2\). The frame forms a border that is the same width all around the picture in that there is a border of uniform width between the outer edge of the picture frame and the outer edge of the picture that is inside the frame. What is the width of this border?`,
     choices: ["1 cm", "2 cm", "3 cm", "4 cm", "NOTA"], answer: "B",
-    solution: String.raw`If the border width is \(x\), then
-\[(14-2x)(20-2x)=160.\]
-Expanding and simplifying gives
-\[x^2-17x+30=0=(x-15)(x-2).\]
-The value \(x=15\) is impossible for a frame only \(14\) cm wide, so \(x=2\) cm.`,
+    solution: String.raw`Since the frame takes up space on both sides of the picture, as well as above and below the picture, this sets up the equation \((14-2x)(20-2x)=160\). Expanding and moving things around gives \(4x^2-68x+120=0\), which simplifies to \(x^2-17x+30=0\), which factors into \((x-15)(x-2)=0\). This means either \(x=15\) cm (an impossibility since one entire side of the picture frame is 14 cm) or \(x=2\) cm, which is the correct answer.`,
   },
   {
     id: 30176, number: 176, division: "Theta", topic: "Inequalities", difficulty: 3, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 27 },
     question: String.raw`Find all values of \(x\) (in interval notation) such that
 \[-x^2+10x-18>|3x-18|.\]`,
     choices: [String.raw`\((0,7)\)`, String.raw`\((4,7)\)`, String.raw`\((4,9)\)`, String.raw`\([0,7]\)`, "NOTA"], answer: "B",
-    solution: String.raw`For \(x<6\), \(|3x-18|=-3x+18\), and the inequality reduces to
-\[-x^2+13x-36>0,\]
-which holds between its roots \(4\) and \(9\), giving \((4,6)\) in this case. For \(x\ge6\), the inequality becomes
-\[-x^2+7x>0,\]
-which gives \([6,7)\) in this case. Combining them gives \((4,7)\).`,
+    solution: String.raw`The expression \(|3x-18|\) is \(-3x+18\) when \(x<6\) and \(3x-18\) when \(x\ge6\). Solving the equation \(-x^2+10x-18=-3x+18\) gives that either \(x=4\) or \(x=9\); and so, only \(x=4\) works on the branch \(x<6\). Similarly, solving \(-x^2+10x-18=3x-18\) gives either \(x=0\) or \(x=7\); and so, only \(x=7\) works on the branch \(x\ge6\). So, strictly between \(x=4\) and \(x=7\), the downward opening parabola is above the V-shaped absolute value function. The solution is \((4,7)\).`,
   },
   {
     id: 30177, number: 177, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
-    question: String.raw`Which of the following expressions is equivalent to
-\[\sqrt{a\cdot\sqrt[3]{a}\cdot\sqrt[4]{\sqrt[3]{a}}}\ ?\]`,
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 28 },
+    question: String.raw`Which of the following expressions is equivalent to \(\sqrt{a\cdot\sqrt[3]{a\cdot\sqrt[4]{a}}}\)?`,
     choices: [String.raw`\(a^{15/16}\)`, String.raw`\(a^{1/24}\)`, String.raw`\(a^{17/24}\)`, String.raw`\(a^4\)`, "NOTA"], answer: "C",
-    solution: String.raw`Writing each radical as an exponent, the expression is
-\[\left(a\cdot a^{1/3}\cdot a^{1/12}\right)^{1/2}
-=a^{(1+1/3+1/12)/2}
-=a^{17/24}.\]`,
+    solution: String.raw`This can be rewritten in ways to make this more obvious, such as
+\[\sqrt a\cdot\sqrt{\sqrt[3]a}\cdot\sqrt{\sqrt[3]{\sqrt[4]a}},\]
+which is \(a^{1/2}\cdot a^{(1/2)(1/3)}\cdot a^{(1/2)(1/3)(1/4)}\), which is \(a^{1/2}\cdot a^{1/6}\cdot a^{1/24}\), which is \(a^{1/2+1/6+1/24}=a^{17/24}\). The real radical domain requires \(a\ge0\), including \(a=0\).`,
   },
   {
     id: 30178, number: 178, division: "Theta", topic: "Rate of Change", difficulty: 2, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 29 },
     question: String.raw`Alex is trying to fill her pool with water using 2 hoses. The first hose could fill her pool in 2 hours working alone and the second hose could fill her pool in 3 hours working alone. Suppose Alex uses both hoses to fill her pool, but she also leaves the drain open which can empty her entire pool in 4 hours. How many hours does it take for her pool to fill up under these conditions?`,
     choices: [String.raw`\(\frac7{12}\)`, String.raw`\(\frac{12}{7}\)`, String.raw`\(\frac56\)`, String.raw`\(\frac65\)`, "NOTA"], answer: "B",
-    solution: String.raw`If \(t\) is the filling time, the rate equation is
-\[\frac t2+\frac t3-\frac t4=1.\]
-Thus \(\frac7{12}t=1\), so \(t=\frac{12}{7}\) hours.`,
+    solution: String.raw`This sets up the equation \(\frac t2+\frac t3-\frac t4=1\). Solving for \(t\) gives \(t=\frac{12}{7}\).`,
   },
   {
     id: 30179, number: 179, division: "Theta", topic: "Polynomial Equations", difficulty: 1, methods: [],
+    source: { competition: "2026 NSU March Statewide", event: "Algebra 2 Individual", questionNumber: 30 },
     question: String.raw`There are two numbers such that each one is sixteen times as large as four times its multiplicative inverse. What is the smaller of the two values of these two numbers?`,
     choices: ["-64", "-8", "8", "64", "NOTA"], answer: "B",
-    solution: String.raw`Let one of the numbers be \(x\). The condition gives
-\[\frac{x}{16}=\frac4x.\]
-Cross-multiplying yields \(x^2=64\), so \(x=\pm8\). The smaller value is \(-8\).`,
+    solution: String.raw`This sets up the equation \(\frac{x}{16}=\frac4x\). Cross-multiplying, we get \(x^2=64\), which gives us that \(x=\pm8\). So, the smaller value is \(x=-8\).`,
   },
   {
     id: 30180, number: 180, division: "Theta", topic: "Number Theory", difficulty: 4, methods: [],
@@ -3007,4 +3196,236 @@ Which of the following statement(s) is(are) always true?`, choices: ["I only", "
   { id: 30419, number: 419, division: "Theta", topic: "Rate of Change", difficulty: 3, methods: [],
     question: String.raw`Brandon and Eddard are going running. Brandon starts running 16 minutes before Eddard. Brandon runs at a rate of 9 minutes per mile and Eddard runs at a rate of 8.25 minutes per mile. If they both start at the same location and run the same route how many minutes will Eddard take to catch up to Brandon?`, choices: ["156","162","176","192","NOTA"], answer: "C",
     solution: String.raw`Brandon's 16-minute head start is \(16/9\) mile. Their speeds are \(1/9\) and \(1/8.25=4/33\) mile per minute, so Eddard gains at \(4/33-1/9=1/99\) mile per minute. The catch-up time after Eddard starts is \((16/9)/(1/99)=(16/9)(99)=\boxed{176}\) minutes.` },
+  {
+    id: 30420, number: 420, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":1},
+    question: String.raw`What is the \(y\)-intercept of the graph of \(f(x)=9-(x+1)^2\)?`,
+    choices: [String.raw`9`, String.raw`8`, String.raw`6`, String.raw`-9`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`The \(y\)-intercept occurs when \(x=0\). \(f(0)=9-(1)^2=\boxed8\).`,
+  },
+  {
+    id: 30421, number: 421, division: "Theta", topic: "Functions", difficulty: 1, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":2},
+    question: String.raw`Let \(f(x)=\frac32x-\frac12\). For what value of \(x\) is \(f(-x)=2\)?`,
+    choices: [String.raw`\(x=-\frac53\)`, String.raw`\(x=-\frac35\)`, String.raw`\(x=\frac53\)`, String.raw`\(x=\frac32\)`, String.raw`NOTA`], answer: "A",
+    solution: String.raw`\(f(-x)=-\frac32x-\frac12=2\) so \(-\frac32x=\frac52\). Therefore, \(x=\frac52\cdot-\frac23=\boxed{-\frac53}\).`,
+  },
+  {
+    id: 30422, number: 422, division: "Theta", topic: "Inequalities", difficulty: 1, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":3},
+    question: String.raw`What is the smallest value of \(x\) that is a solution to \(-4\le1-2x\le8\)?`,
+    choices: [String.raw`\(-\frac52\)`, String.raw`\(\frac72\)`, String.raw`\(\frac52\)`, String.raw`\(-\frac25\)`, String.raw`NOTA`], answer: "E",
+    solution: String.raw`Subtract \(1\) to get \(-5\le-2x\le7\). Divide by \(-2\), making sure to change the direction of the inequalities: \(-\frac72\le x\le\frac52\). From this, the smallest value of \(x\) is \(x=-\frac72\), which is not listed, so the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30423, number: 423, division: "Theta", topic: "Simplification", difficulty: 1, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":4},
+    question: String.raw`If \(2\sqrt{12}+3\sqrt{27}=\sqrt n\) for some positive integer \(n\), what is the value of \(n\)?`,
+    choices: [String.raw`30`, String.raw`195`, String.raw`300`, String.raw`507`, String.raw`NOTA`], answer: "D",
+    solution: String.raw`Simplify the radicals so that \(2(2\sqrt3)+3(3\sqrt3)=13\sqrt3=\sqrt n\). Therefore, \(n=13^2\cdot3=\boxed{507}\).`,
+  },
+  {
+    id: 30424, number: 424, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":5},
+    question: String.raw`For real numbers \(a\) and \(b\), the power function \(f(x)=ax^b\) satisfies \(f(-1)=2\) and \(f(2)=-16\). Find \(f(-3)\).`,
+    choices: [String.raw`18`, String.raw`-27`, String.raw`-54`, String.raw`54`, String.raw`NOTA`], answer: "D",
+    solution: String.raw`It is given that \(a(-1)^b=2\) and \(a(2)^b=-16\). Since \(2^b>0\), the second equation implies \(a<0\). For a real power of \(-1\) to be defined over the reals, its value has magnitude \(1\). The first equation therefore gives \(|a|=2\), so \(a=-2\). Then \(-2(2)^b=-16\), giving \(2^b=8\) and \(b=3\). Therefore, \(f(x)=-2x^3\) and \(f(-3)=-2(-3)^3=\boxed{54}\).`,
+  },
+  {
+    id: 30425, number: 425, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":6},
+    question: String.raw`For what value of \(k\) does the equation \(3-|2x-1|=x+k\) have only one real solution?`,
+    choices: [String.raw`\(k=\frac12\)`, String.raw`\(k=\frac32\)`, String.raw`\(k=\frac52\)`, String.raw`\(k=\frac72\)`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`To have only one real solution, the line \(y=x+k\) must intersect the vertex \((\frac12,3)\) of the absolute value graph. Thus, \(3=\frac12+k\) showing \(k=\boxed{\frac52}\).
+
+To check uniqueness, for \(x\le\frac12\) the equation is \(2+2x=x+k\), so \(x=k-2\), valid exactly when \(k\le\frac52\). For \(x\ge\frac12\) it is \(4-2x=x+k\), so \(x=(4-k)/3\), also valid exactly when \(k\le\frac52\). If \(k<\frac52\) these are two distinct solutions; if \(k>\frac52\) there are none. At \(k=\frac52\), both formulas give the single vertex \(x=\frac12\).`,
+  },
+  {
+    id: 30426, number: 426, division: "Theta", topic: "Functions", difficulty: 2, methods: ["Inverse Functions"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":7},
+    question: String.raw`Let \(f(x)=\frac{x+2}{x-2}\) and \(g(x)=f^{-1}(x)\). Find the value of \((f\cdot f^{-1})(4)\). NOTE: This is the multiplication and not the composition of the two functions.`,
+    choices: [String.raw`10`, String.raw`6`, String.raw`4`, String.raw`2`, String.raw`NOTA`], answer: "A",
+    solution: String.raw`\(f(4)=\frac{4+2}{4-2}=3\). To find \(f^{-1}(4)\), solve \(\frac{x+2}{x-2}=4\) to get \(x=\frac{10}{3}\). Thus, \((f\cdot f^{-1})(4)=3\cdot\frac{10}{3}=\boxed{10}\).`,
+  },
+  {
+    id: 30427, number: 427, division: "Theta", topic: "Polynomials", difficulty: 2, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":8},
+    question: String.raw`If the functions \(f(x)=2x^2+7x-4\) and \(g(x)=4x^2+bx+4\) share a root, what is the sum of all possible values \(b\)?`,
+    choices: [String.raw`17`, String.raw`7`, String.raw`-10`, String.raw`-17`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`Factor \(f(x)=2x^2+7x-4=(2x-1)(x+4)\) to find roots \(x=\frac12\), \(x=-4\). Thus,
+\[g\left(\frac12\right)=4\left(\frac12\right)^2+b\left(\frac12\right)+4=0\]
+for which \(b=-10\), or \(g(-4)=4(-4)^2-4b+4=0\) when \(b=17\). The sum is \(-10+17=\boxed7\).`,
+  },
+  {
+    id: 30428, number: 428, division: "Theta", topic: "Analytic Geometry", difficulty: 2, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":9},
+    question: String.raw`Lines \(p\) and \(q\) have equations \(2x+3y=4\) and \(ax+by=6\), respectively, where \(a\) and \(b\) are real numbers. If \(p\) and \(q\) are perpendicular and intersect at \((2,0)\), what is the value of \(a+b\)?`,
+    choices: [String.raw`5`, String.raw`1`, String.raw`-1`, String.raw`-3`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`Since line \(q\) passes through \((2,0)\), then \(2a+0b=6\) showing \(a=3\). Write line \(p\) as \(y=-\frac23x+\frac43\) to find its slope to be \(-\frac23\). The slope of \(q\) is the opposite reciprocal, \(\frac32=-\frac ab=-\frac3b\). Thus, \(b=-2\). Therefore, \(a+b=3-2=\boxed1\).`,
+  },
+  {
+    id: 30429, number: 429, division: "Theta", topic: "Logs and Exponents", difficulty: 1, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":10},
+    question: String.raw`Consider the expressions \(r=\log_4 8\), \(s=\log_8 2\) and \(t=\log_{1/2}16\). Which of the following correctly compares these three values in increasing order?`,
+    choices: [String.raw`\(t<s<r\)`, String.raw`\(t<r<s\)`, String.raw`\(r<t<s\)`, String.raw`\(s<t<r\)`, String.raw`NOTA`], answer: "A",
+    solution: String.raw`\(r=\frac32\) since \(4^{3/2}=8\), \(s=\frac13\) since \(8^{1/3}=2\), and \(t=-4\) since \((\frac12)^{-4}=16\). Thus, \(\boxed{t<s<r}\).`,
+  },
+  {
+    id: 30430, number: 430, division: "Theta", topic: "Conic Sections", difficulty: 2, methods: ["Tangency"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":11},
+    question: String.raw`Consider the circle given by the equation \((x+a)^2+(y-b)^2=k\), where \(a\), \(b\), and \(k\) are positive real numbers. If the circle is tangent to both axes, find \(k\) in terms of both \(a\) and \(b\); i.e., the expression for \(k\) must include both \(a\) and \(b\) in it.`,
+    choices: [String.raw`\(k=a+b\)`, String.raw`\(k=a^2+b^2\)`, String.raw`\(k=\frac{a^2+b^2}{2}\)`, String.raw`\(k=2a^2+2b^2\)`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`Since the circle is tangent to both axes, then \(a=b\) and the radius is \(a\), so \(k=a^2\). Notice that choice C has the correct value of \(k\) since
+\[\frac{a^2+b^2}{2}=\frac{a^2+a^2}{2}=\frac{2a^2}{2}=a^2.\]
+Therefore, \(\boxed{k=\frac{a^2+b^2}{2}}\).`,
+  },
+  {
+    id: 30431, number: 431, division: "Theta", topic: "Polynomial Equations", difficulty: 2, methods: ["Substitution"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":12},
+    question: String.raw`What is the product of all the real solutions to \((x^2-5)^2=3(x^2-5)+4\)?`,
+    choices: [String.raw`72`, String.raw`36`, String.raw`9`, String.raw`4`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`Let \(u=x^2-5\). Then \(u^2-3u-4=(u-4)(u+1)=0\) so \(u=4\), \(u=-1\). Now solve \(x^2-5=4\) to find \(x=\pm3\) and \(x^2-5=-1\) to find \(x=\pm2\). The product of all the real solutions is \((3)(-3)(2)(-2)=\boxed{36}\).`,
+  },
+  {
+    id: 30432, number: 432, division: "Theta", topic: "Polynomial Equations", difficulty: 1, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":13},
+    question: String.raw`The solution to \(x-2(x-1)+3(x-2)-4(x-3)=x+2x+3x+4x\) can be written in the form \(x=\frac pq\) for relatively prime positive integers \(p\) and \(q\). Find \(p+q\).`,
+    choices: [String.raw`7`, String.raw`9`, String.raw`11`, String.raw`20`, String.raw`NOTA`], answer: "E",
+    solution: String.raw`Simplify to write \(x-2x+2+3x-6-4x+12=10x\) or \(-2x+8=10x\). Solve to find \(x=\frac23\). Thus, \(p+q=2+3=5\), which is not listed, so the answer is \(\boxed{\text{NOTA}}\).`,
+  },
+  {
+    id: 30433, number: 433, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":14},
+    question: String.raw`Suppose \(y\) varies directly with \(x\) and \(z\) varies inversely with \(y\). It is given that \(z=-32\) when \(x=-\frac16\). Find the value of \(x\) when \(z=\frac13\).`,
+    choices: [String.raw`\(x=32\)`, String.raw`\(x=16\)`, String.raw`\(x=1\)`, String.raw`\(x=-16\)`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`It must be that \(z\) varies inversely with \(x\), so write \(z=\frac kx\). Then \(-32=\frac{k}{-1/6}\) so \(k=\frac{16}{3}\). So \(\frac13=\frac{16/3}{x}\) when \(x=\boxed{16}\).`,
+  },
+  {
+    id: 30434, number: 434, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":15},
+    question: String.raw`A hyperbola has asymptotes \(2x+3y=3\) and \(2x-3y=9\). If \((0,-1)\) is a vertex of the hyperbola, which of the following is a focus of the hyperbola?`,
+    choices: [String.raw`\((3-\sqrt5,-1)\)`, String.raw`\((3,-1+\sqrt{13})\)`, String.raw`\((3+\sqrt{13},-1)\)`, String.raw`\((3,-1-\sqrt5)\)`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`The asymptotes intersect at \((3,-1)\), which is the center of the horizontal hyperbola. The vertex is \(3\) units away from the center so \(a=3\). Since the slopes of the asymptotes are \(\pm\frac23\), then \(b=2\). Use \(c^2=a^2+b^2\) to find \(c=\sqrt{13}\). The foci are then \((3\pm\sqrt{13},-1)\), so the listed focus is \(\boxed{(3+\sqrt{13},-1)}\).`,
+  },
+  {
+    id: 30435, number: 435, division: "Theta", topic: "Quadratics", difficulty: 3, methods: ["Discriminant Test"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":16},
+    question: String.raw`Let \(f(x)=ax^2+bx+1\) and \(g(x)=bx^2+ax-1\), where \(a\) and \(b\) are both nonzero real numbers. How many possible pairs \((a,b)\) are there if \(f(x)\) and \(g(x)\) both have exactly one real root?`,
+    choices: [String.raw`0`, String.raw`1`, String.raw`2`, String.raw`4`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`The discriminants \(b^2-4a=0\) and \(a^2+4b=0\). Thus, \(b^2=4a\) and \(a^2=-4b\). Square the first and substitute to get \(b^4=16a^2=16(-4b)\) so \(b^4+64b=b(b^3+64)=0\). Thus, \(b=0\), \(b=-4\). Since it is given that \(b\) is nonzero, then \(b=-4\). Then \(a^2=-4(-4)=16\) so \(a=\pm4\). The possible pairs \((a,b)\) are \((4,-4)\) and \((-4,-4)\). The first option checks since \((-4)^2-4(4)=0\) and \((4)^2+4(-4)=0\). However, the second one does not since \((-4)^2-4(-4)=32\ne0\). There is only \(\boxed1\) pair, \((4,-4)\), that works.`,
+  },
+  {
+    id: 30436, number: 436, division: "Theta", topic: "Functions", difficulty: 2, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":17},
+    question: String.raw`The domain of the function \(f(x)=\frac{\sqrt{9-x^2}}{x+2}\) can be written as \([a,b)\cup(b,c]\) for real numbers \(a<b<c\). What is the value of \(a\cdot b\cdot c\)?`,
+    choices: [String.raw`-18`, String.raw`-9`, String.raw`9`, String.raw`18`, String.raw`NOTA`], answer: "D",
+    solution: String.raw`To be defined, \(9-x^2\ge0\) so \(-3\le x\le3\). However, the denominator cannot be zero, so \(x\ne-2\). Thus, the domain is \([-3,-2)\cup(-2,3]\). Then \(a\cdot b\cdot c=-3\cdot-2\cdot3=\boxed{18}\).`,
+  },
+  {
+    id: 30437, number: 437, division: "Theta", topic: "Function Analysis", difficulty: 2, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":18},
+    question: String.raw`What could be the value of \(d\) so that the functions \(f(x)=4-(x+1)^2\) and \(g(x)=\frac{-4x^d+2x}{x^2+3}\) have the same end behavior?`,
+    choices: [String.raw`2`, String.raw`3`, String.raw`4`, String.raw`5`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`For the quadratic \(f(x)\), both ends are approaching \(-\infty\) since the leading coefficient is negative. For the listed integer choices, the function \(g(x)\) has the same end behavior as \(-4x^{d-2}\), showing that \(d\) is an even integer greater than or equal to \(4\). Of the choices, \(\boxed{d=4}\).`,
+  },
+  {
+    id: 30438, number: 438, division: "Theta", topic: "Polynomials", difficulty: 2, methods: ["Conjugates"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":19},
+    question: String.raw`Let \(i=\sqrt{-1}\). If \(p(x)=x^4-2x^3+x^2+8x-20\) has \(x=1+2i\) as a root, what is the product of the real roots of \(p(x)\)?`,
+    choices: [String.raw`4`, String.raw`-4`, String.raw`8`, String.raw`-20`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`Non-real roots come in conjugate pairs, so \(x=1-2i\) is also a root. Thus,
+\[q(x)=(x-(1+2i))(x-(1-2i))=x^2-2x+5\]
+must be a factor. Divide \(p(x)\) by \(q(x)\) to get \(x^2-4\), whose roots are \(x=\pm2\). Their product is \(\boxed{-4}\).`,
+  },
+  {
+    id: 30439, number: 439, division: "Theta", topic: "Inequalities", difficulty: 3, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":20},
+    question: String.raw`In the plane, consider the graph of the solution set to \(4x-y\le5\) and \(ax-2y<3\). What is the smallest possible value of \(a\) so that any point in the second quadrant will be a solution to the system?`,
+    choices: [String.raw`-5`, String.raw`-3`, String.raw`0`, String.raw`1`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`Notice that in Quadrant 2, \(x<0\) and \(y>0\) so \(4x-y<0\le5\). Now \(ax-2y<3\) must contain Quadrant 2 as well. Notice \(ax-2y=3\) can be written as \(y=\frac a2x-\frac32\). As \(a\) varies, the line rotates about the \(y\)-intercept \((0,-\frac32)\). If \(a<0\), then the line decreases through the \(y\)-intercept, causing it to go into Quadrant 2. In fact, fixing any \(y>0\) and taking \(x\) sufficiently negative makes \(ax-2y\ge3\), so not every point works. For \(a\ge0\), \(ax\le0\) and \(-2y<0\), so every point in Quadrant 2 satisfies the inequality. Thus, \(a\ge0\) showing the smallest possible value of \(a\) to be \(\boxed0\).`,
+  },
+  {
+    id: 30440, number: 440, division: "Theta", topic: "Conic Sections", difficulty: 3, methods: ["Completing the Square"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":21},
+    question: String.raw`Consider the ellipse whose equation is \(16x^2-32x+9y^2+36y=92\). Construct a decreasing line from one vertex to one co-vertex of this ellipse. What is the greatest possible \(x\)-intercept of this line?`,
+    choices: [String.raw`\(-\frac12\)`, String.raw`\(\frac43\)`, String.raw`\(\frac52\)`, String.raw`\(-\frac72\)`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`Complete the square to write
+\[16(x^2-2x+1)+9(y^2+4y+4)=92+16+36,\]
+or \(16(x-1)^2+9(y+2)^2=144\). This can be written as
+\[\frac{(x-1)^2}{9}+\frac{(y+2)^2}{16}=1,\]
+yielding a vertical ellipse with center \((1,-2)\), \(a=4\) and \(b=3\). The vertices are \(A(1,-6)\), \(B(1,2)\) and the co-vertices are \(C(-2,-2)\), \(D(4,-2)\). One line with negative slope passes through \(B\) and \(D\). Its slope is \(\frac{2+2}{1-4}=-\frac43\). The equation of the line is \(y+2=-\frac43(x-4)\). When \(y=0\), \(2=-\frac43(x-4)\). So \(-\frac32=x-4\) and \(x=\frac52\). The other decreasing line passes through \(A\) and \(C\) with slope \(-\frac43\) and equation \(y+2=-\frac43(x+2)\). When \(y=0\), \(2=-\frac43(x+2)\) so \(x=-\frac72\). The greatest possible \(x\)-intercept is \(x=\boxed{\frac52}\).`,
+  },
+  {
+    id: 30441, number: 441, division: "Theta", topic: "Matrices", difficulty: 2, methods: ["Determinant","Row Operations"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":22},
+    question: String.raw`If \(\begin{vmatrix}2&-1&3\\0&-3&1\\1&1&-1\end{vmatrix}=12\), what is the value of \(\begin{vmatrix}0&6&-2\\-4&2&-6\\-2&-2&2\end{vmatrix}\)?`,
+    choices: [String.raw`-12`, String.raw`-24`, String.raw`24`, String.raw`96`, String.raw`NOTA`], answer: "D",
+    solution: String.raw`Notice rows \(1\) and \(2\) have swapped. Switching two rows multiplies the determinant by \(-1\). Also, every row has been multiplied by \(-2\), thus this contributes a factor of \((-2)^3=-8\). Thus, the new determinant has value \(12(-1)(-8)=\boxed{96}\).`,
+  },
+  {
+    id: 30442, number: 442, division: "Theta", topic: "Conic Sections", difficulty: 1, methods: ["Distance Formula"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":23},
+    question: String.raw`A parabola with focus \((-1,-2)\) contains \(P(-7,-10)\). What is the distance between \(P\) and the directrix?`,
+    choices: [String.raw`5`, String.raw`\(5\sqrt2\)`, String.raw`10`, String.raw`\(10\sqrt2\)`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`The distance between the focus and \(P\) is
+\[\sqrt{(-1+7)^2+(-2+10)^2}=\sqrt{36+64}=10.\]
+A property of a parabola is that any point on the parabola is equidistant to the focus and directrix. Thus, the distance from \(P\) to the directrix is also \(\boxed{10}\).`,
+  },
+  {
+    id: 30443, number: 443, division: "Theta", topic: "Polynomials", difficulty: 1, methods: ["Remainder Theorem"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":24},
+    question: String.raw`What is the remainder when \(f(x)=(x-1)(x+3)(2x-1)\) is divided by \(x+4\)?`,
+    choices: [String.raw`-147`, String.raw`45`, String.raw`147`, String.raw`-45`, String.raw`NOTA`], answer: "D",
+    solution: String.raw`By the Remainder Theorem, the remainder is \(f(-4)=(-5)(-1)(-9)=\boxed{-45}\).`,
+  },
+  {
+    id: 30444, number: 444, division: "Theta", topic: "Complex Numbers", difficulty: 3, methods: ["Real and Imaginary Parts"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":25},
+    question: String.raw`How many complex numbers \(z=a+bi\) satisfy \(z^2=\overline z\) where \(\overline z\) is the conjugate of \(z\)?`,
+    choices: [String.raw`1`, String.raw`2`, String.raw`3`, String.raw`4`, String.raw`NOTA`], answer: "D",
+    solution: String.raw`The equation to solve is \((a+bi)^2=a-bi\). Expand to find \((a^2-b^2)+2abi=a-bi\) so \(a^2-b^2=a\) and \(2ab=-b\). From the second equation, either \(b=0\) or \(a=-\frac12\). If \(b=0\), then \(a^2=a\) so \(a=0\) or \(a=1\). If \(a=-\frac12\), then \((-\frac12)^2-b^2=-\frac12\) so \(b^2=\frac34\) and \(b=\pm\frac{\sqrt3}{2}\). Therefore, there are \(\boxed4\) such complex numbers:
+\[z=0+0i,\quad z=1+0i,\quad z=-\frac12+\frac{\sqrt3}{2}i,\quad z=-\frac12-\frac{\sqrt3}{2}i.\]`,
+  },
+  {
+    id: 30445, number: 445, division: "Theta", topic: "Logs and Exponents", difficulty: 3, methods: ["Logarithms","Substitution"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":26},
+    question: String.raw`What is the product of the real solutions to \(\frac{x^{\log_2x}}{x^2}=256\)?`,
+    choices: [String.raw`\(\frac14\)`, String.raw`1`, String.raw`4`, String.raw`16`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`Write as \(x^{\log_2x}=256x^2\). The logarithm requires \(x>0\). Take the logarithm base \(2\) of both sides and use log properties to write
+\[(\log_2x)^2=8+2\log_2x.\]
+Let \(u=\log_2x\) so \(u^2-2u-8=(u-4)(u+2)=0\) showing \(u=4\), \(u=-2\). Thus, \(\log_2x=4\) and \(\log_2x=-2\). Hence, \(x=2^4=16\) and \(x=2^{-2}=\frac14\). Their product is \((16)(\frac14)=\boxed4\).`,
+  },
+  {
+    id: 30446, number: 446, division: "Theta", topic: "Functions", difficulty: 1, methods: ["Nested Functions"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":27},
+    question: String.raw`Define \(f(x)=2x+1\). If \((f\circ f\circ f\circ f)(x)=ax+b\), find \(a+b\).`,
+    choices: [String.raw`15`, String.raw`23`, String.raw`31`, String.raw`47`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`\[(f\circ f\circ f\circ f)(x)=2(2(2(2x+1)+1)+1)+1=16x+15.\]
+So \(a+b=16+15=\boxed{31}\).`,
+  },
+  {
+    id: 30447, number: 447, division: "Theta", topic: "Functions", difficulty: 2, methods: ["Distance Formula"],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":28},
+    question: String.raw`Define \(f(x)=2x+1\). What is the distance between the intersection points of the graphs of the following two functions?
+\[y=f(2+x^2)\quad\text{and}\quad y=f(4-x^2)\]`,
+    choices: [String.raw`2`, String.raw`\(2\sqrt3\)`, String.raw`4`, String.raw`\(3\sqrt3\)`, String.raw`NOTA`], answer: "A",
+    solution: String.raw`\(f(2+x^2)=2(2+x^2)+1=2x^2+5\) and \(f(4-x^2)=2(4-x^2)+1=-2x^2+9\). Solve \(2x^2+5=-2x^2+9\) to find \(4x^2=4\) or \(x=\pm1\). The points \((1,7)\) and \((-1,7)\) are a distance \(\boxed2\) away.`,
+  },
+  {
+    id: 30448, number: 448, division: "Theta", topic: "Simplification", difficulty: 3, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":29},
+    question: String.raw`The expression \(\sqrt{11+6\sqrt2}+\sqrt{11-6\sqrt2}\) evaluates to an integer. What is that integer value?`,
+    choices: [String.raw`4`, String.raw`5`, String.raw`6`, String.raw`7`, String.raw`NOTA`], answer: "C",
+    solution: String.raw`We want \(\sqrt{11+6\sqrt2}=a+b\sqrt2\) for positive integers \(a,b\), in other words, \((a+b\sqrt2)^2=11+6\sqrt2\). Expanding, \(a^2+2b^2+2ab\sqrt2=11+6\sqrt2\). Then \(a^2+2b^2=11\) and \(2ab=6\). Substitute \(b=\frac3a\) into the first equation to get \(a^2+2(\frac9{a^2})=11\), or
+\[a^4-11a^2+18=(a^2-9)(a^2-2)=0.\]
+So \(a=3\) and \(b=1\). Thus, \(\sqrt{11+6\sqrt2}=3+\sqrt2\). Similarly, \(\sqrt{11-6\sqrt2}=3-\sqrt2\), which is positive. Their sum is \((3+\sqrt2)+(3-\sqrt2)=\boxed6\).`,
+  },
+  {
+    id: 30449, number: 449, division: "Theta", topic: "Simplification", difficulty: 1, methods: [],
+    source: {"competition":"2026 January Regional","event":"Algebra 2 Individual","questionNumber":30},
+    question: String.raw`What is the value of \(-2^2-(-2)^2-2^{-2}\)?`,
+    choices: [String.raw`\(-\frac14\)`, String.raw`\(-\frac{33}{4}\)`, String.raw`-4`, String.raw`-12`, String.raw`NOTA`], answer: "B",
+    solution: String.raw`\[-2^2-(-2)^2-2^{-2}=-4-(4)-\frac14=-8-\frac14=\boxed{-\frac{33}{4}}.\]
+Exponentiation takes precedence over an unparenthesized leading minus: \(-2^2=-(2^2)=-4\), whereas \((-2)^2=4\).`,
+  },
 ];

@@ -8,11 +8,12 @@ const js = source.replace(/^import type .*;\s*/m, "").replace(": Question[]", ""
 const { thetaQuestions } = await import("data:text/javascript;base64," + Buffer.from(js).toString("base64"));
 const questions = thetaQuestions.filter(question => question.number >= 60 && question.number <= 89);
 
-test("February Regional 2026 Algebra 2 contains all 30 questions", () => {
-  assert.equal(questions.length, 30);
-  assert.deepEqual(questions.map(question => question.number), Array.from({ length: 30 }, (_, index) => index + 60));
-  assert.deepEqual(questions.map(question => question.id), Array.from({ length: 30 }, (_, index) => index + 30060));
-  assert.equal(questions.map(question => question.answer).join(""), "AECDBDAEBCCADEDBCADCBBEABDABBA");
+test("February Regional 2026 retains 29 questions, excluding source throw-out 24 without reassigning IDs", () => {
+  assert.equal(questions.length, 29);
+  const retained = Array.from({ length: 30 }, (_, index) => index).filter(index=>index!==23);
+  assert.deepEqual(questions.map(question => question.number), retained.map(index=>index+60));
+  assert.deepEqual(questions.map(question => question.id), retained.map(index=>index+30060));
+  assert.equal(questions.map(question => question.answer).join(""), [..."AECDBDAEBCCADEDBCADCBBEABDABBA"].filter((_,index)=>index!==23).join(""));
   assert.ok(questions.every(question => question.choices.length === 5));
   assert.equal(new Set(thetaQuestions.map(question => question.id)).size, thetaQuestions.length);
 });
@@ -26,9 +27,7 @@ test("disputed source questions use corrected, unambiguous versions", () => {
     String.raw`\(\frac45\)`,
   ]);
 
-  const quadratic = questions.find(question => question.number === 83);
-  assert.match(quadratic.question, /pairwise relatively prime integers/);
-  assert.match(quadratic.question, /a>0/);
+  assert.equal(questions.some(question => question.id === 30083), false);
 
   for (const question of questions) {
     assert.doesNotMatch(question.question + "\n" + question.solution, /thrown out|disput|original answer choices|region 5/i);

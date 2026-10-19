@@ -2,9 +2,44 @@ import katex from "katex";
 import Image from "next/image";
 
 type MathTextProps = { children: string; className?: string };
-const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:(?:mu-(?:194|196|201|217|227|302|313|320|325|345|502|558)|theta-7)\]\])/g;
+const MATH_DELIMITER = /(\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\[\[solution-diagram:(?:mu-(?:194|196|201|217|227|302|313|320|325|345|502|558)|theta-7|theta-nsu-2026-14|theta-feb-2026-(?:6|11|21|27|28|29))\]\])/g;
 // Explicit local allowlist: never interpret arbitrary URLs or HTML from text.
 const SOLUTION_DIAGRAMS: Record<string, { src: string; alt: string; width: number; height: number }> = {
+  "[[solution-diagram:theta-nsu-2026-14]]": {
+    src: "/questions/theta-nsu-2026-14-solution.svg",
+    alt: "Absolute-value graph h(x) equals |x+2| plus |2x+10|, intersecting y equals 4 at x negative sixteen thirds and negative four.",
+    width: 620, height: 430,
+  },
+  "[[solution-diagram:theta-feb-2026-6]]": {
+    src: "/questions/theta-feb-2026-6-solution.svg",
+    alt: "The overlap of y at most 4 minus 2x and y at least x over 2 plus 1, with closed boundaries intersecting at six fifths, eight fifths. No overlap lies in Quadrant IV.",
+    width: 620, height: 430,
+  },
+  "[[solution-diagram:theta-feb-2026-11]]": {
+    src: "/questions/theta-feb-2026-11-solution.svg",
+    alt: "Salt mixture table: 5 percent of 80 pounds, 100 percent of x pounds, and 24 percent of x plus 80 pounds; scaled salt masses 400, 100x, 24x plus 1920.",
+    width: 720, height: 250,
+  },
+  "[[solution-diagram:theta-feb-2026-21]]": {
+    src: "/questions/theta-feb-2026-21-solution.svg",
+    alt: "Synthetic division by negative 6: coefficients 1, 7, 5, negative 8, negative 14 give quotient coefficients 1, 1, negative 1, negative 2, and remainder negative 2.",
+    width: 620, height: 200,
+  },
+  "[[solution-diagram:theta-feb-2026-27]]": {
+    src: "/questions/theta-feb-2026-27-solution.svg",
+    alt: "Purple hyperbola H: 3x squared plus xy minus 4y squared equals 1. Orange conjugate hyperbola has right-hand side negative 1. Dashed asymptotes are y equals x and y equals negative three fourths x.",
+    width: 620, height: 430,
+  },
+  "[[solution-diagram:theta-feb-2026-28]]": {
+    src: "/questions/theta-feb-2026-28-solution.svg",
+    alt: "Descartes root-count possibilities: positive, negative, non-real counts are 2, 0, 2 or 0, 0, 4.",
+    width: 720, height: 248,
+  },
+  "[[solution-diagram:theta-feb-2026-29]]": {
+    src: "/questions/theta-feb-2026-29-solution.svg",
+    alt: "With wind: rate 200 plus w, time 960 over 200 plus w, distance 960. Against wind: rate 200 minus w, time 640 over 200 minus w, distance 640.",
+    width: 720, height: 192,
+  },
   "[[solution-diagram:theta-7]]": {
     src: "/questions/theta-7-solution.svg",
     alt: "Balance configurations for package weights 1 through 9 pounds. The object is on the left. Added left weights are none, 1, none, 1, none, none, 1, none, none; right weights are 1; 3; 3; 5; 5; 5 and 1; 5 and 3; 5 and 3; 5, 3 and 1 pounds, respectively.",

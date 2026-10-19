@@ -25,9 +25,9 @@ test("Chiles Statewide 2025 updates existing Theta records without duplicating o
       competition: "2025 Chiles Statewide", event: "Algebra 2 Individual", questionNumber: question.number,
     });
   }
-  const later = thetaQuestions.filter(q => q.id > 30030 && q.id <= 30419);
+  const later = thetaQuestions.filter(q => q.id >= 30180 && q.id <= 30419);
   assert.equal(createHash("sha256").update(JSON.stringify(later)).digest("hex"),
-    "6a99e3303007499ea6cf150a0366a63ed7debed35a83d15ad8a1cf57e11f671c", "later existing Theta records are untouched");
+    "1b2e78d0282aaed469a7ddbd4f55693fd87089698181c3d5d797bf07f6e9e981", "unrelated later Theta records are untouched");
 });
 
 test("source-sensitive details and corrections are retained", () => {

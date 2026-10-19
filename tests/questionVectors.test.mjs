@@ -25,7 +25,7 @@ test("question 223 integral labels keep limits and integrands in one aligned SVG
 });
 
 test("every public question and solution illustration is a standalone local vector", () => {
-  assert.equal(solutionImages.length,13,"all solution-only diagrams are checked");
+  assert.equal(solutionImages.length,20,"all solution-only diagrams are checked");
   assert.ok(uniqueImages.length >= 18);
   for (const {src,width,height} of images) {
     assert.match(src,/^\/questions\/[\w-]+\.svg$/);

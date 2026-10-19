@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="200" viewBox="0 0 620 200" role="img" aria-labelledby="title desc">
+<title id="title">Synthetic division by x plus 6</title>
+<desc id="desc">Divide coefficients 1, 7, 5, negative 8, negative 14 by root negative 6. Products are negative 6, negative 6, 6, 12. Bottom row 1, 1, negative 1, negative 2, negative 2, with final remainder negative 2.</desc>
+<rect width="620" height="200" fill="white"/>
+<g font-family="Georgia,serif" font-size="30" fill="#171717" text-anchor="middle"><text x="50" y="50"></text><text x="150" y="50">1</text><text x="250" y="50">7</text><text x="350" y="50">5</text><text x="450" y="50">−8</text><text x="550" y="50">−14</text><text x="50" y="110">−6</text><text x="150" y="110"></text><text x="250" y="110">−6</text><text x="350" y="110">−6</text><text x="450" y="110">6</text><text x="550" y="110">12</text><text x="50" y="170"></text><text x="150" y="170">1</text><text x="250" y="170">1</text><text x="350" y="170">−1</text><text x="450" y="170">−2</text><text x="550" y="170">−2</text></g><path d="M95 15V130H590 M105 130H590" fill="none" stroke="#171717" stroke-width="2"/>
+</svg>

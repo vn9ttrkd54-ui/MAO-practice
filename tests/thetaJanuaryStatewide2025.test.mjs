@@ -19,7 +19,7 @@ test("January Statewide Algebra 2 contains 29 usable questions", () => {
 
 test("thrown-out source question 3 is excluded and corrected explanations remain", () => {
   assert.doesNotMatch(questions.map(question => question.question).join("\n"), /minor axis is twice/i);
-  assert.match(questions.find(question => question.number === 33).solution, /linear/);
+  assert.match(questions.find(question => question.number === 33).solution, /linear|a line/);
   assert.match(questions.find(question => question.number === 45).solution, /no minimum/);
   assert.match(questions.find(question => question.number === 56).solution, /hole at/);
   for (const question of questions) {

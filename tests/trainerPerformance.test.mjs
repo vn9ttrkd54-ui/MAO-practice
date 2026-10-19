@@ -53,8 +53,11 @@ test("960 seeded selections match the pre-refactor algorithm across all division
   // questions. They exist only in this algorithm fixture, never the live catalog.
   const baselineQuestions = [
     ...muNationalReferences.map(q=>({id:q.id,number:q.id-10000,division:q.division,topic:q.topic,difficulty:q.difficulty})).sort((a,b)=>a.id-b.id),
-    ...questions.filter(q=>q.division!=="Mu"||q.id<=10325).map(q=>q.division==="Mu"?{...q,number:q.id-10000}:q),
+    ...questions.filter(q=>(q.division!=="Mu"||q.id<=10325)&&q.id<=30419).map(q=>q.division==="Mu"?{...q,number:q.id-10000}:q),
   ];
+  // Historical benchmark only: the public February Regional throw-out stays excluded.
+  baselineQuestions.splice(baselineQuestions.findIndex(q=>q.id===30084),0,
+    {id:30083,number:83,division:"Theta",topic:"Polynomials",difficulty:3});
   // Keep the historical golden fixture independent of the Chiles 2025 review's
   // public difficulty recalibration. Do not change the algorithm's golden hash.
   for (const [id, difficulty] of [[30007, 3], [30025, 4], [30030, 1]]) {
