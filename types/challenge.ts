@@ -32,6 +32,8 @@ export interface ChallengeAttempt {
 }
 
 export interface ChallengeUserStatistics {
+  asOfDate: string;
+  completedDates: string[];
   currentStreak: number;
   longestStreak: number;
   totalChallenges: number;

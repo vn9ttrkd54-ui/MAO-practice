@@ -1,6 +1,7 @@
 import "server-only";
 
 import { requireDailyQuestionById } from "@/lib/challengeQuestionCatalog";
+import { getChallengeWeekDates } from "@/lib/challengeWeek";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -199,9 +200,14 @@ export async function submitChallenge(
 }
 
 export async function getChallengeStatistics(): Promise<ChallengeUserStatistics> {
+  const today = getCurrentChallengeDate();
+  const weekStart = getChallengeWeekDates(today)[0];
+  const yesterday = getCurrentChallengeDate(new Date(new Date(`${today}T00:00:00Z`).getTime() - 86400000));
   const supabase = await createClient();
   const { data: authData } = await supabase.auth.getUser();
   const emptyStatistics: ChallengeUserStatistics = {
+    asOfDate: today,
+    completedDates: [],
     currentStreak: 0,
     longestStreak: 0,
     totalChallenges: 0,
@@ -211,7 +217,7 @@ export async function getChallengeStatistics(): Promise<ChallengeUserStatistics>
 
   if (!authData.user) return emptyStatistics;
 
-  const [{ data: statistics, error: statisticsError }, { data: latestAttempt, error: attemptError }] =
+  const [{ data: statistics, error: statisticsError }, { data: recentAttempts, error: attemptError }] =
     await Promise.all([
       supabase
         .from("challenge_user_statistics")
@@ -222,9 +228,12 @@ export async function getChallengeStatistics(): Promise<ChallengeUserStatistics>
         .from("challenge_attempts")
         .select("challenge_date")
         .eq("user_id", authData.user.id)
+        // Include Sunday on Mondays to preserve the existing streak grace day.
+        .gte("challenge_date", weekStart < yesterday ? weekStart : yesterday)
+        .lte("challenge_date", today)
         .order("challenge_date", { ascending: false })
-        .limit(1)
-        .maybeSingle<{ challenge_date: string }>(),
+        .limit(24)
+        .returns<{ challenge_date: string }[]>(),
     ]);
 
   if (statisticsError || attemptError) {
@@ -234,17 +243,19 @@ export async function getChallengeStatistics(): Promise<ChallengeUserStatistics>
       }`
     );
   }
-  if (!statistics) return emptyStatistics;
-
-  const yesterday = getCurrentChallengeDate(
-    new Date(Date.now() - 24 * 60 * 60 * 1000)
-  );
+  // A saved answer in any division completes the day; correctness still controls streaks.
+  const completedDates = [...new Set((recentAttempts ?? [])
+    .map(attempt => attempt.challenge_date).filter(date => date >= weekStart && date <= today))];
+  if (!statistics) return { ...emptyStatistics, completedDates };
+  const latestAttempt = recentAttempts?.[0];
   const currentStreak =
     latestAttempt && latestAttempt.challenge_date >= yesterday
       ? statistics.current_streak
       : 0;
 
   return {
+    asOfDate: today,
+    completedDates,
     currentStreak,
     longestStreak: statistics.longest_streak,
     totalChallenges: statistics.total_completed,

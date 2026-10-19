@@ -43,6 +43,8 @@ try {
   await page.route("**/*", route => route.request().url().startsWith(origin) ? route.continue() : route.abort());
   await page.goto(origin);
   await page.getByRole("heading", { name: "Daily Challenge", exact: true }).waitFor();
+  assert.equal(await page.getByLabel("Monday, today (UTC), not completed", { exact: true }).count(), 1);
+  assert.equal(await page.locator(".week .completed").count(), 0);
   for (const division of ["MU", "ALPHA", "THETA"]) {
     await page.getByRole("button", { name: division, exact: true }).click();
     await page.waitForURL(`**/challenge?division=${division === "MU" ? "Mu" : division === "ALPHA" ? "Alpha" : "Theta"}`);
@@ -63,6 +65,9 @@ try {
   await page.locator(".answers button").first().click();
   await page.getByRole("button", { name: "Submit Answer", exact: true }).click();
   await page.getByRole("heading", { name: "Correct!", exact: true }).waitFor();
+  await page.getByLabel("Monday, today (UTC), completed", { exact: true }).waitFor();
+  assert.equal(await page.locator(".week .completed").count(), 1);
+  assert.equal(await page.locator(".week .completed").evaluate(el => getComputedStyle(el).backgroundColor), "rgb(243, 186, 40)");
   assert.ok(await page.getByRole("button", { name: "Answer Submitted" }).isDisabled());
   assert.equal(await page.locator(".answers button:disabled").count(), 5);
   for (const width of [1440, 320]) {
@@ -70,6 +75,11 @@ try {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     await page.screenshot({ path: `/tmp/challenge-studio-result-${width}.png`, fullPage: true });
   }
+  await page.getByRole("button", { name: "MU", exact: true }).click();
+  await page.getByLabel("Monday, today (UTC), completed", { exact: true }).waitFor();
+  await page.reload();
+  await page.getByLabel("Monday, today (UTC), completed", { exact: true }).waitFor();
+  assert.equal(await page.locator(".week .completed").count(), 1);
   await page.goto(`${origin}/challenge?empty=1`);
   await page.getByRole("button", { name: "Submit Answer", exact: true }).waitFor();
   await page.getByAltText("Daily question diagram").waitFor();
@@ -81,7 +91,7 @@ try {
   await page.getByRole("button", { name: "Retry question" }).click();
   await page.getByRole("button", { name: "Submit Answer", exact: true }).waitFor();
   assert.deepEqual(errors, []);
-  console.log("PASS: Challenge Studio desktop/mobile, all divisions, submission/results, automatic preparation, retry, diagram and credit with local mock data.");
+  console.log("PASS: Challenge Studio desktop/mobile, all divisions, submission/results, saved weekday fill across division changes/reload, automatic preparation, retry, diagram and credit with local mock data.");
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

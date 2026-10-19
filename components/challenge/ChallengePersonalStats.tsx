@@ -1,5 +1,6 @@
 import styles from "./challenge.module.css";
 import { Flame } from "lucide-react";
+import { getChallengeWeekDates } from "@/lib/challengeWeek";
 import type {
   ChallengeLeaderboardEntry,
   ChallengeUserStatistics,
@@ -12,7 +13,8 @@ export default function ChallengePersonalStats({
   statistics: ChallengeUserStatistics;
   position: ChallengeLeaderboardEntry | null;
 }) {
-  const currentWeekday = (new Date().getUTCDay() + 6) % 7;
+  const weekDates = getChallengeWeekDates(statistics.asOfDate);
+  const completedDates = new Set(statistics.completedDates);
   const metrics = [
     ["Longest Streak", statistics.longestStreak.toString()],
     ["Completed", statistics.totalChallenges.toString()],
@@ -41,8 +43,13 @@ export default function ChallengePersonalStats({
       <div className={styles.streak}><Flame size={22} aria-hidden="true" /><div><strong>{statistics.currentStreak}</strong><span>Current streak</span></div></div>
       <div className={styles.week} aria-label="Current UTC week">
         {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day, index) => {
-          const today = index === currentWeekday;
-          return <span key={day} className={today ? styles.today : undefined} aria-current={today ? "date" : undefined} aria-label={`${day}${today ? ", today (UTC)" : ""}`}>{day[0]}</span>;
+          const today = weekDates[index] === statistics.asOfDate;
+          const completed = completedDates.has(weekDates[index]);
+          return <span key={day}
+            className={[today && styles.today, completed && styles.completed].filter(Boolean).join(" ")}
+            aria-current={today ? "date" : undefined}
+            aria-label={`${day}${today ? ", today (UTC)" : ""}, ${completed ? "completed" : "not completed"}`}
+          >{day[0]}</span>;
         })}
       </div>
       <dl className={styles.metrics}>

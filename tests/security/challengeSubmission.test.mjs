@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
 import ts from 'typescript';
+import { getChallengeWeekDates } from '../../lib/challengeWeek.ts';
 
 const source = readFileSync(new URL('../../lib/services/challengeService.ts', import.meta.url), 'utf8');
 const compiled = ts.transpileModule(source, {
@@ -30,6 +31,7 @@ function fixture({ user = { id: 'verified-user' }, assignment = 'SEC-MU', error 
     exports,
     require(name) {
       if (name === 'server-only') return {};
+      if (name === '@/lib/challengeWeek') return { getChallengeWeekDates };
       if (name === '@/lib/supabase/server') return { createClient: async () => db };
       if (name === '@/lib/challengeQuestionCatalog') return {
         requireDailyQuestionById: id => ({ id, division: 'Mu', answer: 'C', solution: 'Server-owned solution' }),

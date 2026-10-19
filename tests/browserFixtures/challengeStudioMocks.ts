@@ -1,4 +1,6 @@
 import type { Division } from "@/types/question";
+const today = "2026-10-19";
+const completedDates = new Set<string>(JSON.parse(sessionStorage.getItem("fixture-challenge-days") ?? "[]"));
 let result: { selectedAnswer: string; correct: boolean } | null = null;
 let prepared = false;
 let preparationCalls = 0;
@@ -16,17 +18,19 @@ export async function prepareDailyChallenge() {
 export async function getChallengeOverview(division: Division) {
   const question = { id: `CH-${division}`, division, topic: "Fixture topic", difficulty: 4, question: "Evaluate \\(\\frac{d}{dx}(x^3-2x)\\).", choices: { A: "\\(3x^2-2\\)", B: "\\(x^2-2\\)", C: "\\(3x-2\\)", D: "\\(3x^2\\)", E: "None of these" }, answer: "A", solution: "Differentiate each term: \\(3x^2-2\\)." };
   return {
-    dailyChallenge: location.search.includes("empty=1") && !prepared ? null : { date: "2026-10-07", questionId: question.id, question: { ...question,
+    dailyChallenge: location.search.includes("empty=1") && !prepared ? null : { date: today, questionId: question.id, question: { ...question,
       illustration: { src: "/fixture-diagram.svg", alt: "Daily question diagram", width: 400, height: 200 },
       source: { competition: "Fixture competition", event: "Individual", questionNumber: 1 },
     } },
-    attempt: result ? { challengeDate: "2026-10-07", questionId: question.id, ...result } : null,
-    statistics: { currentStreak: 4, longestStreak: 12, totalChallenges: 18, correctChallenges: 15, accuracy: 83.3 },
+    attempt: result ? { challengeDate: today, questionId: question.id, ...result } : null,
+    statistics: { asOfDate: today, completedDates: [...completedDates], currentStreak: 4, longestStreak: 12, totalChallenges: 18, correctChallenges: 15, accuracy: 83.3 },
     leaderboard: [{ userId: "fixture", username: "ricefarmer", currentStreak: 4, longestStreak: 12, rank: 2 }],
     userLeaderboardEntry: { userId: "fixture", username: "ricefarmer", currentStreak: 4, longestStreak: 12, rank: 2 },
   };
 }
 export async function submitDailyChallenge(input: { selectedAnswer: string; questionId: string; challengeDate: string }) {
   result = { selectedAnswer: input.selectedAnswer, correct: input.selectedAnswer === "A" };
+  completedDates.add(today);
+  sessionStorage.setItem("fixture-challenge-days", JSON.stringify([...completedDates]));
   return { ...input, ...result, correctAnswer: "A", solution: "Differentiate each term: \\(3x^2-2\\).", saved: true };
 }

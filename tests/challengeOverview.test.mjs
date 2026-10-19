@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import vm from "node:vm";
 import ts from "typescript";
+import { getChallengeWeekDates } from "../lib/challengeWeek.ts";
 
 const require = createRequire(import.meta.url);
 const source = readFileSync(new URL("../lib/services/challengeService.ts", import.meta.url), "utf8");
@@ -29,6 +30,7 @@ test("unscheduled daily divisions return an empty overview without reading a nul
     exports,
     require(name) {
       if (name === "server-only") return {};
+      if (name === "@/lib/challengeWeek") return { getChallengeWeekDates };
       if (name === "@/lib/supabase/server") return { createClient: async () => db };
       if (name === "@/lib/supabase/admin") return { createAdminClient: () => { throw Error("Unexpected write client"); } };
       if (name === "@/lib/challengeQuestionCatalog") return { requireDailyQuestionById: () => { throw Error("Unscheduled question lookup"); } };
