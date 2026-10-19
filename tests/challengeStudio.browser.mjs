@@ -14,7 +14,7 @@ const fixture = name => resolve(import.meta.dirname, "browserFixtures", name);
 const mocks = fixture("challengeStudioMocks.ts");
 const compiler = webpack.webpack({
   mode: "development", entry: fixture("challengeStudio.tsx"), output: { path: dir, filename: "client.js" }, devtool: false,
-  resolve: { extensions: [".tsx", ".ts", ".js"], alias: { "@/lib/challenge": mocks, "@/app/challenge/actions": mocks, "next/navigation": mocks, "next/image": fixture("image.tsx"), "@": root } },
+  resolve: { extensions: [".tsx", ".ts", ".js"], alias: { "@/lib/challenge": mocks, "@/app/challenge/actions": mocks, "next/navigation": mocks, "next/image": fixture("googleImage.tsx"), "@": root } },
   module: { rules: [{ test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") }, { test: /\.css$/, use: fixture("css.cjs") }] },
 });
 await new Promise((resolve, reject) => compiler.run((error, stats) => {
@@ -24,6 +24,11 @@ const bundle = await readFile(join(dir, "client.js"));
 const cssDir = join(root, ".next/static/css");
 const css = (await Promise.all((await readdir(cssDir)).filter(name => name.endsWith(".css")).map(name => readFile(join(cssDir, name), "utf8")))).join("\n");
 const server = createServer((req, res) => {
+  if (req.url === "/fixture-diagram.svg") {
+    res.setHeader("Content-Type", "image/svg+xml");
+    res.end('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200"><path d="M0 200L400 0" stroke="blue"/></svg>');
+    return;
+  }
   res.setHeader("Content-Type", req.url === "/client.js" ? "text/javascript; charset=utf-8" : "text/html; charset=utf-8");
   res.end(req.url === "/client.js" ? bundle : `<meta name="viewport" content="width=device-width,initial-scale=1"><style>${css}</style><div id="root"></div><script src="/client.js"></script>`);
 });
@@ -66,11 +71,17 @@ try {
     await page.screenshot({ path: `/tmp/challenge-studio-result-${width}.png`, fullPage: true });
   }
   await page.goto(`${origin}/challenge?empty=1`);
-  await page.getByRole("heading", { name: "Today's Mu question has not been scheduled yet." }).waitFor();
+  await page.getByRole("button", { name: "Submit Answer", exact: true }).waitFor();
+  await page.getByAltText("Daily question diagram").waitFor();
+  assert.ok(await page.getByAltText("Daily question diagram").evaluate(img => img.complete && img.naturalWidth > 0));
+  await page.getByLabel("Question source").waitFor();
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   await page.screenshot({ path: "/tmp/challenge-studio-empty.png", fullPage: true });
+  await page.goto(`${origin}/challenge?empty=1&fail=1`);
+  await page.getByRole("button", { name: "Retry question" }).click();
+  await page.getByRole("button", { name: "Submit Answer", exact: true }).waitFor();
   assert.deepEqual(errors, []);
-  console.log("PASS: Challenge Studio desktop/mobile, all divisions, selection/submission/results and empty state with local mock data.");
+  console.log("PASS: Challenge Studio desktop/mobile, all divisions, submission/results, automatic preparation, retry, diagram and credit with local mock data.");
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));

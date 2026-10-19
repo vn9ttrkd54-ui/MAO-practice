@@ -1,6 +1,6 @@
 import "server-only";
 
-import { requireChallengeQuestionById } from "@/data/challengeQuestions";
+import { requireDailyQuestionById } from "@/lib/challengeQuestionCatalog";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -100,7 +100,7 @@ export async function getChallengeByDate(
   if (!data) return null;
 
   const questionId = data.question_id as ChallengeQuestionId;
-  const question = requireChallengeQuestionById(questionId);
+  const question = requireDailyQuestionById(questionId);
   if (question.division !== division) throw new Error("The daily question's division does not match its assignment.");
   return {
     date: data.challenge_date,
@@ -153,7 +153,7 @@ export async function submitChallenge(
     throw new Error("Select a valid answer choice.");
   }
 
-  const requestedQuestion = requireChallengeQuestionById(input.questionId);
+  const requestedQuestion = requireDailyQuestionById(input.questionId);
   const dailyChallenge = await getChallengeByDate(today, requestedQuestion.division);
   if (!dailyChallenge || dailyChallenge.questionId !== input.questionId) {
     throw new Error("Today's Challenge assignment has changed. Refresh the page.");

@@ -1,6 +1,9 @@
 import styles from "@/components/challenge/challenge.module.css";
 import { CalendarClock } from "lucide-react";
 import ChallengeDivisionSelect from "@/components/challenge/ChallengeDivisionSelect";
+import ChallengeAutoSchedule from "@/components/challenge/ChallengeAutoSchedule";
+import QuestionImage from "@/components/questions/QuestionImage";
+import QuestionSourceCredit from "@/components/questions/QuestionSourceCredit";
 import ChallengeAnswerForm from "@/components/challenge/ChallengeAnswerForm";
 import ChallengeLeaderboard from "@/components/challenge/ChallengeLeaderboard";
 import ChallengePersonalStats from "@/components/challenge/ChallengePersonalStats";
@@ -67,13 +70,7 @@ export default async function ChallengePage({ searchParams }: { searchParams: Pr
                 <p className={styles.eyebrow}>
                   Daily Challenge
                 </p>
-                <h2>
-                  Today&apos;s {division} question has not been scheduled yet.
-                </h2>
-                <p>
-                  Check back soon. A new official Challenge will appear here once
-                  today&apos;s question is assigned.
-                </p>
+                <ChallengeAutoSchedule key={division} division={division} />
               </div>
             ) : (
               <>
@@ -98,9 +95,11 @@ export default async function ChallengePage({ searchParams }: { searchParams: Pr
 
                 <div className={styles.problem}>
                   <h2 className="sr-only">Question</h2>
+                  <QuestionSourceCredit source={dailyChallenge.question.source} />
                   <div>
                     <MathText>{dailyChallenge.question.question}</MathText>
                   </div>
+                  <QuestionImage illustration={dailyChallenge.question.illustration} />
                 </div>
 
                 <ChallengeAnswerForm

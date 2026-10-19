@@ -1,4 +1,4 @@
-import type { AnswerChoice, Division } from "@/types/question";
+import type { AnswerChoice, Division, QuestionIllustration, QuestionSource } from "@/types/question";
 
 export type ChallengeQuestionId = `CH-${string}`;
 
@@ -11,6 +11,8 @@ export interface ChallengeQuestion {
   choices: Record<AnswerChoice, string>;
   answer: AnswerChoice;
   solution: string;
+  illustration?: QuestionIllustration;
+  source?: QuestionSource;
 }
 
 export interface DailyChallenge {

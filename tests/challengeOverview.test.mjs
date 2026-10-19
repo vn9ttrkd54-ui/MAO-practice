@@ -31,7 +31,7 @@ test("unscheduled daily divisions return an empty overview without reading a nul
       if (name === "server-only") return {};
       if (name === "@/lib/supabase/server") return { createClient: async () => db };
       if (name === "@/lib/supabase/admin") return { createAdminClient: () => { throw Error("Unexpected write client"); } };
-      if (name === "@/data/challengeQuestions") return { requireChallengeQuestionById: () => { throw Error("Unscheduled question lookup"); } };
+      if (name === "@/lib/challengeQuestionCatalog") return { requireDailyQuestionById: () => { throw Error("Unscheduled question lookup"); } };
       return require(name);
     },
   });
