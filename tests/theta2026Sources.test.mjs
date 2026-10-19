@@ -4,6 +4,7 @@ import {readFileSync} from "node:fs";
 import test from "node:test";
 import katex from "katex";
 import {thetaQuestions} from "../data/questions/theta.ts";
+import {alphaQuestions} from "../data/questions/alpha.ts";
 
 const hash=value=>createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const old=thetaQuestions.filter(q=>q.id>=30031&&q.id<=30179);
@@ -48,11 +49,20 @@ test("existing retained IDs, numbering, topics, methods, difficulty, choices and
   assert.equal(hash(old.filter(q=>q.id!==30039).map(q=>[q.id,q.choices])),
     "24021154450f3a86fa4b7df9602db8a7193a35213eac1eff969590588c3bbaef");
   assert.equal(get(30039).choices[1],String.raw`\( \frac{67}{76} \)`.replaceAll(" ",""));
-  assert.equal(hash(thetaQuestions.filter(q=>q.id>=30180&&q.id<=30419)),
+  assert.equal(hash(thetaQuestions.filter(q=>q.id>=30180&&q.id<=30419).map(q=>{
+    const content={...q};
+    delete content.source;
+    return content;
+  })),
     "1b2e78d0282aaed469a7ddbd4f55693fd87089698181c3d5d797bf07f6e9e981");
-  for(const [file,expected] of [["mu.ts","c44c28c37a223ed2236a616ce51aa363a304fb2ab192561efb0d1e24e4fd44c3"],["alpha.ts","de6d76cae883e25ccc2345586cef76e09c5327523d2fd53b90ee50d07ed7e97e"]]){
-    assert.equal(createHash("sha256").update(readFileSync(new URL("../data/questions/"+file,import.meta.url))).digest("hex"),expected);
-  }
+  assert.equal(createHash("sha256").update(readFileSync(new URL("../data/questions/mu.ts",import.meta.url))).digest("hex"),
+    "c44c28c37a223ed2236a616ce51aa363a304fb2ab192561efb0d1e24e4fd44c3");
+  // Later authorized Alpha source credits must leave all reviewed content intact.
+  assert.equal(hash(alphaQuestions.map(q=>{
+    const content={...q};
+    delete content.source;
+    return content;
+  })),"58432486ac41dd54186ca3f6c8894a24be6b3b0d688bee53cb361d9e1ab17e0c");
   assert.deepEqual(added.map(q=>q.difficulty),[1,1,1,1,2,2,2,2,2,1,2,2,1,2,3,3,2,2,2,3,3,2,1,1,3,3,1,2,3,1]);
 });
 

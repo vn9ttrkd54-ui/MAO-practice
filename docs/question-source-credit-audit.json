@@ -1,0 +1,577 @@
+{
+  "scope": "Source-credit-only update. Tests not already present are not imported. Questions, choices, answers, solutions, labels, difficulty, stable IDs, display numbers, and all SVGs are unchanged.",
+  "publicCatalog": {
+    "Mu": {
+      "questions": 558,
+      "credited": 558,
+      "missing": []
+    },
+    "Alpha": {
+      "questions": 267,
+      "credited": 267,
+      "missing": []
+    },
+    "Theta": {
+      "questions": 447,
+      "credited": 447,
+      "missing": []
+    },
+    "total": 1272,
+    "missingCount": 0
+  },
+  "addedCredits": {
+    "matchedToSuppliedPDFs": 149,
+    "existingCatalogProvenance": 90,
+    "total": 239
+  },
+  "sourceGroups": [
+    {
+      "division": "Alpha",
+      "competition": "2018 January Regional",
+      "event": "Precalculus Individual",
+      "first": 20091,
+      "last": 20120,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "basis": "provided-pdf",
+      "files": [
+        "9334",
+        "9333"
+      ]
+    },
+    {
+      "division": "Alpha",
+      "competition": "2019 FAMAT March",
+      "event": "Precalculus Individual",
+      "first": 20121,
+      "last": 20149,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        30
+      ],
+      "basis": "provided-solutions-and-answer-key",
+      "files": [
+        "9669",
+        "9668"
+      ]
+    },
+    {
+      "division": "Alpha",
+      "competition": "2018 March Regional",
+      "event": "Precalculus Individual",
+      "first": 20211,
+      "last": 20240,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "basis": "provided-pdf",
+      "files": [
+        "9419",
+        "9418"
+      ]
+    },
+    {
+      "division": "Alpha",
+      "competition": "FAMAT February Regional",
+      "event": "Precalculus Individual",
+      "first": 20241,
+      "last": 20270,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "basis": "provided-pdf",
+      "files": [
+        "9921",
+        "9920"
+      ],
+      "note": "The supplied PDFs do not print a year. Their metadata timestamps do not establish the competition year, so no year is invented."
+    },
+    {
+      "division": "Alpha",
+      "competition": "2020 March Regional",
+      "event": "Precalculus Individual",
+      "first": 20271,
+      "last": 20300,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "basis": "provided-pdf",
+      "files": [
+        "9975",
+        "9974"
+      ]
+    },
+    {
+      "division": "Theta",
+      "competition": "2021 FAMAT State Convention",
+      "event": "Theta Individual",
+      "first": 30330,
+      "last": 30359,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "basis": "existing-catalog-provenance",
+      "evidence": [
+        "data/questions/theta.ts",
+        "tests/thetaFAMATStateConvention2021.test.mjs"
+      ]
+    },
+    {
+      "division": "Theta",
+      "competition": "2025 MAO National Convention",
+      "event": "Theta Individual",
+      "first": 30360,
+      "last": 30389,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "basis": "existing-catalog-provenance",
+      "evidence": [
+        "data/questions/theta.ts",
+        "tests/thetaMAONationalConvention2025.test.mjs"
+      ]
+    },
+    {
+      "division": "Theta",
+      "competition": "2024 MAO National Convention",
+      "event": "Theta Individual",
+      "first": 30390,
+      "last": 30419,
+      "originals": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "basis": "existing-catalog-provenance",
+      "evidence": [
+        "data/questions/theta.ts",
+        "tests/thetaMAONationalConvention2024.test.mjs"
+      ]
+    }
+  ],
+  "suppliedFiles": {
+    "9312": {
+      "filename": "9312 S_Precalc indiv solutions.pdf",
+      "pages": 4,
+      "sha256": "011b5b9b302f8cab732524117131d6a375561934f2432305ad1a75888f272dd8",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9313": {
+      "filename": "9313 T_Precalc indiv.pdf",
+      "pages": 5,
+      "sha256": "ec1bf160863cff61168630ac287bb882515469a0db10ce8559902f4621e2ace3",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9333": {
+      "filename": "9333 S_2018 Jan PC Individual solutions.pdf",
+      "pages": 3,
+      "sha256": "baa213cd1cb2dfb218fa394cc80a26ae94773755b231d56a94c1195ecedca266",
+      "status": "matched-existing-set"
+    },
+    "9334": {
+      "filename": "9334 T_2018 Jan PC Individual.pdf",
+      "pages": 5,
+      "sha256": "845d837f3642336834a92170683343f0b28caf33e160589a51bf35868197d2de",
+      "status": "matched-existing-set"
+    },
+    "9384": {
+      "filename": "9384 A_2018 February PreCalc Answers.pdf",
+      "pages": 2,
+      "sha256": "6805537d105093a936bdbb8a92dbef0a95ecf642079cc9b4008701cb1608d8f7",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9385": {
+      "filename": "9385 S_2018 February precalc indi solutions.pdf",
+      "pages": 5,
+      "sha256": "6a003f0a0e2f9ff115aa2a4b3c68099fd3ba771082f70158d689cebd3d2d739d",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9386": {
+      "filename": "9386 T_2018 February precalc Indi.pdf",
+      "pages": 8,
+      "sha256": "fd52c56beb204e82eaf496171d8df165bb81712a89187040f7be24cc7f4496df",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9405": {
+      "filename": "9405 T_PC Indiv Test Sickles 2018 Feb.pdf",
+      "pages": 8,
+      "sha256": "194bc2ed1b6ff384025def47cb677988e9a1c18a09c37677c0cf434154bd7f31",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9418": {
+      "filename": "9418 A_2018 March PreCalc Answers.pdf",
+      "pages": 1,
+      "sha256": "65d5992de8467a977820ea5d04810a04d1b94f381a531dee3b5fac9b904782b8",
+      "status": "matched-existing-set"
+    },
+    "9419": {
+      "filename": "9419 T_2018 March Pre Indiv with solutions.pdf",
+      "pages": 8,
+      "sha256": "d90e7ce335677c402e0dd1fad9ee9e5c623eb021359d568c41d201520ed7d169",
+      "status": "matched-existing-set"
+    },
+    "9441": {
+      "filename": "9441 A_Algebra I March Regional Individual Test Answers.pdf",
+      "pages": 1,
+      "sha256": "78c4c160ec056f2055b5c3bbd336cdb86f9cfbcc1acc4e1fba6a75414e87d98d",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9456": {
+      "filename": "9456 S_ Pre Calculus Individual Solutions.pdf",
+      "pages": 4,
+      "sha256": "2d02eca69ae7a891cf49bcefa0ffee91c837ae2a70f2659e5df4377b604edcb6",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9457": {
+      "filename": "9457 T_PreCal Indiv March 2018.pdf",
+      "pages": 4,
+      "sha256": "470d43b30f69ba98fefab226bf477f27270118d69bdbeba6e8b92a1ddabcb639",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9638": {
+      "filename": "9638 S_February Regional Individual Solutions.pdf",
+      "pages": 8,
+      "sha256": "a8658a967bd95e6a2ebed7d3084fcae55cf5551dd908eb3cea5b01e3c2c6077a",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9639": {
+      "filename": "9639 T_February Regional Individual.pdf",
+      "pages": 4,
+      "sha256": "383f42be667bc82d8f736d620e8695ea3702f36c7e35960d5d7816234e50bfd4",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9668": {
+      "filename": "9668 A_2019 March PreCalc Answer Key.pdf",
+      "pages": 2,
+      "sha256": "ea06f5eb7697ddffc94584405502ea47b35a5feffab637e699d63b9853a5c533",
+      "status": "matched-existing-set"
+    },
+    "9669": {
+      "filename": "9669 S_ 2019 March Pre-Cal Individual Solutions.pdf",
+      "pages": 4,
+      "sha256": "dad51bdb2f823d18a59b4ec87254c522a274699d177a6623a5cc4236664131e5",
+      "status": "matched-existing-set"
+    },
+    "9719": {
+      "filename": "9719 S_March 2019 SW AHS-BD Alpha Open Indiv Solutions.pdf",
+      "pages": 3,
+      "sha256": "79d511f93fc372a4033a99c39d569bf5d756f27a7976e320dc138098d4e6fb91",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9720": {
+      "filename": "9720 T_March 2019 SW AHS-BD Alpha Open Indiv Test.pdf",
+      "pages": 4,
+      "sha256": "139c4fadeab3ba2010d3c3118248919390551d4268c8cd2c76ed451960260dbb",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9735": {
+      "filename": "9735 S_March 2019 SW AHS-BD Precalculus Individual Solutions.pdf",
+      "pages": 4,
+      "sha256": "2a8343515f77fb6d1d1e3c2665c45641962e0beb0f95592e22fcb923ca4d329f",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9736": {
+      "filename": "9736 T_March 2019 SW AHS-BD Precalculus Individual Test.pdf",
+      "pages": 5,
+      "sha256": "462870fa71df022b8b06274b66a0bf052907d2baace2c236d0b4f6bcfde3e0f3",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9900": {
+      "filename": "9900 T_PC Indiv w solutions  PHU Feb 2020.pdf",
+      "pages": 8,
+      "sha256": "17d01e08f48ca092f2bf435f9e6e909d06d7b5012ebb14e4dc9a7f156e0b4a56",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9920": {
+      "filename": "9920 S_FebruaryPreCalculusRegionalSolutions.pdf",
+      "pages": 5,
+      "sha256": "d35bbb8009c054e2be82b4198ffbef0eda623d174bc226c9076a348c25008a6d",
+      "status": "matched-existing-set"
+    },
+    "9921": {
+      "filename": "9921 T_FebruaryPreCalculusRegionalTest.pdf",
+      "pages": 5,
+      "sha256": "27dd8698eecdb1816de3773697fe586815e997bb722206296529abdf16bace32",
+      "status": "matched-existing-set"
+    },
+    "9951": {
+      "filename": "9951 S_JanPrecalcSolutionsv3.pdf",
+      "pages": 3,
+      "sha256": "84d2b09f083ad4d6c58cc2db5789157e85accc8a991e2534ece01deca85b2dc9",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9952": {
+      "filename": "9952 T_Precalculus Individual Test.pdf",
+      "pages": 5,
+      "sha256": "4c8b77d40003d65b741604f868a48027aa9b0b7f1a741afd2e8e4b97913f6596",
+      "status": "not-imported-no-existing-matching-set"
+    },
+    "9974": {
+      "filename": "9974 S_PreCalc Individual Solutions 2020 March .pdf",
+      "pages": 8,
+      "sha256": "76785971a3ceaf95bc9e2a1b1f686551520cdf69812f67dcab88fac67cd93aeb",
+      "status": "matched-existing-set"
+    },
+    "9975": {
+      "filename": "9975 T_PreCalc 202 March Individual  .pdf",
+      "pages": 5,
+      "sha256": "ee2dab800d5d0ae6623e44bc124eec81f228f522d2b3834d955c3c39a7599fe1",
+      "status": "matched-existing-set"
+    }
+  },
+  "notes": [
+    "Theta #330-359, #360-389, and #390-419 already had explicit source identities in catalog section comments and dedicated per-set tests. Those 90 credits use that recorded provenance, not newly supplied PDFs.",
+    "The FAMAT February Regional test/solutions (9921/9920) do not print a year. PDF metadata timestamps are not treated as a competition year; these 30 credits deliberately omit the year.",
+    "The 2019 FAMAT March source solutions and answer key identify originals 1-28 and 30 in the retained bank; original 29 remains absent.",
+    "Previously withheld Mu national references remain unpublished, unnumbered, and outside the public-catalog audit.",
+    "All pre-existing source credits are preserved. There are no duplicate competition/event/original-number source identities."
+  ],
+  "fingerprints": {
+    "unchangedAlphaContent": "58432486ac41dd54186ca3f6c8894a24be6b3b0d688bee53cb361d9e1ab17e0c",
+    "unchangedThetaContent": "5017f65ae6248a1b8676db7c2d6ecd190daa7310b11cb7a3e2c486a3fd8f2217",
+    "unchangedMuFile": "c44c28c37a223ed2236a616ce51aa363a304fb2ab192561efb0d1e24e4fd44c3",
+    "preExistingCredits": "953c37b9f3fc0add0af82cb44573ed900cc6741301921ab662aaec909bf838ee",
+    "unchangedSVGs": "357a1b784aab8e74dbe093af5749b1b6259869a0514b1a054b8d29328df443d0"
+  },
+  "validation": {
+    "status": "passed",
+    "dedicatedCreditTests": "passed (19 tests)",
+    "rootTestSuite": "passed",
+    "productionBuild": "passed",
+    "targetedLint": "passed",
+    "diffWhitespaceCheck": "passed",
+    "releaseScriptSyntaxAndPaths": "passed",
+    "creditVisibility": "passed (430 desktop/mobile checks across all 43 source sets in Question Bank, Trainer, multiplayer play, spectators, and results; local mocked account/realtime services)",
+    "trainerAndMultiplayerSourceDelivery": "passed (full-catalog Trainer delivery and multiplayer round credits; results include Mu, Alpha, and Theta)",
+    "deployed": false
+  }
+}

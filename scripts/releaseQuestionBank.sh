@@ -24,12 +24,14 @@ paths=(
   components/multiplayer/MatchResults.tsx
   components/multiplayer/SpectatorView.tsx
   data/questions/mu.ts
+  data/questions/alpha.ts
   data/questions/theta.ts
   data/question-references/README.md
   data/question-references/muNationals.ts
   docs/chiles-statewide-2025-audit.md
   docs/theta-chiles-statewide-2025-audit.md
   docs/theta-six-2026-source-audit.md
+  docs/question-source-credit-audit.json
   docs/february-regional-2026-audit.md
   docs/february-regional-2025-audit.md
   docs/february-regional-2024-audit.md
@@ -117,6 +119,11 @@ paths=(
   tests/thetaChilesStatewide2025.test.mjs
   tests/thetaChiles2025.browser.mjs
   tests/theta2026Sources.test.mjs
+  tests/thetaStateSourceCredits.test.mjs
+  tests/alphaSourceCredits2026.test.mjs
+  tests/questionSourceCreditCoverage.test.mjs
+  tests/questionCreditVisibility.browser.mjs
+  tests/catalogCleanup.test.mjs
   tests/theta2026Sources.browser.mjs
   tests/thetaFebruaryRegional2026.test.mjs
   tests/thetaJanuaryStatewide2025.test.mjs
@@ -132,6 +139,7 @@ done
 
 node --experimental-strip-types --test tests/*.test.mjs
 npm run build -- --webpack
+node --experimental-strip-types tests/questionCreditVisibility.browser.mjs
 git diff --check -- "${paths[@]}"
 git add -- "${paths[@]}"
 # Include deleted raster counterparts of the explicitly reviewed SVG assets.

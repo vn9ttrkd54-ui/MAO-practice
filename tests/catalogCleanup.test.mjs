@@ -10,7 +10,8 @@ import { thetaQuestions } from "../data/questions/theta.ts";
 
 const require = createRequire(import.meta.url);
 const questions = [...muQuestions, ...alphaQuestions, ...thetaQuestions];
-const creditedMatchQuestions = questions.filter(question => question.source).slice(0, 30);
+const creditedMatchQuestions = [muQuestions, alphaQuestions, thetaQuestions]
+  .flatMap(division => division.filter(question => question.source).slice(0, 10));
 function load(file, dependencies) {
   const exports = {};
   vm.runInNewContext(ts.transpileModule(readFileSync(new URL(`../${file}`, import.meta.url), "utf8"), {
