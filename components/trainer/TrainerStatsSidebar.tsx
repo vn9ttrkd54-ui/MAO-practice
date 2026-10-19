@@ -1,10 +1,17 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Clock3 } from "lucide-react";
 import styles from "./trainer-session.module.css";
 
-type TrainerStatsSidebarProps = {
+type TrainerTimerProps = {
+  questionStartedAt: number;
+  questionFinishedAt: number | null;
+  sessionStartedAt: number;
+};
+
+type TrainerStatsSidebarProps = TrainerTimerProps & {
   difficulty: number;
-  questionSeconds: number;
-  sessionSeconds: number;
   correct: number;
   incorrect: number;
   giveUps: number;
@@ -23,7 +30,7 @@ function formatTime(totalSeconds: number) {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export default function TrainerStatsSidebar({ difficulty, questionSeconds, sessionSeconds, correct, incorrect, giveUps, onEndSession }: TrainerStatsSidebarProps) {
+export default function TrainerStatsSidebar({ difficulty, questionStartedAt, questionFinishedAt, sessionStartedAt, correct, incorrect, giveUps, onEndSession }: TrainerStatsSidebarProps) {
   return (
     <section className={styles.stats}>
       <p className={styles.statsHeading}>Current question</p>
@@ -34,10 +41,12 @@ export default function TrainerStatsSidebar({ difficulty, questionSeconds, sessi
         </p>
       </div>
 
-      <div className={styles.times}>
-        <TimeStat label="Question" seconds={questionSeconds} />
-        <TimeStat label="Session" seconds={sessionSeconds} />
-      </div>
+      <TrainerTimers
+        key={questionStartedAt}
+        questionStartedAt={questionStartedAt}
+        questionFinishedAt={questionFinishedAt}
+        sessionStartedAt={sessionStartedAt}
+      />
 
       <p className={styles.statsHeading}>This session</p>
       <div>
@@ -48,6 +57,24 @@ export default function TrainerStatsSidebar({ difficulty, questionSeconds, sessi
 
       <button type="button" onClick={onEndSession} className={styles.end}>End Session</button>
     </section>
+  );
+}
+
+// Keep clock ticks below the question so unchanged math and session results
+// aren't re-rendered/recalculated every second. Timestamps still survive refresh.
+function TrainerTimers({ questionStartedAt, questionFinishedAt, sessionStartedAt }: TrainerTimerProps) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 1_000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className={styles.times}>
+      <TimeStat label="Question" seconds={Math.max(0, Math.floor(((questionFinishedAt ?? now) - questionStartedAt) / 1_000))} />
+      <TimeStat label="Session" seconds={Math.max(0, Math.floor((now - sessionStartedAt) / 1_000))} />
+    </div>
   );
 }
 

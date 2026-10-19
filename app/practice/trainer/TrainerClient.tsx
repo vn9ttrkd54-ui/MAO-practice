@@ -133,9 +133,6 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   const [questionFinishedAt, setQuestionFinishedAt] =
     useState<number | null>(null);
 
-  const [now, setNow] =
-    useState(() => Date.now());
-
   const [
     sessionStartedAt,
     setSessionStartedAt,
@@ -259,7 +256,6 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
           setStartTime(draft.startTime);
           setQuestionFinishedAt(draft.questionFinishedAt);
           setSessionEndedAt(draft.endedAt);
-          setNow(Date.now());
           setHasAccount(owner !== null);
           setSessionStarted(true);
           if (draft.endedAt !== null) {
@@ -306,18 +302,6 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
   useEffect(() => {
     if (recoveryStatus === "ready" && sessionStarted && !accountChanged && sessionSaveStatus !== "saved") persistSession();
   }, [persistSession, recoveryStatus, sessionStarted, accountChanged, sessionSaveStatus]);
-
-  useEffect(() => {
-    if (!sessionStarted || showSummary || accountChanged) {
-      return;
-    }
-
-    const timer = window.setInterval(() => {
-      setNow(Date.now());
-    }, 1_000);
-
-    return () => window.clearInterval(timer);
-  }, [sessionStarted, showSummary, accountChanged]);
 
   const sessionStats =
     calculateTrainerStats(results);
@@ -372,7 +356,6 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
 
       setStartTime(startedAt);
       setQuestionFinishedAt(null);
-      setNow(startedAt);
       setSessionStartedAt(startedAt);
       setSessionEndedAt(null);
       setLevelProgress(currentLevel);
@@ -427,7 +410,6 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       const nextAdaptive = adaptiveState ? applyAdaptiveTrainerResult(adaptiveState, newResult.result, currentIsChallenge) : null;
       setResults(nextResults);
       setAdaptiveState(nextAdaptive);
-      setNow(original.answeredAt);
       setSubmitted(true);
       persistSession({ results: nextResults, submitted: true, selectedAnswer: original.answer,
         questionFinishedAt: original.answeredAt, adaptiveState: nextAdaptive ?? adaptiveState!,
@@ -520,7 +502,6 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
       const startedAt = Date.now();
       setStartTime(startedAt);
       setQuestionFinishedAt(null);
-      setNow(startedAt);
       setStartError(null);
       persistSession({ questionId: nextQuestion.id, selectedAnswer: null, submitted: false,
         currentIsChallenge: forceChallenge, startTime: startedAt, questionFinishedAt: null });
@@ -636,12 +617,12 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
         startingLevel={startingLevelProgress}
         endingLevel={levelProgress}
         sessionSeconds={
-          sessionStartedAt === null
+          sessionStartedAt === null || sessionEndedAt === null
             ? 0
             : Math.max(
                 0,
                 Math.floor(
-                  ((sessionEndedAt ?? now) - sessionStartedAt) / 1_000
+                  (sessionEndedAt - sessionStartedAt) / 1_000
                 )
               )
         }
@@ -724,18 +705,9 @@ export default function TrainerClient({ items }: { items: TrainerQuestionItem[] 
         <aside aria-label="Trainer statistics">
           <TrainerStatsSidebar
             difficulty={currentQuestion.difficulty}
-            questionSeconds={Math.max(
-              0,
-              Math.floor(
-                ((questionFinishedAt ?? now) - startTime) / 1_000
-              )
-            )}
-            sessionSeconds={Math.max(
-              0,
-              Math.floor(
-                (now - (sessionStartedAt ?? now)) / 1_000
-              )
-            )}
+            questionStartedAt={startTime}
+            questionFinishedAt={questionFinishedAt}
+            sessionStartedAt={sessionStartedAt ?? startTime}
             correct={sessionStats.correct}
             incorrect={sessionStats.incorrect}
             giveUps={sessionStats.giveUps}

@@ -5,7 +5,7 @@ import { mkdtemp, readFile, readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { createServer } from "node:http";
-import { chromium } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 
 const require = createRequire(import.meta.url);
 const webpack = require("next/dist/compiled/webpack/webpack");
@@ -18,7 +18,7 @@ const compiler = webpack.webpack({
     "next/navigation": fixture("trainerRouter.ts"), "next/link": fixture("link.tsx"), "next/image": fixture("image.tsx"),
     "@/lib/supabase/client": fixture("trainerSupabase.ts"), "@": root,
   } },
-  module: { rules: [{ test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") }, { test: /\.css$/, use: fixture("css.cjs") }] },
+  module: { rules: [{ test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") }, { test: /\.css$/, use: fixture("css.cjs") }, { test: /\.png$/i, type: "asset/inline" }] },
 });
 await new Promise((resolve, reject) => compiler.run((error, stats) => error || stats.hasErrors()
   ? reject(error ?? new Error(stats.toString())) : compiler.close(resolve)));
@@ -87,11 +87,13 @@ try {
       await page.getByRole("heading", { name: "Gave Up", exact: true }).waitFor();
     }
   }
-  async function end(page) {
+  async function end(page, state) {
+    const previousSaves = state.saves.length;
     const sent = page.waitForRequest("**/fixture/trainer-save");
     await page.getByRole("button", { name: "End Session", exact: true }).click();
     await page.getByRole("dialog").getByRole("button", { name: "End Session", exact: true }).evaluate(button => { button.click(); button.click(); });
     await sent;
+    await expect.poll(() => state.saves.length).toBe(previousSaves + 1);
     await page.getByRole("heading", { name: "Daily Trainer Summary", exact: true }).waitFor();
   }
   async function close(page, state) {
@@ -102,7 +104,7 @@ try {
   {
     const { page, state } = await open();
     await start(page);
-    await end(page);
+    await end(page, state);
     assert.equal(state.saves.length, 1, "double end sends one request");
     await page.getByText("Saving your session history…", { exact: true }).waitFor();
     for (const name of ["Start New Session", "Return to Practice"]) assert.equal(await page.getByRole("button", { name, exact: true }).isDisabled(), true);
@@ -119,7 +121,8 @@ try {
     const retry = page.waitForRequest("**/fixture/trainer-save");
     await page.getByRole("button", { name: "Retry session save", exact: true }).evaluate(button => { button.click(); button.click(); });
     await retry;
-    assert.equal(state.saves.length, 2);
+    // The browser request event can arrive before the route handler records it.
+    await expect.poll(() => state.saves.length).toBe(2);
     assert.deepEqual(state.saves[0], state.saves[1], "retry freezes UUID, time, levels and results");
     // A response to the cancelled first save must not confirm the current retry.
     await state.held[0].route.fulfill({ json: { data: state.held[0].data, error: null } }).catch(() => undefined);
@@ -132,7 +135,7 @@ try {
     await page.getByRole("button", { name: "Start New Session", exact: true }).click();
     await start(page, false);
     state.mode = "saved";
-    await end(page);
+    await end(page, state);
     await page.getByText("Session history saved.", { exact: true }).waitFor();
     assert.notEqual(state.saves[0].p_session_id, state.saves[2].p_session_id);
     assert.equal(state.saves[2].p_results.length, 0, "empty sessions still receive confirmation");
@@ -141,7 +144,7 @@ try {
   for (const mode of ["error", "busy", "conflict", "wrong-owner", "malformed"]) {
     const { page, state } = await open(); state.mode = mode;
     await start(page);
-    await end(page);
+    await end(page, state);
     await page.getByRole("button", { name: "Retry session save", exact: true }).waitFor();
     assert.equal(await page.getByText("Session history saved.", { exact: true }).count(), 0);
     await page.clock.runFor(30_000);
@@ -155,7 +158,7 @@ try {
   for (const action of ["account", "unmount", "same-owner"]) {
     const { page, state } = await open();
     await start(page);
-    await end(page);
+    await end(page, state);
     if (action === "unmount") await page.getByRole("button", { name: "Unmount Trainer", exact: true }).click();
     else await page.evaluate(owner => window.dispatchEvent(new CustomEvent("trainer-account", { detail: owner })), action === "account" ? "second" : "first");
     await state.held[0].route.fulfill({ json: { data: state.held[0].data, error: null } }).catch(() => undefined);

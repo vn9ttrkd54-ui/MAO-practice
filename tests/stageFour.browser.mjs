@@ -5,7 +5,7 @@ import { mkdtemp, readFile, readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve, join } from "node:path";
 import { createServer } from "node:http";
-import { chromium } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 
 const require = createRequire(import.meta.url);
 const webpack = require("next/dist/compiled/webpack/webpack");
@@ -18,7 +18,7 @@ const compiler = webpack.webpack({
     "next/navigation": fixture("trainerRouter.ts"), "next/link": fixture("link.tsx"), "next/image": fixture("image.tsx"),
     "@/lib/supabase/client": fixture("trainerSupabase.ts"), "@": root,
   } },
-  module: { rules: [{ test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") }, { test: /\.css$/, use: fixture("css.cjs") }] },
+  module: { rules: [{ test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") }, { test: /\.css$/, use: fixture("css.cjs") }, { test: /\.png$/i, type: "asset/inline" }] },
 });
 const stats = await new Promise((resolve, reject) => compiler.run((error, stats) => error || stats.hasErrors()
   ? reject(error ?? new Error(stats.toString())) : compiler.close(() => resolve(stats))));
@@ -33,12 +33,14 @@ const server = createServer((req, res) => {
 });
 await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
 const origin = `http://127.0.0.1:${server.address().port}`;
-const question = id => ({ id, number: id - 10000, division: "Mu", topic: id < 10007 ? "Calculus" : "Geometry", difficulty: (id - 10001) % 3 + 1,
-  methods: [], question: `Fixture question ${id}`, choices: ["One", "Two"], answer: "A", solution: `Fixture solution ${id}` });
+const question = (id, math) => ({ id, number: id - 10000, division: "Mu", topic: id < 10007 ? "Calculus" : "Geometry", difficulty: (id - 10001) % 3 + 1,
+  methods: [], question: `Fixture question ${id}` + (math ? String.raw` \(x_{${id}} + 1\)` : ""),
+  choices: ["One", math ? String.raw`Two \(2\)` : "Two"], answer: "A",
+  solution: `Fixture solution ${id}` + (math ? String.raw` \(x_{${id}} = 0\)` : "") });
 let browser;
 try {
   browser = await chromium.launch({ headless: true });
-  async function open() {
+  async function open({ math = false } = {}) {
     const page = await browser.newPage();
     const state = { reads: [], deliveries: [], attempts: [], saves: [], errors: [], scripts: [], stall: null, held: [], failSave: false };
     page.on("pageerror", error => state.errors.push(error.message));
@@ -57,7 +59,7 @@ try {
       if (url.pathname === "/api/practice/trainer/question") {
         const id = Number(url.searchParams.get("id")); state.deliveries.push(id);
         if (state.stall === "question") { state.held.push(route); return; }
-        return route.fulfill({ json: { question: question(id) } });
+        return route.fulfill({ json: { question: question(id, math) } });
       }
       if (url.pathname === "/api/practice/attempt") {
         const body = req.postDataJSON(); state.attempts.push(body);
@@ -85,8 +87,11 @@ try {
     assert.deepEqual(state.reads, [], "setup must not read progress/level");
     state.stall = "progress";
     await page.getByRole("button", { name: "Start Trainer", exact: true }).evaluate(button => { button.click(); button.click(); });
-    await page.getByRole("button", { name: "Loading Trainer…" }).waitFor();
-    assert.equal(await page.getByLabel("Division", { exact: true }).isDisabled(), true);
+    await expect(page.getByRole("button", { name: "Loading Trainer...", exact: true })).toBeDisabled();
+    const divisions = page.getByRole("group", { name: "Division", exact: true }).getByRole("radio");
+    await expect(divisions).toHaveCount(3);
+    for (const radio of await divisions.all()) await expect(radio).toBeDisabled();
+    await expect(page.getByLabel("Starting difficulty", { exact: true })).toBeDisabled();
     await page.waitForFunction(() => document.querySelector("button[aria-busy=true]") !== null);
     await page.clock.runFor(12_100);
     await page.getByRole("alert").filter({ hasText: "took too long" }).waitFor();
@@ -95,7 +100,7 @@ try {
     await page.getByRole("button", { name: "Start Trainer", exact: true }).click();
     await page.getByText("Fixture question 10001", { exact: true }).waitFor();
     assert.equal(state.reads.length, 4);
-    await page.getByRole("button", { name: "A. One", exact: true }).click();
+    await page.getByRole("button", { name: "A One", exact: true }).click();
     await page.clock.runFor(2_000);
     state.failSave = true;
     await page.getByRole("button", { name: "Submit", exact: true }).click();
@@ -155,7 +160,58 @@ try {
     await page.getByRole("button", { name: "Start Trainer", exact: true }).waitFor();
     await close(page, state);
   }
-  console.log("PASS: Trainer batching, no setup reads, single-flight start/next, deadlines/retry, original save identity, current-question retention, account isolation, unmount, and guest summary without catalog loading.");
+  {
+    const { page, state } = await open({ math: true });
+    await page.getByRole("button", { name: "Start Trainer", exact: true }).click();
+    const formulas = page.locator(".katex-mathml annotation");
+    await expect(formulas).toHaveText(["x_{10001} + 1", "2"]);
+    await expect.poll(() => state.attempts.length).toBe(1);
+    const renders = () => page.evaluate(() => window.__trainerMathRenders.length);
+    const initialRenders = await renders();
+    assert.ok(initialRenders >= 2, "the real math renderer must be exercised");
+    const reads = [...state.reads];
+    const draft = await page.evaluate(() => sessionStorage.getItem("mao.trainer.active.v1"));
+    assert.ok(draft);
+
+    await page.clock.runFor(5_000);
+    await expect(page.getByLabel("Question time 0:05", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Session time 0:05", { exact: true })).toBeVisible();
+    assert.equal(await renders(), initialRenders, "clock ticks must not re-render unchanged math");
+    assert.deepEqual(state.reads, reads, "clock ticks must not fetch progress or level");
+    assert.deepEqual(state.deliveries, [10001]);
+    assert.equal(state.attempts.length, 1);
+    assert.deepEqual(state.saves, []);
+    assert.equal(await page.evaluate(() => sessionStorage.getItem("mao.trainer.active.v1")), draft, "clock ticks must not rewrite the recovery draft");
+
+    await page.getByRole("button", { name: "A One", exact: true }).click();
+    await page.getByRole("button", { name: "Submit", exact: true }).click();
+    await page.getByRole("heading", { name: "Correct!", exact: true }).waitFor();
+    await expect(formulas).toHaveText(["x_{10001} + 1", "2", "x_{10001} = 0"]);
+    assert.equal(state.saves[0].elapsedSeconds, 5);
+    const answeredRenders = await renders();
+    assert.ok(answeredRenders > initialRenders, "answering must still render the solution");
+    await page.clock.runFor(3_000);
+    await expect(page.getByLabel("Question time 0:05", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Session time 0:08", { exact: true })).toBeVisible();
+    assert.equal(await renders(), answeredRenders, "the frozen question and solution must not re-render on session ticks");
+
+    await page.getByRole("button", { name: "Next Question", exact: true }).click();
+    await expect(formulas).toHaveText(["x_{10004} + 1", "2"]);
+    await expect(page.getByLabel("Question time 0:00", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Session time 0:08", { exact: true })).toBeVisible();
+    const nextRenders = await renders();
+    assert.ok(nextRenders > answeredRenders, "changing questions must render the new math");
+    await page.clock.runFor(2_000);
+    await expect(page.getByLabel("Question time 0:02", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Session time 0:10", { exact: true })).toBeVisible();
+    assert.equal(await renders(), nextRenders);
+    await page.getByRole("button", { name: "Unmount Trainer", exact: true }).click();
+    await page.clock.runFor(5_000);
+    assert.equal(await page.getByLabel("Trainer statistics", { exact: true }).count(), 0);
+    assert.equal(await renders(), nextRenders);
+    await close(page, state);
+  }
+  console.log("PASS: Trainer batching, no setup reads, single-flight start/next, deadlines/retry, original save identity, current-question retention, account isolation, unmount, guest summary without catalog loading, and isolated timer ticks without repeated math work.");
 } finally {
   await browser?.close();
   await new Promise(resolve => server.close(resolve));
