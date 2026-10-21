@@ -1,6 +1,6 @@
 import type { Division } from "@/types/question";
 
-export type FeedbackKind = "question_report" | "general_suggestion";
+export type FeedbackKind = "question_report" | "general_suggestion" | "question_submission";
 export type FeedbackStatus = "open" | "resolved";
 
 export interface FeedbackRequest {

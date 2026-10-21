@@ -14,7 +14,7 @@ const fixture = name => resolve(import.meta.dirname, "browserFixtures", name);
 const mocks = fixture("challengeStudioMocks.ts");
 const compiler = webpack.webpack({
   mode: "development", entry: fixture("challengeStudio.tsx"), output: { path: dir, filename: "client.js" }, devtool: false,
-  resolve: { extensions: [".tsx", ".ts", ".js"], alias: { "@/lib/challenge": mocks, "@/app/challenge/actions": mocks, "next/navigation": mocks, "next/image": fixture("googleImage.tsx"), "@": root } },
+  resolve: { extensions: [".tsx", ".ts", ".js"], alias: { "@/lib/challenge": mocks, "@/app/challenge/actions": mocks, "next/navigation": mocks, "next/link": fixture("link.tsx"), "next/image": fixture("googleImage.tsx"), "@": root } },
   module: { rules: [{ test: /\.tsx?$/, exclude: /node_modules/, use: fixture("loader.cjs") }, { test: /\.css$/, use: fixture("css.cjs") }] },
 });
 await new Promise((resolve, reject) => compiler.run((error, stats) => {

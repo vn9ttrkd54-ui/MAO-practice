@@ -10,11 +10,12 @@ import { hasAdminAccess, hasOwnerAccess } from "@/lib/auth/roles";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { Division } from "@/types/question";
+import type { FeedbackKind } from "@/types/feedback";
 
 type FeedbackRow = {
   id: string;
   user_id: string;
-  kind: "question_report" | "general_suggestion";
+  kind: FeedbackKind;
   question_id: number | null;
   division: Division | null;
   message: string;

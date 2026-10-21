@@ -30,6 +30,10 @@
 .panel ol { border-color:#d9e3f2; margin-top:10px; }
 .panel li { border-color:#d9e3f2; font-size:13px; }
 .divisionControl { padding-bottom:22px; margin-bottom:22px; border-bottom:1px solid #d9e3f2; }
+.divisionToolbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
+.submitQuestion { display:inline-flex; align-items:center; justify-content:center; gap:7px; flex-shrink:0; margin-left:auto; min-height:36px; padding:8px 12px; border:1px solid #c4d5f1; border-radius:6px; color:#2563eb; background:#fff; font-size:12px; font-weight:600; white-space:nowrap; }
+.submitQuestion:hover { background:#f3f8ff; border-color:#8dabdf; }
+.submitQuestion:focus-visible { outline:2px solid #2563eb; outline-offset:3px; }
 .divisions { display:flex; flex-wrap:wrap; gap:8px; }
 .divisions button { border-radius:7px; background:#e8f0ff; color:#18243e; min-height:44px; padding:12px 24px; font-size:13px; }
 .divisions button[aria-pressed="true"] { color:#fff; background:#2563eb; }

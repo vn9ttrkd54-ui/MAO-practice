@@ -20,6 +20,9 @@ export default function FeedbackForm({
   onSubmitted,
 }: FeedbackFormProps) {
   const messageId = useId();
+  const divisionId = useId();
+  const isQuestionSubmission = kind === "question_submission";
+  const [submissionDivision, setSubmissionDivision] = useState<Division | "">("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -27,6 +30,10 @@ export default function FeedbackForm({
 
   const submit = async () => {
     if (saving) return;
+    if (isQuestionSubmission && !submissionDivision) {
+      setError("Choose a division for your problem.");
+      return;
+    }
     setSaving(true);
     setError(null);
 
@@ -34,7 +41,7 @@ export default function FeedbackForm({
       const response = await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, questionId, division, message }),
+        body: JSON.stringify({ kind, questionId, division: isQuestionSubmission ? submissionDivision : division, message }),
       });
       const data = (await response.json()) as { error?: string };
 
@@ -55,8 +62,8 @@ export default function FeedbackForm({
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border border-green-200 bg-green-50 p-5 text-green-800">
-        <p className="font-bold">Thank you—your feedback was submitted.</p>
+      <div role="status" className="rounded-2xl border border-green-200 bg-green-50 p-5 text-green-800">
+        <p className="font-bold">{isQuestionSubmission ? "Thank you, your problem was submitted." : "Thank you—your feedback was submitted."}</p>
         <p className="mt-1 text-sm">An administrator can now review it.</p>
       </div>
     );
@@ -64,8 +71,27 @@ export default function FeedbackForm({
 
   return (
     <div>
+      {isQuestionSubmission ? (
+        <div className="mb-6">
+          <label htmlFor={divisionId} className="font-semibold">Division</label>
+          <select
+            id={divisionId}
+            name="division"
+            required
+            value={submissionDivision}
+            disabled={saving}
+            onChange={(event) => setSubmissionDivision(event.target.value as Division | "")}
+            className="mt-2 block min-h-11 w-full max-w-sm rounded-lg border border-slate-300 bg-white px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          >
+            <option value="" disabled>Select a division</option>
+            <option value="Mu">Mu - Calculus</option>
+            <option value="Alpha">Alpha - Precalculus</option>
+            <option value="Theta">Theta - Algebra 2</option>
+          </select>
+        </div>
+      ) : null}
       <label htmlFor={messageId} className="font-semibold">
-        {kind === "question_report"
+        {isQuestionSubmission ? "Problem, answer, and solution" : kind === "question_report"
           ? "Explain what is wrong or what should change"
           : "What would you like to suggest?"}
       </label>
@@ -74,9 +100,12 @@ export default function FeedbackForm({
         value={message}
         onChange={(event) => setMessage(event.target.value)}
         maxLength={2000}
+        disabled={saving}
         rows={7}
         placeholder={
-          kind === "question_report"
+          isQuestionSubmission
+            ? "Problem:\n\nAnswer:\n\nDetailed solution:\n\nSource or author credit:"
+            : kind === "question_report"
             ? "Describe the typo, unclear wording, incorrect answer, solution issue, or suggested improvement..."
             : "Share an idea or report an issue with accounts, practice, challenges, multiplayer, or anything else..."
         }
@@ -88,7 +117,7 @@ export default function FeedbackForm({
       </div>
 
       {error ? (
-        <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error} {error.includes("sign in") ? <Link href="/login" className="font-bold underline">Log in</Link> : null}
         </div>
       ) : null}
@@ -96,10 +125,10 @@ export default function FeedbackForm({
       <button
         type="button"
         onClick={() => void submit()}
-        disabled={saving || message.trim().length < 10}
+        disabled={saving || message.trim().length < 10 || (isQuestionSubmission && !submissionDivision)}
         className="mt-5 rounded-xl bg-black px-6 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {saving ? "Submitting..." : "Submit"}
+        {saving ? "Submitting..." : isQuestionSubmission ? "Submit Question" : "Submit"}
       </button>
     </div>
   );

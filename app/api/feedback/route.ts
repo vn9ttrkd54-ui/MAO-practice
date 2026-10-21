@@ -51,6 +51,14 @@ export async function POST(request: Request) {
     }
     questionId = question.id;
     division = question.division;
+  } else if (body.kind === "question_submission") {
+    if (!body.division) {
+      return NextResponse.json({ error: "Choose a division for your problem." }, { status: 400 });
+    }
+    if (body.questionId !== undefined) {
+      return NextResponse.json({ error: "A submitted problem cannot reference an existing question." }, { status: 400 });
+    }
+    division = body.division as Division;
   } else if (body.kind !== "general_suggestion") {
     return NextResponse.json({ error: "Invalid feedback type." }, { status: 400 });
   }

@@ -438,6 +438,30 @@ test("feedback returns 429 for both the early quota check and the atomic databas
   assert.deepEqual(raced.body, limited.body);
 });
 
+test("problem submissions require a valid division and cannot masquerade as existing-question reports", async () => {
+  const body = { kind: "question_submission", division: "Mu", message: "Problem, answer, detailed solution, and source credit." };
+  await rejectsInputs("feedback", [
+    ...[undefined, null, "", "mu", "other", {}, [], 3].map(division => ({ ...body, division })),
+    ...[null, 42, "42", -1, {}].map(questionId => ({ ...body, questionId })),
+  ]);
+  for (const division of ["Mu", "Alpha", "Theta"]) {
+    const result = await invoke("feedback", { ...body, division, message: `  ${body.message}  `, user_id: TARGET_ID });
+    assert.equal(result.status, 200);
+    assert.deepEqual(result.effects.find(effect => effect.kind === "databaseInsert").value, {
+      table: "feedback_requests",
+      value: { user_id: USER_ID, kind: "question_submission", question_id: null, division, message: body.message },
+    });
+  }
+  for (const [options, status] of [[{ signedIn: false }, 401], [{ origin: "https://evil.example" }, 403], [{ feedbackCount: 10 }, 429]]) {
+    const result = await invoke("feedback", body, options);
+    assert.equal(result.status, status);
+    assert.equal(result.effects.some(effect => effect.kind === "databaseInsert"), false);
+  }
+  const failed = await invoke("feedback", body, { feedbackInsertError: { message: "private detail" } });
+  assert.equal(failed.status, 500);
+  assert.equal(JSON.stringify(failed.body).includes("private detail"), false);
+});
+
 test("feedback count and unrelated database errors remain generic and do not leak internals", async () => {
   for (const options of [
     { feedbackCountError: { message: "private database detail" } },
