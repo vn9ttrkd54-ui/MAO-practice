@@ -37,13 +37,15 @@ const origin = `http://127.0.0.1:${server.address().port}`;
 let browser;
 try {
   browser = await chromium.launch();
-  const page = await browser.newPage();
+  const page = await browser.newPage({ timezoneId: "Asia/Tokyo" });
   const errors = [];
   page.on("pageerror", error => { errors.push(error.message); console.error(error.message); });
   await page.route("**/*", route => route.request().url().startsWith(origin) ? route.continue() : route.abort());
   await page.goto(origin);
   await page.getByRole("heading", { name: "Daily Challenge", exact: true }).waitFor();
-  assert.equal(await page.getByLabel("Monday, today (UTC), not completed", { exact: true }).count(), 1);
+  assert.equal(await page.getByText("New York time", { exact: true }).count(), 1);
+  assert.equal(await page.locator('time[datetime="2026-10-19"]').textContent(), "October 19, 2026");
+  assert.equal(await page.getByLabel("Monday, today (New York), not completed", { exact: true }).count(), 1);
   assert.equal(await page.locator(".week .completed").count(), 0);
   for (const division of ["MU", "ALPHA", "THETA"]) {
     await page.getByRole("button", { name: division, exact: true }).click();
@@ -65,7 +67,7 @@ try {
   await page.locator(".answers button").first().click();
   await page.getByRole("button", { name: "Submit Answer", exact: true }).click();
   await page.getByRole("heading", { name: "Correct!", exact: true }).waitFor();
-  await page.getByLabel("Monday, today (UTC), completed", { exact: true }).waitFor();
+  await page.getByLabel("Monday, today (New York), completed", { exact: true }).waitFor();
   assert.equal(await page.locator(".week .completed").count(), 1);
   assert.equal(await page.locator(".week .completed").evaluate(el => getComputedStyle(el).backgroundColor), "rgb(243, 186, 40)");
   assert.ok(await page.getByRole("button", { name: "Answer Submitted" }).isDisabled());
@@ -76,9 +78,9 @@ try {
     await page.screenshot({ path: `/tmp/challenge-studio-result-${width}.png`, fullPage: true });
   }
   await page.getByRole("button", { name: "MU", exact: true }).click();
-  await page.getByLabel("Monday, today (UTC), completed", { exact: true }).waitFor();
+  await page.getByLabel("Monday, today (New York), completed", { exact: true }).waitFor();
   await page.reload();
-  await page.getByLabel("Monday, today (UTC), completed", { exact: true }).waitFor();
+  await page.getByLabel("Monday, today (New York), completed", { exact: true }).waitFor();
   assert.equal(await page.locator(".week .completed").count(), 1);
   await page.goto(`${origin}/challenge?empty=1`);
   await page.getByRole("button", { name: "Submit Answer", exact: true }).waitFor();
@@ -88,6 +90,7 @@ try {
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
   await page.screenshot({ path: "/tmp/challenge-studio-empty.png", fullPage: true });
   await page.goto(`${origin}/challenge?empty=1&fail=1`);
+  assert.equal(await page.locator('time[datetime="2026-10-19"]').textContent(), "October 19, 2026");
   await page.getByRole("button", { name: "Retry question" }).click();
   await page.getByRole("button", { name: "Submit Answer", exact: true }).waitFor();
   assert.deepEqual(errors, []);

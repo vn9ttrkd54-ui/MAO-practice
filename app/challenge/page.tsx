@@ -14,6 +14,7 @@ import type { ChallengeSubmissionResult } from "@/types/challenge";
 export const dynamic = "force-dynamic";
 
 function formatChallengeDate(date: string): string {
+  // The key is already a New York date, so no further zone conversion is needed.
   return new Intl.DateTimeFormat("en-US", {
     month: "long",
     day: "numeric",
@@ -57,7 +58,12 @@ export default async function ChallengePage({ searchParams }: { searchParams: Pr
             Daily Challenge
           </h1>
           </div>
-          <p className={styles.date}>{formatChallengeDate(dailyChallenge?.date ?? new Date().toISOString().slice(0, 10))}</p>
+          <p className={styles.date}>
+            <time dateTime={dailyChallenge?.date ?? statistics.asOfDate}>
+              {formatChallengeDate(dailyChallenge?.date ?? statistics.asOfDate)}
+            </time>
+            <span className={styles.dateTimeZone}>New York time</span>
+          </p>
         </header>
 
         <ChallengePersonalStats statistics={statistics} position={userPosition} />

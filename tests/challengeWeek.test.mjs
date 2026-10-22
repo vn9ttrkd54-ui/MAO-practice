@@ -4,8 +4,9 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
 import { getChallengeWeekDates } from '../lib/challengeWeek.ts';
+import { getChallengeDate } from '../lib/challengeDate.ts';
 
-test('UTC week runs Monday–Sunday through week, month and year boundaries', () => {
+test('New York calendar week runs Monday–Sunday through week, month and year boundaries', () => {
   assert.deepEqual(getChallengeWeekDates('2026-10-19'), [
     '2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22', '2026-10-23', '2026-10-24', '2026-10-25',
   ]);
@@ -20,7 +21,7 @@ const compiled = ts.transpileModule(readFileSync(new URL('../lib/services/challe
 }).outputText;
 const defaultStats = { current_streak: 4, longest_streak: 12, total_completed: 18, total_correct: 15 };
 
-function fixture({ today = '2026-10-19', user = 'viewer', attempts = [], statistics = defaultStats, error = null } = {}) {
+function fixture({ today = '2026-10-19', now = `${today}T06:35:00Z`, user = 'viewer', attempts = [], statistics = defaultStats, error = null } = {}) {
   const calls = [];
   const db = {
     auth: { getUser: async () => ({ data: { user: user ? { id: user } : null } }) },
@@ -44,10 +45,11 @@ function fixture({ today = '2026-10-19', user = 'viewer', attempts = [], statist
       return query;
     },
   };
-  class FixedDate extends Date { constructor(value) { super(value ?? `${today}T06:35:00Z`); } }
+  class FixedDate extends Date { constructor(value) { super(value ?? now); } }
   const exports = {};
   vm.runInNewContext(compiled, { exports, Date: FixedDate, require(name) {
     if (name === 'server-only') return {};
+    if (name === '@/lib/challengeDate') return { getChallengeDate };
     if (name === '@/lib/challengeWeek') return { getChallengeWeekDates };
     if (name === '@/lib/challengeQuestionCatalog') return {};
     if (name === '@/lib/supabase/server') return { createClient: async () => db };
@@ -100,4 +102,24 @@ test('guest/no-history views do not invent completed days from a streak number',
 
 test('failed reads surface an error instead of displaying false completion data', async () => {
   await assert.rejects(fixture({ error: { message: 'Read failed' } }).load(), /Unable to load Challenge statistics/);
+});
+
+test('after UTC midnight the New York day, week and yesterday grace period do not advance early', async () => {
+  const f = fixture({ now: '2026-10-19T02:30:00Z', attempts: [attempt('2026-10-18'), attempt('2026-10-17')] });
+  const result = await f.load();
+  assert.equal(result.asOfDate, '2026-10-18');
+  assert.equal(result.currentStreak, 4);
+  assert.equal(f.calls[1].start, '2026-10-12');
+  assert.equal(f.calls[1].end, '2026-10-18');
+  assert.deepEqual(plain(result.completedDates), ['2026-10-18', '2026-10-17']);
+});
+
+test('yesterday remains exactly one calendar day earlier at both daylight saving changes', async () => {
+  for (const now of ['2026-03-09T04:00:00Z', '2026-11-02T05:00:00Z']) {
+    const today = getChallengeDate(new Date(now));
+    const yesterday = new Date(Date.parse(`${today}T00:00:00Z`) - 86400000).toISOString().slice(0, 10);
+    assert.equal((await fixture({ now, attempts: [attempt(yesterday)] }).load()).currentStreak, 4);
+    const twoDaysAgo = new Date(Date.parse(`${today}T00:00:00Z`) - 2 * 86400000).toISOString().slice(0, 10);
+    assert.equal((await fixture({ now, attempts: [attempt(twoDaysAgo)] }).load()).currentStreak, 0);
+  }
 });

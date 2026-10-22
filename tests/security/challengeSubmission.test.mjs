@@ -4,14 +4,16 @@ import test from 'node:test';
 import vm from 'node:vm';
 import ts from 'typescript';
 import { getChallengeWeekDates } from '../../lib/challengeWeek.ts';
+import { getChallengeDate } from '../../lib/challengeDate.ts';
 
 const source = readFileSync(new URL('../../lib/services/challengeService.ts', import.meta.url), 'utf8');
 const compiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
 }).outputText;
 
-function fixture({ user = { id: 'verified-user' }, assignment = 'SEC-MU', error = null } = {}) {
-  const date = new Date().toISOString().slice(0, 10);
+function fixture({ now = new Date().toISOString(), user = { id: 'verified-user' }, assignment = 'SEC-MU', error = null } = {}) {
+  const date = getChallengeDate(new Date(now));
+  class FixedDate extends Date { constructor(value) { super(value ?? now); } }
   const calls = [];
   let adminClients = 0;
   const db = {
@@ -29,8 +31,10 @@ function fixture({ user = { id: 'verified-user' }, assignment = 'SEC-MU', error 
   const exports = {};
   vm.runInNewContext(compiled, {
     exports,
+    Date: FixedDate,
     require(name) {
       if (name === 'server-only') return {};
+      if (name === '@/lib/challengeDate') return { getChallengeDate };
       if (name === '@/lib/challengeWeek') return { getChallengeWeekDates };
       if (name === '@/lib/supabase/server') return { createClient: async () => db };
       if (name === '@/lib/challengeQuestionCatalog') return {
@@ -110,4 +114,13 @@ test('duplicate and denied database writes are not reported as saved', async () 
     await assert.rejects(f.submit(), error.code === '23505' ? /already submitted/ : /Unable to submit the Challenge right now/);
     assert.equal(f.calls.length, 1);
   }
+});
+
+test('submission accepts the New York date after UTC midnight and rejects the next UTC date', async () => {
+  const f = fixture({ now: '2026-10-22T02:00:00Z' });
+  assert.equal(f.date, '2026-10-21');
+  await assert.rejects(f.submit({ challengeDate: '2026-10-22' }), /Only today's Challenge/);
+  assert.equal(f.calls.length, 0);
+  assert.equal((await f.submit()).saved, true);
+  assert.equal(f.calls[0].args.p_challenge_date, '2026-10-21');
 });

@@ -1,4 +1,4 @@
-/** Monday–Sunday dates using the same UTC calendar as daily assignments. */
+/** Monday–Sunday calendar keys. Input is already a New York date; UTC arithmetic avoids DST shifts. */
 export function getChallengeWeekDates(today: string): string[] {
   const monday = new Date(`${today}T00:00:00.000Z`);
   monday.setUTCDate(monday.getUTCDate() - (monday.getUTCDay() + 6) % 7);

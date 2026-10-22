@@ -1,6 +1,7 @@
 import "server-only";
 
 import { requireDailyQuestionById } from "@/lib/challengeQuestionCatalog";
+import { getChallengeDate } from "@/lib/challengeDate";
 import { getChallengeWeekDates } from "@/lib/challengeWeek";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -78,7 +79,7 @@ function mapAttempt(row: ChallengeAttemptRow): ChallengeAttempt {
 }
 
 export function getCurrentChallengeDate(now = new Date()): string {
-  return now.toISOString().slice(0, 10);
+  return getChallengeDate(now);
 }
 
 export async function getChallengeByDate(
@@ -202,7 +203,8 @@ export async function submitChallenge(
 export async function getChallengeStatistics(): Promise<ChallengeUserStatistics> {
   const today = getCurrentChallengeDate();
   const weekStart = getChallengeWeekDates(today)[0];
-  const yesterday = getCurrentChallengeDate(new Date(new Date(`${today}T00:00:00Z`).getTime() - 86400000));
+  // These are calendar keys, not instants; do not apply New York's offset twice.
+  const yesterday = new Date(Date.parse(`${today}T00:00:00Z`) - 86400000).toISOString().slice(0, 10);
   const supabase = await createClient();
   const { data: authData } = await supabase.auth.getUser();
   const emptyStatistics: ChallengeUserStatistics = {

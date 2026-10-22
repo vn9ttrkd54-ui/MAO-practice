@@ -2,13 +2,14 @@ import "server-only";
 
 import { questions } from "@/data/questions";
 import { pickBankChallenge } from "@/lib/challengeBankFallback";
+import { getChallengeDate } from "@/lib/challengeDate";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Division } from "@/types/question";
 
 /** Public, bounded action: caller can choose only a division, never date/content/score. */
 export async function ensureTodayChallenge(division: Division): Promise<void> {
   if (!["Mu", "Alpha", "Theta"].includes(division)) throw new Error("Invalid division.");
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getChallengeDate(new Date());
   const admin = createAdminClient();
   const readAssignment = () => admin.from("daily_challenges").select("question_id")
     .eq("challenge_date", today).eq("division", division).maybeSingle();

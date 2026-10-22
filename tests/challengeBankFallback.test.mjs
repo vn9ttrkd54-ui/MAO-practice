@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import ts from 'typescript';
 import { pickBankChallenge, toBankChallenge } from '../lib/challengeBankFallback.ts';
+import { getChallengeDate } from '../lib/challengeDate.ts';
 import { muQuestions } from '../data/questions/mu.ts';
 import { alphaQuestions } from '../data/questions/alpha.ts';
 import { thetaQuestions } from '../data/questions/theta.ts';
@@ -79,7 +80,8 @@ const compiled = ts.transpileModule(readFileSync(new URL('../lib/services/challe
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
 }).outputText;
 
-function fixture({ initial = null, history = [], fail = '', racingManual = null } = {}) {
+function fixture({ now = new Date().toISOString(), initial = null, history = [], fail = '', racingManual = null } = {}) {
+  class FixedDate extends Date { constructor(value) { super(value ?? now); } }
   let assignment = initial;
   const calls = [], writes = [];
   const db = { from(table) {
@@ -103,7 +105,7 @@ function fixture({ initial = null, history = [], fail = '', racingManual = null 
       async upsert(value, options) {
         assert.equal(options.onConflict, 'challenge_date,division');
         assert.equal(options.ignoreDuplicates, true);
-        assert.equal(value.challenge_date, new Date().toISOString().slice(0, 10));
+        assert.equal(value.challenge_date, getChallengeDate(new Date(now)));
         assert.equal(value.division, 'Mu');
         writes.push(value);
         if (fail === 'write') return { error: { message: 'private details' } };
@@ -115,8 +117,9 @@ function fixture({ initial = null, history = [], fail = '', racingManual = null 
   } };
   let adminClients = 0;
   const exports = {};
-  vm.runInNewContext(compiled, { exports, Date, require(name) {
+  vm.runInNewContext(compiled, { exports, Date: FixedDate, require(name) {
     if (name === 'server-only') return {};
+    if (name === '@/lib/challengeDate') return { getChallengeDate };
     if (name === '@/data/questions') return { questions: bank };
     if (name === '@/lib/challengeBankFallback') return { pickBankChallenge };
     if (name === '@/lib/supabase/admin') return { createAdminClient() { adminClients++; return db; } };
@@ -168,5 +171,19 @@ test('database failures fail closed with a safe retry message', async () => {
     const f = fixture({ fail });
     await assert.rejects(f.ensure('Mu'), /^Error: Unable to prepare today's question\. Please retry\.$/);
     if (fail !== 'write') assert.equal(f.writes.length, 0);
+  }
+});
+
+test('fallback scheduling retains the New York day until midnight, in summer and winter', async () => {
+  for (const [now, expected] of [
+    ['2026-07-15T03:59:59Z', '2026-07-14'],
+    ['2026-07-15T04:00:00Z', '2026-07-15'],
+    ['2026-01-15T04:59:59Z', '2026-01-14'],
+    ['2026-01-15T05:00:00Z', '2026-01-15'],
+  ]) {
+    const f = fixture({ now });
+    await f.ensure('Mu');
+    assert.equal(f.writes[0].challenge_date, expected);
+    assert.ok(f.calls.every(call => call.challenge_date === expected));
   }
 });

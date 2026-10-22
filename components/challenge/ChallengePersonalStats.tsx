@@ -41,14 +41,14 @@ export default function ChallengePersonalStats({
       </div>
 
       <div className={styles.streak}><Flame size={22} aria-hidden="true" /><div><strong>{statistics.currentStreak}</strong><span>Current streak</span></div></div>
-      <div className={styles.week} aria-label="Current UTC week">
+      <div className={styles.week} aria-label="Current New York week">
         {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day, index) => {
           const today = weekDates[index] === statistics.asOfDate;
           const completed = completedDates.has(weekDates[index]);
           return <span key={day}
             className={[today && styles.today, completed && styles.completed].filter(Boolean).join(" ")}
             aria-current={today ? "date" : undefined}
-            aria-label={`${day}${today ? ", today (UTC)" : ""}, ${completed ? "completed" : "not completed"}`}
+            aria-label={`${day}${today ? ", today (New York)" : ""}, ${completed ? "completed" : "not completed"}`}
           >{day[0]}</span>;
         })}
       </div>
