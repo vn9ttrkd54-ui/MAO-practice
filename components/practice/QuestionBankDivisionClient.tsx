@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Bookmark, ChevronDown, RotateCcw, SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import { encodeQuestionSequence, filterQuestionBankItems, questionBankHref, QUESTION_BANK_BATCH_SIZE, type QuestionBankItem } from "@/lib/questionBankListing";
@@ -114,7 +114,56 @@ export default function QuestionBankDivisionClient({ division, items: divisionQu
 
 function QuestionTile({ question, status, bookmarked, href }: { question: QuestionBankItem; status: QuestionStatus; bookmarked: boolean; href: string }) {
   const [intent, setIntent] = useState(false);
-  return <Link href={href} prefetch={intent ? null : false} onMouseEnter={() => setIntent(true)} onFocus={() => setIntent(true)} aria-label={`Question ${question.number}, ${question.topic}`} className={styles.tile} data-status={status}><span className={styles.dot} />{question.number}{bookmarked ? <Bookmark size={10} fill="currentColor" className={styles.bookmark} aria-hidden="true" /> : null}</Link>;
+  const [preview, setPreview] = useState<{ left: number; top: number } | null>(null);
+  const link = useRef<HTMLAnchorElement>(null);
+  const tooltip = useRef<HTMLDivElement>(null);
+  const tooltipId = `question-preview-${question.id}`;
+  const previewOpen = preview !== null;
+
+  const showPreview = () => {
+    setIntent(true);
+    if (!link.current || !tooltip.current) return;
+    const tile = link.current.getBoundingClientRect();
+    const details = tooltip.current.getBoundingClientRect();
+    const edge = 12;
+    const gap = 10;
+    const above = tile.top - details.height - gap;
+    setPreview({
+      left: Math.max(edge, Math.min(tile.left + (tile.width - details.width) / 2, window.innerWidth - details.width - edge)),
+      top: Math.max(edge, above >= edge ? above : Math.min(tile.bottom + gap, window.innerHeight - details.height - edge)),
+    });
+  };
+
+  useEffect(() => {
+    if (!previewOpen) return;
+    const dismiss = () => setPreview(null);
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") dismiss(); };
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", dismiss);
+    window.addEventListener("scroll", dismiss, true);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", dismiss);
+      window.removeEventListener("scroll", dismiss, true);
+    };
+  }, [previewOpen]);
+
+  return <div className={styles.tileWrap} onMouseEnter={showPreview}
+    onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setPreview(null); }}
+    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget) && !event.currentTarget.matches(":hover")) setPreview(null); }}>
+    <Link ref={link} href={href} prefetch={intent ? null : false} onFocus={showPreview} onClick={() => setPreview(null)}
+      aria-label={`Question ${question.number}, ${question.topic}`} aria-describedby={tooltipId} className={styles.tile} data-status={status}>
+      <span className={styles.dot} />{question.number}{bookmarked ? <Bookmark size={10} fill="currentColor" className={styles.bookmark} aria-hidden="true" /> : null}
+    </Link>
+    <div ref={tooltip} id={tooltipId} role="tooltip" className={styles.tileTooltip} data-open={previewOpen} style={preview ?? undefined}>
+      <p>Question {question.number}</p>
+      <dl>
+        <div><dt>Difficulty</dt><dd className={styles.previewDifficulty}><span aria-hidden="true">{"★".repeat(question.difficulty)}<span className={styles.emptyStars}>{"☆".repeat(5 - question.difficulty)}</span></span><span>{question.difficulty}/5</span></dd></div>
+        <div><dt>Topic</dt><dd>{question.topic}</dd></div>
+        <div><dt>{question.methods.length > 1 ? "Methods" : "Method"}</dt><dd>{question.methods.length ? question.methods.join(", ") : "Not specified"}</dd></div>
+      </dl>
+    </div>
+  </div>;
 }
 
 function FilterSelect({ label, value, options, onChange, render = (item) => item }: { label: string; value: string; options: string[]; onChange: (value: string) => void; render?: (value: string) => string }) {

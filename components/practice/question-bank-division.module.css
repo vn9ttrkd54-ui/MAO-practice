@@ -40,6 +40,7 @@
 .attemptedDot { background: #ef476f; }
 .newDot { background: #bac9db; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, 48px); gap: 10px; align-content: start; }
+.tileWrap { width: 48px; height: 48px; }
 .tile { position: relative; display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid #dce7f5; border-radius: 6px; background: #fff; color: #17233d; font-size: 14px; font-weight: 700; transition: transform 180ms ease, border-color 180ms ease; }
 .tile[data-status="solved"] { background: #edfbf5; border-color: #b5e8d3; color: #13634b; }
 .tile[data-status="attempted"] { background: #fff2f5; border-color: #f4cbd5; color: #a91e46; }
@@ -49,6 +50,18 @@
 .tile[data-status="solved"] .dot { background: #10b981; }
 .tile[data-status="attempted"] .dot { background: #ef476f; }
 .bookmark { position: absolute; right: 4px; top: 4px; color: #d69b15; }
+.tileTooltip { position: fixed; top: 0; left: 0; z-index: 50; visibility: hidden; width: min(256px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 13px 15px; border: 1px solid #c5d3e3cc; border-radius: 10px; background: #ffffffeb; color: #17233d; box-shadow: 0 6px 22px #17233d1a; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 12px; line-height: 1.5; font-weight: 400; pointer-events: none; }
+.tileTooltip[data-open="true"] { visibility: visible; pointer-events: auto; }
+.tileTooltip::before { content: ""; position: absolute; inset: -12px 0; z-index: -1; }
+.tileTooltip > p { margin: 0 0 9px; color: #52647d; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.tileTooltip dl { display: grid; gap: 7px; margin: 0; }
+.tileTooltip dl > div { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 10px; }
+.tileTooltip dt { color: #52647d; }
+.tileTooltip dd { margin: 0; overflow-wrap: anywhere; font-weight: 600; }
+.previewDifficulty { display: flex; align-items: center; gap: 8px; }
+.previewDifficulty > span:first-child { color: #a96c00; font-size: 14px; letter-spacing: 1px; white-space: nowrap; }
+.previewDifficulty > span:last-child { color: #52647d; font-size: 11px; white-space: nowrap; }
+.previewDifficulty .emptyStars { color: #8b9cb0; }
 .more { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 24px; color: #5c6c82; font-size: 13px; }
 .more button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 6px; background: var(--division-color); color: #fff; font-size: 13px; font-weight: 600; }
 .more button:hover { filter: brightness(.92); }
