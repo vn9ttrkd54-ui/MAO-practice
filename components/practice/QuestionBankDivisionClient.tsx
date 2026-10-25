@@ -148,10 +148,11 @@ function QuestionTile({ question, status, bookmarked, href }: { question: Questi
     };
   }, [previewOpen]);
 
-  return <div className={styles.tileWrap} onMouseEnter={showPreview}
-    onMouseLeave={event => { if (!event.currentTarget.contains(document.activeElement)) setPreview(null); }}
-    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget) && !event.currentTarget.matches(":hover")) setPreview(null); }}>
-    <Link ref={link} href={href} prefetch={intent ? null : false} onFocus={showPreview} onClick={() => setPreview(null)}
+  return <div className={styles.tileWrap}>
+    <Link ref={link} href={href} prefetch={intent ? null : false}
+      onMouseEnter={showPreview} onMouseLeave={() => setPreview(null)}
+      onFocus={event => { setIntent(true); if (event.currentTarget.matches(":focus-visible")) showPreview(); }}
+      onBlur={event => { if (!event.currentTarget.matches(":hover")) setPreview(null); }} onClick={() => setPreview(null)}
       aria-label={`Question ${question.number}, ${question.topic}`} aria-describedby={tooltipId} className={styles.tile} data-status={status}>
       <span className={styles.dot} />{question.number}{bookmarked ? <Bookmark size={10} fill="currentColor" className={styles.bookmark} aria-hidden="true" /> : null}
     </Link>
