@@ -22,7 +22,7 @@ const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start
   cwd: root,
   env: {
     ...process.env,
-    NEXT_PUBLIC_SUPABASE_URL: `${origin}/blocked-supabase`,
+    NEXT_PUBLIC_SUPABASE_URL: `https://127.0.0.1:${port}/blocked-supabase`,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "fixture-public",
     SUPABASE_SECRET_KEY: "fixture-server",
   },
@@ -66,7 +66,7 @@ try {
     assert.equal(await page.getByText("Choose a mode to begin.", { exact: true }).count(), 1);
     assert.equal(await heading.evaluate(el => getComputedStyle(el).color), "rgb(255, 255, 255)");
     assert.equal(await bank.evaluate(el => getComputedStyle(el).color), "rgb(23, 32, 51)");
-    assert.equal(await bank.evaluate(el => getComputedStyle(el).borderRadius), "24px");
+    assert.equal(await bank.evaluate(el => getComputedStyle(el).borderRadius), "8px");
     assert.ok(await heading.evaluate(el => getComputedStyle(el.parentElement).backgroundImage.includes("linear-gradient")));
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${name}: horizontal overflow`);
     for (const link of [bank, trainer]) {

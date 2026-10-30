@@ -24,7 +24,7 @@ export default function ResultsPending({ roomId }: { roomId: string }) {
     const unsubscribe = subscribeToMultiplayerRoom(roomId, refresh);
     return () => { window.clearInterval(interval); fastTimers.forEach(window.clearTimeout); unsubscribe(); };
   }, [roomId, router]);
-  return <MatchWaiting description={waitingLong ? "Results are taking longer than expected. Try checking again shortly." : "Your match has finished. The podium reveal will begin as soon as results are ready."}>
+  return <MatchWaiting description={waitingLong ? "Results are taking longer than expected. Try checking again shortly." : "Your match has finished. Results will appear here when ready."}>
     <button className="mt-5 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white" onClick={() => router.refresh()}>Check results</button>
   </MatchWaiting>;
 }

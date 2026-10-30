@@ -21,8 +21,6 @@ export default async function SignupPage() {
         <div className={styles.icon}>
           <UserPlus size={25} aria-hidden="true" />
         </div>
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">Start your journey</p>
-
         <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
           Create your account
         </h1>

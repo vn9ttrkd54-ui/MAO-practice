@@ -55,7 +55,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
           </div>
           <ul className="mt-3 space-y-3">
             {lobby.players.map((player) => (
-              <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-2xl border px-4 py-4`}>
+              <li key={player.playerId} className={`${player.isGuest ? "border-gray-200 bg-white text-gray-950" : rankThemeClass(player.rankTier ?? "Novice")} flex items-center justify-between gap-4 rounded-lg border px-4 py-4`}>
                 <div>
                   <p className="font-semibold">{player.displayName}{player.isHost ? <span className="ml-2 rounded-full border border-current/30 bg-white/15 px-2 py-0.5 text-[10px] font-bold">HOST</span> : null}</p>
                   <div className={`mt-1 flex items-center gap-2 text-xs ${player.isGuest ? "text-gray-500" : rankSecondaryClass}`}>
@@ -69,7 +69,7 @@ export default function PrivateLobby({ initialLobby, error }: PrivateLobbyProps)
           </ul>
         </section>
 
-        <aside className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
+        <aside className="rounded-lg border border-blue-100 bg-gradient-to-br from-blue-50 to-slate-50 p-5">
           <h2 className="font-bold">Room settings</h2>
           {publicRoom || lobby.room.scoringVersion === 3 ? <section aria-label="How scoring works" className="mt-3 border-b border-blue-200 pb-4">
             <h3 className="text-sm font-semibold">How scoring works</h3>

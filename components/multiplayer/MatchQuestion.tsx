@@ -325,7 +325,7 @@ export default function MatchQuestion({ round: initialRound }: { round: Multipla
   }
 
   if (round.preparing || questionStartsIn === null || questionStartsIn > 0) {
-    return <MatchWaiting preparing title={round.preparing || questionStartsIn === null ? "Preparing…" : `Question ${round.questionNumber} starts in ${questionStartsIn}s`} description={round.preparing ? "Waiting for players to load the question…" : "Take a breath. Get ready for your next challenge."} />;
+    return <MatchWaiting preparing title={round.preparing || questionStartsIn === null ? "Preparing…" : `Question ${round.questionNumber} starts in ${questionStartsIn}s`} description={round.preparing ? "Waiting for players to load the question…" : "The question will appear when the countdown ends."} />;
   }
 
   return (
