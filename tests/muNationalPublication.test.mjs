@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import {createHash} from "node:crypto";
 import {readFileSync,readdirSync} from "node:fs";
 import {createRequire} from "node:module";
 import {runInNewContext} from "node:vm";
@@ -19,7 +18,7 @@ function load(path,dependencies={}){
   return exports;
 }
 
-test("all four national sets remain unnumbered, permission-pending editorial references",()=>{
+test("all four national sets retain only unnumbered, permission-pending editorial metadata",()=>{
   assert.equal(muNationalReferences.length,118);
   const groups=[
     ["2026 MAO National Convention - Mu Individual",30],
@@ -33,11 +32,11 @@ test("all four national sets remain unnumbered, permission-pending editorial ref
     assert.equal("number" in q,false);
     assert.equal(q.publicationStatus,"permission-pending");
     assert.ok(!muQuestions.some(publicQuestion=>publicQuestion.id===q.id));
+    for(const field of ["question","choices","answer","solution","illustration"]){
+      assert.equal(Object.hasOwn(q,field),false,"Restricted content must not be stored: "+field);
+    }
   }
-  // Pre-move content/label fingerprint, independently compared with Git HEAD.
-  const keys=["id","division","topic","difficulty","methods","question","choices","answer","solution","illustration","source"];
-  const payload=muNationalReferences.toSorted((a,b)=>a.id-b.id).map(q=>Object.fromEntries(keys.filter(k=>q[k]!==undefined).map(k=>[k,q[k]])));
-  assert.equal(createHash("sha256").update(JSON.stringify(payload)).digest("hex"),"48f56e6f3fdc2fcbfeb8fb94d0851fc96db6108c9bdb000b123016c79de796b3");
+  assert.deepEqual(muNationalReferences.map(q=>q.id).sort((a,b)=>a-b),Array.from({length:118},(_,i)=>10001+i));
 });
 
 test("approved Mu questions start at 1 with no gaps while IDs and source credits stay independent",()=>{
@@ -105,8 +104,9 @@ test("direct bank links and practice/tutor requests cannot reopen any hidden nat
       const response=await post(new Request("https://example.test/api",{method:"POST",body:JSON.stringify(payload)}));
       assert.equal(response.status,400);
       const body=await response.text();
-      assert.ok(!body.includes(q.question));
-      assert.ok(!body.includes(q.solution));
+      const error=JSON.parse(body);
+      assert.equal(Object.hasOwn(error,"question"),false);
+      assert.equal(Object.hasOwn(error,"solution"),false);
     }
   }
 });

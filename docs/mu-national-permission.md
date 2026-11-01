@@ -1,5 +1,9 @@
 # Mu National Publication Hold
 
+## Public repository cleanup — November 1, 2026
+
+The public Git history excludes the restricted question text, choices, answers, solutions, and illustrations. The reference module retains only IDs, labels, and publication-status metadata needed by editorial checks and historical algorithm tests. The notes below document the earlier private-repository migration; statements about retained full content and its content fingerprint describe that earlier state, not the public repository. Publication tests now verify that the reference records contain no problem-content fields.
+
 The owner requested withholding the 2026, 2025, 2024, and 2023 MAO National Convention Mu Individual sets while clear publication permission is pending. This change applies to those four Mu sets only, not other divisions.
 
 ## Public Catalog

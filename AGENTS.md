@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Mu Question Publication and Label Calibration
 
-The 2026, 2025, 2024, and 2023 MAO National Convention Mu Individual sets are withheld pending clear publication permission. Their unnumbered records are in `data/question-references/muNationals.ts`; read `data/question-references/README.md` before adding or relabeling Mu questions.
+The 2026, 2025, 2024, and 2023 MAO National Convention Mu Individual sets are withheld pending clear publication permission. Only their unnumbered editorial metadata is retained in `data/question-references/muNationals.ts`; restricted problem content is excluded from the repository and its published history. Read `data/question-references/README.md` before adding or relabeling Mu questions.
 
 Use these internal references to calibrate difficulty (1-5), topic, and method labels for newly supplied approved questions. Do not import the reference file into application code, expose it through any catalog/API/UI, copy its questions into the public catalog, or assign it public question numbers. Restoring publication requires an explicit user instruction confirming permission.
 
